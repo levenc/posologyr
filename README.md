@@ -7,34 +7,35 @@
 
 <!-- badges: end -->
 
+## Overview
+
 The goal of posologyr is to provide free tools (as in free speech) to
 individualize drug treatments by taking advantage of population
 pharmacokinetics, patient characteristics, and the results of
 therapeutic drug monitoring.
 
-Posologyr offers functions for estimating pharmacokinetic
-    parameters:
+Posologyr offers functions for estimating pharmacokinetic parameters:
 
-    - Estimation of the a priori distribution of the population pharmacokinetic parameters by Monte-Carlo simulations
-    - Estimation of individual parameters Maximum A Posteriori (MAP), or Empirical Bayes Estimates (EBE), from the results of therapeutic drug monitoring
-    - Estimation of the posterior distribution of individual pharmacokinetic parameters by Markov Chain Monte Carlo (MCMC)
+  - Estimation of the a priori distribution of the population
+    pharmacokinetic parameters by Monte-Carlo simulations
+  - Estimation of individual parameters Maximum A Posteriori (MAP), or
+    Empirical Bayes Estimates (EBE), from the results of therapeutic
+    drug monitoring
+  - Estimation of the posterior distribution of individual
+    pharmacokinetic parameters by Markov Chain Monte Carlo (MCMC)
 
 Posologyr offers dosage optimisation functions based on estimated
 parameters:
 
-    - Determination of the time needed to reach a target trough concentration (Cmin)
-    - Determination of the optimal dose to reach a target AUC
-    - Determination of the optimal dose to reach a target concentration at any given time
+  - Determination of the time needed to reach a target trough
+    concentration (Cmin)
+  - Determination of the optimal dose to reach a target AUC
+  - Determination of the optimal dose to reach a target concentration at
+    any given time
 
 Posologyr requires a population pharmacokinetic model written in the
-specific language of RxODE, and an exponential model of inter-individual
-variability.
-
-# Acknowledgments
-
-Posologyr’s estimation functions were based on Marc Lavielle’s code
-available at <http://shiny.webpopix.org/mcmc/bayes1/> Posologyr relies
-heavily on the excellent RxODE package
+specific language of RxODE, with an exponential model of
+inter-individual variability.
 
 ## Installation
 
@@ -77,7 +78,7 @@ elements that includes all the necessary information, such as the
 structural model, the required covariates, and the variance covariance
 matrix.
 
-Following the same structure, it is fairly easy to implement new models.
+Following the same structure, new models can be implemented.
 
 ``` r
 # Residual error model
@@ -114,8 +115,8 @@ mod_tobramycin_2cpt_fictionnal <- list(
 #> qs v0.23.6.
 ```
 
-The load\_ppk\_model() function makes it easy to initialise the objects
-to be used by posologyr.
+The load\_ppk\_model() function initialises the objects to be used by
+posologyr.
 
 ``` r
 load_ppk_model(mod_tobramycin_2cpt_fictionnal,df_michel)
@@ -187,3 +188,10 @@ poso_time_cmin(dose = 620, duration = 0.5, target_cmin = 0.5)
 
 To conclude, the administration of 620 mg every 48 hours can be
 advisable for Michel.
+
+## Acknowledgments
+
+Posologyr’s estimation functions were based on Marc Lavielle’s code
+available at <http://shiny.webpopix.org/mcmc/bayes1/>
+
+Posologyr relies heavily on the excellent RxODE package
