@@ -33,7 +33,7 @@ structure of NONMEM/RxODE event records}
 
 \item{param_psi_map}{A vector of individual parameters. May be omitted
 if a \code{solved_model} and an individual event record \code{dat} are
-provided, in which case the \code{\link{poso_estim_map()}} function
+provided, in which case the \code{\link{poso_estim_map}} function
 will be called}
 
 \item{covar}{a named vector of the individual covariates. May be

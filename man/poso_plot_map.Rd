@@ -22,7 +22,7 @@ structure of NONMEM/RxODE event records}
 
 \item{param_psi_map}{A vector of individual parameters. May be omitted
 if a \code{solved_model} is provided, in which case the
-\code{\link{poso_estim_map()}}
+\code{\link{poso_estim_map}}
 function will be called}
 
 \item{solved_model}{An \code{\link[RxODE]{rxSolve}} solve object, created
@@ -32,7 +32,7 @@ the prior typical values of the population parameters from the
 if a vector of individual parameters \code{param_psi_map} is provided}
 }
 \value{
-A \link{ggplot2} plot of the individual Maximum A Posteriori
+A \code{ggplot2} plot of the individual Maximum A Posteriori
 time-concentration curve, using the individual covariates, over the
 individual observations
 }

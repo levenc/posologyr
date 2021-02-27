@@ -20,7 +20,7 @@ the covariates from the individual event record \code{dat} will be
 used}
 }
 \value{
-A \link{ggplot2} plot of the typical population time-concentration curve,
+A \code{ggplot2} plot of the typical population time-concentration curve,
 using the individual covariates, over the individual observations
 }
 \description{

@@ -22,7 +22,8 @@ structure of NONMEM/RxODE event records}
 
 \item{param_psi_mcmc}{A dataframe of parameters from the posterior
 distribution, estimated by Markov Chain Monte Carlo. May be omitted
-if a \code{solved_model} is provided, in which case the \code{\link[=poso_estim_mcmc]{poso_estim_mcmc()}}
+if a \code{solved_model} is provided, in which case the
+\code{\link{poso_estim_mcmc}}
 function will be called}
 
 \item{solved_model}{An \code{\link[RxODE]{rxSolve}} solve object, created
@@ -33,7 +34,7 @@ if a dataframe of parameters from the posterior distribution
 \code{param_psi_mcmc} is provided}
 }
 \value{
-A \link{ggplot2} plot of the posterior distribution of the
+A \code{ggplot2} plot of the posterior distribution of the
 time-concentration curves, using the individual covariates, over the
 individual observations
 }
@@ -45,7 +46,7 @@ covariates, and over the individual observations
 \details{
 The default values of the arguments \code{solved_model}, \code{prior_model} and
 \code{dat} correspond to the objects created by the convenience function
-\code{load_ppk_model}
+\code{\link{load_ppk_model}}
 
 The posologyr prior population pharmacokinetics model is a list of
 seven elements:
