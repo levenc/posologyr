@@ -81,18 +81,8 @@ matrix.
 Following the same structure, new models can be implemented.
 
 ``` r
-# Residual error model
-error_model_comb1 <- function(f,xi){
- g <- xi[1] + xi[2]*f
- return(g)
-}
-
-# Fictionnal tobramycin 2cpt: example
-mod_tobramycin_2cpt_fictionnal <- list(
-  description = c("Fictionnal tobramycin model for test purposes,
-                  based on
-  https://www.page-meeting.org/pdf_assets/1954-2017_05_01_poster_Tobramycin.pdf"),
-  reference = NULL,
+# Fictional tobramycin 2cpt: example
+mod_tobramycin_2cpt_fictional <- list(
   ppk_model   = RxODE::RxODE({
     centr(0) = 0
     ke = TVke*(CLCREAT/67.8)^0.89*(WT/66.4)^-1.09
@@ -119,7 +109,7 @@ The load\_ppk\_model() function initialises the objects to be used by
 posologyr.
 
 ``` r
-load_ppk_model(mod_tobramycin_2cpt_fictionnal,df_michel)
+load_ppk_model(mod_tobramycin_2cpt_fictional,df_michel)
 #>  Full model + prior information loaded as prior_ppk_model 
 #>  Solved model created as solved_ppk_model 
 #>  Dataset loaded as dat_posology

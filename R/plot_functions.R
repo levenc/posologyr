@@ -21,12 +21,8 @@
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' seven elements:
+#' five elements:
 #' \describe{
-#'  \item{$description}{A brief description of the population
-#'      pharmacokinetics model}
-#'  \item{$reference}{A named character vector. Bibliographic reference
-#'      of the model (DOI)}
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with no inter-individual
 #'      variability, or residual error model}
@@ -102,12 +98,8 @@ poso_plot_pop <- function(prior_model=prior_ppk_model,dat=dat_posology,covar=NUL
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' seven elements:
+#' five elements:
 #' \describe{
-#'  \item{$description}{A brief description of the population
-#'      pharmacokinetics model}
-#'  \item{$reference}{A named character vector. Bibliographic reference
-#'      of the model (DOI)}
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with no inter-individual
 #'      variability, or residual error model}
@@ -192,12 +184,8 @@ poso_plot_map <- function(prior_model=prior_ppk_model,dat=dat_posology,
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' seven elements:
+#' five elements:
 #' \describe{
-#'  \item{$description}{A brief description of the population
-#'      pharmacokinetics model}
-#'  \item{$reference}{A named character vector. Bibliographic reference
-#'      of the model (DOI)}
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with no inter-individual
 #'      variability, or residual error model}
