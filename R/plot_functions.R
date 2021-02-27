@@ -41,7 +41,7 @@
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
 #' }
 #'
-#' @return A [ggplot2] plot of the typical population time-concentration curve,
+#' @return A \code{ggplot2} plot of the typical population time-concentration curve,
 #'     using the individual covariates, over the individual observations
 #'
 #' @examples
@@ -88,7 +88,7 @@ poso_plot_pop <- function(prior_model=prior_ppk_model,dat=dat_posology,covar=NUL
 #'     structure of NONMEM/RxODE event records
 #' @param param_psi_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` is provided, in which case the
-#'     \code{\link{poso_estim_map()}}
+#'     \code{\link{poso_estim_map}}
 #'     function will be called
 #' @param solved_model An \code{\link[RxODE]{rxSolve}} solve object, created
 #'     with the prior RxODE structural population pharmacokinetics model and
@@ -122,7 +122,7 @@ poso_plot_pop <- function(prior_model=prior_ppk_model,dat=dat_posology,covar=NUL
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
 #' }
 #'
-#' @return A [ggplot2] plot of the individual Maximum A Posteriori
+#' @return A \code{ggplot2} plot of the individual Maximum A Posteriori
 #'     time-concentration curve, using the individual covariates, over the
 #'     individual observations
 #'
@@ -176,7 +176,8 @@ poso_plot_map <- function(prior_model=prior_ppk_model,dat=dat_posology,
 #'     structure of NONMEM/RxODE event records
 #' @param param_psi_mcmc A dataframe of parameters from the posterior
 #'     distribution, estimated by Markov Chain Monte Carlo. May be omitted
-#'     if a `solved_model` is provided, in which case the [poso_estim_mcmc()]
+#'     if a `solved_model` is provided, in which case the
+#'     \code{\link{poso_estim_mcmc}}
 #'     function will be called
 #' @param solved_model An \code{\link[RxODE]{rxSolve}} solve object, created
 #'     with the prior RxODE structural population pharmacokinetics model and
@@ -188,7 +189,7 @@ poso_plot_map <- function(prior_model=prior_ppk_model,dat=dat_posology,
 #' @details
 #' The default values of the arguments `solved_model`, `prior_model` and
 #' `dat` correspond to the objects created by the convenience function
-#' \code{load_ppk_model}
+#' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
 #' seven elements:
@@ -211,7 +212,7 @@ poso_plot_map <- function(prior_model=prior_ppk_model,dat=dat_posology,
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
 #' }
 #'
-#' @return A [ggplot2] plot of the posterior distribution of the
+#' @return A \code{ggplot2} plot of the posterior distribution of the
 #'     time-concentration curves, using the individual covariates, over the
 #'     individual observations
 #'

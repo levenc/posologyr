@@ -16,7 +16,7 @@
 #'     structure of NONMEM/RxODE event records
 #' @param param_psi_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
-#'     provided, in which case the \code{\link{poso_estim_map()}} function
+#'     provided, in which case the \code{\link{poso_estim_map}} function
 #'     will be called
 #' @param covar a named vector of the individual covariates. May be
 #'     omitted if an individual event record `dat` is provided
@@ -122,7 +122,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'     structure of NONMEM/RxODE event records
 #' @param param_psi_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
-#'     provided, in which case the \code{\link{poso_estim_map()}} function will be
+#'     provided, in which case the \code{\link{poso_estim_map}} function will be
 #'     called
 #' @param covar a named vector of the individual covariates. May be
 #'     omitted if an individual event record `dat` is provided
@@ -232,7 +232,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'     structure of NONMEM/RxODE event records
 #' @param param_psi_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
-#'     provided, in which case the \code{\link{poso_estim_map()}} function will be
+#'     provided, in which case the \code{\link{poso_estim_map}} function will be
 #'     called
 #' @param covar a named vector of the individual covariates. May be
 #'     omitted if an individual event record `dat` is provided
