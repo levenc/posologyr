@@ -6,7 +6,7 @@
       assign(compiled_models[i],
              `[[<-`(get(compiled_models[i]), 'ppk_model',
              value = RxODE::RxODE(get(compiled_models[i]$ppk_model))),
-             envir = as.environment('package:posologyr')
+             envir = as.environment('package:posologyr'))
     }
   }
   invisible()
