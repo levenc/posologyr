@@ -57,6 +57,19 @@
 #'     time of administration
 #'
 #' @examples
+#' # df_michel: event table for Michel, following a 30 minutes intravenous
+#' # infusion of tobramycin
+#' df_michel <- data.frame(ID=1,
+#'                         TIME=c(0.0,0.5,1.0,14.0),
+#'                         DV=c(NA,NA,25.0,5.5),
+#'                         AMT=c(1000,-1000,0,0),
+#'                         EVID=c(10102,10102,0,0),
+#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         CLCREAT=80,WT=65)
+#' # loading a tobramycin model and Michel's event record
+#' load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+#' # predict the time needed to reach a concentration of 2.5 mg/l
+#' # after the administration of a 2500 mg dose
 #' poso_time_cmin(dose=2500,target_cmin=2.5)
 #'
 #' @export
@@ -126,7 +139,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'     is to be optimized. The AUC is computed from 0 to `time_auc`
 #' @param starting_dose numeric starting dose for the optimization
 #'     algorithm
-#' @param target_AUC a numeric target AUC
+#' @param target_auc a numeric target AUC
 #'
 #' @details
 #' The default values of the arguments `solved_model`, `prior_model` and
@@ -153,6 +166,18 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #' @return A numeric optimal dose to reach the target AUC
 #'
 #' @examples
+#' # df_michel: event table for Michel, following a 30 minutes intravenous
+#' # infusion of tobramycin
+#' df_michel <- data.frame(ID=1,
+#'                         TIME=c(0.0,0.5,1.0,14.0),
+#'                         DV=c(NA,NA,25.0,5.5),
+#'                         AMT=c(1000,-1000,0,0),
+#'                         EVID=c(10102,10102,0,0),
+#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         CLCREAT=80,WT=65)
+#' # loading a tobramycin model and Michel's event record
+#' load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+#' # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
 #' poso_dose_auc(time_auc=12,target_auc=45)
 #'
 #' @export
@@ -163,7 +188,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 
   if (is.null(param_psi_map)){#MAP estimates of the individual parameters
     if (!is.null(solved_model)){
-      param_psi_map <- poso_estim_map(solved_model,prior_model,data)
+      param_psi_map <- poso_estim_map(solved_model,prior_model,dat)
     } else {
       stop("Either param_psi_map or solved_model is needed for this function to work",
            call. = FALSE)
@@ -172,7 +197,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 
   if (is.null(covar)){
     #get covariates from the prior model and the dataset
-    if (!is.null(data)){
+    if (!is.null(dat)){
       covar <- t(dat[1,prior_model$covariates]) #results in a matrix
       names(covar) <- prior_model$covariates
     } else {
@@ -262,6 +287,19 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'     at the selected point in time
 #'
 #' @examples
+#' # df_michel: event table for Michel, following a 30 minutes intravenous
+#' # infusion of tobramycin
+#' df_michel <- data.frame(ID=1,
+#'                         TIME=c(0.0,0.5,1.0,14.0),
+#'                         DV=c(NA,NA,25.0,5.5),
+#'                         AMT=c(1000,-1000,0,0),
+#'                         EVID=c(10102,10102,0,0),
+#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         CLCREAT=80,WT=65)
+#' # loading a tobramycin model and Michel's event record
+#' load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+#' # estimate the optimal dose to reach a concentration of 80 mg/l
+#' # one hour after starting the infusion
 #' poso_dose_ctime(time_c=1,target_ctime=80)
 #'
 #' @export

@@ -59,7 +59,12 @@ that follows RxODE (or NONMEM) conventions.
 ``` r
 library(posologyr)
 
-df_michel <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),DV=c(NA,NA,25.0,5.5),AMT=c(1000,-1000,0,0),EVID=c(10102,10102,0,0),DUR=c(0.5,0.5,NA,NA),CLCREAT=80,WT=65)
+df_michel <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
+                        DV=c(NA,NA,25.0,5.5),
+                        AMT=c(1000,-1000,0,0),
+                        EVID=c(10102,10102,0,0),
+                        DUR=c(0.5,0.5,NA,NA),
+                        CLCREAT=80,WT=65)
 df_michel
 #>   ID TIME   DV   AMT  EVID DUR CLCREAT WT
 #> 1  1  0.0   NA  1000 10102 0.5      80 65

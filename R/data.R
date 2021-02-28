@@ -44,4 +44,4 @@
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
 #' }
 #' @source In-house model created specifically for posologyr
-"mod_amox_oral_1cpt_fictional"
+"mod_amoxicillin_oral_1cpt_fictional"
