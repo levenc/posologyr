@@ -1,5 +1,6 @@
 .onLoad <- function(libname, pkgname){
-  compiled_models <- ls('package:posologyr', pattern='mod_')
+  compiled_models <- ls('package:posologyr',pattern='mod_',
+                        envir = as.environment('package:posologyr'))
   for (i in 1:length(compiled_models)){
     #get and assign allow
     if (!get(compiled_models[i])$ppk_model$isValid()){
