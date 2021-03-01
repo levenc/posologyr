@@ -16,8 +16,7 @@ structure of NONMEM/RxODE event records}
 }
 \value{
 This function is invoked for its side effect, assigning
-3 objects to the environment of the posologyr package
-\code{as.environment(package:posologyr)}:
+3 objects to the environment of the function call:
 \describe{
 \item{prior_ppk_model}{The posologyr prior population pharmacokinetics
 model given as \code{prior_model} parameter}

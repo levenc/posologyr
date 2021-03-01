@@ -60,13 +60,10 @@
 #'
 #' @export
 load_ppk_model <- function(prior_model=NULL,dat=NULL){
-  solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
-                                     prior_model$pk_prior$reference,
-                                     dat)
 
-  # check the validity of the compiled model
-  # call RxODE::RxODE on invalid models
-  if (!prior_model$ppk_model$isValid()){
+  # check the validity of the compiled model and call RxODE::RxODE
+  # on invalid models
+    if (!prior_model$ppk_model$isValid()){
     cat("Invalid RxODE model, trying to recompile...")
     prior_model$ppk_model <-
       try(RxODE::RxODE(prior_model$ppk_model), silent=TRUE)
@@ -77,6 +74,10 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
            call. = FALSE)
     }
   }
+
+  solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
+                                     prior_model$pk_prior$reference,
+                                     dat)
 
   # assign the objects of interest to the parent environment
   env <- parent.frame()
