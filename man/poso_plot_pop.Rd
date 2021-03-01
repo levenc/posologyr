@@ -5,7 +5,7 @@
 \title{Plot typical population model prediction over individual
 observations}
 \usage{
-poso_plot_pop(prior_model = prior_ppk_model, dat = dat_posology, covar = NULL)
+poso_plot_pop(prior_model = prior_ppk_model, dat = dat_posologyr, covar = NULL)
 }
 \arguments{
 \item{prior_model}{A posologyr prior population pharmacokinetics model, a

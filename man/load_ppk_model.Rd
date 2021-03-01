@@ -15,11 +15,13 @@ object)}
 structure of NONMEM/RxODE event records}
 }
 \value{
-Assigns 3 objects to \code{.GlobalEnv}, the global environment:
+This function is invoked for its side effect, assigning
+3 objects to the environment of the posologyr package
+\code{as.environment(package:posologyr)}:
 \describe{
 \item{prior_ppk_model}{The posologyr prior population pharmacokinetics
 model given as \code{prior_model} parameter}
-\item{dat_posology}{A dataframe. The individual subject dataset
+\item{dat_posologyr}{A dataframe. The individual subject dataset
 given as \code{dat} parameter}
 \item{solved_ppk_model}{An \code{\link[RxODE]{rxSolve}} solve object,
 created with \code{prior_ppk_model} and using \code{dat} as the event record.}

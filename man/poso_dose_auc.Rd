@@ -8,7 +8,7 @@ time-concentration curve (AUC)}
 poso_dose_auc(
   solved_model = solved_ppk_model,
   prior_model = prior_ppk_model,
-  dat = dat_posology,
+  dat = dat_posologyr,
   param_psi_map = NULL,
   covar = NULL,
   time_auc = NULL,

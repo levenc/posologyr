@@ -74,7 +74,7 @@
 #'
 #' @export
 poso_time_cmin <- function(solved_model=solved_ppk_model,
-                           prior_model=prior_ppk_model,dat=dat_posology,
+                           prior_model=prior_ppk_model,dat=dat_posologyr,
                            param_psi_map=NULL,covar=NULL,from=0.2,
                            last_time=72,dose=NULL,duration=NULL,target_cmin=NULL){
 
@@ -182,7 +182,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'
 #' @export
 poso_dose_auc <- function(solved_model=solved_ppk_model,
-                          prior_model=prior_ppk_model,dat=dat_posology,
+                          prior_model=prior_ppk_model,dat=dat_posologyr,
                           param_psi_map=NULL,covar=NULL,time_auc=NULL,
                           starting_dose=100,target_auc=NULL){
 
@@ -304,7 +304,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'
 #' @export
 poso_dose_ctime <- function(solved_model=solved_ppk_model,
-                          prior_model=prior_ppk_model,dat=dat_posology,
+                          prior_model=prior_ppk_model,dat=dat_posologyr,
                           param_psi_map=NULL,covar=NULL,time_c=NULL,
                           starting_dose=100,duration=NULL,target_ctime=NULL){
 

@@ -57,7 +57,7 @@
 #' poso_plot_pop()
 #'
 #' @export
-poso_plot_pop <- function(prior_model=prior_ppk_model,dat=dat_posology,covar=NULL){
+poso_plot_pop <- function(prior_model=prior_ppk_model,dat=dat_posologyr,covar=NULL){
 
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop("Package \"ggplot2\" needed for this function to work. Please install it.",
@@ -148,7 +148,7 @@ poso_plot_pop <- function(prior_model=prior_ppk_model,dat=dat_posology,covar=NUL
 #' poso_plot_map()
 #'
 #' @export
-poso_plot_map <- function(prior_model=prior_ppk_model,dat=dat_posology,
+poso_plot_map <- function(prior_model=prior_ppk_model,dat=dat_posologyr,
                            param_psi_map=NULL,solved_model=solved_ppk_model){
 
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -247,7 +247,7 @@ poso_plot_map <- function(prior_model=prior_ppk_model,dat=dat_posology,
 #' poso_plot_mcmc()
 #'
 #' @export
-poso_plot_mcmc <- function(prior_model=prior_ppk_model,dat=dat_posology,
+poso_plot_mcmc <- function(prior_model=prior_ppk_model,dat=dat_posologyr,
                             param_psi_mcmc=NULL,solved_model=solved_ppk_model){
 
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -257,7 +257,7 @@ poso_plot_mcmc <- function(prior_model=prior_ppk_model,dat=dat_posology,
   if (is.null(param_psi_mcmc)){#MCMC estimates of the individual parameters
     if (!is.null(solved_model)){
       param_psi_mcmc <- poso_estim_mcmc(solved_model=solved_model,
-                                        prior_model=prior_model,dat=dat_posology)
+                                        prior_model=prior_model,dat=dat_posologyr)
     } else {
       stop("Either param_psi_mcmc or solved_model is needed for this function to work",
            call. = FALSE)

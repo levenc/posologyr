@@ -7,7 +7,7 @@
 poso_estim_mcmc(
   solved_model = solved_ppk_model,
   prior_model = prior_ppk_model,
-  dat = dat_posology,
+  dat = dat_posologyr,
   control = list(n_iter = 100, n_kernel = c(2, 2), stepsize_rw = 0.4, proba_mcmc = 0.4,
     nb_max = 3)
 )

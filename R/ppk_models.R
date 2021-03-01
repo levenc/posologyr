@@ -34,11 +34,12 @@
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
 #' }
 #'
-#' @return Assigns 3 objects to \code{.GlobalEnv}, the global environment:
+#' @return This function is invoked for its side effect, assigning
+#' 3 objects to the environment of the function call:
 #' \describe{
 #'  \item{prior_ppk_model}{The posologyr prior population pharmacokinetics
 #'   model given as `prior_model` parameter}
-#'  \item{dat_posology}{A dataframe. The individual subject dataset
+#'  \item{dat_posologyr}{A dataframe. The individual subject dataset
 #'   given as `dat` parameter}
 #'  \item{solved_ppk_model}{An \code{\link[RxODE]{rxSolve}} solve object,
 #'   created with `prior_ppk_model` and using `dat` as the event record.}
@@ -63,21 +64,37 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
                                      prior_model$pk_prior$reference,
                                      dat)
 
-  assign("prior_ppk_model", prior_model, envir = .GlobalEnv)
-  assign("solved_ppk_model", solved_ppk_model, envir = .GlobalEnv)
-  assign("dat_posology", dat, envir = .GlobalEnv)
+  # check the validity of the compiled model
+  # call RxODE::RxODE on invalid models
+  if (!prior_model$ppk_model$isValid()){
+    cat("Invalid RxODE model, trying to recompile...")
+    prior_model$ppk_model <-
+      try(RxODE::RxODE(prior_model$ppk_model), silent=TRUE)
+    if (prior_model$ppk_model$isValid()){
+      cat("Success")
+    } else {
+      stop("Failed. The RxODE model is still invalid. Aborting",
+           call. = FALSE)
+    }
+  }
+
+  # assign the objects of interest to the parent environment
+  env <- parent.frame()
+  env$prior_ppk_model  <- prior_model
+  env$solved_ppk_model <- solved_ppk_model
+  env$dat_posologyr    <- dat
 
   if (requireNamespace("crayon", quietly = TRUE)) {
     bold_green <- crayon::combine_styles("bold","green")
     cat(" Full model + prior information loaded as",
         bold_green("prior_ppk_model"),"\n","Solved model created as",
         bold_green("solved_ppk_model"),"\n","Dataset loaded as",
-        bold_green("dat_posology"),"\n")
+        bold_green("dat_posologyr"),"\n")
   } else {
     cat(" Full model + prior information loaded as",
         "prior_ppk_model","\n","Solved model created as",
         "solved_ppk_model","\n","Dataset loaded as",
-        "dat_posology","\n")
+        "dat_posologyr","\n")
   }
 }
 

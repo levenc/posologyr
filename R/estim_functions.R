@@ -131,7 +131,7 @@ poso_simu_pop <- function(prior_model=prior_ppk_model,n_simul=1000){
 #' @export
 poso_estim_map <- function(solved_model=solved_ppk_model,
                               prior_model=prior_ppk_model,
-                              dat=dat_posology)
+                              dat=dat_posologyr)
 {
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
@@ -236,7 +236,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #'
 #' @export
 poso_estim_mcmc <- function(solved_model=solved_ppk_model,
-                            prior_model=prior_ppk_model,dat=dat_posology,
+                            prior_model=prior_ppk_model,dat=dat_posologyr,
                             control=list(n_iter=100,n_kernel=c(2,2),
                             stepsize_rw=0.4,proba_mcmc=0.4,nb_max=3)){
   # Update model predictions with a new set of parameters, for all obs-----
