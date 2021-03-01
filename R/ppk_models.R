@@ -12,7 +12,6 @@
 #'     structure of NONMEM/RxODE event records
 #'
 #' @details
-#'
 #' The posologyr prior population pharmacokinetics model is a list of
 #' seven elements:
 #' \describe{
@@ -33,6 +32,12 @@
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
 #' }
+#'
+#' \code{load_ppk_model} will check the validity of the compiled RxODE
+#' model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
+#' \code{load_ppk_model} will call \code{\link[RxODE]{RxODE}}
+#' to recompile the model before solving it using \code{prior_model}
+#' and \code{dat}.
 #'
 #' @return This function is invoked for its side effect, assigning
 #' 3 objects to the environment of the function call:
@@ -68,7 +73,7 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
     prior_model$ppk_model <-
       try(RxODE::RxODE(prior_model$ppk_model), silent=TRUE)
     if (prior_model$ppk_model$isValid()){
-      cat("Success")
+      cat("Success","\n")
     } else {
       stop("Failed. The RxODE model is still invalid. Aborting",
            call. = FALSE)

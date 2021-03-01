@@ -53,6 +53,12 @@ parameters inter-individual variability}
 the model}
 \item{$xi}{The estimates of the parameters of the residual error model}
 }
+
+\code{load_ppk_model} will check the validity of the compiled RxODE
+model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
+\code{load_ppk_model} will call \code{\link[RxODE]{RxODE}}
+to recompile the model before solving it using \code{prior_model}
+and \code{dat}.
 }
 \examples{
 # df_michel: event table for Michel, following a 30 minutes intravenous
