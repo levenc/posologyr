@@ -1,5 +1,3 @@
-#MU REFERENCING
-# https://ascpt.onlinelibrary.wiley.com/doi/10.1002/psp4.12422
 mod_tobramycin_2cpt_fictional <- list(
   ppk_model   = RxODE::RxODE({
     centr(0) = 0;
