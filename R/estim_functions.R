@@ -59,19 +59,26 @@
 #'
 #' @export
 poso_simu_pop <- function(prior_model=prior_ppk_model,n_simul=1000){
-  muphi      <- log(prior_model$pk_prior$reference)
+  #muphi      <- log(prior_model$pk_prior$reference)
   Omega      <- prior_model$pk_prior$Omega
-  PSI        <- matrix(0,nrow=n_simul,ncol=length(muphi))
+  eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(Omega))
 
   for (k in (1:n_simul)){
-    phi      <- muphi + MASS::mvrnorm(1,mu=rep(0,length(muphi)),
-                                 Sigma=Omega)
-    PSI[k,]  <- exp(phi)
+    #mvrnorm simule des valeurs de eta mais l'addition au log de psi
+    # suppose un modèle individuel exponentiel : trop restrictif
+    # simuler uniquement les valeurs de eta, avec mvrnorm par
+    # exemple, mais renvoyer les valeurs de eta en sortie de la
+    # fonction
+    #phi      <- muphi + MASS::mvrnorm(1,mu=rep(0,length(muphi)),
+    #                             Sigma=Omega)
+    eta_sim  <- MASS::mvrnorm(1,mu=rep(0,ncol(Omega)),
+                             Sigma=Omega)
+    #faster than asking mvrnorm for n_simul samples
+    eta_mat[k,]  <- eta_sim
   }
-  PSI        <- data.frame(PSI)
-  names(PSI) <- prior_model$pk_prior$name
-  pop_est    <- list(P=PSI, p=exp(muphi))
-  return(pop_est)
+  eta_df    <- data.frame(eta_mat)
+  names(eta_df) <- attr(Omega,"dimnames")[[1]]
+  return(eta_df)
 }
 
 #' Estimate the Maximum A Posteriori individual parameters
@@ -139,27 +146,30 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     return(model$Cc)
     }
 
-  errpred <- function(phi,run_model,y,muphi,ind_eta,xi,solve_omega){
-    psi <- exp(muphi)
-    psi[ind_eta] <- exp(phi)
+  errpred <- function(eta_estim,run_model,y,psi,ind_eta,xi,solve_omega){
+    #psi <- exp(muphi) #modifier la fonction pour mettre eta en entrée, et pas phi
+    eta          <- diag(prior$Omega)*0
+    eta[ind_eta] <- eta_estim
+    #psi[ind_eta] <- exp(phi) # même principe mais pour eta
 
     #eta = log(proposed ind. parameter estimates)-log(prior pop. estimates)
-    eta <- phi-muphi[ind_eta]
+    #eta <- phi-muphi[ind_eta] #inutile si eta en entrée ?
 
     #simulated concentrations with the proposed ind. parameters estimates
-    f <- do.call(run_model,list(psi))
-    g <- error_model(f,xi)
+    f <- do.call(run_model,list(c(psi,eta))) # compléter la liste pour ajouter eta + theta (=reference)
+    g <- error_model(f,xi)            # pas de changement
 
     #http://sia.webpopix.org/nlme.html#estimation-of-the-individual-parameters
     #doi:10.1006/jbin.2001.1033
     U_y <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
     #the transpose of a diagonal matrix is itself
-    U_eta <- 0.5 * eta %*% solve_omega %*% eta
+    U_eta <- 0.5 * eta_estim %*% solve_omega %*% eta_estim
 
     optimize_me <- U_y + U_eta
     return(optimize_me)
     }
 
+  model_map   <- solved_model
   prior       <- prior_model$pk_prior
   xi          <- prior_model$xi
   error_model <- prior_model$error_model
@@ -168,15 +178,20 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
   ind_eta     <- which(diag(prior$Omega)>0)    # only parameters with IIV
   omega_eta   <- prior$Omega[ind_eta,ind_eta]  # only variances > 0
   solve_omega <- try(solve(omega_eta))         # inverse of omega_eta
-  l0          <- log(prior$reference[ind_eta]) # starting value for optim
-  muphi       <- log(prior$reference)          # log prior population estimates
+  #muphi       <- log(prior$psi)                # log prior population estimates
+  psi         <- prior$psi
+  #l0         <- log(prior$reference[ind_eta]) # starting value for optim # changer pour eta, soit sqrt(diag(Omega))
+  start_eta   <- diag(omega_eta)*0         # mais uniquement pour [ind_eta]
 
-  r <- optim(l0,errpred,run_model=run_model,y=y_obs,muphi=muphi,
+  r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,psi=psi,#muphi=muphi,
              ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
 
-  ind_est_map <- prior$reference
-  ind_est_map[ind_eta] <- exp(r$par)
-  return(ind_est_map)
+  #ind_est_map <- prior$reference
+  #ind_est_map[ind_eta] <- exp(r$par)
+  eta_map          <- diag(prior$Omega)*0
+  eta_map[ind_eta] <- r$par
+  model_map$params <- c(psi,eta_map)
+  return(model_map)
 }
 
 #' Estimate the posterior distribution of population parameters

@@ -75,14 +75,15 @@
 #' @export
 poso_time_cmin <- function(solved_model=solved_ppk_model,
                            prior_model=prior_ppk_model,dat=dat_posologyr,
-                           param_psi_map=NULL,covar=NULL,from=0.2,
+                           param_map=NULL,covar=NULL,from=0.2,
                            last_time=72,dose=NULL,duration=NULL,target_cmin=NULL){
 
-  if (is.null(param_psi_map)){#MAP estimates of the individual parameters
+  if (is.null(param_map)){ #MAP estimates of the individual parameters
     if (!is.null(solved_model)){
-      param_psi_map <- poso_estim_map(solved_model,prior_model,dat)
+      model_map <- poso_estim_map(solved_model,prior_model,dat)
+      param_map <- model_map$params
     } else {
-      stop("Either param_psi_map or solved_model is needed for this function to work",
+      stop("Either param_map or solved_model is needed for this function to work",
            call. = FALSE)
     }
   }
@@ -90,7 +91,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
   if (is.null(covar)){
     #get covariates from the prior model and the dataset
     if (!is.null(data)){
-      covar <- t(dat[1,prior_model$covariates]) #results in a matrix
+      covar <- dat[1,prior_model$covariates]
       names(covar) <- prior_model$covariates
     } else {
       stop("Either covar or dat is needed for this function to work",
@@ -103,7 +104,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
   event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
 
   cmin_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                   params=c(param_psi_map,covar),
+                                   params=cbind(param_map,covar),
                                    event_table_cmin)
 
   time_to_target <-
@@ -183,14 +184,15 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #' @export
 poso_dose_auc <- function(solved_model=solved_ppk_model,
                           prior_model=prior_ppk_model,dat=dat_posologyr,
-                          param_psi_map=NULL,covar=NULL,time_auc=NULL,
+                          param_map=NULL,covar=NULL,time_auc=NULL,
                           starting_dose=100,target_auc=NULL){
 
-  if (is.null(param_psi_map)){#MAP estimates of the individual parameters
+  if (is.null(param_map)){ #MAP estimates of the individual parameters
     if (!is.null(solved_model)){
-      param_psi_map <- poso_estim_map(solved_model,prior_model,dat)
+      model_map <- poso_estim_map(solved_model,prior_model,dat)
+      param_map <- model_map$params
     } else {
-      stop("Either param_psi_map or solved_model is needed for this function to work",
+      stop("Either param_map or solved_model is needed for this function to work",
            call. = FALSE)
     }
   }
@@ -198,32 +200,31 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
   if (is.null(covar)){
     #get covariates from the prior model and the dataset
     if (!is.null(dat)){
-      covar <- t(dat[1,prior_model$covariates]) #results in a matrix
+      covar <- dat[1,prior_model$covariates] #results in a matrix
       names(covar) <- prior_model$covariates
     } else {
       stop("Either covar or dat is needed for this function to work",
            call. = FALSE)
     }
   }
-
  err_dose <- function(dose,time_auc,target_auc,prior_model,
-                      param_psi_map,covar){
+                      param_map,covar){
 
    #compute the individual time-concentration profile
    event_table_auc <- RxODE::et(time=0,amt=dose)
    event_table_auc$add.sampling(time_auc)
 
    auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                    params=c(param_psi_map,covar),
+                                    params=cbind(param_map,covar),
                                     event_table_auc)
    #return the difference between the computed AUC and the target
-   delta_auc = abs(target_auc - max(auc_ppk_model$auc))
+   delta_auc = (target_auc - max(auc_ppk_model$AUC))^2
    return(delta_auc)
  }
 
  optim_dose_auc <- optim(starting_dose,err_dose,time_auc=time_auc,
                          target_auc=target_auc,prior_model=prior_model,
-                         param_psi_map=param_psi_map,covar=covar,
+                         param_map=param_map,covar=covar,
                          method="Brent",lower=0, upper=1e5)
 
  return(optim_dose_auc$par)
@@ -305,46 +306,46 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #' @export
 poso_dose_ctime <- function(solved_model=solved_ppk_model,
                           prior_model=prior_ppk_model,dat=dat_posologyr,
-                          param_psi_map=NULL,covar=NULL,time_c=NULL,
+                          param_map=NULL,covar=NULL,time_c=NULL,
                           starting_dose=100,duration=NULL,target_ctime=NULL){
 
-  if (is.null(param_psi_map)){#MAP estimates of the individual parameters
+  if (is.null(param_map)){ #MAP estimates of the individual parameters
     if (!is.null(solved_model)){
-      param_psi_map <- poso_estim_map(solved_model,prior_model,dat)
+      model_map <- poso_estim_map(solved_model,prior_model,dat)
+      param_map <- model_map$params
     } else {
-      stop("Either param_psi_map or solved_model is needed for this function to work",
+      stop("Either param_map or solved_model is needed for this function to work",
            call. = FALSE)
     }
   }
   if (is.null(covar)){
     #get covariates from the prior model and the dataset
     if (!is.null(data)){
-      covar <- t(dat[1,prior_model$covariates]) #results in a matrix
+      covar <- dat[1,prior_model$covariates] #results in a matrix
       names(covar) <- prior_model$covariates
     } else {
       stop("Either covar or dat is needed for this function to work",
            call. = FALSE)
     }
   }
-
   err_dose <- function(dose,time_c,target_ctime,prior_model,
-                       duration=duration,param_psi_map,covar){
+                       duration=duration,param_map,covar){
 
     #compute the individual time-concentration profile
     event_table_ctime <- RxODE::et(time=0,amt=dose,dur=duration)
     event_table_ctime$add.sampling(time_c)
 
     ctime_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                    params=c(param_psi_map,covar),
+                                    params=cbind(param_map,covar),
                                     event_table_ctime)
     #return the difference between the computed ctime and the target
-    delta_ctime = abs(target_ctime - ctime_ppk_model$Cc)
+    delta_ctime = (target_ctime - ctime_ppk_model$Cc)^2
     return(delta_ctime)
   }
 
   optim_dose_ctime <- optim(starting_dose,err_dose,time_c=time_c,
                           target_ctime=target_ctime,prior_model=prior_model,
-                          duration=duration,param_psi_map=param_psi_map,
+                          duration=duration,param_map=param_map,
                           covar=covar,method="Brent",lower=0, upper=1e5)
 
   return(optim_dose_ctime$par)

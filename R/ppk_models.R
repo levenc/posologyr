@@ -79,9 +79,10 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
            call. = FALSE)
     }
   }
-
+  pk_prior <- prior_model$pk_prior
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
-                                     prior_model$pk_prior$reference,
+                                     c(pk_prior$psi,
+                                       diag(pk_prior$Omega)*0),
                                      dat)
 
   # assign the objects of interest to the parent environment
