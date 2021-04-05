@@ -58,19 +58,36 @@
 #' poso_simu_pop()
 #'
 #' @export
-poso_simu_pop <- function(prior_model=prior_ppk_model,n_simul=1000){
+poso_simu_pop <- function(solved_model=solved_ppk_model,
+                          prior_model=prior_ppk_model,
+                          dat=dat_posologyr,n_simul=1000,
+                          return_model = TRUE){
+
   Omega      <- prior_model$pk_prior$Omega
   eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(Omega))
 
   for (k in (1:n_simul)){
-    eta_sim  <- MASS::mvrnorm(1,mu=rep(0,ncol(Omega)),
+    eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(Omega)),
                              Sigma=Omega)
     #faster than asking mvrnorm for n_simul samples
-    eta_mat[k,]  <- eta_sim
+    eta_mat[k,] <- eta_sim
   }
-  eta_df    <- data.frame(eta_mat)
+
+  eta_df        <- data.frame(eta_mat)
   names(eta_df) <- attr(Omega,"dimnames")[[1]]
-  return(eta_df)
+
+  if(return_model){
+    model_pop         <- solved_model
+    psi               <- rbind(prior_model$pk_prior$psi)
+    covar             <- dat[1,prior_model$covariates]
+    names(covar)      <- prior_model$covariates
+    model_pop$params  <- cbind(psi,eta_df,covar,row.names = NULL)
+    eta_pop           <- list(eta_df,model_pop)
+  } else {
+    eta_pop           <- eta_df
+  }
+
+  return(eta_pop)
 }
 
 #' Estimate the Maximum A Posteriori individual parameters
@@ -130,7 +147,7 @@ poso_simu_pop <- function(prior_model=prior_ppk_model,n_simul=1000){
 #' @export
 poso_estim_map <- function(solved_model=solved_ppk_model,
                               prior_model=prior_ppk_model,
-                              dat=dat_posologyr)
+                              dat=dat_posologyr,return_model = TRUE)
 {
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
@@ -156,7 +173,6 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     return(optimize_me)
     }
 
-  model_map   <- solved_model
   prior       <- prior_model$pk_prior
   xi          <- prior_model$xi
   error_model <- prior_model$error_model
@@ -171,10 +187,20 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
   r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,psi=psi,
              ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
 
-  eta_map          <- diag(prior$Omega)*0
-  eta_map[ind_eta] <- r$par
-  model_map$params <- c(psi,eta_map)
-  return(model_map)
+  eta_map            <- diag(prior$Omega)*0
+  eta_map[ind_eta]   <- r$par
+
+  if(return_model){
+    model_map        <- solved_model
+    covar            <- t(dat[1,prior_model$covariates]) #results in a matrix
+    names(covar)     <- prior_model$covariates
+    model_map$params <- c(psi,eta_map,covar)
+    estim_map        <- list(eta_map,model_map)
+  } else {
+    estim_map        <- eta_map
+  }
+
+  return(estim_map)
 }
 
 #' Estimate the posterior distribution of population parameters
@@ -235,8 +261,9 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #' @export
 poso_estim_mcmc <- function(solved_model=solved_ppk_model,
                             prior_model=prior_ppk_model,dat=dat_posologyr,
-                            control=list(n_iter=100,n_kernel=c(2,2),
-                            stepsize_rw=0.4,proba_mcmc=0.4,nb_max=3)){
+                            return_model = TRUE,burn_in=20,n_iter=219,
+                            control=list(n_kernel=c(2,2),stepsize_rw=0.4,
+                            proba_mcmc=0.4,nb_max=3)){
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
     model$params <- x
@@ -261,10 +288,10 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
   g        <- error_model(f,xi)
   U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
 
-  eta_mat     <- matrix(0,nrow=control$n_iter+1,ncol=ncol(prior$Omega))
+  eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(prior$Omega))
   eta_mat[1,] <- diag(prior$Omega)*0
 
-  for (k_iter in 1:control$n_iter)
+  for (k_iter in 1:n_iter)
   {
     if (control$n_kernel[1] > 0)
     {
@@ -320,7 +347,19 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
     }
     eta_mat[k_iter+1,ind_eta]   <- eta
   }
-  eta_df_mcmc            <- data.frame(eta_mat)
+  eta_df_mcmc            <- data.frame(eta_mat[burn_in:n_iter,])
   names(eta_df_mcmc)     <- attr(prior$Omega,"dimnames")[[1]]
-  return(eta_df_mcmc)
+
+  if(return_model){
+    model_mcmc        <- solved_model
+    psi_return        <- rbind(psi)
+    covar             <- dat[1,prior_model$covariates]
+    names(covar)      <- prior_model$covariates
+    model_mcmc$params <- cbind(psi_return,eta_df_mcmc,covar,row.names = NULL)
+    estim_mcmc           <- list(eta_df_mcmc,model_mcmc)
+  } else {
+    estim_mcmc           <- eta_df_mcmc
+  }
+
+  return(estim_mcmc)
 }
