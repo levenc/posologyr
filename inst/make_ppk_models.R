@@ -40,9 +40,9 @@ mod_amoxicillin_oral_1cpt_fictional <- list(
     Cl   = TVCl*exp(eta_Cl);
     ke   = Cl/V;
     Cc   = centr/V;
-    d/dt(depot) =-ka*depot;
-    d/dt(centr) = ka*depot - ke*centr;
-    d/dt(AUC)   = Cc;
+    d/dt(depot) = -ka*depot;
+    d/dt(centr) =  ka*depot - ke*centr;
+    d/dt(AUC)   =  Cc;
   }),
   error_model = function(f,xi){
     g <- xi[1] + xi[2]*f

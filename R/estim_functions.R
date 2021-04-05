@@ -255,17 +255,12 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
   d_omega     <- diag(omega_eta)*0.3
 
   # Metropolis-Hastings algorithm------------------------------------------
-  #mean_phi <- log(prior$reference)
-  #psi      <- prior$reference
-  #phi      <- log(psi)
   psi      <- prior$psi
   eta      <- diag(omega_eta)*0
   f        <- do.call(run_model,list(c(psi,eta)))
   g        <- error_model(f,xi)
   U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
 
-  #PSI      <- matrix(0,nrow=control$n_iter+1,ncol=length(psi))
-  #PSI[1,]  <- psi
   eta_mat     <- matrix(0,nrow=control$n_iter+1,ncol=ncol(prior$Omega))
   eta_mat[1,] <- diag(prior$Omega)*0
 
@@ -278,8 +273,6 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
         etac          <- MASS::mvrnorm(1,mu=rep(0,nb_etas),
                                                  Sigma=omega_eta)
         names(etac)   <- attr(omega_eta,"dimnames")[[1]]
-        #phic[ind_eta] <- mean_phi[ind_eta] + etac
-        #psic          <- exp(phic)
         f             <- do.call(run_model,list(c(psi,etac)))
         g             <- error_model(f,xi)
         Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
@@ -287,7 +280,6 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
         if(deltu < (-1) * log(runif(1)))
         {
           eta        <- etac
-          #phi        <- phic
           U_y        <- Uc_y
         }
       }
@@ -308,8 +300,6 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
             vk2           <- jr%%nb_etas + 1
             etac          <- eta
             etac[vk2]     <- eta[vk2] + rnorm(nrs2)*d_omega[vk2]
-            #phic[ind_eta] <- mean_phi[ind_eta] + etac
-            #psic          <- exp(phic)
             f             <- do.call(run_model,list(c(psi,etac)))
             g             <- error_model(f,xi)
             Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
@@ -320,7 +310,6 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
               eta         <- etac
               U_y         <- Uc_y
               U_eta       <- Uc_eta
-              #phi[ind_eta]<-phic[ind_eta]
               nbc2[vk2]   <- nbc2[vk2]+1
             }
             nt2[vk2]      <- nt2[vk2] + 1
@@ -329,11 +318,8 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
       }
       d_omega <- d_omega*(1 + control$stepsize_rw*(nbc2/nt2 - control$proba_mcmc))
     }
-    #PSI[k_iter+1,]       <- exp(phi)
     eta_mat[k_iter+1,ind_eta]   <- eta
   }
-  #ind_est_mcmc           <- data.frame(PSI)
-  #names(ind_est_mcmc)    <- prior$name
   eta_df_mcmc            <- data.frame(eta_mat)
   names(eta_df_mcmc)     <- attr(prior$Omega,"dimnames")[[1]]
   return(eta_df_mcmc)

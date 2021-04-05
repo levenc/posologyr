@@ -105,7 +105,7 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
   }
 }
 
-#' Residuel error model combined 1
+#' Residual error model combined 1
 #'
 #' Residual error model combined 1. Constant error model
 #' if no proportional coefficient is provided. Proportional
@@ -126,7 +126,7 @@ error_model_comb1 <- function(f,xi){
   return(g)
 }
 
-#' Residuel error model combined 2
+#' Residual error model combined 2
 #'
 #' Residual error model combined 2.
 #'
