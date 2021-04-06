@@ -22,7 +22,6 @@ Imports:
     data.table,
     utils
 Suggests: 
-    crayon,
-    ggplot2
+    crayon
 URL: https://github.com/levenc/posologyr
 BugReports: https://github.com/levenc/posologyr/issues

@@ -9,12 +9,11 @@ poso_dose_ctime(
   solved_model = solved_ppk_model,
   prior_model = prior_ppk_model,
   dat = dat_posologyr,
-  param_psi_map = NULL,
-  covar = NULL,
+  param_map = NULL,
   time_c = NULL,
   starting_dose = 100,
   duration = NULL,
-  target_ctime = NULL
+  target_conc = NULL
 )
 }
 \arguments{
@@ -22,22 +21,19 @@ poso_dose_ctime(
 with the prior RxODE structural population pharmacokinetics model and
 the prior typical values of the population parameters from the
 \code{prior_model}, using \code{dat} as the event record. May be omitted
-if a vector of individual parameters \code{param_psi_map} is provided}
+if a vector of individual parameters \code{param_map} is provided}
 
 \item{prior_model}{A posologyr prior population pharmacokinetics model,
-a list of seven elements (see 'Details' for the description of the
+a list of five elements (see 'Details' for the description of the
 object)}
 
 \item{dat}{Dataframe. An individual subject dataset following the
 structure of NONMEM/RxODE event records}
 
-\item{param_psi_map}{A vector of individual parameters. May be omitted
+\item{param_map}{A vector of individual parameters. May be omitted
 if a \code{solved_model} and an individual event record \code{dat} are
 provided, in which case the \code{\link{poso_estim_map}} function will be
 called}
-
-\item{covar}{a named vector of the individual covariates. May be
-omitted if an individual event record \code{dat} is provided}
 
 \item{time_c}{a numeric point in time for which the dose is to be
 optimized.}
@@ -48,7 +44,7 @@ algorithm}
 \item{duration}{a numeric duration of infusion, for zero-order
 administrations}
 
-\item{target_ctime}{a numeric target concentration}
+\item{target_conc}{a numeric target concentration}
 }
 \value{
 A numeric optimal dose to reach the target concentration
@@ -69,14 +65,15 @@ The posologyr prior population pharmacokinetics model is a list of
 five elements:
 \describe{
 \item{$ppk_model}{A RxODE model implementing the structural
-population pharmacokinetics model with no inter-individual
-variability, or residual error model}
+population pharmacokinetics model with the individual model
+(i.e. the model of inter-individual variability) and the
+covariates}
 \item{$error_model}{A function of the residual error model}
-\item{$pk_prior}{A list of 3. \code{name}: a character vector of the names
-of the population pharmacokinetc paramters, \code{reference}: a named
-vector of the prior typical value of the population paramaters,
-\code{Omega}: a square variance-covariance matrix of the population
-parameters inter-individual variability}
+\item{$pk_prior}{A list of 2. \code{psi}: a named
+vector of the population estimates of the fixed effects
+parameters (called THETAs, following NONMEM terminology),
+\code{Omega}: a named square variance-covariance matrix of the
+population parameters inter-individual variability}
 \item{$covariates}{A character vector of the covariates of
 the model}
 \item{$xi}{The estimates of the parameters of the residual error model}
@@ -96,6 +93,6 @@ df_michel <- data.frame(ID=1,
 load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
 # estimate the optimal dose to reach a concentration of 80 mg/l
 # one hour after starting the infusion
-poso_dose_ctime(time_c=1,target_ctime=80)
+poso_dose_ctime(time_c=1,target_conc=80)
 
 }

@@ -8,18 +8,16 @@
 #'     created with the prior RxODE structural population pharmacokinetics
 #'     model and the prior typical values of the population parameters
 #'     from the `prior_model`, using `dat` as the event record. May be omitted
-#'     if a vector of individual parameters `param_psi_map` is provided
+#'     if a vector of individual parameters `param_map` is provided
 #' @param prior_model A posologyr prior population pharmacokinetics model,
-#'    a list of seven elements (see 'Details' for the description of the
+#'    a list of five elements (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
-#' @param param_psi_map A vector of individual parameters. May be omitted
+#' @param param_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
 #'     provided, in which case the \code{\link{poso_estim_map}} function
 #'     will be called
-#' @param covar a named vector of the individual covariates. May be
-#'     omitted if an individual event record `dat` is provided
 #' @param from a numeric starting time for the simulation of the
 #'     individual time-concentration profile. The default value is
 #'     0.2
@@ -40,14 +38,15 @@
 #' five elements:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with no inter-individual
-#'      variability, or residual error model}
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 3. `name`: a character vector of the names
-#'      of the population pharmacokinetc paramters, `reference`: a named
-#'      vector of the prior typical value of the population paramaters,
-#'      `Omega`: a square variance-covariance matrix of the population
-#'      parameters inter-individual variability}
+#'  \item{$pk_prior}{A list of 2. `psi`: a named
+#'      vector of the population estimates of the fixed effects
+#'      parameters (called THETAs, following NONMEM terminology),
+#'      `Omega`: a named square variance-covariance matrix of the
+#'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
@@ -106,25 +105,22 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'
 #' Estimates the optimal dose for a selected target area under the
 #' time-concentration curve (AUC) given a population pharmacokinetic
-#' model, a set of individual parameters, and a target AUC. Might be
-#' useful for non-linear pharmacokinetics.
+#' model, a set of individual parameters, and a target AUC.
 #'
 #' @param solved_model An \code{\link[RxODE]{rxSolve}} solve object, created
 #'     with the prior RxODE structural population pharmacokinetics model and
 #'     the prior typical values of the population parameters from the
 #'     `prior_model`, using `dat` as the event record. May be omitted
-#'     if a vector of individual parameters `param_psi_map` is provided
+#'     if a vector of individual parameters `param_map` is provided
 #' @param prior_model A posologyr prior population pharmacokinetics model,
-#'    a list of seven elements (see 'Details' for the description of the
+#'    a list of five elements (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
-#' @param param_psi_map A vector of individual parameters. May be omitted
+#' @param param_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
 #'     provided, in which case the \code{\link{poso_estim_map}} function will be
 #'     called
-#' @param covar a named vector of the individual covariates. May be
-#'     omitted if an individual event record `dat` is provided
 #' @param time_auc a numeric last point in time of the AUC for which the dose
 #'     is to be optimized. The AUC is computed from 0 to `time_auc`
 #' @param starting_dose numeric starting dose for the optimization
@@ -140,14 +136,15 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #' five elements:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with no inter-individual
-#'      variability, or residual error model}
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 3. `name`: a character vector of the names
-#'      of the population pharmacokinetc paramters, `reference`: a named
-#'      vector of the prior typical value of the population paramaters,
-#'      `Omega`: a square variance-covariance matrix of the population
-#'      parameters inter-individual variability}
+#'  \item{$pk_prior}{A list of 2. `psi`: a named
+#'      vector of the population estimates of the fixed effects
+#'      parameters (called THETAs, following NONMEM terminology),
+#'      `Omega`: a named square variance-covariance matrix of the
+#'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
@@ -220,18 +217,16 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'     with the prior RxODE structural population pharmacokinetics model and
 #'     the prior typical values of the population parameters from the
 #'     `prior_model`, using `dat` as the event record. May be omitted
-#'     if a vector of individual parameters `param_psi_map` is provided
+#'     if a vector of individual parameters `param_map` is provided
 #' @param prior_model A posologyr prior population pharmacokinetics model,
-#'    a list of seven elements (see 'Details' for the description of the
+#'    a list of five elements (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
-#' @param param_psi_map A vector of individual parameters. May be omitted
+#' @param param_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
 #'     provided, in which case the \code{\link{poso_estim_map}} function will be
 #'     called
-#' @param covar a named vector of the individual covariates. May be
-#'     omitted if an individual event record `dat` is provided
 #' @param time_c a numeric point in time for which the dose is to be
 #'     optimized.
 #' @param starting_dose numeric starting dose for the optimization
@@ -249,14 +244,15 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #' five elements:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with no inter-individual
-#'      variability, or residual error model}
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 3. `name`: a character vector of the names
-#'      of the population pharmacokinetc paramters, `reference`: a named
-#'      vector of the prior typical value of the population paramaters,
-#'      `Omega`: a square variance-covariance matrix of the population
-#'      parameters inter-individual variability}
+#'  \item{$pk_prior}{A list of 2. `psi`: a named
+#'      vector of the population estimates of the fixed effects
+#'      parameters (called THETAs, following NONMEM terminology),
+#'      `Omega`: a named square variance-covariance matrix of the
+#'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}

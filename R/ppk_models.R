@@ -13,21 +13,18 @@
 #'
 #' @details
 #' The posologyr prior population pharmacokinetics model is a list of
-#' seven elements:
+#' five elements:
 #' \describe{
-#'  \item{$description}{A brief description of the population
-#'      pharmacokinetics model}
-#'  \item{$reference}{A named character vector. Bibliographic reference
-#'      of the model (DOI)}
 #'  \item{$ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with no inter-individual
-#'      variability, or residual error model}
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 3. `name`: a character vector of the names
-#'      of the population pharmacokinetc paramters, `reference`: a named
-#'      vector of the prior typical value of the population paramaters,
-#'      `Omega`: a square variance-covariance matrix of the population
-#'      parameters inter-individual variability}
+#'  \item{$pk_prior}{A list of 2. `psi`: a named
+#'      vector of the population estimates of the fixed effects
+#'      parameters (called THETAs, following NONMEM terminology),
+#'      `Omega`: a named square variance-covariance matrix of the
+#'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
