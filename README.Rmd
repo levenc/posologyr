@@ -20,35 +20,37 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-The goal of posologyr is to provide free tools (as in free speech) to individualize drug treatments by taking advantage of population pharmacokinetics, patient characteristics, and the results of therapeutic drug monitoring.
+`posologyr` is an R package for drug treatment individualisation, taking advantage of population pharmacokinetics (popPK), patient characteristics, and the results of therapeutic drug monitoring.
 
-Posologyr offers functions for estimating pharmacokinetic parameters:
+`posologyr` provides functions for estimating the pharmacokinetic (PK) parameters:
 
-+ Estimation of the a priori distribution of the population pharmacokinetic parameters by Monte-Carlo simulations
-+ Estimation of individual parameters Maximum A Posteriori (MAP), or Empirical Bayes Estimates (EBE), from the results of therapeutic drug monitoring
-+ Estimation of the posterior distribution of individual pharmacokinetic parameters by Markov Chain Monte Carlo (MCMC)
++ `poso_simu_pop()` for estimating the a priori distributions of popPK parameters by Monte-Carlo simulations
++ `poso_estim_map()` for computing the Maximum A Posteriori (MAP), aka Empirical Bayes Estimates (EBE), of individual PK parameters from the results of therapeutic drug monitoring
++ `poso_estim_mcmc()` for estimating the posterior distributions of individual PK parameters by Markov Chain Monte Carlo (MCMC)
 
-Posologyr offers dosage optimisation functions based on estimated parameters:
+Functions for dosage optimisation are included in `posologyr`:
 
-+ Determination of the time needed to reach a target trough concentration (Cmin)
-+ Determination of the optimal dose to reach a target AUC
-+ Determination of the optimal dose to reach a target concentration at any given time
++ `poso_time_cmin()` time needed to reach a target trough concentration (Cmin)
++ `poso_dose_auc()` optimal dose to reach a target AUC
++ `poso_dose_ctime()` optimal dose to reach a target concentration at any given time
 
-Posologyr requires a population pharmacokinetic model written in the specific language of RxODE, with an exponential model of inter-individual variability.
+Posologyr requires a popPK model written in the language of `RxODE`.
 
 ## Installation
 
-You can install the development version of posologyr from [GitHub](https://github.com/) with:
+You can install the development version of `posologyr` from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("levenc/posologyr")
 ```
+
 ## Example
 
-This example of Bayesian dosage adaptation is based on a fictitious population pharmacokinetic model of tobramycin, and data of therapeutic drug monitoring.
+This example of bayesian dosage adaptation is based on a fictitious popPK model of tobramycin, and data of therapeutic drug monitoring.
 
-Patient data (here: Michel's results) should be organised in a dataframe that follows RxODE (or NONMEM) conventions.
+Patient data (here: Michel's lab results) is organised in a dataframe following RxODE conventions.
+
 ```{r Michel}
 library(posologyr)
 
@@ -61,82 +63,91 @@ df_michel <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
 df_michel
 ```
 
-Here the TIME is in hours. Following the RxODE conventions, the AMT is a rate in milligram/hour for the zero-order infusion of duration 0.5 hours. In this example 500 mg of tobramycin are administered over 30 minutes.
+TIME is in hours, AMT is a rate in milligram/hour for the zero-order infusion of duration 0.5 hours: 500 mg of tobramycin are administered over 30 minutes.
 
-The tobramycin sample model is supplied with posologyr. It is a list of elements that includes all the necessary information, such as the structural model, the required covariates, and the variance covariance matrix.
+The sample tobramycin prior model is supplied with `posologyr`. Following the same structure, user-defined models can be added.
 
-Following the same structure, new models can be implemented.
-
-```{r prior model}
-# Fictional tobramycin 2cpt: example
-mod_tobramycin_2cpt_fictional <- list(
-  ppk_model   = RxODE::RxODE({
-    centr(0) = 0
-    ke = TVke*(CLCREAT/67.8)^0.89*(WT/66.4)^-1.09
-    V  = TVV*(WT/66.4)^0.80
-    Cc  = centr/V;
-    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
-    d/dt(periph) =            + k12*centr - k21*periph;
-    d/dt(AUC)    =   Cc;
-  }),
-  error_model = error_model_comb1,
-  pk_prior    = list( name = c('TVke','TVV','k12','k21'),
-                      reference = c(TVke=0.21, TVV=19.8, k12=0.041, k21=0.12),
-                      Omega = matrix(c(0.08075, 0      ,  0, 0,
-                                       0      , 0.01203,  0, 0,
-                                       0      , 0      ,  0, 0,
-                                       0      , 0      ,  0, 0),
-                                     ncol=4,byrow=TRUE)),
-  covariates  = c("CLCREAT","WT"),
-  xi          = c(additive_a = 0, proportional_b = 0.198))
-```
-
-The load_ppk_model() function initialises the objects to be used by posologyr. 
+The `load_ppk_model()` function initialises the objects to be used by `posologyr`. 
 
 ```{r load_ppk_model}
 load_ppk_model(mod_tobramycin_2cpt_fictional,df_michel)
 ```
 
-The typical values of the population parameters are available in the prior model
+The estimates of the fixed effects parameters are available from the prior model.
 
 ```{r TV parameters}
-prior_ppk_model$pk_prior$reference
+prior_ppk_model$pk_prior$psi
 ```
 
-The MAP estimates of the individual parameters can be computed easily
+The MAP estimates of the individual ETAs and PK parameters can be computed easily.
 
 ```{r MAP individual parameters}
 poso_estim_map()
 ```
 
-One can then plot: 
-
-```{r plots}
-#The typical population profile,with the individual covariates, 
-#over the individual concentration observations.
-poso_plot_pop()
-#The individual Maximum A Posteriori prediction
-#over the individual observations
-poso_plot_map()
-#The individual posterior distribution over the individual observations
-poso_plot_mcmc() 
-```
-
-The optimal dose can be estimated if, for example, a concentration of 30 mg/l is to be reached half an hour after the end of the infusion.
+An optimal dose can be estimated to reach a concentration of 30 mg/l half an hour after the end of the infusion.
 
 ```{r optimal amount}
-poso_dose_ctime(time_c = 1,duration = .5,target_ctime = 30)
+poso_dose_ctime(time_c = 1,duration = .5,target_conc = 30)
 ```
 
-To further optimize the dosage, it is now possible to determine the time needed to reach a Cmin < 0.5 mg/l, after an infusion of 620 mg over 30 minutes.
+To further optimise the dosage, the time needed to reach a Cmin < 0.5 mg/l after an infusion of 620 mg over 30 minutes can be estimated.
 
 ```{r optimal dosing}
 poso_time_cmin(dose = 620, duration = 0.5, target_cmin = 0.5)
 ```
 
-To conclude, the administration of 620 mg every 48 hours can be advisable for Michel.
+As a result, the administration of 620 mg every 48 hours can be advisable for Michel.
+
+## Sample plots
+
+The RxODE model can be used to plot the individual PK profile.
+
+```{r pop and MAP individual parameters, out.width = "70%"} 
+library(ggplot2)
+
+# compute the population and individual PK parameters
+pop_pk              <- poso_simu_pop()[[2]]
+indiv_pk_map        <- poso_estim_map()[[2]]
+indiv_pk_mcmc       <- poso_estim_mcmc()[[2]]
+
+# add sampling times
+pop_pk$time         <- seq(0,24,by=0.2)
+indiv_pk_map$time   <- seq(0,24,by=0.2)
+indiv_pk_mcmc$time  <- seq(0,24,by=0.2)
+
+# get the individual observations from df_michel
+indiv_obs           <- dat_posologyr[,c("DV","TIME")]
+```
+
+Plot the distribution of the prior population PK profiles + individual observations.
+```{r plot_pop_parameters, out.width = "70%"} 
+names(indiv_obs)    <- c("eff","time")
+
+plot(confint(pop_pk,"Cc", level=0.95),
+     ylab="Central concentration") +
+ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
+```
+
+Plot the individual MAP PK profile + individual observations.
+```{r plot_MAP_individual_parameters, out.width = "70%"} 
+names(indiv_obs)    <- c("value","time")
+
+plot(indiv_pk_map,Cc) + 
+  ggplot2::ylab("Central concentration") +
+  ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
+```
+
+Plot the distribution of the individual PK profiles + individual observations.
+```{r plot_posterior_individual_parameters, out.width = "70%"} 
+names(indiv_obs)    <- c("eff","time")
+
+plot(confint(indiv_pk_mcmc,"Cc", level=0.95),
+     ylab="Central concentration") +
+ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
+```
 
 ## Acknowledgments
-Posologyr's estimation functions were based on Marc Lavielle's code available at http://shiny.webpopix.org/mcmc/bayes1/
+`posologyr` takes advantage of the simulation framework provided by the  [RxODE](https://github.com/nlmixrdevelopment/RxODE) package.
 
-Posologyr relies heavily on the excellent RxODE package
+`posologyr`'s estimation functions were based on [Marc Lavielle's shiny app]( http://shiny.webpopix.org/mcmc/bayes1/)

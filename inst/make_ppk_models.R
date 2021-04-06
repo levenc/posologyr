@@ -2,12 +2,12 @@ mod_tobramycin_2cpt_fictional <- list(
   ppk_model   = RxODE::RxODE({
     centr(0) = 0;
     TVke  = THETA_ke*(CLCREAT/67.8)^0.89*(WT/66.4)^-1.09;
-    ke    = TVke*exp(eta_ke);
     TVV   = THETA_V*(WT/66.4)^0.80;
-    V     = TVV*exp(eta_V);
     TVk12 = THETA_k12;
-    k12   = TVk12;
     TVk21 = THETA_k21;
+    ke    = TVke*exp(eta_ke);
+    V     = TVV*exp(eta_V);
+    k12   = TVk12;
     k21   = TVk21;
     Cc    = centr/V;
     d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
