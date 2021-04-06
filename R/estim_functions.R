@@ -165,7 +165,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 
     #http://sia.webpopix.org/nlme.html#estimation-of-the-individual-parameters
     #doi:10.1006/jbin.2001.1033
-    U_y <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+    U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
     #the transpose of a diagonal matrix is itself
     U_eta <- 0.5 * eta_estim %*% solve_omega %*% eta_estim
 
@@ -356,9 +356,9 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
     covar             <- dat[1,prior_model$covariates]
     names(covar)      <- prior_model$covariates
     model_mcmc$params <- cbind(psi_return,eta_df_mcmc,covar,row.names = NULL)
-    estim_mcmc           <- list(eta_df_mcmc,model_mcmc)
+    estim_mcmc        <- list(eta_df_mcmc,model_mcmc)
   } else {
-    estim_mcmc           <- eta_df_mcmc
+    estim_mcmc        <- eta_df_mcmc
   }
 
   return(estim_mcmc)
