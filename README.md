@@ -32,7 +32,7 @@ Functions for dosage optimisation are included in `posologyr`:
   - `poso_dose_ctime()` optimal dose to reach a target concentration at
     any given time
 
-Posologyr requires a popPK model written in the language of `RxODE`.
+Posologyr requires a popPK model written in the `RxODE` mini-language.
 
 ## Installation
 
@@ -49,7 +49,7 @@ devtools::install_github("levenc/posologyr")
 This example of bayesian dosage adaptation is based on a fictitious
 popPK model of tobramycin, and data of therapeutic drug monitoring.
 
-Patient data (here: Michel’s lab results) is organised in a dataframe
+Patient data (here: Michel’s lab results) are organised in a dataframe
 following RxODE conventions.
 
 ``` r
@@ -144,7 +144,7 @@ advisable for Michel.
 
 ## Sample plots
 
-The RxODE model can be used to plot the individual PK profile.
+The RxODE models can be used to plot the individual PK profile.
 
 ``` r
 library(ggplot2)
