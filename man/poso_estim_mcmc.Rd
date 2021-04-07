@@ -2,20 +2,22 @@
 % Please edit documentation in R/estim_functions.R
 \name{poso_estim_mcmc}
 \alias{poso_estim_mcmc}
-\title{Estimate the posterior distribution of population parameters}
+\title{Estimate the posterior distribution of individual parameters}
 \usage{
 poso_estim_mcmc(
   solved_model = solved_ppk_model,
   prior_model = prior_ppk_model,
   dat = dat_posologyr,
-  control = list(n_iter = 100, n_kernel = c(2, 2), stepsize_rw = 0.4, proba_mcmc = 0.4,
-    nb_max = 3)
+  return_model = TRUE,
+  burn_in = 20,
+  n_iter = 219,
+  control = list(n_kernel = c(2, 2), stepsize_rw = 0.4, proba_mcmc = 0.4, nb_max = 3)
 )
 }
 \arguments{
 \item{solved_model}{An \code{\link[RxODE]{rxSolve}} solve object, created
 with the prior RxODE structural population pharmacokinetics model and the
-prior typical values of the population parameters from the
+prior estimates of the population parameters from the
 \code{prior_model}, using \code{dat} as the event record}
 
 \item{prior_model}{A posologyr prior population pharmacokinetics model, a
@@ -24,13 +26,24 @@ object)}
 
 \item{dat}{Dataframe. An individual subject dataset following the
 structure of NONMEM/RxODE event records}
+
+\item{return_model}{A boolean. Returns a RxODE model using the estimated
+ETAs if set to \code{TRUE}.}
+
+\item{burn_in}{Number of burn-in iterations for the Metropolis-Hastings
+algorithm}
+
+\item{n_iter}{Total number of iterations (burn-in included) for the Metropolis-
+Hastings algorithm}
 }
 \value{
-A dataframe of parameters from the posterior distribution,
-estimated by Markov Chain Monte Carlo
+If \code{return_model} is set to \code{FALSE}, a dataframe of ETAs from
+the posterior distribution, estimated by Markov Chain Monte Carlo.
+If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the posterior
+distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
 }
 \description{
-Estimates the posterior distribution of population parameters by Markov
+Estimates the posterior distribution of individual parameters by Markov
 Chain Monte Carlo (using a Metropolis-Hastings algorithm)
 }
 \details{
@@ -42,14 +55,15 @@ The posologyr prior population pharmacokinetics model is a list of
 five elements:
 \describe{
 \item{$ppk_model}{A RxODE model implementing the structural
-population pharmacokinetics model with no inter-individual
-variability, or residual error model}
+population pharmacokinetics model with the individual model
+(i.e. the model of inter-individual variability) and the
+covariates}
 \item{$error_model}{A function of the residual error model}
-\item{$pk_prior}{A list of 3. \code{name}: a character vector of the names
-of the population pharmacokinetc paramters, \code{reference}: a named
-vector of the prior typical value of the population paramaters,
-\code{Omega}: a square variance-covariance matrix of the population
-parameters inter-individual variability}
+\item{$pk_prior}{A list of 2. \code{psi}: a named
+vector of the population estimates of the fixed effects
+parameters (called THETAs, following NONMEM terminology),
+\code{Omega}: a named square variance-covariance matrix of the
+population parameters inter-individual variability}
 \item{$covariates}{A character vector of the covariates of
 the model}
 \item{$xi}{The estimates of the parameters of the residual error model}
@@ -68,6 +82,6 @@ df_michel <- data.frame(ID=1,
 # loading a tobramycin model and Michel's event record
 load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
 # estimate the posterior distribution of population parameters
-poso_estim_mcmc()
+poso_estim_mcmc(n_iter=100)
 
 }

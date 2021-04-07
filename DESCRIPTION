@@ -19,10 +19,8 @@ Depends:
 Imports:
     RxODE (>= 0.9.2.1),
     MASS,
-    data.table,
-    utils
+    lotri
 Suggests: 
-    crayon,
-    ggplot2
+    crayon
 URL: https://github.com/levenc/posologyr
 BugReports: https://github.com/levenc/posologyr/issues

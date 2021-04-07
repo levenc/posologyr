@@ -1,3 +1,21 @@
+#-------------------------------------------------------------------------
+# posologyr: individual dose optimisation using population PK
+# Copyright (C) 2021  Cyril Leven
+#
+#    This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+#-------------------------------------------------------------------------
+
 #' Easy loading of model and event record for posologyr
 #'
 #' Creates, or renames, and loads in the global environment the
@@ -13,21 +31,18 @@
 #'
 #' @details
 #' The posologyr prior population pharmacokinetics model is a list of
-#' seven elements:
+#' five elements:
 #' \describe{
-#'  \item{$description}{A brief description of the population
-#'      pharmacokinetics model}
-#'  \item{$reference}{A named character vector. Bibliographic reference
-#'      of the model (DOI)}
 #'  \item{$ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with no inter-individual
-#'      variability, or residual error model}
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 3. `name`: a character vector of the names
-#'      of the population pharmacokinetc paramters, `reference`: a named
-#'      vector of the prior typical value of the population paramaters,
-#'      `Omega`: a square variance-covariance matrix of the population
-#'      parameters inter-individual variability}
+#'  \item{$pk_prior}{A list of 2. `psi`: a named
+#'      vector of the population estimates of the fixed effects
+#'      parameters (called THETAs, following NONMEM terminology),
+#'      `Omega`: a named square variance-covariance matrix of the
+#'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
@@ -79,9 +94,10 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
            call. = FALSE)
     }
   }
-
+  pk_prior <- prior_model$pk_prior
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
-                                     prior_model$pk_prior$reference,
+                                     c(pk_prior$psi,
+                                       diag(pk_prior$Omega)*0),
                                      dat)
 
   # assign the objects of interest to the parent environment
@@ -104,7 +120,7 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
   }
 }
 
-#' Residuel error model combined 1
+#' Residual error model combined 1
 #'
 #' Residual error model combined 1. Constant error model
 #' if no proportional coefficient is provided. Proportional
@@ -125,7 +141,7 @@ error_model_comb1 <- function(f,xi){
   return(g)
 }
 
-#' Residuel error model combined 2
+#' Residual error model combined 2
 #'
 #' Residual error model combined 2.
 #'

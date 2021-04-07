@@ -7,13 +7,14 @@
 poso_estim_map(
   solved_model = solved_ppk_model,
   prior_model = prior_ppk_model,
-  dat = dat_posologyr
+  dat = dat_posologyr,
+  return_model = TRUE
 )
 }
 \arguments{
 \item{solved_model}{An \code{\link[RxODE]{rxSolve}} solve object, created
 with the prior RxODE structural population pharmacokinetics model and the
-prior typical values of the population parameters from the
+prior estimates of the population parameters from the
 \code{prior_model}, using \code{dat} as the event record}
 
 \item{prior_model}{A posologyr prior population pharmacokinetics model, a
@@ -22,9 +23,15 @@ object)}
 
 \item{dat}{Dataframe. An individual subject dataset following the
 structure of NONMEM/RxODE event records}
+
+\item{return_model}{A boolean. Returns a RxODE model using the estimated
+ETAs if set to \code{TRUE}.}
 }
 \value{
-A named vector of the MAP estimates of the individual parameters
+If \code{return_model} is set to \code{FALSE}, a named vector of the MAP estimates
+of the individual values of ETA.
+If \code{return_model} is set to \code{TRUE}, a list of the MAP estimates of the individual
+values of ETA, and a RxODE model using the estimated ETAs.
 }
 \description{
 Estimates the Maximum A Posteriori (MAP) individual parameters,
@@ -39,14 +46,15 @@ The posologyr prior population pharmacokinetics model is a list of
 five elements:
 \describe{
 \item{$ppk_model}{A RxODE model implementing the structural
-population pharmacokinetics model with no inter-individual
-variability, or residual error model}
+population pharmacokinetics model with the individual model
+(i.e. the model of inter-individual variability) and the
+covariates}
 \item{$error_model}{A function of the residual error model}
-\item{$pk_prior}{A list of 3. \code{name}: a character vector of the names
-of the population pharmacokinetc paramters, \code{reference}: a named
-vector of the prior typical value of the population paramaters,
-\code{Omega}: a square variance-covariance matrix of the population
-parameters inter-individual variability}
+\item{$pk_prior}{A list of 2. \code{psi}: a named
+vector of the population estimates of the fixed effects
+parameters (called THETAs, following NONMEM terminology),
+\code{Omega}: a named square variance-covariance matrix of the
+population parameters inter-individual variability}
 \item{$covariates}{A character vector of the covariates of
 the model}
 \item{$xi}{The estimates of the parameters of the residual error model}

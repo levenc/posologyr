@@ -1,3 +1,21 @@
+#-------------------------------------------------------------------------
+# posologyr: individual dose optimisation using population PK
+# Copyright (C) 2021  Cyril Leven
+#
+#    This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+#-------------------------------------------------------------------------
+
 #' Fictionnal IV tobramycin model for test purposes
 #'
 #' A fictional bicompartmental population pharmacokinetic
@@ -6,14 +24,15 @@
 #' @format A list of five elements:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with no inter-individual
-#'      variability, or residual error model}
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 3. `name`: a character vector of the names
-#'      of the population pharmacokinetc paramters, `reference`: a named
-#'      vector of the prior typical value of the population paramaters,
-#'      `Omega`: a square variance-covariance matrix of the population
-#'      parameters inter-individual variability}
+#'  \item{$pk_prior}{A list of 2. `psi`: a named
+#'      vector of the population estimates of the fixed effects
+#'      parameters (called THETAs, following NONMEM terminology),
+#'      `Omega`: a named square variance-covariance matrix of the
+#'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}
@@ -31,14 +50,15 @@
 #' @format A list of five elements:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with no inter-individual
-#'      variability, or residual error model}
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 3. `name`: a character vector of the names
-#'      of the population pharmacokinetc paramters, `reference`: a named
-#'      vector of the prior typical value of the population paramaters,
-#'      `Omega`: a square variance-covariance matrix of the population
-#'      parameters inter-individual variability}
+#'  \item{$pk_prior}{A list of 2. `psi`: a named
+#'      vector of the population estimates of the fixed effects
+#'      parameters (called THETAs, following NONMEM terminology),
+#'      `Omega`: a named square variance-covariance matrix of the
+#'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{$xi}{The estimates of the parameters of the residual error model}

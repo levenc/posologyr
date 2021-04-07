@@ -2,7 +2,7 @@
 % Please edit documentation in R/ppk_models.R
 \name{error_model_comb2}
 \alias{error_model_comb2}
-\title{Residuel error model combined 2}
+\title{Residual error model combined 2}
 \usage{
 error_model_comb2(f, xi)
 }
