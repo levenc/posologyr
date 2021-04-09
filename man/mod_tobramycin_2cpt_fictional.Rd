@@ -3,7 +3,7 @@
 \docType{data}
 \name{mod_tobramycin_2cpt_fictional}
 \alias{mod_tobramycin_2cpt_fictional}
-\title{Fictionnal IV tobramycin model for test purpose}
+\title{Fictional IV tobramycin model for test purpose}
 \format{
 A  list of six objects:
 \describe{

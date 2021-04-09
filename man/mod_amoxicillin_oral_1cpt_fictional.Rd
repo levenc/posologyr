@@ -3,7 +3,7 @@
 \docType{data}
 \name{mod_amoxicillin_oral_1cpt_fictional}
 \alias{mod_amoxicillin_oral_1cpt_fictional}
-\title{Fictionnal oral amoxicillin model for test purpose}
+\title{Fictional oral amoxicillin model for test purpose}
 \format{
 A  list of six objects:
 \describe{

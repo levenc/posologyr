@@ -16,7 +16,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
-#' Fictionnal IV tobramycin model for test purpose
+#' Fictional IV tobramycin model for test purpose
 #'
 #' A fictional bicompartmental population pharmacokinetic
 #' model of intravenous tobramycin.
@@ -40,7 +40,7 @@
 #' @source \url{https://www.page-meeting.org/pdf_assets/1954-2017_05_01_poster_Tobramycin.pdf}
 "mod_tobramycin_2cpt_fictional"
 
-#' Fictionnal oral amoxicillin model for test purpose
+#' Fictional oral amoxicillin model for test purpose
 #'
 #' A fictional one-compartment population pharmacokinetic
 #' model of oral amoxicillin, with non-saturable oral
