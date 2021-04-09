@@ -21,6 +21,9 @@ Imports:
     MASS,
     lotri
 Suggests: 
-    crayon
+    knitr,
+    crayon,
+    rmarkdown
 URL: https://github.com/levenc/posologyr
 BugReports: https://github.com/levenc/posologyr/issues
+VignetteBuilder: knitr
