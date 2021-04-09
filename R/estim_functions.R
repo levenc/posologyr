@@ -51,19 +51,19 @@
 #' The posologyr prior population pharmacokinetics model is a list of
 #' six objects:
 #' \describe{
-#'  \item{$ppk_model}{A RxODE model implementing the structural
+#'  \item{ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
-#'  \item{$error_model}{A function of the residual error model}
-#'  \item{$psi}{A named vector of the population estimates of the
+#'  \item{error_model}{A function of the residual error model}
+#'  \item{psi}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
-#'  \item{$omega}{A named square variance-covariance matrix of the
+#'  \item{omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
-#'  \item{$covariates}{A character vector of the covariates of
+#'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{$xi}{The estimates of the parameters of the residual error model}
+#'  \item{xi}{The estimates of the parameters of the residual error model}
 #' }
 #'
 #' @return If `return_model` is set to `FALSE`, a dataframe of the
@@ -145,19 +145,19 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 #' The posologyr prior population pharmacokinetics model is a list of
 #' six objects:
 #' \describe{
-#'  \item{$ppk_model}{A RxODE model implementing the structural
+#'  \item{ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
-#'  \item{$error_model}{A function of the residual error model}
-#'  \item{$psi}{A named vector of the population estimates of the
+#'  \item{error_model}{A function of the residual error model}
+#'  \item{psi}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
-#'  \item{$omega}{A named square variance-covariance matrix of the
+#'  \item{omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
-#'  \item{$covariates}{A character vector of the covariates of
+#'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{$xi}{The estimates of the parameters of the residual error model}
+#'  \item{xi}{The estimates of the parameters of the residual error model}
 #' }
 #'
 #' @return If `return_model` is set to `FALSE`, a named vector of the MAP estimates
@@ -269,19 +269,19 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #' The posologyr prior population pharmacokinetics model is a list of
 #' six objects:
 #' \describe{
-#'  \item{$ppk_model}{A RxODE model implementing the structural
+#'  \item{ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
-#'  \item{$error_model}{A function of the residual error model}
-#'  \item{$psi}{A named vector of the population estimates of the
+#'  \item{error_model}{A function of the residual error model}
+#'  \item{psi}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
-#'  \item{$omega}{A named square variance-covariance matrix of the
+#'  \item{omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
-#'  \item{$covariates}{A character vector of the covariates of
+#'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{$xi}{The estimates of the parameters of the residual error model}
+#'  \item{xi}{The estimates of the parameters of the residual error model}
 #' }
 #'
 #' @return If `return_model` is set to `FALSE`, a dataframe of ETAs from
