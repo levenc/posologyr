@@ -137,19 +137,19 @@ model of intravenous tobramycin.</p>
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p>A  list of six objects:</p><dl>
-<dt>$ppk_model</dt><dd><p>A RxODE model implementing the structural
+<dt>ppk_model</dt><dd><p>A RxODE model implementing the structural
 population pharmacokinetics model with the individual model
 (i.e. the model of inter-individual variability) and the
 covariates</p></dd>
-<dt>$error_model</dt><dd><p>A function of the residual error model</p></dd>
-<dt>$psi</dt><dd><p>A named vector of the population estimates of the
+<dt>error_model</dt><dd><p>A function of the residual error model</p></dd>
+<dt>psi</dt><dd><p>A named vector of the population estimates of the
 fixed effects parameters (called THETAs, following NONMEM
 terminology)</p></dd>
-<dt>$omega</dt><dd><p>A named square variance-covariance matrix of the
+<dt>omega</dt><dd><p>A named square variance-covariance matrix of the
 population parameters inter-individual variability</p></dd>
-<dt>$covariates</dt><dd><p>A character vector of the covariates of
+<dt>covariates</dt><dd><p>A character vector of the covariates of
 the model</p></dd>
-<dt>$xi</dt><dd><p>The estimates of the parameters of the residual error model</p></dd>
+<dt>xi</dt><dd><p>The estimates of the parameters of the residual error model</p></dd>
 
 </dl>
 
