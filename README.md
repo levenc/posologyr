@@ -81,6 +81,7 @@ The `load_ppk_model()` function initialises the objects to be used by
 
 ``` r
 load_ppk_model(mod_tobramycin_2cpt_fictional,df_michel)
+#> Invalid RxODE model, trying to recompile...Success 
 #>  Full model + prior information loaded as prior_ppk_model 
 #>  Solved model created as solved_ppk_model 
 #>  Dataset loaded as dat_posologyr
@@ -90,7 +91,7 @@ The estimates of the fixed effects parameters are available from the
 prior model.
 
 ``` r
-prior_ppk_model$pk_prior$psi
+prior_ppk_model$psi
 #>  THETA_ke   THETA_V THETA_k12 THETA_k21 
 #>     0.210    19.800     0.041     0.120
 ```
@@ -101,15 +102,15 @@ computed easily.
 ``` r
 poso_estim_map()
 #> [[1]]
-#>     eta_ke      eta_V    eta_k12    eta_k21 
+#>     ETA_ke      ETA_V    ETA_k12    ETA_k21 
 #> -0.6828811 -0.0663349  0.0000000  0.0000000 
 #> 
 #> [[2]]
 #> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Solved RxODE object ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #> ── Parameters ($params): ───────────────────────────────────────────────────────
-#>   THETA_ke    CLCREAT         WT    THETA_V  THETA_k12  THETA_k21     eta_ke 
+#>   THETA_ke    CLCREAT         WT    THETA_V  THETA_k12  THETA_k21     ETA_ke 
 #>  0.2100000 80.0000000 65.0000000 19.8000000  0.0410000  0.1200000 -0.6828811 
-#>      eta_V 
+#>      ETA_V 
 #> -0.0663349 
 #> ── Initial Conditions ($inits): ────────────────────────────────────────────────
 #>  centr periph    AUC 
@@ -169,14 +170,13 @@ observations.
 ``` r
 names(indiv_obs)    <- c("eff","time")
 
-plot(confint(pop_pk,"Cc", level=0.95),
-     ylab="Central concentration") +
+plot(confint(pop_pk,"Cc", level=0.95),ylab="Central concentration") +
 ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
 #> ! in order to put confidence bands around the intervals, you need at least 2500 simulations
 #> summarizing data...done
 ```
 
-<img src="man/figures/README-plot_pop_parameters-1.png" width="70%" />
+<img src="man/figures/README-plot_pop_parameters-1.png" width="75%" />
 
 Plot the individual MAP PK profile + individual observations.
 
@@ -188,7 +188,7 @@ plot(indiv_pk_map,Cc) +
   ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
 ```
 
-<img src="man/figures/README-plot_MAP_individual_parameters-1.png" width="70%" />
+<img src="man/figures/README-plot_MAP_individual_parameters-1.png" width="75%" />
 
 Plot the distribution of the individual PK profiles + individual
 observations.
@@ -196,14 +196,13 @@ observations.
 ``` r
 names(indiv_obs)    <- c("eff","time")
 
-plot(confint(indiv_pk_mcmc,"Cc", level=0.95),
-     ylab="Central concentration") +
+plot(confint(indiv_pk_mcmc,"Cc", level=0.95),ylab="Central concentration") +
 ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
 #> ! in order to put confidence bands around the intervals, you need at least 2500 simulations
 #> summarizing data...done
 ```
 
-<img src="man/figures/README-plot_posterior_individual_parameters-1.png" width="70%" />
+<img src="man/figures/README-plot_posterior_individual_parameters-1.png" width="75%" />
 
 ## Acknowledgments
 

@@ -76,7 +76,7 @@ load_ppk_model(mod_tobramycin_2cpt_fictional,df_michel)
 The estimates of the fixed effects parameters are available from the prior model.
 
 ```{r TV parameters}
-prior_ppk_model$pk_prior$psi
+prior_ppk_model$psi
 ```
 
 The MAP estimates of the individual ETAs and PK parameters can be computed easily.
@@ -121,16 +121,15 @@ indiv_obs           <- dat_posologyr[,c("DV","TIME")]
 ```
 
 Plot the distribution of the prior population PK profiles + individual observations.
-```{r plot_pop_parameters, out.width = "70%"} 
+```{r plot_pop_parameters, out.width = "75%"} 
 names(indiv_obs)    <- c("eff","time")
 
-plot(confint(pop_pk,"Cc", level=0.95),
-     ylab="Central concentration") +
+plot(confint(pop_pk,"Cc", level=0.95),ylab="Central concentration") +
 ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
 ```
 
 Plot the individual MAP PK profile + individual observations.
-```{r plot_MAP_individual_parameters, out.width = "70%"} 
+```{r plot_MAP_individual_parameters, out.width = "75%"} 
 names(indiv_obs)    <- c("value","time")
 
 plot(indiv_pk_map,Cc) + 
@@ -139,11 +138,10 @@ plot(indiv_pk_map,Cc) +
 ```
 
 Plot the distribution of the individual PK profiles + individual observations.
-```{r plot_posterior_individual_parameters, out.width = "70%"} 
+```{r plot_posterior_individual_parameters, out.width = "75%"} 
 names(indiv_obs)    <- c("eff","time")
 
-plot(confint(indiv_pk_mcmc,"Cc", level=0.95),
-     ylab="Central concentration") +
+plot(confint(indiv_pk_mcmc,"Cc", level=0.95),ylab="Central concentration") +
 ggplot2::geom_point(data=indiv_obs, na.rm=TRUE)
 ```
 

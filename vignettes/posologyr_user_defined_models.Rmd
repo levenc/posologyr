@@ -94,7 +94,7 @@ The estimates of the variances of the random effects can be given under differen
 * Coefficient of variation (CV): calculated as `sqrt(exp(SD^2)-1)`, the standard deviation can be computed back with `sqrt(log((CV^2)+1))`
 * Full covariance matrix: the easiest to reuse, but rarely seen in articles
 
-In the case of the vancomycin model, the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in `omega`.
+In the case of the vancomycin model, the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in **omega**.
 
 |Parameter |CV%  (from the article)|SD       |Variance = SD^2|
 |----------|:---------------------:|:-------:|:-------------:|
@@ -132,7 +132,7 @@ xi          = c(additive_a = 3.4, proportional_b = 0.227)
 ## Full model
 The posologyr model is the list of all these objects.
 
-```{r vancomycin_pososlogyr_model}
+```{r vancomycin_pososlogyr_model_list}
 mod_vancomyin_2cpt_Goti2018 <- list(
   ppk_model   = RxODE::RxODE({
      centr(0) = 0;
@@ -164,4 +164,8 @@ mod_vancomyin_2cpt_Goti2018 <- list(
                            0     ,       0,       0,    0)}),
   covariates  = c("CLCREAT","WT","DIAL"),
   xi          = c(additive_a = 3.4, proportional_b = 0.227))
+```
+
+```{r vancomycin_pososlogyr_model}
+mod_vancomyin_2cpt_Goti2018
 ```

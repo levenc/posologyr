@@ -2,10 +2,10 @@ Package: posologyr
 Title: Individual Dose Optimization Using Population Pharmacokinetics
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Cyril","Leven",role = c("aut", "cre"),
+    person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
            comment = c(ORCID = "0000-0002-0697-4370")),
-    person("Marc","Lavielle",role = c("aut","cph"),
+    person("Marc","Lavielle",role = c("cph"),
            comment = c("Author of http://shiny.webpopix.org/mcmc/bayes1/"))
     )
 Description: Individualization of drug treatments taking advantage of population pharmacokinetics, patient characteristics, and the results of therapeutic drug monitoring.

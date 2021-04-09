@@ -3,19 +3,19 @@
 \docType{data}
 \name{mod_tobramycin_2cpt_fictional}
 \alias{mod_tobramycin_2cpt_fictional}
-\title{Fictionnal IV tobramycin model for test purposes}
+\title{Fictionnal IV tobramycin model for test purpose}
 \format{
-A list of five elements:
+A  list of six objects:
 \describe{
 \item{$ppk_model}{A RxODE model implementing the structural
 population pharmacokinetics model with the individual model
 (i.e. the model of inter-individual variability) and the
 covariates}
 \item{$error_model}{A function of the residual error model}
-\item{$pk_prior}{A list of 2. \code{psi}: a named
-vector of the population estimates of the fixed effects
-parameters (called THETAs, following NONMEM terminology),
-\code{Omega}: a named square variance-covariance matrix of the
+\item{$psi}{A named vector of the population estimates of the
+fixed effects parameters (called THETAs, following NONMEM
+terminology)}
+\item{$omega}{A named square variance-covariance matrix of the
 population parameters inter-individual variability}
 \item{$covariates}{A character vector of the covariates of
 the model}
