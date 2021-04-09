@@ -23,8 +23,8 @@ mod_tobramycin_2cpt_fictional <- list(
     TVV   = THETA_V*(WT/66.4)^0.80;
     TVk12 = THETA_k12;
     TVk21 = THETA_k21;
-    ke    = TVke*exp(eta_ke);
-    V     = TVV*exp(eta_V);
+    ke    = TVke*exp(ETA_ke);
+    V     = TVV*exp(ETA_V);
     k12   = TVk12;
     k21   = TVk21;
     Cc    = centr/V;
@@ -37,7 +37,7 @@ mod_tobramycin_2cpt_fictional <- list(
     return(g)
   },
   psi = c(THETA_ke=0.21, THETA_V=19.8,THETA_k12=0.041, THETA_k21=0.12),
-  Omega = lotri::lotri({eta_ke + eta_V + eta_k12 + eta_k21 ~
+  omega = lotri::lotri({ETA_ke + ETA_V + ETA_k12 + ETA_k21 ~
                           c(0.08075,
                             0      , 0.01203,
                             0      , 0      ,  0,
@@ -50,11 +50,11 @@ mod_amoxicillin_oral_1cpt_fictional <- list(
     depot(0) = 0;
     centr(0) = 0;
     TVka = THETA_ka;
-    ka   = TVka*exp(eta_ka);
+    ka   = TVka*exp(ETA_ka);
     TVV  = THETA_V;
-    V    = TVV*exp(eta_V);
+    V    = TVV*exp(ETA_V);
     TVCl = THETA_Cl*(CLCREAT/90)^0.62;
-    Cl   = TVCl*exp(eta_Cl);
+    Cl   = TVCl*exp(ETA_Cl);
     ke   = Cl/V;
     Cc   = centr/V;
     d/dt(depot) = -ka*depot;
@@ -66,7 +66,7 @@ mod_amoxicillin_oral_1cpt_fictional <- list(
     return(g)
   },
   psi = c(THETA_ka=0.52, THETA_V=0.56,THETA_Cl=7.33),
-  Omega = lotri::lotri({eta_ka + eta_V + eta_Cl ~
+  omega = lotri::lotri({ETA_ka + ETA_V + ETA_Cl ~
                           c(0.0289,
                            0     , 0.0256 ,
                            0     ,-0.01792,  0.0400)}),

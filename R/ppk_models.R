@@ -41,7 +41,7 @@
 #'  \item{$psi}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
-#'  \item{$Omega}{A named square variance-covariance matrix of the
+#'  \item{$omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -96,7 +96,7 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
   }
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
                                      c(prior_model$psi,
-                                       diag(prior_model$Omega)*0),
+                                       diag(prior_model$omega)*0),
                                      dat)
 
   # assign the objects of interest to the parent environment

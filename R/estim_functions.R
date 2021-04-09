@@ -59,7 +59,7 @@
 #'  \item{$psi}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
-#'  \item{$Omega}{A named square variance-covariance matrix of the
+#'  \item{$omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -93,18 +93,18 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
                           dat=dat_posologyr,n_simul=1000,
                           return_model = TRUE){
 
-  Omega      <- prior_model$Omega
-  eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(Omega))
+  omega      <- prior_model$omega
+  eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(omega))
 
   for (k in (1:n_simul)){
-    eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(Omega)),
-                             Sigma=Omega)
+    eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(omega)),
+                             Sigma=omega)
     #faster than asking mvrnorm for n_simul samples
     eta_mat[k,] <- eta_sim
   }
 
   eta_df        <- data.frame(eta_mat)
-  names(eta_df) <- attr(Omega,"dimnames")[[1]]
+  names(eta_df) <- attr(omega,"dimnames")[[1]]
 
   if(return_model){
     model_pop         <- solved_model
@@ -153,7 +153,7 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 #'  \item{$psi}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
-#'  \item{$Omega}{A named square variance-covariance matrix of the
+#'  \item{$omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -192,7 +192,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     }
 
   errpred <- function(eta_estim,run_model,y,psi,ind_eta,xi,solve_omega){
-    eta          <- diag(Omega)*0
+    eta          <- diag(omega)*0
     eta[ind_eta] <- eta_estim
 
     #simulated concentrations with the proposed eta estimates
@@ -209,21 +209,21 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     return(optimize_me)
     }
 
-  Omega       <- prior_model$Omega
+  omega       <- prior_model$omega
   psi         <- prior_model$psi
   xi          <- prior_model$xi
   error_model <- prior_model$error_model
 
   y_obs       <- dat$DV[dat$EVID == 0]         # only observations
-  ind_eta     <- which(diag(Omega)>0)    # only parameters with IIV
-  omega_eta   <- Omega[ind_eta,ind_eta]  # only variances > 0
+  ind_eta     <- which(diag(omega)>0)    # only parameters with IIV
+  omega_eta   <- omega[ind_eta,ind_eta]  # only variances > 0
   solve_omega <- try(solve(omega_eta))         # inverse of omega_eta
   start_eta   <- diag(omega_eta)*0             # get a named vector of zeroes
 
   r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,psi=psi,
              ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
 
-  eta_map            <- diag(Omega)*0
+  eta_map            <- diag(omega)*0
   eta_map[ind_eta]   <- r$par
 
   if(return_model){
@@ -277,7 +277,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #'  \item{$psi}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
-#'  \item{$Omega}{A named square variance-covariance matrix of the
+#'  \item{$omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -316,14 +316,14 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
     return(model$Cc)
   }
 
-  Omega       <- prior_model$Omega
+  omega       <- prior_model$omega
   xi          <- prior_model$xi
   error_model <- prior_model$error_model
 
   y_obs       <- dat$DV[dat$EVID == 0]        # only observations
-  ind_eta     <- which(diag(Omega)>0)   # only parameters with IIV
+  ind_eta     <- which(diag(omega)>0)   # only parameters with IIV
   nb_etas     <- length(ind_eta)
-  omega_eta   <- Omega[ind_eta,ind_eta] # only variances > 0
+  omega_eta   <- omega[ind_eta,ind_eta] # only variances > 0
   solve_omega <- try(solve(omega_eta))        # inverse of omega_eta
   d_omega     <- diag(omega_eta)*0.3
 
@@ -334,8 +334,8 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
   g        <- error_model(f,xi)
   U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
 
-  eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(Omega))
-  eta_mat[1,] <- diag(Omega)*0
+  eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(omega))
+  eta_mat[1,] <- diag(omega)*0
 
   for (k_iter in 1:n_iter)
   {
@@ -394,7 +394,7 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
     eta_mat[k_iter+1,ind_eta]   <- eta
   }
   eta_df_mcmc            <- data.frame(eta_mat[burn_in:n_iter,])
-  names(eta_df_mcmc)     <- attr(Omega,"dimnames")[[1]]
+  names(eta_df_mcmc)     <- attr(omega,"dimnames")[[1]]
 
   if(return_model){
     model_mcmc        <- solved_model

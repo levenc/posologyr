@@ -19,12 +19,23 @@ This describes the structure of prior models usable by posologyr and illustrates
 # Structure
 A posologyr prior popPK model is a list of six objects:
 
-1. **ppk_model** a RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates}
-1. **error_model** a function of the residual error model
-1. **psi*`** a named vector of the population estimates of the fixed effects parameters (called THETAs, following NONMEM terminology),
-1. **Omega** a named square variance-covariance matrix of the population parameters inter-individual variability}
-1. **covariates** a character vector of the covariates of the model
-1. **xi** the estimates of the parameters of the residual error model
+**ppk_model** 
+: A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
+
+**error_model** 
+: A function of the residual error model
+
+**psi** 
+: A named vector of the population estimates of the fixed effects parameters (called THETAs, following NONMEM terminology),
+
+**omega** 
+: A named square variance-covariance matrix of the population parameters inter-individual variability
+
+**covariates** 
+: A character vector of the covariates of the model
+
+**xi** 
+: The estimates of the parameters of the residual error model
 
 # Definition of a prior model through an example
 The model to implement is a two-compartment popPK model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients (doi:10.1097/FTD.0000000000000490).
@@ -43,10 +54,10 @@ ppk_model   = RxODE::RxODE({
     TVVc  = THETA_Vc*(WT/70)          *(0.5^DIAL);
     TVVp  = THETA_Vp;
     TVQ   = THETA_Q;
-    Cl    = TVCl*exp(ETA_Cl)
-    Vc    = TVVc*exp(ETA_Vc)
-    Vp    = TVVp*exp(ETA_Vp)
-    Q     = TVQ
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ;
     ke    = Cl*Vc;
     k12   = Q*Vc;
     k21   = Q*Vp;
@@ -74,7 +85,7 @@ The estimations of the parameters for the fixed effects of the model (THETA), in
 psi = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4, THETA_Q=6.5)
 ```
 
-## Omega
+## omega
 The variance-covariance matrix of the random effects (ETA) for the individual model. A symmetric matrix. The names must match the names used in **ppk_model**. The easiest way to define it is with `lotri::lotri`.
 
 The estimates of the variances of the random effects can be given under different parameterizations depending on the authors.
@@ -83,7 +94,7 @@ The estimates of the variances of the random effects can be given under differen
 * Coefficient of variation (CV): calculated as `sqrt(exp(SD^2)-1)`, the standard deviation can be computed back with `sqrt(log((CV^2)+1))`
 * Full covariance matrix: the easiest to reuse, but rarely seen in articles
 
-In the case of the vancomycin model, the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in `Omega`.
+In the case of the vancomycin model, the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in `omega`.
 
 |Parameter |CV%  (from the article)|SD       |Variance = SD^2|
 |----------|:---------------------:|:-------:|:-------------:|
@@ -91,8 +102,8 @@ In the case of the vancomycin model, the estimates of between subject variabilit
 |BSV on Vc |81.6                   | 0.714   | 0.510         |
 |BSV on Vp |57.1                   | 0.531   | 0.282         |
 
-```{r Omega}
-Omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+```{r omega}
+omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
                           c(0.147,
                            0     ,  0.510 ,
                            0     ,       0,   0.282,
@@ -129,10 +140,10 @@ mod_vancomyin_2cpt_Goti2018 <- list(
     TVVc  = THETA_Vc*(WT/70)          *(0.5^DIAL);
     TVVp  = THETA_Vp;
     TVQ   = THETA_Q;
-    Cl    = TVCl*exp(ETA_Cl)
-    Vc    = TVVc*exp(ETA_Vc)
-    Vp    = TVVp*exp(ETA_Vp)
-    Q     = TVQ
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ;
     ke    = Cl*Vc;
     k12   = Q*Vc;
     k21   = Q*Vp;
@@ -146,7 +157,7 @@ mod_vancomyin_2cpt_Goti2018 <- list(
     return(g)
   },
   psi = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
-  Omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
                           c(0.147,
                            0     ,  0.510 ,
                            0     ,       0,   0.282,
