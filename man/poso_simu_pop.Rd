@@ -19,7 +19,7 @@ prior estimates of the population parameters from the
 \code{prior_model}, using \code{dat} as the event record}
 
 \item{prior_model}{A posologyr prior population pharmacokinetics model, a
-list of seven elements (see 'Details' for the description of the
+list of six objects (see 'Details' for the description of the
 object)}
 
 \item{dat}{Dataframe. An individual subject dataset following the
@@ -42,17 +42,17 @@ simulations
 }
 \details{
 The posologyr prior population pharmacokinetics model is a list of
-five elements:
+six objects:
 \describe{
 \item{$ppk_model}{A RxODE model implementing the structural
 population pharmacokinetics model with the individual model
 (i.e. the model of inter-individual variability) and the
 covariates}
 \item{$error_model}{A function of the residual error model}
-\item{$pk_prior}{A list of 2. \code{psi}: a named
-vector of the population estimates of the fixed effects
-parameters (called THETAs, following NONMEM terminology),
-\code{Omega}: a named square variance-covariance matrix of the
+\item{$psi}{A named vector of the population estimates of the
+fixed effects parameters (called THETAs, following NONMEM
+terminology)}
+\item{$Omega}{A named square variance-covariance matrix of the
 population parameters inter-individual variability}
 \item{$covariates}{A character vector of the covariates of
 the model}

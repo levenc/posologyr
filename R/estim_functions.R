@@ -38,7 +38,7 @@
 #'     prior estimates of the population parameters from the
 #'     `prior_model`, using `dat` as the event record
 #' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of seven elements (see 'Details' for the description of the
+#'    list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
@@ -49,17 +49,17 @@
 #' @details
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' five elements:
+#' six objects:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 2. `psi`: a named
-#'      vector of the population estimates of the fixed effects
-#'      parameters (called THETAs, following NONMEM terminology),
-#'      `Omega`: a named square variance-covariance matrix of the
+#'  \item{$psi}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{$Omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -93,7 +93,7 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
                           dat=dat_posologyr,n_simul=1000,
                           return_model = TRUE){
 
-  Omega      <- prior_model$pk_prior$Omega
+  Omega      <- prior_model$Omega
   eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(Omega))
 
   for (k in (1:n_simul)){
@@ -108,7 +108,7 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 
   if(return_model){
     model_pop         <- solved_model
-    psi               <- rbind(prior_model$pk_prior$psi)
+    psi               <- rbind(prior_model$psi)
     covar             <- dat[1,prior_model$covariates]
     names(covar)      <- prior_model$covariates
     model_pop$params  <- cbind(psi,eta_df,covar,row.names = NULL)
@@ -130,7 +130,7 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 #'     prior estimates of the population parameters from the
 #'     `prior_model`, using `dat` as the event record
 #' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of seven elements (see 'Details' for the description of the
+#'    list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
@@ -143,17 +143,17 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' five elements:
+#' six objects:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 2. `psi`: a named
-#'      vector of the population estimates of the fixed effects
-#'      parameters (called THETAs, following NONMEM terminology),
-#'      `Omega`: a named square variance-covariance matrix of the
+#'  \item{$psi}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{$Omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -192,7 +192,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     }
 
   errpred <- function(eta_estim,run_model,y,psi,ind_eta,xi,solve_omega){
-    eta          <- diag(prior$Omega)*0
+    eta          <- diag(Omega)*0
     eta[ind_eta] <- eta_estim
 
     #simulated concentrations with the proposed eta estimates
@@ -209,21 +209,21 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     return(optimize_me)
     }
 
-  prior       <- prior_model$pk_prior
+  Omega       <- prior_model$Omega
+  psi         <- prior_model$psi
   xi          <- prior_model$xi
   error_model <- prior_model$error_model
 
   y_obs       <- dat$DV[dat$EVID == 0]         # only observations
-  ind_eta     <- which(diag(prior$Omega)>0)    # only parameters with IIV
-  omega_eta   <- prior$Omega[ind_eta,ind_eta]  # only variances > 0
+  ind_eta     <- which(diag(Omega)>0)    # only parameters with IIV
+  omega_eta   <- Omega[ind_eta,ind_eta]  # only variances > 0
   solve_omega <- try(solve(omega_eta))         # inverse of omega_eta
-  psi         <- prior$psi
   start_eta   <- diag(omega_eta)*0             # get a named vector of zeroes
 
   r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,psi=psi,
              ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
 
-  eta_map            <- diag(prior$Omega)*0
+  eta_map            <- diag(Omega)*0
   eta_map[ind_eta]   <- r$par
 
   if(return_model){
@@ -249,7 +249,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #'     prior estimates of the population parameters from the
 #'     `prior_model`, using `dat` as the event record
 #' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of seven elements (see 'Details' for the description of the
+#'    list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
@@ -267,17 +267,17 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' five elements:
+#' six objects:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 2. `psi`: a named
-#'      vector of the population estimates of the fixed effects
-#'      parameters (called THETAs, following NONMEM terminology),
-#'      `Omega`: a named square variance-covariance matrix of the
+#'  \item{$psi}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{$Omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -316,26 +316,26 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
     return(model$Cc)
   }
 
-  prior       <- prior_model$pk_prior
+  Omega       <- prior_model$Omega
   xi          <- prior_model$xi
   error_model <- prior_model$error_model
 
   y_obs       <- dat$DV[dat$EVID == 0]        # only observations
-  ind_eta     <- which(diag(prior$Omega)>0)   # only parameters with IIV
+  ind_eta     <- which(diag(Omega)>0)   # only parameters with IIV
   nb_etas     <- length(ind_eta)
-  omega_eta   <- prior$Omega[ind_eta,ind_eta] # only variances > 0
+  omega_eta   <- Omega[ind_eta,ind_eta] # only variances > 0
   solve_omega <- try(solve(omega_eta))        # inverse of omega_eta
   d_omega     <- diag(omega_eta)*0.3
 
   # Metropolis-Hastings algorithm------------------------------------------
-  psi      <- prior$psi
+  psi      <- prior_model$psi
   eta      <- diag(omega_eta)*0
   f        <- do.call(run_model,list(c(psi,eta)))
   g        <- error_model(f,xi)
   U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
 
-  eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(prior$Omega))
-  eta_mat[1,] <- diag(prior$Omega)*0
+  eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(Omega))
+  eta_mat[1,] <- diag(Omega)*0
 
   for (k_iter in 1:n_iter)
   {
@@ -394,7 +394,7 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
     eta_mat[k_iter+1,ind_eta]   <- eta
   }
   eta_df_mcmc            <- data.frame(eta_mat[burn_in:n_iter,])
-  names(eta_df_mcmc)     <- attr(prior$Omega,"dimnames")[[1]]
+  names(eta_df_mcmc)     <- attr(Omega,"dimnames")[[1]]
 
   if(return_model){
     model_mcmc        <- solved_model

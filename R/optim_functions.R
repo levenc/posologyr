@@ -28,7 +28,7 @@
 #'     from the `prior_model`, using `dat` as the event record. May be omitted
 #'     if a vector of individual parameters `param_map` is provided
 #' @param prior_model A posologyr prior population pharmacokinetics model,
-#'    a list of five elements (see 'Details' for the description of the
+#'    a list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
@@ -53,17 +53,17 @@
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' five elements:
+#' six objects:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 2. `psi`: a named
-#'      vector of the population estimates of the fixed effects
-#'      parameters (called THETAs, following NONMEM terminology),
-#'      `Omega`: a named square variance-covariance matrix of the
+#'  \item{$psi}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{$Omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -131,7 +131,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'     `prior_model`, using `dat` as the event record. May be omitted
 #'     if a vector of individual parameters `param_map` is provided
 #' @param prior_model A posologyr prior population pharmacokinetics model,
-#'    a list of five elements (see 'Details' for the description of the
+#'    a list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
@@ -151,17 +151,17 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' five elements:
+#' six objects:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 2. `psi`: a named
-#'      vector of the population estimates of the fixed effects
-#'      parameters (called THETAs, following NONMEM terminology),
-#'      `Omega`: a named square variance-covariance matrix of the
+#'  \item{$psi}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{$Omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -237,7 +237,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'     `prior_model`, using `dat` as the event record. May be omitted
 #'     if a vector of individual parameters `param_map` is provided
 #' @param prior_model A posologyr prior population pharmacokinetics model,
-#'    a list of five elements (see 'Details' for the description of the
+#'    a list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
@@ -259,17 +259,17 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #' \code{\link{load_ppk_model}}
 #'
 #' The posologyr prior population pharmacokinetics model is a list of
-#' five elements:
+#' six objects:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 2. `psi`: a named
-#'      vector of the population estimates of the fixed effects
-#'      parameters (called THETAs, following NONMEM terminology),
-#'      `Omega`: a named square variance-covariance matrix of the
+#'  \item{$psi}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{$Omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}

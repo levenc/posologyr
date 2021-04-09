@@ -36,13 +36,12 @@ mod_tobramycin_2cpt_fictional <- list(
     g <- xi[1] + xi[2]*f
     return(g)
   },
-  pk_prior    = list(psi = c(THETA_ke=0.21, THETA_V=19.8,
-                                    THETA_k12=0.041, THETA_k21=0.12),
-                     Omega = lotri::lotri({eta_ke + eta_V + eta_k12 + eta_k21 ~
+  psi = c(THETA_ke=0.21, THETA_V=19.8,THETA_k12=0.041, THETA_k21=0.12),
+  Omega = lotri::lotri({eta_ke + eta_V + eta_k12 + eta_k21 ~
                           c(0.08075,
                             0      , 0.01203,
                             0      , 0      ,  0,
-                            0      , 0      ,  0, 0)})),
+                            0      , 0      ,  0, 0)}),
   covariates  = c("CLCREAT","WT"),
   xi          = c(additive_a = 0, proportional_b = 0.198))
 
@@ -66,12 +65,11 @@ mod_amoxicillin_oral_1cpt_fictional <- list(
     g <- xi[1] + xi[2]*f
     return(g)
   },
-  pk_prior    = list(psi = c(THETA_ka=0.52, THETA_V=0.56,
-                             THETA_Cl=7.33),
-                      Omega = lotri::lotri({eta_ka + eta_V + eta_Cl ~
+  psi = c(THETA_ka=0.52, THETA_V=0.56,THETA_Cl=7.33),
+  Omega = lotri::lotri({eta_ka + eta_V + eta_Cl ~
                           c(0.0289,
                            0     , 0.0256 ,
-                           0     ,-0.01792,  0.0400)})),
+                           0     ,-0.01792,  0.0400)}),
   covariates  = c("CLCREAT"),
   xi          = c(additive_a = 0.24, proportional_b = 0.27))
 

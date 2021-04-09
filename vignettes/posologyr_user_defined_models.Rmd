@@ -17,12 +17,12 @@ knitr::opts_chunk$set(
 This describes the structure of prior models usable by posologyr and illustrates how to define new models from published population pharmacokinetic (popPK) models.
 
 # Structure
-A posologyr prior popPK model is a list of five elements:
+A posologyr prior popPK model is a list of six objects:
 
 1. **ppk_model** a RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates}
 1. **error_model** a function of the residual error model
-1. **pk_prior** a list of 2. `psi`: a named vector of the population estimates of the fixed effects parameters (called THETAs, following NONMEM terminology),
-`Omega`: a named square variance-covariance matrix of the population parameters inter-individual variability}
+1. **psi*`** a named vector of the population estimates of the fixed effects parameters (called THETAs, following NONMEM terminology),
+1. **Omega** a named square variance-covariance matrix of the population parameters inter-individual variability}
 1. **covariates** a character vector of the covariates of the model
 1. **xi** the estimates of the parameters of the residual error model
 
@@ -67,16 +67,14 @@ error_model <- function(f,xi){     #additive model if xi[2] == 0
 }
 ```
 
-## pk_prior
-
-### psi
+## psi
 The estimations of the parameters for the fixed effects of the model (THETA), in a named vector. The names must match the names used in **ppk_model**.
 
 ```{r psi}
 psi = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4, THETA_Q=6.5)
 ```
 
-### Omega
+## Omega
 The variance-covariance matrix of the random effects (ETA) for the individual model. A symmetric matrix. The names must match the names used in **ppk_model**. The easiest way to define it is with `lotri::lotri`.
 
 The estimates of the variances of the random effects can be given under different parameterizations depending on the authors.
@@ -147,17 +145,12 @@ mod_vancomyin_2cpt_Goti2018 <- list(
     g <- xi[1] + xi[2]*f
     return(g)
   },
-  pk_prior    = list(psi = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,
-                             THETA_Q=6.5),
-                     Omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+  psi = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
+  Omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
                           c(0.147,
                            0     ,  0.510 ,
                            0     ,       0,   0.282,
-                           0     ,       0,       0,    0)})),
+                           0     ,       0,       0,    0)}),
   covariates  = c("CLCREAT","WT","DIAL"),
   xi          = c(additive_a = 3.4, proportional_b = 0.227))
-```
-
-```{r setup}
-library(posologyr)
 ```

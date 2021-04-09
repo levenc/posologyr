@@ -24,24 +24,24 @@
 #' with names corresponding to the defaults of posologyr functions.
 #'
 #' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of seven elements (see 'Details' for the description of the
+#'    list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
 #'
 #' @details
 #' The posologyr prior population pharmacokinetics model is a list of
-#' five elements:
+#' six objects:
 #' \describe{
 #'  \item{$ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{$error_model}{A function of the residual error model}
-#'  \item{$pk_prior}{A list of 2. `psi`: a named
-#'      vector of the population estimates of the fixed effects
-#'      parameters (called THETAs, following NONMEM terminology),
-#'      `Omega`: a named square variance-covariance matrix of the
+#'  \item{$psi}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{$Omega}{A named square variance-covariance matrix of the
 #'      population parameters inter-individual variability}
 #'  \item{$covariates}{A character vector of the covariates of
 #'      the model}
@@ -94,10 +94,9 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
            call. = FALSE)
     }
   }
-  pk_prior <- prior_model$pk_prior
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
-                                     c(pk_prior$psi,
-                                       diag(pk_prior$Omega)*0),
+                                     c(prior_model$psi,
+                                       diag(prior_model$Omega)*0),
                                      dat)
 
   # assign the objects of interest to the parent environment
