@@ -1,0 +1,88 @@
+---
+title: "Patient data input"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Patient data input}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+This describes the structure of patient records usable by `posologyr`.
+
+# Structure
+
+Data for input into `posologyr` is the same type of data input for RxODE::RxODE. As stated in the [RxODE documentation (RxODE datasets)](https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html), it is also similar to [data for NONMEM](https://doi.org/10.1002/psp4.12404).
+
+The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the [RxODE documentation (RxODE Event Types)](https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-event-types.html).
+
+Below is a minimal working example:
+
+```{r minimal_patient_df}
+data.frame(ID=1,
+           TIME=c(0.0,3),
+           DV=c(NA,60.0),
+           AMT=c(1000,0),
+           EVID=c(101,0))
+```
+
+## Required fields and data
+
+TIME
+: Dosing times, and sampling times of therapeutic drug monitoring (TDM). The units depend on the specification of the popPK model.
+
+AMT
+: Amount of drug administered. The units depend on the specification of the popPK model.
+
+EVID
+: Event type. Must be 0 for all observations (concentrations from therapeutic drug monitoring).
+
+DV 
+: For concentrations. Must be NA when EVID is not 0.
+
+Covariates
+: Every covariate defined in the prior `posologyr` model. The column labels must match the **covariate** vector.
+
+# Common use cases
+
+## Oral administration or IV bolus
+`EVID = 101` for an instantaneous administration in the first compartment defined in the popPK model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.
+
+```{r oral_IV_bolus_df}
+data.frame(ID=1,
+           TIME=c(0.0,3),
+           DV=c(NA,60.0),
+           AMT=c(1000,0),
+           EVID=c(101,0),
+           COVAR1=c("X"),
+           COVAR2=c("Y"))
+```
+
+## Intermittent infusion
+`EVID = 10102` for an infusion defined by its duration, administered in the first compartment defined in the popPK model.
+
+The `DUR` field is not mandatory. The end of the infusion is encoded by a negative amount record.
+
+`AMT` is the infusion rate in this scenario RATE = AMT/DUR, not the amount administered. 
+
+The total dose administered is `RATE*DUR = 1000*0.5 = 500`.
+
+```{r intermittent_infusion_df}
+data.frame(ID=1,
+           TIME=c(0.0,0.5,1.0,14.0),
+           DV=c(NA,NA,25.0,5.5),
+           AMT=c(1000,-1000,0,0),
+           EVID=c(10102,10102,0,0),
+           COVAR1=c("X"),
+           COVAR2=c("Y"))
+```
+
+## Steady-state
+TODO

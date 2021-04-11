@@ -14,34 +14,34 @@ knitr::opts_chunk$set(
 )
 ```
 # Introduction
-This describes the structure of prior models usable by posologyr and illustrates how to define new models from published population pharmacokinetic (popPK) models.
+This describes the structure of prior models usable by `posologyr` and illustrates how to define new models from published population pharmacokinetic (popPK) models.
 
 # Structure
-A posologyr prior popPK model is a list of six objects:
+A `posologyr` prior popPK model is a list of six objects:
 
-**ppk_model** 
-: A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
+ppk_model 
+: A RxODE::RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
 
-**error_model** 
+error_model 
 : A function of the residual error model
 
-**psi** 
-: A named vector of the population estimates of the fixed effects parameters (called THETAs, following NONMEM terminology),
+psi
+: A named vector of the population estimates of the fixed effects parameters (called THETAs, following [NONMEM terminology](https://doi.org/10.1002/psp4.12404))
 
-**omega** 
+omega 
 : A named square variance-covariance matrix of the population parameters inter-individual variability
 
-**covariates** 
+covariates 
 : A character vector of the covariates of the model
 
-**xi** 
+xi 
 : The estimates of the parameters of the residual error model
 
 # Definition of a prior model through an example
 The model to implement is a two-compartment popPK model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
 
 ## ppk_model
-A model defined in the RxODE mini-language. Posologyr needs a structural model, defined with either differential or algebraic equations, and an invidivual model.
+A model defined in the RxODE::RxODE mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an invidivual model.
 
 The concentration in the central compartment *must* be named Cc.
 
@@ -94,7 +94,7 @@ The estimates of the variances of the random effects can be given under differen
 * Coefficient of variation (CV): calculated as `sqrt(exp(SD^2)-1)`, the standard deviation can be computed back with `sqrt(log((CV^2)+1))`
 * Full covariance matrix: the easiest to reuse, but rarely seen in articles
 
-In the case of the vancomycin model, the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in **omega**.
+In the case of the [vancomycin model](https://doi.org/10.1097/FTD.0000000000000490), the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in **omega**.
 
 |Parameter |CV%  (from the article)|SD       |Variance = SD^2|
 |----------|:---------------------:|:-------:|:-------------:|
@@ -130,7 +130,7 @@ xi          = c(additive_a = 3.4, proportional_b = 0.227)
 ```
 
 ## Full model
-The posologyr model is the list of all these objects.
+The `posologyr` model is the list of all these objects.
 
 ```{r vancomycin_pososlogyr_model_list}
 mod_vancomyin_2cpt_Goti2018 <- list(
@@ -165,6 +165,8 @@ mod_vancomyin_2cpt_Goti2018 <- list(
   covariates  = c("CLCREAT","WT","DIAL"),
   xi          = c(additive_a = 3.4, proportional_b = 0.227))
 ```
+
+### Resulting R object
 
 ```{r vancomycin_pososlogyr_model}
 mod_vancomyin_2cpt_Goti2018

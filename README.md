@@ -49,8 +49,8 @@ devtools::install_github("levenc/posologyr")
 This example of bayesian dosage adaptation is based on a fictitious
 popPK model of tobramycin, and data of therapeutic drug monitoring.
 
-Patient data (here: Michel’s lab results) are organised in a dataframe
-following RxODE conventions.
+Patient data (here: Michel’s lab results) are organised in [a dataframe
+following RxODE conventions](vignettes/patient_data_input.Rmd).
 
 ``` r
 library(posologyr)
@@ -59,14 +59,13 @@ df_michel <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
                         DV=c(NA,NA,25.0,5.5),
                         AMT=c(1000,-1000,0,0),
                         EVID=c(10102,10102,0,0),
-                        DUR=c(0.5,0.5,NA,NA),
                         CLCREAT=80,WT=65)
 df_michel
-#>   ID TIME   DV   AMT  EVID DUR CLCREAT WT
-#> 1  1  0.0   NA  1000 10102 0.5      80 65
-#> 2  1  0.5   NA -1000 10102 0.5      80 65
-#> 3  1  1.0 25.0     0     0  NA      80 65
-#> 4  1 14.0  5.5     0     0  NA      80 65
+#>   ID TIME   DV   AMT  EVID CLCREAT WT
+#> 1  1  0.0   NA  1000 10102      80 65
+#> 2  1  0.5   NA -1000 10102      80 65
+#> 3  1  1.0 25.0     0     0      80 65
+#> 4  1 14.0  5.5     0     0      80 65
 ```
 
 TIME is in hours, AMT is a rate in milligram/hour for the zero-order
@@ -74,7 +73,8 @@ infusion of duration 0.5 hours: 500 mg of tobramycin are administered
 over 30 minutes.
 
 The sample tobramycin prior model is supplied with `posologyr`.
-Following the same structure, user-defined models can be added.
+Following the same structure, [user-defined models can be
+added](vignettes/posologyr_user_defined_models.Rmd).
 
 The `load_ppk_model()` function initialises the objects to be used by
 `posologyr`.

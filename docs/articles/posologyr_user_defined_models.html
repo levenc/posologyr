@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/patient_data_input.html">Patient data input</a>
+    </li>
+    <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
     </li>
   </ul>
@@ -92,29 +95,29 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This describes the structure of prior models usable by posologyr and illustrates how to define new models from published population pharmacokinetic (popPK) models.</p>
+<p>This describes the structure of prior models usable by <code>posologyr</code> and illustrates how to define new models from published population pharmacokinetic (popPK) models.</p>
 </div>
 <div id="structure" class="section level1">
 <h1 class="hasAnchor">
 <a href="#structure" class="anchor"></a>Structure</h1>
-<p>A posologyr prior popPK model is a list of six objects:</p>
+<p>A <code>posologyr</code> prior popPK model is a list of six objects:</p>
 <dl>
-<dt><strong>ppk_model</strong></dt>
-<dd>A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
+<dt>ppk_model</dt>
+<dd>A RxODE::RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
 </dd>
-<dt><strong>error_model</strong></dt>
+<dt>error_model</dt>
 <dd>A function of the residual error model
 </dd>
-<dt><strong>psi</strong></dt>
-<dd>A named vector of the population estimates of the fixed effects parameters (called THETAs, following NONMEM terminology),
+<dt>psi</dt>
+<dd>A named vector of the population estimates of the fixed effects parameters (called THETAs, following <a href="https://doi.org/10.1002/psp4.12404">NONMEM terminology</a>)
 </dd>
-<dt><strong>omega</strong></dt>
+<dt>omega</dt>
 <dd>A named square variance-covariance matrix of the population parameters inter-individual variability
 </dd>
-<dt><strong>covariates</strong></dt>
+<dt>covariates</dt>
 <dd>A character vector of the covariates of the model
 </dd>
-<dt><strong>xi</strong></dt>
+<dt>xi</dt>
 <dd>The estimates of the parameters of the residual error model
 </dd>
 </dl>
@@ -126,7 +129,7 @@
 <div id="ppk_model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ppk_model" class="anchor"></a>ppk_model</h2>
-<p>A model defined in the RxODE mini-language. Posologyr needs a structural model, defined with either differential or algebraic equations, and an invidivual model.</p>
+<p>A model defined in the RxODE::RxODE mini-language. <code>posologyr</code> needs a structural model, defined with either differential or algebraic equations, and an invidivual model.</p>
 <p>The concentration in the central compartment <em>must</em> be named Cc.</p>
 <p>The differential function <code>d/dt(AUC) =  Cc;</code> is needed for the optimisation function <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -177,7 +180,7 @@
 </li>
 <li>Full covariance matrix: the easiest to reuse, but rarely seen in articles</li>
 </ul>
-<p>In the case of the vancomycin model, the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in <strong>omega</strong>.</p>
+<p>In the case of the <a href="https://doi.org/10.1097/FTD.0000000000000490">vancomycin model</a>, the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in <strong>omega</strong>.</p>
 <table class="table">
 <thead><tr class="header">
 <th>Parameter</th>
@@ -232,7 +235,7 @@
 <div id="full-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#full-model" class="anchor"></a>Full model</h2>
-<p>The posologyr model is the list of all these objects.</p>
+<p>The <code>posologyr</code> model is the list of all these objects.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mod_vancomyin_2cpt_Goti2018</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
   ppk_model   <span class="op">=</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html">RxODE</a></span><span class="op">(</span><span class="op">{</span>
@@ -265,10 +268,13 @@
                            <span class="fl">0</span>     ,       <span class="fl">0</span>,       <span class="fl">0</span>,    <span class="fl">0</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,
   covariates  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CLCREAT"</span>,<span class="st">"WT"</span>,<span class="st">"DIAL"</span><span class="op">)</span>,
   xi          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div id="resulting-r-object" class="section level3">
+<h3 class="hasAnchor">
+<a href="#resulting-r-object" class="anchor"></a>Resulting R object</h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mod_vancomyin_2cpt_Goti2018</span>
 <span class="co">#&gt; $ppk_model</span>
-<span class="co">#&gt; RxODE NA model named rx_7ef8a42da496251e55a9add28946b338 model (✓ ready). </span>
+<span class="co">#&gt; RxODE NA model named rx_fade7d4e3299aba40c652ec8fce10461 model (✓ ready). </span>
 <span class="co">#&gt; $state: centr, periph, AUC</span>
 <span class="co">#&gt; $params: THETA_Cl, CLCREAT, DIAL, THETA_Vc, WT, THETA_Vp, THETA_Q, ETA_Cl, ETA_Vc, ETA_Vp</span>
 <span class="co">#&gt; $lhs: TVCl, TVVc, TVVp, TVQ, Cl, Vc, Vp, Q, ke, k12, k21, Cc</span>
@@ -296,6 +302,7 @@
 <span class="co">#&gt; $xi</span>
 <span class="co">#&gt;     additive_a proportional_b </span>
 <span class="co">#&gt;          3.400          0.227</span></code></pre></div>
+</div>
 </div>
 </div>
   </div>
