@@ -321,9 +321,9 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
   error_model <- prior_model$error_model
 
   y_obs       <- dat$DV[dat$EVID == 0]        # only observations
-  ind_eta     <- which(diag(omega)>0)   # only parameters with IIV
+  ind_eta     <- which(diag(omega)>0)         # only parameters with IIV
   nb_etas     <- length(ind_eta)
-  omega_eta   <- omega[ind_eta,ind_eta] # only variances > 0
+  omega_eta   <- omega[ind_eta,ind_eta]       # only variances > 0
   solve_omega <- try(solve(omega_eta))        # inverse of omega_eta
   d_omega     <- diag(omega_eta)*0.3
 
