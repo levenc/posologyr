@@ -100,7 +100,7 @@
 <div id="structure" class="section level1">
 <h1 class="hasAnchor">
 <a href="#structure" class="anchor"></a>Structure</h1>
-<p>Data for input into <code>posologyr</code> is the same type of data input for RxODE::RxODE. As stated in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html">RxODE documentation (RxODE datasets)</a>, it is also similar to <a href="https://doi.org/10.1002/psp4.12404">data for NONMEM</a>.</p>
+<p>Data for input into <code>posologyr</code> is the same type of data input for RxODE. As stated in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html">RxODE documentation (RxODE datasets)</a>, it is also similar to <a href="https://doi.org/10.1002/psp4.12404">data for NONMEM</a>.</p>
 <p>The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-event-types.html">RxODE documentation (RxODE Event Types)</a>.</p>
 <p>Below is a minimal working example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -123,7 +123,7 @@
 <dd>Amount of drug administered. The units depend on the specification of the popPK model.
 </dd>
 <dt>EVID</dt>
-<dd>Event type. Must be 0 for all observations (concentrations from therapeutic drug monitoring).
+<dd>Event type. Must be 0 for all observations (concentrations from TDM).
 </dd>
 <dt>DV</dt>
 <dd>For concentrations. Must be NA when EVID is not 0.

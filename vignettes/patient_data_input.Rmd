@@ -18,8 +18,7 @@ knitr::opts_chunk$set(
 This describes the structure of patient records usable by `posologyr`.
 
 # Structure
-
-Data for input into `posologyr` is the same type of data input for RxODE::RxODE. As stated in the [RxODE documentation (RxODE datasets)](https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html), it is also similar to [data for NONMEM](https://doi.org/10.1002/psp4.12404).
+Data for input into `posologyr` is the same type of data input for RxODE. As stated in the [RxODE documentation (RxODE datasets)](https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html), it is also similar to [data for NONMEM](https://doi.org/10.1002/psp4.12404).
 
 The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the [RxODE documentation (RxODE Event Types)](https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-event-types.html).
 
@@ -42,7 +41,7 @@ AMT
 : Amount of drug administered. The units depend on the specification of the popPK model.
 
 EVID
-: Event type. Must be 0 for all observations (concentrations from therapeutic drug monitoring).
+: Event type. Must be 0 for all observations (concentrations from TDM).
 
 DV 
 : For concentrations. Must be NA when EVID is not 0.
@@ -51,7 +50,6 @@ Covariates
 : Every covariate defined in the prior `posologyr` model. The column labels must match the **covariate** vector.
 
 # Common use cases
-
 ## Oral administration or IV bolus
 `EVID = 101` for an instantaneous administration in the first compartment defined in the popPK model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.
 
@@ -84,5 +82,5 @@ data.frame(ID=1,
            COVAR2=c("Y"))
 ```
 
-## Steady-state
+## Steady state
 TODO

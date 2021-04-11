@@ -122,7 +122,7 @@
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>This example of bayesian dosage adaptation is based on a fictitious popPK model of tobramycin, and data of therapeutic drug monitoring.</p>
-<p>Patient data (here: Michel’s lab results) are organised in a dataframe following RxODE conventions.</p>
+<p>Patient data (here: Michel’s lab results) are organised in <a href="vignettes/patient_data_input.Rmd">a dataframe following RxODE conventions</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/levenc/posologyr">posologyr</a></span><span class="op">)</span>
 
@@ -130,16 +130,15 @@
                         DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,
                         AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="op">-</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
                         EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10102</span>,<span class="fl">10102</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-                        DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
                         CLCREAT<span class="op">=</span><span class="fl">80</span>,WT<span class="op">=</span><span class="fl">65</span><span class="op">)</span>
 <span class="va">df_michel</span>
-<span class="co">#&gt;   ID TIME   DV   AMT  EVID DUR CLCREAT WT</span>
-<span class="co">#&gt; 1  1  0.0   NA  1000 10102 0.5      80 65</span>
-<span class="co">#&gt; 2  1  0.5   NA -1000 10102 0.5      80 65</span>
-<span class="co">#&gt; 3  1  1.0 25.0     0     0  NA      80 65</span>
-<span class="co">#&gt; 4  1 14.0  5.5     0     0  NA      80 65</span></code></pre></div>
+<span class="co">#&gt;   ID TIME   DV   AMT  EVID CLCREAT WT</span>
+<span class="co">#&gt; 1  1  0.0   NA  1000 10102      80 65</span>
+<span class="co">#&gt; 2  1  0.5   NA -1000 10102      80 65</span>
+<span class="co">#&gt; 3  1  1.0 25.0     0     0      80 65</span>
+<span class="co">#&gt; 4  1 14.0  5.5     0     0      80 65</span></code></pre></div>
 <p>TIME is in hours, AMT is a rate in milligram/hour for the zero-order infusion of duration 0.5 hours: 500 mg of tobramycin are administered over 30 minutes.</p>
-<p>The sample tobramycin prior model is supplied with <code>posologyr</code>. Following the same structure, user-defined models can be added.</p>
+<p>The sample tobramycin prior model is supplied with <code>posologyr</code>. Following the same structure, <a href="vignettes/posologyr_user_defined_models.Rmd">user-defined models can be added</a>.</p>
 <p>The <code><a href="reference/load_ppk_model.html">load_ppk_model()</a></code> function initialises the objects to be used by <code>posologyr</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/load_ppk_model.html">load_ppk_model</a></span><span class="op">(</span><span class="va">mod_tobramycin_2cpt_fictional</span>,<span class="va">df_michel</span><span class="op">)</span>
