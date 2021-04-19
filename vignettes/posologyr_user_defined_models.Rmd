@@ -20,7 +20,7 @@ This describes the structure of prior models usable by `posologyr` and illustrat
 A `posologyr` prior popPK model is a list of six objects:
 
 ppk_model 
-: A RxODE::RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
+: A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
 
 error_model 
 : A function of the residual error model
