@@ -189,7 +189,8 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 poso_dose_auc <- function(solved_model=solved_ppk_model,
                           prior_model=prior_ppk_model,dat=dat_posologyr,
                           param_map=NULL,time_auc=NULL,
-                          starting_dose=100,target_auc=NULL){
+                          starting_dose=100,duration=NULL,
+                          target_auc=NULL){
 
   if (is.null(param_map)){ #psi_pop + MAP estimates of eta + covariates
     if (!is.null(solved_model)){
@@ -202,9 +203,9 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
   }
 
   err_dose <- function(dose,time_auc,target_auc,prior_model,
-                      param_map){
+                       duration=duration,param_map){
    #compute the individual time-concentration profile
-   event_table_auc <- RxODE::et(time=0,amt=dose)
+   event_table_auc <- RxODE::et(time=0,amt=dose,dur=duration)
    event_table_auc$add.sampling(time_auc)
 
    auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
@@ -217,8 +218,8 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 
  optim_dose_auc <- optim(starting_dose,err_dose,time_auc=time_auc,
                          target_auc=target_auc,prior_model=prior_model,
-                         param_map=param_map,method="Brent",lower=0,
-                         upper=1e5)
+                         duration=duration,param_map=param_map,
+                         method="Brent",lower=0,upper=1e5)
 
  return(optim_dose_auc$par)
 }
@@ -240,7 +241,8 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'    a list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records
+#'     structure of NONMEM/RxODE event records. May be omitted
+#'     if a vector of individual parameters `param_map` is provided
 #' @param param_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
 #'     provided, in which case the \code{\link{poso_estim_map}} function will be

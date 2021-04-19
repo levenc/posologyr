@@ -12,6 +12,7 @@ poso_dose_auc(
   param_map = NULL,
   time_auc = NULL,
   starting_dose = 100,
+  duration = NULL,
   target_auc = NULL
 )
 }
