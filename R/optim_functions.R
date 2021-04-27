@@ -31,7 +31,8 @@
 #'    a list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records
+#'     structure of NONMEM/RxODE event records. May be omitted
+#'     if a vector of individual parameters `param_map` is provided
 #' @param param_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
 #'     provided, in which case the \code{\link{poso_estim_map}} function
@@ -134,7 +135,8 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'    a list of six objects (see 'Details' for the description of the
 #'    object)
 #' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records
+#'     structure of NONMEM/RxODE event records. May be omitted
+#'     if a vector of individual parameters `param_map` is provided
 #' @param param_map A vector of individual parameters. May be omitted
 #'     if a `solved_model` and an individual event record `dat` are
 #'     provided, in which case the \code{\link{poso_estim_map}} function will be
@@ -143,6 +145,8 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'     is to be optimized. The AUC is computed from 0 to `time_auc`
 #' @param starting_dose numeric starting dose for the optimization
 #'     algorithm
+#' @param duration a numeric duration of infusion, for zero-order
+#'     administrations
 #' @param target_auc a numeric target AUC
 #'
 #' @details
@@ -248,7 +252,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'     provided, in which case the \code{\link{poso_estim_map}} function will be
 #'     called
 #' @param time_c a numeric point in time for which the dose is to be
-#'     optimized.
+#'     optimized
 #' @param starting_dose numeric starting dose for the optimization
 #'     algorithm
 #' @param duration a numeric duration of infusion, for zero-order

@@ -37,7 +37,7 @@ provided, in which case the \code{\link{poso_estim_map}} function will be
 called}
 
 \item{time_c}{a numeric point in time for which the dose is to be
-optimized.}
+optimized}
 
 \item{starting_dose}{numeric starting dose for the optimization
 algorithm}

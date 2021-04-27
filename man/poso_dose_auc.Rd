@@ -28,7 +28,8 @@ a list of six objects (see 'Details' for the description of the
 object)}
 
 \item{dat}{Dataframe. An individual subject dataset following the
-structure of NONMEM/RxODE event records}
+structure of NONMEM/RxODE event records. May be omitted
+if a vector of individual parameters \code{param_map} is provided}
 
 \item{param_map}{A vector of individual parameters. May be omitted
 if a \code{solved_model} and an individual event record \code{dat} are
@@ -40,6 +41,9 @@ is to be optimized. The AUC is computed from 0 to \code{time_auc}}
 
 \item{starting_dose}{numeric starting dose for the optimization
 algorithm}
+
+\item{duration}{a numeric duration of infusion, for zero-order
+administrations}
 
 \item{target_auc}{a numeric target AUC}
 }
