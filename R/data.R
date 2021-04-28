@@ -28,7 +28,7 @@
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -54,7 +54,7 @@
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the

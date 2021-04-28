@@ -61,7 +61,7 @@
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -96,7 +96,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
                            param_map=NULL,from=0.2,
                            last_time=72,dose=NULL,duration=NULL,target_cmin=NULL){
 
-  if (is.null(param_map)){ #psi_pop + MAP estimates of eta + covariates
+  if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
     if (!is.null(solved_model)){
       model_map <- poso_estim_map(solved_model,prior_model,dat,return_model = TRUE)
       param_map <- model_map[[2]]$params
@@ -162,7 +162,7 @@ poso_time_cmin <- function(solved_model=solved_ppk_model,
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -196,7 +196,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
                           starting_dose=100,duration=NULL,
                           target_auc=NULL){
 
-  if (is.null(param_map)){ #psi_pop + MAP estimates of eta + covariates
+  if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
     if (!is.null(solved_model)){
       model_map <- poso_estim_map(solved_model,prior_model,dat,return_model = TRUE)
       param_map <- model_map[[2]]$params
@@ -272,7 +272,7 @@ poso_dose_auc <- function(solved_model=solved_ppk_model,
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -307,7 +307,7 @@ poso_dose_ctime <- function(solved_model=solved_ppk_model,
                           param_map=NULL,time_c=NULL,starting_dose=100,
                           duration=NULL,target_conc=NULL){
 
-  if (is.null(param_map)){ #psi_pop + MAP estimates of eta + covariates
+  if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
     if (!is.null(solved_model)){
       model_map <- poso_estim_map(solved_model,prior_model,dat,return_model = TRUE)
       param_map <- model_map[[2]]$params

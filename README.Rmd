@@ -75,7 +75,7 @@ load_ppk_model(mod_tobramycin_2cpt_fictional,df_michel)
 The estimates of the fixed effects parameters are available from the prior model.
 
 ```{r TV parameters}
-prior_ppk_model$psi
+prior_ppk_model$theta
 ```
 
 The MAP estimates of the individual ETAs and PK parameters can be computed easily.

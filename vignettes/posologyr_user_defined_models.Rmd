@@ -25,7 +25,7 @@ ppk_model
 error_model 
 : A function of the residual error model
 
-psi
+theta
 : A named vector of the population estimates of the fixed effects parameters (called THETAs, following [NONMEM terminology](https://doi.org/10.1002/psp4.12404))
 
 omega 
@@ -78,11 +78,11 @@ error_model <- function(f,xi){     #additive model if xi[2] == 0
 }
 ```
 
-## psi
+## theta
 The estimations of the parameters for the fixed effects of the model (THETA), in a named vector. The names must match the names used in **ppk_model**.
 
-```{r psi}
-psi = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4, THETA_Q=6.5)
+```{r theta}
+theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4, THETA_Q=6.5)
 ```
 
 ## omega
@@ -156,7 +156,7 @@ mod_vancomyin_2cpt_Goti2018 <- list(
     g <- xi[1] + xi[2]*f
     return(g)
   },
-  psi = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
+  theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
   omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
                           c(0.147,
                            0     ,  0.510 ,

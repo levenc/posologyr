@@ -82,7 +82,6 @@ The `load_ppk_model()` function initialises the objects to be used by
 
 ``` r
 load_ppk_model(mod_tobramycin_2cpt_fictional,df_michel)
-#> Invalid RxODE model, trying to recompile...Success 
 #>  Full model + prior information loaded as prior_ppk_model 
 #>  Solved model created as solved_ppk_model 
 #>  Dataset loaded as dat_posologyr
@@ -92,7 +91,7 @@ The estimates of the fixed effects parameters are available from the
 prior model.
 
 ``` r
-prior_ppk_model$psi
+prior_ppk_model$theta
 #>  THETA_ke   THETA_V THETA_k12 THETA_k21 
 #>     0.210    19.800     0.041     0.120
 ```
@@ -118,10 +117,11 @@ poso_estim_map()
 #>      0      0      0 
 #> ── First part of data (object): ────────────────────────────────────────────────
 #> # A tibble: 2 x 13
-#>    time  TVke   TVV TVk12 TVk21    ke     V   k12   k21    Cc centr periph   AUC
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>
-#> 1     1 0.249  19.5 0.041  0.12 0.126  18.2 0.041  0.12 24.3  442.    13.8  19.3
-#> 2    14 0.249  19.5 0.041  0.12 0.126  18.2 0.041  0.12  4.52  82.3   46.4 162. 
+#>    time tTVke  tTVV tTVk12 tTVk21    ke     V   k12   k21    Cc centr periph
+#>   <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
+#> 1     1 -1.39  2.97  -3.19  -2.12 0.126  18.2 0.041  0.12 24.3  442.    13.8
+#> 2    14 -1.39  2.97  -3.19  -2.12 0.126  18.2 0.041  0.12  4.52  82.3   46.4
+#> # … with 1 more variable: AUC <dbl>
 #> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ```
 

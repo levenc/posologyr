@@ -11,7 +11,8 @@ poso_estim_mcmc(
   return_model = TRUE,
   burn_in = 20,
   n_iter = 219,
-  control = list(n_kernel = c(2, 2), stepsize_rw = 0.4, proba_mcmc = 0.4, nb_max = 3)
+  control = list(n_kernel = c(2, 2, 2), stepsize_rw = 0.4, proba_mcmc = 0.3, nb_max =
+    3)
 )
 }
 \arguments{
@@ -59,7 +60,7 @@ population pharmacokinetics model with the individual model
 (i.e. the model of inter-individual variability) and the
 covariates}
 \item{error_model}{A function of the residual error model}
-\item{psi}{A named vector of the population estimates of the
+\item{theta}{A named vector of the population estimates of the
 fixed effects parameters (called THETAs, following NONMEM
 terminology)}
 \item{omega}{A named square variance-covariance matrix of the

@@ -25,7 +25,7 @@
 #   - deletion of shiny-specific parts
 #   - variable names changed to snake_case
 #   - square matrix taken as input, not diagonal
-#   - functions return values for both etas and psi
+#   - functions return values for both etas and theta
 #-------------------------------------------------------------------------
 
 #' Estimate the prior distribution of population parameters
@@ -56,7 +56,7 @@
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -108,10 +108,10 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 
   if(return_model){
     model_pop         <- solved_model
-    psi               <- rbind(prior_model$psi)
+    theta             <- rbind(prior_model$theta)
     covar             <- dat[1,prior_model$covariates]
     names(covar)      <- prior_model$covariates
-    model_pop$params  <- cbind(psi,eta_df,covar,row.names = NULL)
+    model_pop$params  <- cbind(theta,eta_df,covar,row.names = NULL)
     eta_pop           <- list(eta_df,model_pop)
   } else {
     eta_pop           <- eta_df
@@ -150,7 +150,7 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -191,12 +191,12 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     return(model$Cc)
     }
 
-  errpred <- function(eta_estim,run_model,y,psi,ind_eta,xi,solve_omega){
+  errpred <- function(eta_estim,run_model,y,theta,ind_eta,xi,solve_omega){
     eta          <- diag(omega)*0
     eta[ind_eta] <- eta_estim
 
     #simulated concentrations with the proposed eta estimates
-    f <- do.call(run_model,list(c(psi,eta)))
+    f <- do.call(run_model,list(c(theta,eta)))
     g <- error_model(f,xi)
 
     #http://sia.webpopix.org/nlme.html#estimation-of-the-individual-parameters
@@ -210,7 +210,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     }
 
   omega       <- prior_model$omega
-  psi         <- prior_model$psi
+  theta       <- prior_model$theta
   xi          <- prior_model$xi
   error_model <- prior_model$error_model
 
@@ -220,7 +220,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
   solve_omega <- try(solve(omega_eta))         # inverse of omega_eta
   start_eta   <- diag(omega_eta)*0             # get a named vector of zeroes
 
-  r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,psi=psi,
+  r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
              ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
 
   eta_map            <- diag(omega)*0
@@ -230,7 +230,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     model_map        <- solved_model
     covar            <- t(dat[1,prior_model$covariates]) #results in a matrix
     names(covar)     <- prior_model$covariates
-    model_map$params <- c(psi,eta_map,covar)
+    model_map$params <- c(theta,eta_map,covar)
     estim_map        <- list(eta_map,model_map)
   } else {
     estim_map        <- eta_map
@@ -274,7 +274,7 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -331,9 +331,9 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
   VK          <- rep(c(1:nb_etas),2)
 
   # Metropolis-Hastings algorithm------------------------------------------
-  psi      <- prior_model$psi
+  theta    <- prior_model$theta
   eta      <- diag(omega_eta)*0
-  f        <- do.call(run_model,list(c(psi,eta)))
+  f        <- do.call(run_model,list(c(theta,eta)))
   g        <- error_model(f,xi)
   U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
   U_eta    <- 0.5 * eta %*% solve_omega %*% eta
@@ -349,7 +349,7 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
       {
         etac <- as.vector(chol_omega%*%rnorm(nb_etas))
         names(etac)   <- attr(omega_eta,"dimnames")[[1]]
-        f             <- do.call(run_model,list(c(psi,etac)))
+        f             <- do.call(run_model,list(c(theta,etac)))
         g             <- error_model(f,xi)
         Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
         deltu         <- Uc_y - U_y
@@ -376,7 +376,7 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
             vk2           <- jr%%nb_etas + 1
             etac          <- eta
             etac[vk2]     <- eta[vk2] + rnorm(nrs2)*d_omega[vk2]
-            f             <- do.call(run_model,list(c(psi,etac)))
+            f             <- do.call(run_model,list(c(theta,etac)))
             g             <- error_model(f,xi)
             Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
             Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
@@ -409,7 +409,7 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
           vk2             <- VK[k2+vk]
           etac            <- eta
           etac[vk2]       <- eta[vk2]+matrix(rnorm(nrs2), ncol=nrs2)%*%diag(d_omega[vk2])
-          f               <- do.call(run_model,list(c(psi,etac)))
+          f               <- do.call(run_model,list(c(theta,etac)))
           g               <- error_model(f,xi)
           Uc_y            <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
           Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
@@ -431,10 +431,10 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
 
   if(return_model){
     model_mcmc        <- solved_model
-    psi_return        <- rbind(psi)
+    theta_return        <- rbind(theta)
     covar             <- dat[1,prior_model$covariates]
     names(covar)      <- prior_model$covariates
-    model_mcmc$params <- cbind(psi_return,eta_df_mcmc,covar,row.names = NULL)
+    model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names = NULL)
     estim_mcmc        <- list(eta_df_mcmc,model_mcmc)
   } else {
     estim_mcmc        <- eta_df_mcmc

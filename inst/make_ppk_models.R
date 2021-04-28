@@ -36,7 +36,7 @@ mod_tobramycin_2cpt_fictional <- list(
     g <- xi[1] + xi[2]*f
     return(g)
   },
-  psi = c(THETA_ke=0.21, THETA_V=19.8,THETA_k12=0.041, THETA_k21=0.12),
+  theta = c(THETA_ke=0.21, THETA_V=19.8,THETA_k12=0.041, THETA_k21=0.12),
   omega = lotri::lotri({ETA_ke + ETA_V + ETA_k12 + ETA_k21 ~
                           c(0.08075,
                             0      , 0.01203,
@@ -65,7 +65,7 @@ mod_amoxicillin_oral_1cpt_fictional <- list(
     g <- xi[1] + xi[2]*f
     return(g)
   },
-  psi = c(THETA_ka=0.52, THETA_V=0.56,THETA_Cl=7.33),
+  theta = c(THETA_ka=0.52, THETA_V=0.56,THETA_Cl=7.33),
   omega = lotri::lotri({ETA_ka + ETA_V + ETA_Cl ~
                           c(0.0289,
                            0     , 0.0256 ,

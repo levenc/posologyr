@@ -38,7 +38,7 @@
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
 #'  \item{error_model}{A function of the residual error model}
-#'  \item{psi}{A named vector of the population estimates of the
+#'  \item{theta}{A named vector of the population estimates of the
 #'      fixed effects parameters (called THETAs, following NONMEM
 #'      terminology)}
 #'  \item{omega}{A named square variance-covariance matrix of the
@@ -95,7 +95,7 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
     }
   }
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
-                                     c(prior_model$psi,
+                                     c(prior_model$theta,
                                        diag(prior_model$omega)*0),
                                      dat)
 

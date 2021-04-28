@@ -7,7 +7,7 @@ df_michel <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
 mod_tobra <- mod_tobramycin_2cpt_fictional
 
 solved_model_tobra <- RxODE::rxSolve(mod_tobra$ppk_model,
-                                   c(mod_tobra$psi,
+                                   c(mod_tobra$theta,
                                      diag(mod_tobra$omega)*0),
                                    df_michel)
 
