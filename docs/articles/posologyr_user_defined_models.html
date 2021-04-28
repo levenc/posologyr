@@ -103,12 +103,12 @@
 <p>A <code>posologyr</code> prior popPK model is a list of six objects:</p>
 <dl>
 <dt>ppk_model</dt>
-<dd>A RxODE::RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
+<dd>A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
 </dd>
 <dt>error_model</dt>
 <dd>A function of the residual error model
 </dd>
-<dt>psi</dt>
+<dt>theta</dt>
 <dd>A named vector of the population estimates of the fixed effects parameters (called THETAs, following <a href="https://doi.org/10.1002/psp4.12404">NONMEM terminology</a>)
 </dd>
 <dt>omega</dt>
@@ -162,12 +162,12 @@
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="psi" class="section level2">
+<div id="theta" class="section level2">
 <h2 class="hasAnchor">
-<a href="#psi" class="anchor"></a>psi</h2>
+<a href="#theta" class="anchor"></a>theta</h2>
 <p>The estimations of the parameters for the fixed effects of the model (THETA), in a named vector. The names must match the names used in <strong>ppk_model</strong>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">psi</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.5</span>, THETA_Vc<span class="op">=</span><span class="fl">58.4</span>, THETA_Vp<span class="op">=</span><span class="fl">38.4</span>, THETA_Q<span class="op">=</span><span class="fl">6.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">theta</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.5</span>, THETA_Vc<span class="op">=</span><span class="fl">58.4</span>, THETA_Vp<span class="op">=</span><span class="fl">38.4</span>, THETA_Q<span class="op">=</span><span class="fl">6.5</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="omega" class="section level2">
 <h2 class="hasAnchor">
@@ -260,7 +260,7 @@
     <span class="va">g</span> <span class="op">&lt;-</span> <span class="va">xi</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">xi</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">f</span>
     <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>
   <span class="op">}</span>,
-  psi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.5</span>, THETA_Vc<span class="op">=</span><span class="fl">58.4</span>, THETA_Vp<span class="op">=</span><span class="fl">38.4</span>,THETA_Q<span class="op">=</span><span class="fl">6.5</span><span class="op">)</span>,
+  theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.5</span>, THETA_Vc<span class="op">=</span><span class="fl">58.4</span>, THETA_Vp<span class="op">=</span><span class="fl">38.4</span>,THETA_Q<span class="op">=</span><span class="fl">6.5</span><span class="op">)</span>,
   omega <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Vp</span> <span class="op">+</span> <span class="va">ETA_Q</span> <span class="op">~</span>
                           <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.147</span>,
                            <span class="fl">0</span>     ,  <span class="fl">0.510</span> ,
@@ -285,7 +285,7 @@
 <span class="co">#&gt;     return(g)</span>
 <span class="co">#&gt;   }</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; $psi</span>
+<span class="co">#&gt; $theta</span>
 <span class="co">#&gt; THETA_Cl THETA_Vc THETA_Vp  THETA_Q </span>
 <span class="co">#&gt;      4.5     58.4     38.4      6.5 </span>
 <span class="co">#&gt; </span>

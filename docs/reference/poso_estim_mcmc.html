@@ -96,6 +96,9 @@ Chain Monte Carlo (using a Metropolis-Hastings algorithm)" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/patient_data_input.html">Patient data input</a>
+    </li>
+    <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
     </li>
   </ul>
@@ -138,7 +141,8 @@ Chain Monte Carlo (using a Metropolis-Hastings algorithm)</p>
   return_model <span class='op'>=</span> <span class='cn'>TRUE</span>,
   burn_in <span class='op'>=</span> <span class='fl'>20</span>,
   n_iter <span class='op'>=</span> <span class='fl'>219</span>,
-  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>n_kernel <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>, stepsize_rw <span class='op'>=</span> <span class='fl'>0.4</span>, proba_mcmc <span class='op'>=</span> <span class='fl'>0.4</span>, nb_max <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>n_kernel <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>, stepsize_rw <span class='op'>=</span> <span class='fl'>0.4</span>, proba_mcmc <span class='op'>=</span> <span class='fl'>0.3</span>, nb_max <span class='op'>=</span>
+    <span class='fl'>3</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -197,7 +201,7 @@ population pharmacokinetics model with the individual model
 (i.e. the model of inter-individual variability) and the
 covariates</p></dd>
 <dt>error_model</dt><dd><p>A function of the residual error model</p></dd>
-<dt>psi</dt><dd><p>A named vector of the population estimates of the
+<dt>theta</dt><dd><p>A named vector of the population estimates of the
 fixed effects parameters (called THETAs, following NONMEM
 terminology)</p></dd>
 <dt>omega</dt><dd><p>A named square variance-covariance matrix of the
@@ -210,7 +214,7 @@ the model</p></dd>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># df_michel: event table for Michel, following a 30 minutes intravenous</span>
+    <pre class="examples"><div class='input'><span class='co'># df_michel: event table for Michel, following a 30 minutes intravenous</span>
 <span class='co'># infusion of tobramycin</span>
 <span class='va'>df_michel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>ID<span class='op'>=</span><span class='fl'>1</span>,
                         TIME<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>,<span class='fl'>0.5</span>,<span class='fl'>1.0</span>,<span class='fl'>14.0</span><span class='op'>)</span>,
@@ -221,10 +225,12 @@ the model</p></dd>
                         CLCREAT<span class='op'>=</span><span class='fl'>80</span>,WT<span class='op'>=</span><span class='fl'>65</span><span class='op'>)</span>
 <span class='co'># loading a tobramycin model and Michel's event record</span>
 <span class='fu'><a href='load_ppk_model.html'>load_ppk_model</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,dat<span class='op'>=</span><span class='va'>df_michel</span><span class='op'>)</span>
-<span class='co'># estimate the posterior distribution of population parameters</span>
+</div><div class='output co'>#&gt;  Full model + prior information loaded as <span style='color: #00BB00;font-weight: bold;'>prior_ppk_model</span><span> 
+#&gt;  Solved model created as </span><span style='color: #00BB00;font-weight: bold;'>solved_ppk_model</span><span> 
+#&gt;  Dataset loaded as </span><span style='color: #00BB00;font-weight: bold;'>dat_posologyr</span><span> </div><div class='input'><span class='co'># estimate the posterior distribution of population parameters</span>
 <span class='fu'>poso_estim_mcmc</span><span class='op'>(</span>n_iter<span class='op'>=</span><span class='fl'>100</span><span class='op'>)</span>
-
-</pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in poso_estim_mcmc(n_iter = 100): objet 'prior_ppk_model' introuvable</span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
