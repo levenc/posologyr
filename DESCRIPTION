@@ -22,7 +22,6 @@ Imports:
     lotri
 Suggests: 
     knitr,
-    crayon,
     rmarkdown,
     testthat (>= 3.0.0)
 URL: https://levenc.github.io/posologyr/, https://github.com/levenc/posologyr

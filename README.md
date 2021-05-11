@@ -49,19 +49,19 @@ devtools::install_github("levenc/posologyr")
 This example of bayesian dosage adaptation is based on a fictitious
 popPK model of tobramycin, and data of therapeutic drug monitoring.
 
-Patient data (here: Michel’s lab results) are organised in [a dataframe
-following RxODE
+Patient data (here: Patient01’s lab results) are organised in [a
+dataframe following RxODE
 conventions](https://levenc.github.io/posologyr/articles/patient_data_input.html).
 
 ``` r
 library(posologyr)
 
-df_michel <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
+df_patient01 <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
                         DV=c(NA,NA,25.0,5.5),
                         AMT=c(1000,-1000,0,0),
                         EVID=c(10102,10102,0,0),
                         CLCREAT=80,WT=65)
-df_michel
+df_patient01
 #>   ID TIME   DV   AMT  EVID CLCREAT WT
 #> 1  1  0.0   NA  1000 10102      80 65
 #> 2  1  0.5   NA -1000 10102      80 65
@@ -77,21 +77,18 @@ The sample tobramycin prior model is supplied with `posologyr`.
 Following the same structure, [user-defined models can be
 added](https://levenc.github.io/posologyr/articles/posologyr_user_defined_models.html).
 
-The `load_ppk_model()` function initialises the objects to be used by
-`posologyr`.
+The `posologyr()` function create a `posologyr` list, from the prior
+model and the individual data.
 
 ``` r
-load_ppk_model(mod_tobramycin_2cpt_fictional,df_michel)
-#>  Full model + prior information loaded as prior_ppk_model 
-#>  Solved model created as solved_ppk_model 
-#>  Dataset loaded as dat_posologyr
+patient01_tobra <- posologyr(mod_tobramycin_2cpt_fictional,df_patient01)
 ```
 
 The estimates of the fixed effects parameters are available from the
 prior model.
 
 ``` r
-prior_ppk_model$theta
+patient01_tobra$theta
 #>  THETA_ke   THETA_V THETA_k12 THETA_k21 
 #>     0.210    19.800     0.041     0.120
 ```
@@ -100,7 +97,7 @@ The MAP estimates of the individual ETAs and PK parameters can be
 computed easily.
 
 ``` r
-poso_estim_map()
+poso_estim_map(patient01_tobra)
 #> [[1]]
 #>     ETA_ke      ETA_V    ETA_k12    ETA_k21 
 #> -0.6828811 -0.0663349  0.0000000  0.0000000 
@@ -126,23 +123,25 @@ poso_estim_map()
 ```
 
 An optimal dose can be estimated to reach a concentration of 30 mg/l
-half an hour after the end of the infusion.
+half an hour after the end of the
+infusion.
 
 ``` r
-poso_dose_ctime(time_c = 1,duration = .5,target_conc = 30)
+poso_dose_ctime(patient01_tobra,time_c = 1,duration = .5,target_conc = 30)
 #> [1] 618.2356
 ```
 
 To further optimise the dosage, the time needed to reach a Cmin \< 0.5
-mg/l after an infusion of 620 mg over 30 minutes can be estimated.
+mg/l after an infusion of 620 mg over 30 minutes can be
+estimated.
 
 ``` r
-poso_time_cmin(dose = 620, duration = 0.5, target_cmin = 0.5)
+poso_time_cmin(patient01_tobra,dose = 620, duration = 0.5, target_cmin = 0.5)
 #> [1] 45.6
 ```
 
 As a result, the administration of 620 mg every 48 hours can be
-advisable for Michel.
+advisable for Patient01.
 
 ## Sample plots
 
@@ -152,17 +151,17 @@ The RxODE models can be used to plot the individual PK profile.
 library(ggplot2)
 
 # compute the population and individual PK parameters
-pop_pk              <- poso_simu_pop()[[2]]
-indiv_pk_map        <- poso_estim_map()[[2]]
-indiv_pk_mcmc       <- poso_estim_mcmc()[[2]]
+pop_pk              <- poso_simu_pop(patient01_tobra)[[2]]
+indiv_pk_map        <- poso_estim_map(patient01_tobra)[[2]]
+indiv_pk_mcmc       <- poso_estim_mcmc(patient01_tobra)[[2]]
 
 # add sampling times
 pop_pk$time         <- seq(0,24,by=0.2)
 indiv_pk_map$time   <- seq(0,24,by=0.2)
 indiv_pk_mcmc$time  <- seq(0,24,by=0.2)
 
-# get the individual observations from df_michel
-indiv_obs           <- dat_posologyr[,c("DV","TIME")]
+# get the individual observations from df_patient01
+indiv_obs           <- patient01_tobra$tdm_data[,c("DV","TIME")]
 ```
 
 Plot the distribution of the prior population PK profiles + individual

@@ -33,67 +33,38 @@
 #' Estimates the prior distribution of population parameters by Monte Carlo
 #' simulations
 #'
-#' @param solved_model An \code{\link[RxODE]{rxSolve}} solve object, created
-#'     with the prior RxODE structural population pharmacokinetics model and the
-#'     prior estimates of the population parameters from the
-#'     `prior_model`, using `dat` as the event record
-#' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of six objects (see 'Details' for the description of the
-#'    object)
-#' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records
-#' @param n_simul An integer, the number of simulations to be run
+#' @param object A posologyr list, created by the \code{\link{posologyr}}
+#'    function.
+#' @param n_simul An integer, the number of simulations to be run.
 #' @param return_model A boolean. Returns a RxODE model using the simulated
 #'    ETAs if set to `TRUE`.
-#'
-#' @details
-#'
-#' The posologyr prior population pharmacokinetics model is a list of
-#' six objects:
-#' \describe{
-#'  \item{ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with the individual model
-#'      (i.e. the model of inter-individual variability) and the
-#'      covariates}
-#'  \item{error_model}{A function of the residual error model}
-#'  \item{theta}{A named vector of the population estimates of the
-#'      fixed effects parameters (called THETAs, following NONMEM
-#'      terminology)}
-#'  \item{omega}{A named square variance-covariance matrix of the
-#'      population parameters inter-individual variability}
-#'  \item{covariates}{A character vector of the covariates of
-#'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
-#' }
 #'
 #' @return If `return_model` is set to `FALSE`, a dataframe of the
 #' individual values of ETA.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the
 #' individual values of ETA, and a RxODE model using the simulated ETAs.
 #'
-#'
 #' @examples
-#' # df_michel: event table for Michel, following a 30 minutes intravenous
+#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
-#' df_michel <- data.frame(ID=1,
+#' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,0.5,1.0,14.0),
 #'                         DV=c(NA,NA,25.0,5.5),
 #'                         AMT=c(1000,-1000,0,0),
 #'                         EVID=c(10102,10102,0,0),
 #'                         DUR=c(0.5,0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
-#' # loading a tobramycin model and Michel's event record
-#' load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+#' # loading a tobramycin model and Patient01's event record
+#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+#'                                 dat=df_patient01)
 #' # estimate the prior distribution of population parameters
-#' poso_simu_pop()
+#' poso_simu_pop(patient01_tobra)
 #'
 #' @export
-poso_simu_pop <- function(solved_model=solved_ppk_model,
-                          prior_model=prior_ppk_model,
-                          dat=dat_posologyr,n_simul=1000,
+poso_simu_pop <- function(object=NULL,n_simul=1000,
                           return_model = TRUE){
 
-  omega      <- prior_model$omega
+  omega      <- object$omega
   eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(omega))
 
   for (k in (1:n_simul)){
@@ -107,10 +78,10 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
   names(eta_df) <- attr(omega,"dimnames")[[1]]
 
   if(return_model){
-    model_pop         <- solved_model
-    theta             <- rbind(prior_model$theta)
-    covar             <- dat[1,prior_model$covariates]
-    names(covar)      <- prior_model$covariates
+    model_pop         <- object$solved_ppk_model
+    theta             <- rbind(object$theta)
+    covar             <- object$tdm_data[1,object$covariates]
+    names(covar)      <- object$covariates
     model_pop$params  <- cbind(theta,eta_df,covar,row.names = NULL)
     eta_pop           <- list(eta_df,model_pop)
   } else {
@@ -125,40 +96,10 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 #' Estimates the Maximum A Posteriori (MAP) individual parameters,
 #' also known as Empirical Bayes Estimates (EBE).
 #'
-#' @param solved_model An \code{\link[RxODE]{rxSolve}} solve object, created
-#'     with the prior RxODE structural population pharmacokinetics model and the
-#'     prior estimates of the population parameters from the
-#'     `prior_model`, using `dat` as the event record
-#' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of six objects (see 'Details' for the description of the
-#'    object)
-#' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records
+#' @param object A posologyr list, created by the \code{\link{posologyr}}
+#'    function.
 #' @param return_model A boolean. Returns a RxODE model using the estimated
 #'    ETAs if set to `TRUE`.
-#'
-#' @details
-#' The default values of the arguments `solved_model`, `prior_model` and
-#' `dat` correspond to the objects created by the convenience function
-#' \code{\link{load_ppk_model}}
-#'
-#' The posologyr prior population pharmacokinetics model is a list of
-#' six objects:
-#' \describe{
-#'  \item{ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with the individual model
-#'      (i.e. the model of inter-individual variability) and the
-#'      covariates}
-#'  \item{error_model}{A function of the residual error model}
-#'  \item{theta}{A named vector of the population estimates of the
-#'      fixed effects parameters (called THETAs, following NONMEM
-#'      terminology)}
-#'  \item{omega}{A named square variance-covariance matrix of the
-#'      population parameters inter-individual variability}
-#'  \item{covariates}{A character vector of the covariates of
-#'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
-#' }
 #'
 #' @return If `return_model` is set to `FALSE`, a named vector of the MAP estimates
 #' of the individual values of ETA.
@@ -166,25 +107,25 @@ poso_simu_pop <- function(solved_model=solved_ppk_model,
 #' values of ETA, and a RxODE model using the estimated ETAs.
 #'
 #' @examples
-#' # df_michel: event table for Michel, following a 30 minutes intravenous
+#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
-#' df_michel <- data.frame(ID=1,
+#' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,0.5,1.0,14.0),
 #'                         DV=c(NA,NA,25.0,5.5),
 #'                         AMT=c(1000,-1000,0,0),
 #'                         EVID=c(10102,10102,0,0),
 #'                         DUR=c(0.5,0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
-#' # loading a tobramycin model and Michel's event record
-#' load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+#' # loading a tobramycin model and Patient01's event record
+#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+#'                                 dat=df_patient01)
 #' # estimate the Maximum A Posteriori individual parameters
-#' poso_estim_map()
+#' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(solved_model=solved_ppk_model,
-                              prior_model=prior_ppk_model,
-                              dat=dat_posologyr,return_model = TRUE)
+poso_estim_map <- function(object=NULL,return_model = TRUE)
 {
+
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
     model$params <- x
@@ -209,16 +150,18 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
     return(optimize_me)
     }
 
-  omega       <- prior_model$omega
-  theta       <- prior_model$theta
-  xi          <- prior_model$xi
-  error_model <- prior_model$error_model
+  dat          <- object$tdm_data
+  solved_model <- object$solved_ppk_model
+  omega        <- object$omega
+  theta        <- object$theta
+  xi           <- object$xi
+  error_model  <- object$error_model
 
-  y_obs       <- dat$DV[dat$EVID == 0]         # only observations
-  ind_eta     <- which(diag(omega)>0)          # only parameters with IIV
-  omega_eta   <- omega[ind_eta,ind_eta]        # only variances > 0
-  solve_omega <- try(solve(omega_eta))         # inverse of omega_eta
-  start_eta   <- diag(omega_eta)*0             # get a named vector of zeroes
+  y_obs        <- dat$DV[dat$EVID == 0]         # only observations
+  ind_eta      <- which(diag(omega)>0)          # only parameters with IIV
+  omega_eta    <- omega[ind_eta,ind_eta]        # only variances > 0
+  solve_omega  <- try(solve(omega_eta))         # inverse of omega_eta
+  start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
 
   r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
              ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
@@ -228,8 +171,8 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 
   if(return_model){
     model_map        <- solved_model
-    covar            <- t(dat[1,prior_model$covariates]) #results in a matrix
-    names(covar)     <- prior_model$covariates
+    covar            <- t(dat[1,object$covariates]) #results in a matrix
+    names(covar)     <- object$covariates
     model_map$params <- c(theta,eta_map,covar)
     estim_map        <- list(eta_map,model_map)
   } else {
@@ -244,15 +187,8 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #' Estimates the posterior distribution of individual parameters by Markov
 #' Chain Monte Carlo (using a Metropolis-Hastings algorithm)
 #'
-#' @param solved_model An \code{\link[RxODE]{rxSolve}} solve object, created
-#'     with the prior RxODE structural population pharmacokinetics model and the
-#'     prior estimates of the population parameters from the
-#'     `prior_model`, using `dat` as the event record
-#' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of six objects (see 'Details' for the description of the
-#'    object)
-#' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records
+#' @param object A posologyr list, created by the \code{\link{posologyr}}
+#' function.
 #' @param return_model A boolean. Returns a RxODE model using the estimated
 #'    ETAs if set to `TRUE`.
 #' @param burn_in Number of burn-in iterations for the Metropolis-Hastings
@@ -260,78 +196,55 @@ poso_estim_map <- function(solved_model=solved_ppk_model,
 #' @param n_iter Total number of iterations (burn-in included) for the Metropolis-
 #'    Hastings algorithm
 #'
-#'
-#' @details
-#' The default values of the arguments `solved_model`, `prior_model` and
-#' `dat` correspond to the objects created by the convenience function
-#' \code{\link{load_ppk_model}}
-#'
-#' The posologyr prior population pharmacokinetics model is a list of
-#' six objects:
-#' \describe{
-#'  \item{ppk_model}{A RxODE model implementing the structural
-#'      population pharmacokinetics model with the individual model
-#'      (i.e. the model of inter-individual variability) and the
-#'      covariates}
-#'  \item{error_model}{A function of the residual error model}
-#'  \item{theta}{A named vector of the population estimates of the
-#'      fixed effects parameters (called THETAs, following NONMEM
-#'      terminology)}
-#'  \item{omega}{A named square variance-covariance matrix of the
-#'      population parameters inter-individual variability}
-#'  \item{covariates}{A character vector of the covariates of
-#'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
-#' }
-#'
 #' @return If `return_model` is set to `FALSE`, a dataframe of ETAs from
 #' the posterior distribution, estimated by Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
 #'
 #' @examples
-#' # df_michel: event table for Michel, following a 30 minutes intravenous
+#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
-#' df_michel <- data.frame(ID=1,
+#' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,0.5,1.0,14.0),
 #'                         DV=c(NA,NA,25.0,5.5),
 #'                         AMT=c(1000,-1000,0,0),
 #'                         EVID=c(10102,10102,0,0),
 #'                         DUR=c(0.5,0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
-#' # loading a tobramycin model and Michel's event record
-#' load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+#' # loading a tobramycin model and Patient01's event record
+#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+#'                                 dat=df_patient01)
 #' # estimate the posterior distribution of population parameters
-#' poso_estim_mcmc(n_iter=100)
+#' poso_estim_mcmc(patient01_tobra,n_iter=100)
 #'
 #' @export
-poso_estim_mcmc <- function(solved_model=solved_ppk_model,
-                            prior_model=prior_ppk_model,dat=dat_posologyr,
-                            return_model = TRUE,burn_in=20,n_iter=219,
-                            control=list(n_kernel=c(2,2,2),stepsize_rw=0.4,
-                            proba_mcmc=0.3,nb_max=3)){
+poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=20,
+                            n_iter=219,control=list(n_kernel=c(2,2,2),
+                            stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
     model$params <- x
     return(model$Cc)
   }
 
-  omega       <- prior_model$omega
-  xi          <- prior_model$xi
-  error_model <- prior_model$error_model
+  dat          <- object$tdm_data
+  solved_model <- object$solved_ppk_model
+  omega        <- object$omega
+  xi           <- object$xi
+  error_model  <- object$error_model
 
-  y_obs       <- dat$DV[dat$EVID == 0]     # only observations
-  ind_eta     <- which(diag(omega)>0)      # only parameters with IIV
-  nb_etas     <- length(ind_eta)
-  omega_eta   <- omega[ind_eta,ind_eta]    # only variances > 0
-  solve_omega <- try(solve(omega_eta))     # inverse of omega_eta
-  chol_omega  <- chol(omega_eta)
-  rw_init     <- 0.5                       #initial variance parameter for kernels
-  d_omega     <- diag(omega_eta)*rw_init
-  VK          <- rep(c(1:nb_etas),2)
+  y_obs        <- dat$DV[dat$EVID == 0]     # only observations
+  ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
+  nb_etas      <- length(ind_eta)
+  omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
+  solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
+  chol_omega   <- chol(omega_eta)
+  rw_init      <- 0.5                       #initial variance parameter for kernels
+  d_omega      <- diag(omega_eta)*rw_init
+  VK           <- rep(c(1:nb_etas),2)
 
   # Metropolis-Hastings algorithm------------------------------------------
-  theta    <- prior_model$theta
+  theta    <- object$theta
   eta      <- diag(omega_eta)*0
   f        <- do.call(run_model,list(c(theta,eta)))
   g        <- error_model(f,xi)
@@ -431,9 +344,9 @@ poso_estim_mcmc <- function(solved_model=solved_ppk_model,
 
   if(return_model){
     model_mcmc        <- solved_model
-    theta_return        <- rbind(theta)
-    covar             <- dat[1,prior_model$covariates]
-    names(covar)      <- prior_model$covariates
+    theta_return      <- rbind(theta)
+    covar             <- dat[1,object$covariates]
+    names(covar)      <- object$covariates
     model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names = NULL)
     estim_mcmc        <- list(eta_df_mcmc,model_mcmc)
   } else {

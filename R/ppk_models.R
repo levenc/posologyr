@@ -16,22 +16,27 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
-#' Easy loading of model and event record for posologyr
+#' Creates a posologyr list from a prior model and an event record
 #'
-#' Creates, or renames, and loads in the global environment the
-#' objects needed for posologyr functions: prior model, solved
-#' model, and individual event record. The objects are assigned
-#' with names corresponding to the defaults of posologyr functions.
+#' Creates a list for a \code{posologyr} prior model, an individual event
+#' record, and an \code{\link[RxODE]{rxSolve}} solve object,
+#' created from the prior ppk model and the individual event record.
 #'
-#' @param prior_model A posologyr prior population pharmacokinetics model, a
-#'    list of six objects (see 'Details' for the description of the
-#'    object)
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics model, a
+#'    list of six objects.
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records
 #'
-#' @details
-#' The posologyr prior population pharmacokinetics model is a list of
-#' six objects:
+#' \code{posologyr} will check the validity of the compiled RxODE
+#' model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
+#' \code{posologyr} will call \code{\link[RxODE]{RxODE}}
+#' to recompile the model before solving it using \code{prior_model}
+#' and \code{dat}.
+#'
+#' @return A list of eight objects: the posologyr prior population
+#' pharmacokinetics model given as `prior_model` parameter (6 objects),
+#' the individual event record given as `dat` parameter, and the solved
+#' model.
 #' \describe{
 #'  \item{ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
@@ -46,40 +51,28 @@
 #'  \item{covariates}{A character vector of the covariates of
 #'      the model}
 #'  \item{xi}{The estimates of the parameters of the residual error model}
-#' }
-#'
-#' \code{load_ppk_model} will check the validity of the compiled RxODE
-#' model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
-#' \code{load_ppk_model} will call \code{\link[RxODE]{RxODE}}
-#' to recompile the model before solving it using \code{prior_model}
-#' and \code{dat}.
-#'
-#' @return This function is invoked for its side effect, assigning
-#' 3 objects to the environment of the function call:
-#' \describe{
-#'  \item{prior_ppk_model}{The posologyr prior population pharmacokinetics
-#'   model given as `prior_model` parameter}
-#'  \item{dat_posologyr}{A dataframe. The individual subject dataset
+#'  \item{tdm_data}{A dataframe. The individual subject dataset
 #'   given as `dat` parameter}
 #'  \item{solved_ppk_model}{An \code{\link[RxODE]{rxSolve}} solve object,
 #'   created with `prior_ppk_model` and using `dat` as the event record.}
 #' }
 #'
 #' @examples
-#' # df_michel: event table for Michel, following a 30 minutes intravenous
+#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
-#' df_michel <- data.frame(ID=1,
+#' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,0.5,1.0,14.0),
 #'                         DV=c(NA,NA,25.0,5.5),
 #'                         AMT=c(1000,-1000,0,0),
 #'                         EVID=c(10102,10102,0,0),
 #'                         DUR=c(0.5,0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
-#' # loading a tobramycin model and Michel's event record
-#' load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+#' # loading a tobramycin model and Patient01's event record
+#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+#'                                 dat=df_patient01)
 #'
 #' @export
-load_ppk_model <- function(prior_model=NULL,dat=NULL){
+posologyr <- function(prior_model=NULL,dat=NULL){
 
   # check the validity of the compiled model and call RxODE::RxODE
   # on invalid models
@@ -99,24 +92,11 @@ load_ppk_model <- function(prior_model=NULL,dat=NULL){
                                        diag(prior_model$omega)*0),
                                      dat)
 
-  # assign the objects of interest to the parent environment
-  env <- parent.frame()
-  env$prior_ppk_model  <- prior_model
-  env$solved_ppk_model <- solved_ppk_model
-  env$dat_posologyr    <- dat
+  # assign the objects to a single list
+  prior_model$tdm_data    <- dat
+  prior_model$solved_ppk_model <- solved_ppk_model
 
-  if (requireNamespace("crayon", quietly = TRUE)) {
-    bold_green <- crayon::combine_styles("bold","green")
-    cat(" Full model + prior information loaded as",
-        bold_green("prior_ppk_model"),"\n","Solved model created as",
-        bold_green("solved_ppk_model"),"\n","Dataset loaded as",
-        bold_green("dat_posologyr"),"\n")
-  } else {
-    cat(" Full model + prior information loaded as",
-        "prior_ppk_model","\n","Solved model created as",
-        "solved_ppk_model","\n","Dataset loaded as",
-        "dat_posologyr","\n")
-  }
+  return(prior_model)
 }
 
 #' Residual error model combined 1

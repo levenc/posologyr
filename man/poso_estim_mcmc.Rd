@@ -5,9 +5,7 @@
 \title{Estimate the posterior distribution of individual parameters}
 \usage{
 poso_estim_mcmc(
-  solved_model = solved_ppk_model,
-  prior_model = prior_ppk_model,
-  dat = dat_posologyr,
+  object = NULL,
   return_model = TRUE,
   burn_in = 20,
   n_iter = 219,
@@ -16,17 +14,8 @@ poso_estim_mcmc(
 )
 }
 \arguments{
-\item{solved_model}{An \code{\link[RxODE]{rxSolve}} solve object, created
-with the prior RxODE structural population pharmacokinetics model and the
-prior estimates of the population parameters from the
-\code{prior_model}, using \code{dat} as the event record}
-
-\item{prior_model}{A posologyr prior population pharmacokinetics model, a
-list of six objects (see 'Details' for the description of the
-object)}
-
-\item{dat}{Dataframe. An individual subject dataset following the
-structure of NONMEM/RxODE event records}
+\item{object}{A posologyr list, created by the \code{\link{posologyr}}
+function.}
 
 \item{return_model}{A boolean. Returns a RxODE model using the estimated
 ETAs if set to \code{TRUE}.}
@@ -48,41 +37,22 @@ Estimates the posterior distribution of individual parameters by Markov
 Chain Monte Carlo (using a Metropolis-Hastings algorithm)
 }
 \details{
-The default values of the arguments \code{solved_model}, \code{prior_model} and
-\code{dat} correspond to the objects created by the convenience function
-\code{\link{load_ppk_model}}
 
-The posologyr prior population pharmacokinetics model is a list of
-six objects:
-\describe{
-\item{ppk_model}{A RxODE model implementing the structural
-population pharmacokinetics model with the individual model
-(i.e. the model of inter-individual variability) and the
-covariates}
-\item{error_model}{A function of the residual error model}
-\item{theta}{A named vector of the population estimates of the
-fixed effects parameters (called THETAs, following NONMEM
-terminology)}
-\item{omega}{A named square variance-covariance matrix of the
-population parameters inter-individual variability}
-\item{covariates}{A character vector of the covariates of
-the model}
-\item{xi}{The estimates of the parameters of the residual error model}
-}
 }
 \examples{
-# df_michel: event table for Michel, following a 30 minutes intravenous
+# df_patient01: event table for Patient01, following a 30 minutes intravenous
 # infusion of tobramycin
-df_michel <- data.frame(ID=1,
+df_patient01 <- data.frame(ID=1,
                         TIME=c(0.0,0.5,1.0,14.0),
                         DV=c(NA,NA,25.0,5.5),
                         AMT=c(1000,-1000,0,0),
                         EVID=c(10102,10102,0,0),
                         DUR=c(0.5,0.5,NA,NA),
                         CLCREAT=80,WT=65)
-# loading a tobramycin model and Michel's event record
-load_ppk_model(prior_model=mod_tobramycin_2cpt_fictional,dat=df_michel)
+# loading a tobramycin model and Patient01's event record
+patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+                                dat=df_patient01)
 # estimate the posterior distribution of population parameters
-poso_estim_mcmc(n_iter=100)
+poso_estim_mcmc(patient01_tobra,n_iter=100)
 
 }
