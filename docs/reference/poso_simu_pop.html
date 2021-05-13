@@ -134,38 +134,19 @@ simulations" />
 simulations</p>
     </div>
 
-    <pre class="usage"><span class='fu'>poso_simu_pop</span><span class='op'>(</span>
-  solved_model <span class='op'>=</span> <span class='va'>solved_ppk_model</span>,
-  prior_model <span class='op'>=</span> <span class='va'>prior_ppk_model</span>,
-  dat <span class='op'>=</span> <span class='va'>dat_posologyr</span>,
-  n_simul <span class='op'>=</span> <span class='fl'>1000</span>,
-  return_model <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>poso_simu_pop</span><span class='op'>(</span>object <span class='op'>=</span> <span class='cn'>NULL</span>, n_simul <span class='op'>=</span> <span class='fl'>1000</span>, return_model <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>solved_model</th>
-      <td><p>An <code><a href='https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html'>rxSolve</a></code> solve object, created
-with the prior RxODE structural population pharmacokinetics model and the
-prior estimates of the population parameters from the
-<code>prior_model</code>, using <code>dat</code> as the event record</p></td>
-    </tr>
-    <tr>
-      <th>prior_model</th>
-      <td><p>A posologyr prior population pharmacokinetics model, a
-list of six objects (see 'Details' for the description of the
-object)</p></td>
-    </tr>
-    <tr>
-      <th>dat</th>
-      <td><p>Dataframe. An individual subject dataset following the
-structure of NONMEM/RxODE event records</p></td>
+      <th>object</th>
+      <td><p>A posologyr list, created by the <code><a href='posologyr.html'>posologyr</a></code>
+function.</p></td>
     </tr>
     <tr>
       <th>n_simul</th>
-      <td><p>An integer, the number of simulations to be run</p></td>
+      <td><p>An integer, the number of simulations to be run.</p></td>
     </tr>
     <tr>
       <th>return_model</th>
@@ -180,44 +161,161 @@ ETAs if set to <code>TRUE</code>.</p></td>
 individual values of ETA.
 If <code>return_model</code> is set to <code>TRUE</code>, a list of the dataframe of the
 individual values of ETA, and a RxODE model using the simulated ETAs.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The posologyr prior population pharmacokinetics model is a list of
-six objects:</p><dl>
-<dt>ppk_model</dt><dd><p>A RxODE model implementing the structural
-population pharmacokinetics model with the individual model
-(i.e. the model of inter-individual variability) and the
-covariates</p></dd>
-<dt>error_model</dt><dd><p>A function of the residual error model</p></dd>
-<dt>theta</dt><dd><p>A named vector of the population estimates of the
-fixed effects parameters (called THETAs, following NONMEM
-terminology)</p></dd>
-<dt>omega</dt><dd><p>A named square variance-covariance matrix of the
-population parameters inter-individual variability</p></dd>
-<dt>covariates</dt><dd><p>A character vector of the covariates of
-the model</p></dd>
-<dt>xi</dt><dd><p>The estimates of the parameters of the residual error model</p></dd>
-
-</dl>
-
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># df_michel: event table for Michel, following a 30 minutes intravenous</span>
+    <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>
 <span class='co'># infusion of tobramycin</span>
-<span class='va'>df_michel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>ID<span class='op'>=</span><span class='fl'>1</span>,
+<span class='va'>df_patient01</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>ID<span class='op'>=</span><span class='fl'>1</span>,
                         TIME<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>,<span class='fl'>0.5</span>,<span class='fl'>1.0</span>,<span class='fl'>14.0</span><span class='op'>)</span>,
                         DV<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>,<span class='cn'>NA</span>,<span class='fl'>25.0</span>,<span class='fl'>5.5</span><span class='op'>)</span>,
                         AMT<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1000</span>,<span class='op'>-</span><span class='fl'>1000</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,
                         EVID<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10102</span>,<span class='fl'>10102</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,
                         DUR<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.5</span>,<span class='cn'>NA</span>,<span class='cn'>NA</span><span class='op'>)</span>,
                         CLCREAT<span class='op'>=</span><span class='fl'>80</span>,WT<span class='op'>=</span><span class='fl'>65</span><span class='op'>)</span>
-<span class='co'># loading a tobramycin model and Michel's event record</span>
-<span class='fu'><a href='load_ppk_model.html'>load_ppk_model</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,dat<span class='op'>=</span><span class='va'>df_michel</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  Full model + prior information loaded as <span style='color: #00BB00;font-weight: bold;'>prior_ppk_model</span><span> 
-#&gt;  Solved model created as </span><span style='color: #00BB00;font-weight: bold;'>solved_ppk_model</span><span> 
-#&gt;  Dataset loaded as </span><span style='color: #00BB00;font-weight: bold;'>dat_posologyr</span><span> </div><div class='input'><span class='co'># estimate the prior distribution of population parameters</span>
-<span class='fu'>poso_simu_pop</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in poso_simu_pop(): objet 'prior_ppk_model' introuvable</span></div><div class='input'>
+<span class='co'># loading a tobramycin model and Patient01's event record</span>
+<span class='va'>patient01_tobra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='posologyr.html'>posologyr</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
+                                dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
+<span class='co'># estimate the prior distribution of population parameters</span>
+<span class='fu'>poso_simu_pop</span><span class='op'>(</span><span class='va'>patient01_tobra</span>,n_simul<span class='op'>=</span><span class='fl'>100</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
+#&gt;           ETA_ke        ETA_V ETA_k12 ETA_k21
+#&gt; 1    0.037433542 -0.061208382       0       0
+#&gt; 2    0.121807131  0.187765368       0       0
+#&gt; 3    0.197609023 -0.058318849       0       0
+#&gt; 4    0.380623459 -0.024912476       0       0
+#&gt; 5    0.124912770 -0.128968120       0       0
+#&gt; 6    0.162351938  0.047276715       0       0
+#&gt; 7    0.346921242 -0.027515451       0       0
+#&gt; 8    0.299858140  0.034996395       0       0
+#&gt; 9    0.202729597 -0.017101161       0       0
+#&gt; 10  -0.110615877 -0.122249706       0       0
+#&gt; 11  -0.051212457 -0.019314078       0       0
+#&gt; 12  -0.423298574 -0.033986303       0       0
+#&gt; 13   0.066291229 -0.011284800       0       0
+#&gt; 14  -0.183899965 -0.126117075       0       0
+#&gt; 15   0.096891602  0.084419971       0       0
+#&gt; 16  -0.318883506 -0.070038388       0       0
+#&gt; 17  -0.244616050 -0.266723495       0       0
+#&gt; 18   0.249608370  0.065088146       0       0
+#&gt; 19  -0.074209710 -0.022361194       0       0
+#&gt; 20  -0.198842419 -0.040687061       0       0
+#&gt; 21   0.187720959  0.149339967       0       0
+#&gt; 22   0.069858455  0.103015715       0       0
+#&gt; 23   0.539135592  0.097435141       0       0
+#&gt; 24  -0.170840487  0.022107251       0       0
+#&gt; 25   0.285229204  0.011103174       0       0
+#&gt; 26  -0.306305078 -0.009333569       0       0
+#&gt; 27  -0.047824811 -0.044299626       0       0
+#&gt; 28   0.310516499  0.033266726       0       0
+#&gt; 29  -0.096069282  0.103061217       0       0
+#&gt; 30   0.193859796 -0.012722076       0       0
+#&gt; 31   0.101926356  0.111265670       0       0
+#&gt; 32  -0.175711473  0.007965615       0       0
+#&gt; 33   0.229401942 -0.012820619       0       0
+#&gt; 34   0.047327493 -0.130398994       0       0
+#&gt; 35  -0.052212990  0.155355375       0       0
+#&gt; 36   0.030154932 -0.085607707       0       0
+#&gt; 37  -0.295714812  0.112662353       0       0
+#&gt; 38  -0.094811245 -0.035291109       0       0
+#&gt; 39   0.001461592  0.065651611       0       0
+#&gt; 40   0.045074311  0.133943120       0       0
+#&gt; 41  -0.489578740  0.091235409       0       0
+#&gt; 42   0.391581606  0.204584554       0       0
+#&gt; 43   0.460044805  0.048173234       0       0
+#&gt; 44  -0.075852211 -0.061576686       0       0
+#&gt; 45  -0.269403216 -0.130035377       0       0
+#&gt; 46  -0.190399962 -0.021043917       0       0
+#&gt; 47   0.293748340  0.056715454       0       0
+#&gt; 48  -0.197172350 -0.091546148       0       0
+#&gt; 49  -0.059161768  0.074657562       0       0
+#&gt; 50   0.479028999 -0.094573326       0       0
+#&gt; 51  -0.016970478 -0.045936785       0       0
+#&gt; 52   0.011103256 -0.147960249       0       0
+#&gt; 53   0.190016207 -0.140892319       0       0
+#&gt; 54  -0.103544653 -0.074828794       0       0
+#&gt; 55   0.571281468  0.134079999       0       0
+#&gt; 56  -0.544548067 -0.076107813       0       0
+#&gt; 57  -0.169868563 -0.004247273       0       0
+#&gt; 58  -0.186434520 -0.040242035       0       0
+#&gt; 59   0.173039498 -0.082316662       0       0
+#&gt; 60   0.199290015 -0.010824657       0       0
+#&gt; 61   0.130551374  0.007754021       0       0
+#&gt; 62   0.258084362  0.198574866       0       0
+#&gt; 63   0.101336370 -0.247994101       0       0
+#&gt; 64   0.189218652 -0.058742876       0       0
+#&gt; 65   0.351578103  0.036435099       0       0
+#&gt; 66  -0.068631711 -0.067824717       0       0
+#&gt; 67   0.013666738  0.019338544       0       0
+#&gt; 68   0.525113113 -0.196119578       0       0
+#&gt; 69  -0.126594114  0.096433493       0       0
+#&gt; 70  -0.059445226 -0.130139793       0       0
+#&gt; 71  -0.109231994 -0.094699628       0       0
+#&gt; 72   0.488399723 -0.011413582       0       0
+#&gt; 73   0.070005838  0.171417131       0       0
+#&gt; 74   0.168724026 -0.089491113       0       0
+#&gt; 75  -0.038489538 -0.117422708       0       0
+#&gt; 76   0.002219412 -0.080415772       0       0
+#&gt; 77  -0.093805862  0.049518725       0       0
+#&gt; 78   0.244481230 -0.002472742       0       0
+#&gt; 79   0.101373890  0.027464757       0       0
+#&gt; 80  -0.012198038 -0.063065408       0       0
+#&gt; 81   0.180934756  0.160968756       0       0
+#&gt; 82  -0.504771801 -0.043123922       0       0
+#&gt; 83   0.433595317 -0.007714621       0       0
+#&gt; 84  -0.100788553 -0.155363481       0       0
+#&gt; 85  -0.345994665  0.028885477       0       0
+#&gt; 86  -0.224119360  0.077625496       0       0
+#&gt; 87   0.014103653 -0.135546222       0       0
+#&gt; 88  -0.149945429  0.192589918       0       0
+#&gt; 89   0.774157112  0.093947186       0       0
+#&gt; 90   0.042831695 -0.002773085       0       0
+#&gt; 91  -0.337617079 -0.048864039       0       0
+#&gt; 92   0.365030033 -0.140001951       0       0
+#&gt; 93  -0.054145847  0.052117258       0       0
+#&gt; 94   0.116170797 -0.100670758       0       0
+#&gt; 95   0.199193199  0.105672026       0       0
+#&gt; 96   0.328778427  0.053775602       0       0
+#&gt; 97   0.101928204  0.038616646       0       0
+#&gt; 98  -0.013335559  0.017072070       0       0
+#&gt; 99  -0.377772687 -0.184910237       0       0
+#&gt; 100  0.078350397  0.023993292       0       0
+#&gt; 
+#&gt; [[2]]
+#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style='font-weight: bold;'>Solved RxODE object</span><span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#&gt; ── </span><span style='font-weight: bold;'>Parameters</span><span> (</span><span style='color: #0000BB;font-weight: bold;'>$params</span><span>): ───────────────────────────────────────────────────────
+#&gt; </span><span style='color: #949494;'># A tibble: 100 x 9</span><span>
+#&gt;    sim.id THETA_ke CLCREAT    WT THETA_V THETA_k12 THETA_k21  ETA_ke   ETA_V
+#&gt;     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>      1     0.21      80    65    19.8     0.041      0.12  0.037</span><span style='text-decoration: underline;'>4</span><span> -</span><span style='color: #BB0000;'>0.061</span><span style='color: #BB0000;text-decoration: underline;'>2</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>      2     0.21      80    65    19.8     0.041      0.12  0.122   0.188 
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>      3     0.21      80    65    19.8     0.041      0.12  0.198  -</span><span style='color: #BB0000;'>0.058</span><span style='color: #BB0000;text-decoration: underline;'>3</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>      4     0.21      80    65    19.8     0.041      0.12  0.381  -</span><span style='color: #BB0000;'>0.024</span><span style='color: #BB0000;text-decoration: underline;'>9</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>      5     0.21      80    65    19.8     0.041      0.12  0.125  -</span><span style='color: #BB0000;'>0.129</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>      6     0.21      80    65    19.8     0.041      0.12  0.162   0.047</span><span style='text-decoration: underline;'>3</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>      7     0.21      80    65    19.8     0.041      0.12  0.347  -</span><span style='color: #BB0000;'>0.027</span><span style='color: #BB0000;text-decoration: underline;'>5</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>      8     0.21      80    65    19.8     0.041      0.12  0.300   0.035</span><span style='text-decoration: underline;'>0</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>      9     0.21      80    65    19.8     0.041      0.12  0.203  -</span><span style='color: #BB0000;'>0.017</span><span style='color: #BB0000;text-decoration: underline;'>1</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span>     10     0.21      80    65    19.8     0.041      0.12 -</span><span style='color: #BB0000;'>0.111</span><span>  -</span><span style='color: #BB0000;'>0.122</span><span> 
+#&gt; </span><span style='color: #949494;'># … with 90 more rows</span><span>
+#&gt; ── </span><span style='font-weight: bold;'>Initial Conditions</span><span> (</span><span style='color: #0000BB;font-weight: bold;'>$inits</span><span>): ────────────────────────────────────────────────
+#&gt;  centr periph    AUC 
+#&gt;      0      0      0 
+#&gt; 
+#&gt; Simulation </span><span style='font-weight: bold;'>without uncertainty</span><span> in parameters, omega, or sigma matricies
+#&gt; 
+#&gt; ── </span><span style='font-weight: bold;'>First part of data (object):</span><span> ────────────────────────────────────────────────
+#&gt; </span><span style='color: #949494;'># A tibble: 200 x 14</span><span>
+#&gt;   sim.id  time tTVke  tTVV tTVk12 tTVk21    ke     V   k12   k21     Cc centr
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>      1     1 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.259  18.3 0.041  0.12 21.9   400. 
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>      1    14 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.259  18.3 0.041  0.12  1.06   19.4
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>      2     1 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.281  23.5 0.041  0.12 16.8   394. 
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>      2    14 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.281  23.5 0.041  0.12  0.664  15.6
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span>      3     1 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.303  18.4 0.041  0.12 21.1   387. 
+#&gt; </span><span style='color: #BCBCBC;'>6</span><span>      3    14 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.303  18.4 0.041  0.12  0.692  12.7
+#&gt; </span><span style='color: #949494;'># … with 194 more rows, and 2 more variables: periph &lt;dbl&gt;, AUC &lt;dbl&gt;</span><span>
+#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#&gt; </div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

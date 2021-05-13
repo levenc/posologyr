@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimate the Maximum A Posteriori individual parameters — poso_estim_map • posologyr</title>
+<title>Creates a posologyr list from a prior model and an individual event
+record — posologyr • posologyr</title>
 
 
 <!-- jquery -->
@@ -39,9 +40,11 @@
 
 
 
-<meta property="og:title" content="Estimate the Maximum A Posteriori individual parameters — poso_estim_map" />
-<meta property="og:description" content="Estimates the Maximum A Posteriori (MAP) individual parameters,
-also known as Empirical Bayes Estimates (EBE)." />
+<meta property="og:title" content="Creates a posologyr list from a prior model and an individual event
+record — posologyr" />
+<meta property="og:description" content="Creates a list for a posologyr prior model, an individual event
+record, and an rxSolve solve object,
+created from the prior ppk model and the individual event record." />
 
 
 
@@ -124,39 +127,66 @@ also known as Empirical Bayes Estimates (EBE)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimate the Maximum A Posteriori individual parameters</h1>
-    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/estim_functions.R'><code>R/estim_functions.R</code></a></small>
-    <div class="hidden name"><code>poso_estim_map.Rd</code></div>
+    <h1>Creates a posologyr list from a prior model and an individual event
+record</h1>
+    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/ppk_models.R'><code>R/ppk_models.R</code></a></small>
+    <div class="hidden name"><code>posologyr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Estimates the Maximum A Posteriori (MAP) individual parameters,
-also known as Empirical Bayes Estimates (EBE).</p>
+    <p>Creates a list for a <code>posologyr</code> prior model, an individual event
+record, and an <code><a href='https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html'>rxSolve</a></code> solve object,
+created from the prior ppk model and the individual event record.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>poso_estim_map</span><span class='op'>(</span>object <span class='op'>=</span> <span class='cn'>NULL</span>, return_model <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>posologyr</span><span class='op'>(</span>prior_model <span class='op'>=</span> <span class='cn'>NULL</span>, dat <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A posologyr list, created by the <code><a href='posologyr.html'>posologyr</a></code>
-function.</p></td>
+      <th>prior_model</th>
+      <td><p>A <code>posologyr</code> prior population pharmacokinetics model, a
+list of six objects.</p></td>
     </tr>
     <tr>
-      <th>return_model</th>
-      <td><p>A boolean. Returns a RxODE model using the estimated
-ETAs if set to <code>TRUE</code>.</p></td>
+      <th>dat</th>
+      <td><p>Dataframe. An individual subject dataset following the
+structure of NONMEM/RxODE event records.</p>
+<p><code>posologyr</code> will check the validity of the compiled RxODE
+model. If <code>prior_model$ppk_model$isValid()</code> returns <code>FALSE</code>,
+<code>posologyr</code> will call <code><a href='https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html'>RxODE</a></code>
+to recompile the model before solving it using <code>prior_model</code>
+and <code>dat</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>return_model</code> is set to <code>FALSE</code>, a named vector of the MAP estimates
-of the individual values of ETA.
-If <code>return_model</code> is set to <code>TRUE</code>, a list of the MAP estimates of the individual
-values of ETA, and a RxODE model using the estimated ETAs.</p>
+    <p>A list of eight objects: the posologyr prior population
+pharmacokinetics model given as <code>prior_model</code> parameter (6 objects),
+the individual event record (<code>tdm_data</code>) given as <code>dat</code> parameter,
+and the solved model (<code>solved_ppk_model</code>).</p><dl>
+<dt>ppk_model</dt><dd><p>A RxODE model implementing the structural
+population pharmacokinetics model with the individual model
+(i.e. the model of inter-individual variability) and the
+covariates</p></dd>
+<dt>error_model</dt><dd><p>A function of the residual error model</p></dd>
+<dt>theta</dt><dd><p>A named vector of the population estimates of the
+fixed effects parameters (called THETAs, following NONMEM
+terminology)</p></dd>
+<dt>omega</dt><dd><p>A named square variance-covariance matrix of the
+population parameters inter-individual variability</p></dd>
+<dt>covariates</dt><dd><p>A character vector of the covariates of
+the model</p></dd>
+<dt>xi</dt><dd><p>The estimates of the parameters of the residual error model</p></dd>
+<dt>tdm_data</dt><dd><p>A dataframe. The individual subject dataset
+given as <code>dat</code> parameter</p></dd>
+<dt>solved_ppk_model</dt><dd><p>An <code><a href='https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html'>rxSolve</a></code> solve object,
+created with <code>prior_ppk_model</code> and using <code>dat</code> as the event record.</p></dd>
+
+</dl>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>
@@ -169,21 +199,52 @@ values of ETA, and a RxODE model using the estimated ETAs.</p>
                         DUR<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.5</span>,<span class='cn'>NA</span>,<span class='cn'>NA</span><span class='op'>)</span>,
                         CLCREAT<span class='op'>=</span><span class='fl'>80</span>,WT<span class='op'>=</span><span class='fl'>65</span><span class='op'>)</span>
 <span class='co'># loading a tobramycin model and Patient01's event record</span>
-<span class='va'>patient01_tobra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='posologyr.html'>posologyr</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
+<span class='fu'>posologyr</span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
                                 dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
-<span class='co'># estimate the Maximum A Posteriori individual parameters</span>
-<span class='fu'>poso_estim_map</span><span class='op'>(</span><span class='va'>patient01_tobra</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [[1]]
-#&gt;     ETA_ke      ETA_V    ETA_k12    ETA_k21 
-#&gt; -0.6828811 -0.0663349  0.0000000  0.0000000 
+</div><div class='output co'>#&gt; $ppk_model
+#&gt; <span style='font-weight: bold;'>RxODE </span><span>NA model named </span><span style='color: #BBBB00;font-weight: bold;'>rx_3c631b45cde586c4365cbf2cb969cbb7</span><span> model (</span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #00BB00;font-weight: bold;'>ready</span><span>). 
+#&gt; </span><span style='color: #0000BB;font-weight: bold;'>$state</span><span>: centr, periph, AUC
+#&gt; </span><span style='color: #0000BB;font-weight: bold;'>$params</span><span>: THETA_ke, CLCREAT, WT, THETA_V, THETA_k12, THETA_k21, ETA_ke, ETA_V
+#&gt; </span><span style='color: #0000BB;font-weight: bold;'>$lhs</span><span>: tTVke, tTVV, tTVk12, tTVk21, ke, V, k12, k21, Cc
 #&gt; 
-#&gt; [[2]]
-#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style='font-weight: bold;'>Solved RxODE object</span><span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#&gt; $error_model
+#&gt; function (f, xi) 
+#&gt; {
+#&gt;     g &lt;- xi[1] + xi[2] * f
+#&gt;     return(g)
+#&gt; }
+#&gt; &lt;bytecode: 0x557d7a0ee1d0&gt;
+#&gt; 
+#&gt; $theta
+#&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21 
+#&gt;     0.210    19.800     0.041     0.120 
+#&gt; 
+#&gt; $omega
+#&gt;          ETA_ke   ETA_V ETA_k12 ETA_k21
+#&gt; ETA_ke  0.08075 0.00000       0       0
+#&gt; ETA_V   0.00000 0.01203       0       0
+#&gt; ETA_k12 0.00000 0.00000       0       0
+#&gt; ETA_k21 0.00000 0.00000       0       0
+#&gt; 
+#&gt; $covariates
+#&gt; [1] "CLCREAT" "WT"     
+#&gt; 
+#&gt; $xi
+#&gt;     additive_a proportional_b 
+#&gt;          0.000          0.198 
+#&gt; 
+#&gt; $tdm_data
+#&gt;   ID TIME   DV   AMT  EVID DUR CLCREAT WT
+#&gt; 1  1  0.0   NA  1000 10102 0.5      80 65
+#&gt; 2  1  0.5   NA -1000 10102 0.5      80 65
+#&gt; 3  1  1.0 25.0     0     0  NA      80 65
+#&gt; 4  1 14.0  5.5     0     0  NA      80 65
+#&gt; 
+#&gt; $solved_ppk_model
+#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ </span><span style='font-weight: bold;'>Solved RxODE object</span><span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #&gt; ── </span><span style='font-weight: bold;'>Parameters</span><span> (</span><span style='color: #0000BB;font-weight: bold;'>$params</span><span>): ───────────────────────────────────────────────────────
-#&gt;   THETA_ke    CLCREAT         WT    THETA_V  THETA_k12  THETA_k21     ETA_ke 
-#&gt;  0.2100000 80.0000000 65.0000000 19.8000000  0.0410000  0.1200000 -0.6828811 
-#&gt;      ETA_V 
-#&gt; -0.0663349 
+#&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21    ETA_ke     ETA_V 
+#&gt;     0.210    19.800     0.041     0.120     0.000     0.000 
 #&gt; ── </span><span style='font-weight: bold;'>Initial Conditions</span><span> (</span><span style='color: #0000BB;font-weight: bold;'>$inits</span><span>): ────────────────────────────────────────────────
 #&gt;  centr periph    AUC 
 #&gt;      0      0      0 
@@ -191,8 +252,8 @@ values of ETA, and a RxODE model using the estimated ETAs.</p>
 #&gt; </span><span style='color: #949494;'># A tibble: 2 x 13</span><span>
 #&gt;    time tTVke  tTVV tTVk12 tTVk21    ke     V   k12   k21    Cc centr periph
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.126  18.2 0.041  0.12 24.3  442.    13.8
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>    14 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.126  18.2 0.041  0.12  4.52  82.3   46.4
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.249  19.5 0.041  0.12 20.7  403.    13.1
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>    14 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.249  19.5 0.041  0.12  1.10  21.3   24.0
 #&gt; </span><span style='color: #949494;'># … with 1 more variable: AUC &lt;dbl&gt;</span><span>
 #&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #&gt; </div><div class='input'>
