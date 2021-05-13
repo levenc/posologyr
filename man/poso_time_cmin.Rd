@@ -20,7 +20,7 @@ function.}
 
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
-will be called}
+will be called.}
 
 \item{from}{a numeric starting time for the simulation of the
 individual time-concentration profile. The default value is
@@ -28,14 +28,14 @@ individual time-concentration profile. The default value is
 
 \item{last_time}{a numeric ending time for the simulation of the
 individual time-concentration profile. The default value is
-72}
+72.}
 
-\item{dose}{a numeric dose administered}
+\item{dose}{a numeric dose administered.}
 
 \item{duration}{a numeric duration of infusion, for zero-order
-administrations}
+administrations.}
 
-\item{target_cmin}{a numeric target trough concentration}
+\item{target_cmin}{a numeric target trough concentration.}
 }
 \value{
 A numeric time to the selected trough concentration, from the
@@ -45,9 +45,6 @@ time of administration
 Predicts the time needed to reach a selected trough concentration
 (Cmin) given a population pharmacokinetic model, a set of individual
 parameters, a dose, and a target Cmin.
-}
-\details{
-
 }
 \examples{
 # df_patient01: event table for Patient01, following a 30 minutes intravenous

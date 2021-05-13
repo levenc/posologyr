@@ -58,7 +58,7 @@
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
 #'                                 dat=df_patient01)
 #' # estimate the prior distribution of population parameters
-#' poso_simu_pop(patient01_tobra)
+#' poso_simu_pop(patient01_tobra,n_simul=100)
 #'
 #' @export
 poso_simu_pop <- function(object=NULL,n_simul=1000,
@@ -192,9 +192,11 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
 #' @param return_model A boolean. Returns a RxODE model using the estimated
 #'    ETAs if set to `TRUE`.
 #' @param burn_in Number of burn-in iterations for the Metropolis-Hastings
-#'    algorithm
-#' @param n_iter Total number of iterations (burn-in included) for the Metropolis-
-#'    Hastings algorithm
+#'    algorithm.
+#' @param n_iter Total number of iterations (burn-in included) for the
+#' Metropolis-Hastings algorithm.
+#' @param control A list of parameters controlling the Metropolis-Hastings
+#' algorithm.
 #'
 #' @return If `return_model` is set to `FALSE`, a dataframe of ETAs from
 #' the posterior distribution, estimated by Markov Chain Monte Carlo.
@@ -218,8 +220,8 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
 #' poso_estim_mcmc(patient01_tobra,n_iter=100)
 #'
 #' @export
-poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=20,
-                            n_iter=219,control=list(n_kernel=c(2,2,2),
+poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
+                            n_iter=1000,control=list(n_kernel=c(2,2,2),
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){

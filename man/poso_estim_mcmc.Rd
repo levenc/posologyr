@@ -7,8 +7,8 @@
 poso_estim_mcmc(
   object = NULL,
   return_model = TRUE,
-  burn_in = 20,
-  n_iter = 219,
+  burn_in = 50,
+  n_iter = 1000,
   control = list(n_kernel = c(2, 2, 2), stepsize_rw = 0.4, proba_mcmc = 0.3, nb_max =
     3)
 )
@@ -21,10 +21,13 @@ function.}
 ETAs if set to \code{TRUE}.}
 
 \item{burn_in}{Number of burn-in iterations for the Metropolis-Hastings
-algorithm}
+algorithm.}
 
-\item{n_iter}{Total number of iterations (burn-in included) for the Metropolis-
-Hastings algorithm}
+\item{n_iter}{Total number of iterations (burn-in included) for the
+Metropolis-Hastings algorithm.}
+
+\item{control}{A list of parameters controlling the Metropolis-Hastings
+algorithm.}
 }
 \value{
 If \code{return_model} is set to \code{FALSE}, a dataframe of ETAs from
@@ -35,9 +38,6 @@ distribution of ETA, and a RxODE model using the estimated distributions of ETAs
 \description{
 Estimates the posterior distribution of individual parameters by Markov
 Chain Monte Carlo (using a Metropolis-Hastings algorithm)
-}
-\details{
-
 }
 \examples{
 # df_patient01: event table for Patient01, following a 30 minutes intravenous

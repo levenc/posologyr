@@ -41,9 +41,6 @@ Estimates the optimal dose for a selected target area under the
 time-concentration curve (AUC) given a population pharmacokinetic
 model, a set of individual parameters, and a target AUC.
 }
-\details{
-
-}
 \examples{
 # df_patient01: event table for Patient01, following a 30 minutes intravenous
 # infusion of tobramycin

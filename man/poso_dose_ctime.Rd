@@ -43,9 +43,6 @@ selected time point given a population pharmacokinetic model, a set
 of individual parameters, a selected point in time, and a target
 concentration.
 }
-\details{
-
-}
 \examples{
 # df_patient01: event table for Patient01, following a 30 minutes intravenous
 # infusion of tobramycin

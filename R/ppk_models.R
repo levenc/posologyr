@@ -16,7 +16,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
-#' Creates a posologyr list from a prior model and an event record
+#' Creates a posologyr list from a prior model and an individual event
+#' record
 #'
 #' Creates a list for a \code{posologyr} prior model, an individual event
 #' record, and an \code{\link[RxODE]{rxSolve}} solve object,
@@ -25,7 +26,7 @@
 #' @param prior_model A \code{posologyr} prior population pharmacokinetics model, a
 #'    list of six objects.
 #' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records
+#'     structure of NONMEM/RxODE event records.
 #'
 #' \code{posologyr} will check the validity of the compiled RxODE
 #' model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
@@ -35,8 +36,8 @@
 #'
 #' @return A list of eight objects: the posologyr prior population
 #' pharmacokinetics model given as `prior_model` parameter (6 objects),
-#' the individual event record given as `dat` parameter, and the solved
-#' model.
+#' the individual event record (\code{tdm_data}) given as `dat` parameter,
+#' and the solved model (\code{solved_ppk_model}).
 #' \describe{
 #'  \item{ppk_model}{A RxODE model implementing the structural
 #'      population pharmacokinetics model with the individual model
@@ -68,7 +69,7 @@
 #'                         DUR=c(0.5,0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
-#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+#' posologyr(prior_model=mod_tobramycin_2cpt_fictional,
 #'                                 dat=df_patient01)
 #'
 #' @export

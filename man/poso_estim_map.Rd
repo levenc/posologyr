@@ -23,9 +23,6 @@ values of ETA, and a RxODE model using the estimated ETAs.
 Estimates the Maximum A Posteriori (MAP) individual parameters,
 also known as Empirical Bayes Estimates (EBE).
 }
-\details{
-
-}
 \examples{
 # df_patient01: event table for Patient01, following a 30 minutes intravenous
 # infusion of tobramycin

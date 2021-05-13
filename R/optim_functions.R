@@ -26,17 +26,17 @@
 #'     function.
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
-#'     will be called
+#'     will be called.
 #' @param from a numeric starting time for the simulation of the
 #'     individual time-concentration profile. The default value is
 #'     0.2
 #' @param last_time a numeric ending time for the simulation of the
 #'     individual time-concentration profile. The default value is
-#'     72
-#' @param dose a numeric dose administered
+#'     72.
+#' @param dose a numeric dose administered.
 #' @param duration a numeric duration of infusion, for zero-order
-#'     administrations
-#' @param target_cmin a numeric target trough concentration
+#'     administrations.
+#' @param target_cmin a numeric target trough concentration.
 #'
 #' @return A numeric time to the selected trough concentration, from the
 #'     time of administration
