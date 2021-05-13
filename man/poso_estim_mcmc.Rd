@@ -23,8 +23,8 @@ ETAs if set to \code{TRUE}.}
 \item{burn_in}{Number of burn-in iterations for the Metropolis-Hastings
 algorithm.}
 
-\item{n_iter}{Total number of iterations (burn-in included) for the
-Metropolis-Hastings algorithm.}
+\item{n_iter}{Total number of iterations (following the burn-in iterations)
+for the Metropolis-Hastings algorithm.}
 
 \item{control}{A list of parameters controlling the Metropolis-Hastings
 algorithm.}
