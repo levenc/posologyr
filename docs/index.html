@@ -102,11 +102,11 @@
 <p>Functions for dosage optimisation are included in <code>posologyr</code>:</p>
 <ul>
 <li>
-<code><a href="reference/poso_time_cmin.html">poso_time_cmin()</a></code> time needed to reach a target trough concentration (Cmin)</li>
+<code><a href="reference/poso_time_cmin.html">poso_time_cmin()</a></code> computes the time needed to reach a target trough concentration (Cmin)</li>
 <li>
-<code><a href="reference/poso_dose_auc.html">poso_dose_auc()</a></code> optimal dose to reach a target AUC</li>
+<code><a href="reference/poso_dose_auc.html">poso_dose_auc()</a></code> estimates the optimal dose to reach a target AUC</li>
 <li>
-<code><a href="reference/poso_dose_ctime.html">poso_dose_ctime()</a></code> optimal dose to reach a target concentration at any given time</li>
+<code><a href="reference/poso_dose_ctime.html">poso_dose_ctime()</a></code> estimates the optimal dose to reach a target concentration at any given time</li>
 </ul>
 <p>Posologyr requires a popPK model written in the <code>RxODE</code> mini-language.</p>
 </div>
@@ -142,7 +142,7 @@
 <p>The <code><a href="reference/posologyr.html">posologyr()</a></code> function create a <code>posologyr</code> list, from the prior model and the individual data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">patient01_tobra</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_tobramycin_2cpt_fictional</span>,<span class="va">df_patient01</span><span class="op">)</span></code></pre></div>
-<p>The estimates of the fixed effects parameters are available from the prior model.</p>
+<p>The estimates of the fixed effects parameters are available from the object created by <code>posologyr</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">patient01_tobra</span><span class="op">$</span><span class="va">theta</span>
 <span class="co">#&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21 </span>
@@ -199,7 +199,7 @@
 <span class="va">indiv_pk_map</span><span class="op">$</span><span class="va">time</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>
 <span class="va">indiv_pk_mcmc</span><span class="op">$</span><span class="va">time</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>
 
-<span class="co"># get the individual observations from df_patient01</span>
+<span class="co"># get the individual observations from the tdm_data of Patient01</span>
 <span class="va">indiv_obs</span>           <span class="op">&lt;-</span> <span class="va">patient01_tobra</span><span class="op">$</span><span class="va">tdm_data</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DV"</span>,<span class="st">"TIME"</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <p>Plot the distribution of the prior population PK profiles + individual observations.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">

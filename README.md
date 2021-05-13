@@ -26,11 +26,11 @@ parameters:
 
 Functions for dosage optimisation are included in `posologyr`:
 
-  - `poso_time_cmin()` time needed to reach a target trough
+  - `poso_time_cmin()` computes the time needed to reach a target trough
     concentration (Cmin)
-  - `poso_dose_auc()` optimal dose to reach a target AUC
-  - `poso_dose_ctime()` optimal dose to reach a target concentration at
-    any given time
+  - `poso_dose_auc()` estimates the optimal dose to reach a target AUC
+  - `poso_dose_ctime()` estimates the optimal dose to reach a target
+    concentration at any given time
 
 Posologyr requires a popPK model written in the `RxODE` mini-language.
 
@@ -85,7 +85,7 @@ patient01_tobra <- posologyr(mod_tobramycin_2cpt_fictional,df_patient01)
 ```
 
 The estimates of the fixed effects parameters are available from the
-prior model.
+object created by `posologyr`.
 
 ``` r
 patient01_tobra$theta
@@ -160,7 +160,7 @@ pop_pk$time         <- seq(0,24,by=0.2)
 indiv_pk_map$time   <- seq(0,24,by=0.2)
 indiv_pk_mcmc$time  <- seq(0,24,by=0.2)
 
-# get the individual observations from df_patient01
+# get the individual observations from the tdm_data of Patient01
 indiv_obs           <- patient01_tobra$tdm_data[,c("DV","TIME")]
 ```
 
