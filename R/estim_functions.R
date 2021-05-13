@@ -193,8 +193,8 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
 #'    ETAs if set to `TRUE`.
 #' @param burn_in Number of burn-in iterations for the Metropolis-Hastings
 #'    algorithm.
-#' @param n_iter Total number of iterations (burn-in included) for the
-#' Metropolis-Hastings algorithm.
+#' @param n_iter Total number of iterations (following the burn-in iterations)
+#'  for the Metropolis-Hastings algorithm.
 #' @param control A list of parameters controlling the Metropolis-Hastings
 #' algorithm.
 #'
@@ -244,6 +244,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
   rw_init      <- 0.5                       #initial variance parameter for kernels
   d_omega      <- diag(omega_eta)*rw_init
   VK           <- rep(c(1:nb_etas),2)
+  n_iter       <- n_iter + burn_in
 
   # Metropolis-Hastings algorithm------------------------------------------
   theta    <- object$theta
