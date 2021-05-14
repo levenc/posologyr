@@ -56,3 +56,11 @@ patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
 poso_estim_mcmc(patient01_tobra,n_iter=100)
 
 }
+\references{
+Comets  E, Lavenu A, Lavielle M. Parameter estimation in nonlinear
+mixed effect models using saemix, an R implementation of the SAEM algorithm.
+Journal of Statistical Software 80, 3 (2017), 1-41.
+}
+\author{
+Emmanuelle Comets, Audrey Lavenu, Marc Lavielle, Cyril Leven
+}
