@@ -360,7 +360,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
     }
     eta_mat[k_iter+1,ind_eta]   <- eta
   }
-  eta_df_mcmc            <- data.frame(eta_mat[burn_in:n_iter,])
+  eta_df_mcmc            <- data.frame(eta_mat[(burn_in+1):n_iter,])
   names(eta_df_mcmc)     <- attr(omega,"dimnames")[[1]]
 
   if(return_model){
