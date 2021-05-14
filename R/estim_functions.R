@@ -2,7 +2,7 @@
 # posologyr: individual dose optimisation using population PK
 # Copyright (C) 2021  Cyril Leven
 #
-#    This program is free software: you can redistribute it and/or modify
+#  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
 #  published by the Free Software Foundation, either version 3 of the
 #  License, or (at your option) any later version.
@@ -18,7 +18,7 @@
 
 #-------------------------------------------------------------------------
 #  Adapted from: http://shiny.webpopix.org/mcmc/bayes1/
-#  Marc Lavielle, Inria Saclay (June 28th, 2015) CeCILL-B
+#  Copyright (C) 2015 Marc Lavielle, Inria Saclay, CeCILL-B
 #
 #  Modifications:
 #   - interfacing with RxODE
@@ -182,6 +182,18 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
   return(estim_map)
 }
 
+# poso_estim_mcmc: distribution of the individual parameters
+#
+# Copyright (C) 2017-2021 Emmanuelle Comets <emmanuelle.comets@inserm.fr>,
+# Audrey Lavenu, Marc Lavielle (authors of the saemix R package)
+# Copyright (C) 2021 Cyril Leven
+#
+# The saemix package is free software; licensed under the terms of the GNU
+# General Public License as published by the Free Software Foundation;
+# either version 2 of the License, or (at your option) any later version.
+#
+# (GPLv2+)
+
 #' Estimate the posterior distribution of individual parameters
 #'
 #' Estimates the posterior distribution of individual parameters by Markov
@@ -202,6 +214,12 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
 #' the posterior distribution, estimated by Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+#'
+#' @author Emmanuelle Comets, Audrey Lavenu, Marc Lavielle, Cyril Leven
+#'
+#' @references Comets  E, Lavenu A, Lavielle M. Parameter estimation in nonlinear
+#' mixed effect models using saemix, an R implementation of the SAEM algorithm.
+#' Journal of Statistical Software 80, 3 (2017), 1-41.
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
