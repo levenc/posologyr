@@ -156,7 +156,7 @@
 <div id="intermittent-infusion" class="section level2">
 <h2 class="hasAnchor">
 <a href="#intermittent-infusion" class="anchor"></a>Intermittent infusion</h2>
-<p><code>EVID = 10102</code> for an infusion defined by its duration, administered in the first compartment defined in the popPK model.</p>
+<p><code>EVID = 10101</code> for a bolus infusion defined by its duration, administered in the first compartment defined in the popPK model.</p>
 <p>The <code>DUR</code> field is not mandatory. The end of the infusion is encoded by a negative amount record.</p>
 <p><code>AMT</code> is the infusion rate in this scenario RATE = AMT/DUR, not the amount administered.</p>
 <p>The total dose administered is <code>RATE*DUR = 1000*0.5 = 500</code>.</p>
@@ -165,12 +165,12 @@
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">0.5</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,
            DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,
            AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="op">-</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10102</span>,<span class="fl">10102</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10101</span>,<span class="fl">10101</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
            COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
            COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   ID TIME   DV   AMT  EVID COVAR1 COVAR2</span>
-<span class="co">#&gt; 1  1  0.0   NA  1000 10102      X      Y</span>
-<span class="co">#&gt; 2  1  0.5   NA -1000 10102      X      Y</span>
+<span class="co">#&gt; 1  1  0.0   NA  1000 10101      X      Y</span>
+<span class="co">#&gt; 2  1  0.5   NA -1000 10101      X      Y</span>
 <span class="co">#&gt; 3  1  1.0 25.0     0     0      X      Y</span>
 <span class="co">#&gt; 4  1 14.0  5.5     0     0      X      Y</span></code></pre></div>
 </div>

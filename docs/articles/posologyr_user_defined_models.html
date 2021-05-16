@@ -143,9 +143,9 @@
     <span class="va">Vc</span>    <span class="op">=</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span>;
     <span class="va">Vp</span>    <span class="op">=</span> <span class="va">TVVp</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vp</span><span class="op">)</span>;
     <span class="va">Q</span>     <span class="op">=</span> <span class="va">TVQ</span>;
-    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vp</span>;
+    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vp</span>;
     <span class="va">Cc</span>    <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
@@ -237,7 +237,7 @@
 <a href="#full-model" class="anchor"></a>Full model</h2>
 <p>The <code>posologyr</code> model is the list of all these objects.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mod_vancomyin_2cpt_Goti2018</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">mymod_vancomyin_Goti2018</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
   ppk_model   <span class="op">=</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html">RxODE</a></span><span class="op">(</span><span class="op">{</span>
      <span class="fu">centr</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;
     <span class="va">TVCl</span>  <span class="op">=</span> <span class="va">THETA_Cl</span><span class="op">*</span><span class="op">(</span><span class="va">CLCREAT</span><span class="op">/</span><span class="fl">120</span><span class="op">)</span><span class="op">^</span><span class="fl">0.8</span><span class="op">*</span><span class="op">(</span><span class="fl">0.7</span><span class="op">^</span><span class="va">DIAL</span><span class="op">)</span>;
@@ -248,9 +248,9 @@
     <span class="va">Vc</span>    <span class="op">=</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span>;
     <span class="va">Vp</span>    <span class="op">=</span> <span class="va">TVVp</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vp</span><span class="op">)</span>;
     <span class="va">Q</span>     <span class="op">=</span> <span class="va">TVQ</span>;
-    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vp</span>;
+    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vp</span>;
     <span class="va">Cc</span>    <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
@@ -272,9 +272,9 @@
 <h3 class="hasAnchor">
 <a href="#resulting-r-object" class="anchor"></a>Resulting R object</h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mod_vancomyin_2cpt_Goti2018</span>
+<code class="sourceCode R"><span class="va">mymod_vancomyin_Goti2018</span>
 <span class="co">#&gt; $ppk_model</span>
-<span class="co">#&gt; RxODE NA model named rx_fade7d4e3299aba40c652ec8fce10461 model (✓ ready). </span>
+<span class="co">#&gt; RxODE NA model named rx_98a5ee9cea50c1f69bd9427f38167bf9 model (✓ ready). </span>
 <span class="co">#&gt; $state: centr, periph, AUC</span>
 <span class="co">#&gt; $params: THETA_Cl, CLCREAT, DIAL, THETA_Vc, WT, THETA_Vp, THETA_Q, ETA_Cl, ETA_Vc, ETA_Vp</span>
 <span class="co">#&gt; $lhs: TVCl, TVVc, TVVp, TVQ, Cl, Vc, Vp, Q, ke, k12, k21, Cc</span>

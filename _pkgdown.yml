@@ -18,8 +18,9 @@ reference:
 - contents:
   - starts_with("error_model")
 - title: "Built-in models"
-  desc: "Fictional models built-in for examples"
+  desc: "PopPK models built-in for tests and examples"
 - contents:
   - mod_amoxicillin_oral_1cpt_fictional
   - mod_tobramycin_2cpt_fictional
-
+  - mod_vancomycin_2cpt_Goti2018
+  - mod_amikacin_2cpt_Burdet2015

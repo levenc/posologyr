@@ -59,12 +59,12 @@ library(posologyr)
 df_patient01 <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
                         DV=c(NA,NA,25.0,5.5),
                         AMT=c(1000,-1000,0,0),
-                        EVID=c(10102,10102,0,0),
+                        EVID=c(10101,10101,0,0),
                         CLCREAT=80,WT=65)
 df_patient01
 #>   ID TIME   DV   AMT  EVID CLCREAT WT
-#> 1  1  0.0   NA  1000 10102      80 65
-#> 2  1  0.5   NA -1000 10102      80 65
+#> 1  1  0.0   NA  1000 10101      80 65
+#> 2  1  0.5   NA -1000 10101      80 65
 #> 3  1  1.0 25.0     0     0      80 65
 #> 4  1 14.0  5.5     0     0      80 65
 ```

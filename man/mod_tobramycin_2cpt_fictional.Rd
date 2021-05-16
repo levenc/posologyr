@@ -3,7 +3,7 @@
 \docType{data}
 \name{mod_tobramycin_2cpt_fictional}
 \alias{mod_tobramycin_2cpt_fictional}
-\title{Fictional IV tobramycin model for test purpose}
+\title{FICTIONAL IV tobramycin model for test purpose}
 \format{
 A  list of six objects:
 \describe{
@@ -29,7 +29,7 @@ the model}
 mod_tobramycin_2cpt_fictional
 }
 \description{
-A fictional bicompartmental population pharmacokinetic
+A FICTIONAL bicompartmental population pharmacokinetic
 model of intravenous tobramycin.
 }
 \keyword{datasets}
