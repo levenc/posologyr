@@ -133,7 +133,7 @@ mod_amikacin_2cpt_Burdet2015 <- list(
       c(0.1,
         0.01     ,   0.05 ,
         0.01     ,   0.02 ,   0.2  ,
-        0.06     ,   0.004,   0.003,    0.08)}),
+        -0.06    ,   0.004,   0.003,    0.08)}),
   covariates  = c("CLCREAT4H","TBW","PoverF"),
   xi          = c(additive_a = 0.2, proportional_b = 0.1))
 

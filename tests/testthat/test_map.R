@@ -43,8 +43,8 @@ test_that("MAP estimates match Monolix MAP estimates", {
 })
 
 test_that("MAP estimates match nlmixr posthoc estimates", {
-  expect_equal(patient03_amik_map[[2]]$Cl[1], 2.42, tolerance = 1e-2)
-  expect_equal(patient03_amik_map[[2]]$Vc[1], 11.59, tolerance = 1e-2)
-  expect_equal(patient03_amik_map[[2]]$Vp[1], 15.90, tolerance = 1e-2)
-  expect_equal(patient03_amik_map[[2]]$Q[1], 10.37, tolerance = 1e-2)
+  expect_equal(patient03_amik_map[[2]]$Cl[1], 2.62, tolerance = 1e-2)
+  expect_equal(patient03_amik_map[[2]]$Vc[1], 11.01, tolerance = 1e-2)
+  expect_equal(patient03_amik_map[[2]]$Vp[1], 14.57, tolerance = 1e-2)
+  expect_equal(patient03_amik_map[[2]]$Q[1], 11.96, tolerance = 1e-2)
 })
