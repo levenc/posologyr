@@ -44,7 +44,7 @@ test_that("poso_estim_map returns the expected objects", {
   expect_equal(class(p01_map_nomod[[1]]),"numeric")
 })
 
-test_that("poso_simu_pop returns the expected objects", {
+test_that("poso_estim_mcmc returns the expected objects", {
   p01_mcmc_mod   <- poso_estim_mcmc(patient01_tobra,burn_in=0,n_iter = 50)
   p01_mcmc_nomod <- poso_estim_mcmc(patient01_tobra,burn_in=0,n_iter = 50,
                                     return_model = FALSE)
