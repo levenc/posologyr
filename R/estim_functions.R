@@ -35,7 +35,8 @@
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'    function.
-#' @param n_simul An integer, the number of simulations to be run.
+#' @param n_simul An integer, the number of simulations to be run. For `n_simul
+#'    = 0`, all ETAs are set to 0.
 #' @param return_model A boolean. Returns a RxODE model using the simulated
 #'    ETAs if set to `TRUE`.
 #'
@@ -65,13 +66,16 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
                           return_model = TRUE){
 
   omega      <- object$omega
-  eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(omega))
+  eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
 
-  for (k in (1:n_simul)){
-    eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(omega)),
-                             Sigma=omega)
-    #faster than asking mvrnorm for n_simul samples
-    eta_mat[k,] <- eta_sim
+  if (n_simul > 0) {
+    eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(omega))
+    for (k in (1:n_simul)){
+      eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(omega)),
+                                   Sigma=omega)
+      #faster than asking mvrnorm for n_simul samples
+      eta_mat[k,] <- eta_sim
+    }
   }
 
   eta_df        <- data.frame(eta_mat)
