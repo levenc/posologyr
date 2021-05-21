@@ -47,9 +47,22 @@ DV
 : For concentrations. Must be NA when EVID is not 0.
 
 Covariates
-: Every covariate defined in the prior `posologyr` model. The column labels must match the **covariate** vector.
+: Every covariate defined in the prior `posologyr` model. The column labels must match the **covariate** vector from the popPK model.
 
 # Common use cases
+## A priori dose adjustment
+Before dosing: the simplest patient record is a single line dataframe, with individual patient covariates, and all other columns (TIME, DV, AMT, EVID) set to zero.
+
+```{r before_dosing_df}
+data.frame(ID=1,
+           TIME=0,
+           DV=0,
+           AMT=0,
+           EVID=0,
+           COVAR1=c("X"),
+           COVAR2=c("Y"))
+```
+
 ## Oral administration or IV bolus
 `EVID = 101` for an instantaneous administration in the first compartment defined in the popPK model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.
 
