@@ -104,6 +104,10 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #'    function.
 #' @param return_model A boolean. Returns a RxODE model using the estimated
 #'    ETAs if set to `TRUE`.
+#' @param return_fim A boolean. Returns the Fisher Information Matrix
+#'    (FIM) if set to `TRUE`.
+#' @param return_rse A boolean. Returns the relative standard errors
+#'    (RSE) of the MAP estimates of ETA if set to `TRUE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a named vector of the MAP estimates
 #' of the individual values of ETA.
@@ -188,8 +192,8 @@ poso_estim_map <- function(object=NULL,return_model = TRUE,
                                   # hence the hessian is the Fisher Information Matrix
   }
   if(return_rse){
-    map_se           <- sqrt(diag(solve(fim))) #the inverse of the fim is the variance
-                                               # covariance matrix
+    map_se           <- sqrt(diag(solve(r$hessian))) #the inverse of the fim is the
+                                                     # variance-covariance matrix
     map_rse          <- map_se/abs(eta_map)
     estim_map$rse    <- map_rse
   }

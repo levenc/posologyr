@@ -95,10 +95,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
     </li>
     <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
+    </li>
+    <li>
+      <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
     </li>
   </ul>
 </li>
@@ -132,7 +138,7 @@
     <p>Residual error model combined 2.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>error_model_comb2</span><span class='op'>(</span><span class='va'>f</span>, <span class='va'>xi</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>error_model_comb2</span><span class='op'>(</span><span class='va'>f</span>, <span class='va'>sigma</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,7 +148,7 @@
       <td><p>Numeric vector, output of a pharmacokinetic model</p></td>
     </tr>
     <tr>
-      <th>xi</th>
+      <th>sigma</th>
       <td><p>Numeric vector of the coefficients for the
 residual error model</p></td>
     </tr>
@@ -154,7 +160,7 @@ residual error model</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Implements the following function:
-<code>g &lt;- sqrt(xi[1]^2 + xi[2]^2*f^2)</code></p>
+<code>g &lt;- sqrt(sigma[1]^2 + sigma[2]^2*f^2)</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

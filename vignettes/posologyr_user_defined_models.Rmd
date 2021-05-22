@@ -34,7 +34,7 @@ omega
 covariates 
 : A character vector of the covariates of the model
 
-xi 
+sigma 
 : The estimates of the parameters of the residual error model
 
 # Definition of a prior model through an example
@@ -69,11 +69,11 @@ ppk_model   = RxODE::RxODE({
 ```
 
 ## error_model
-A function of the residual error model, taking two arguments: the simulated concentrations, and a vector **xi** of the estimates of the parameters for the residual error model.
+A function of the residual error model, taking two arguments: the simulated concentrations, and a vector **sigma** of the estimates of the parameters for the residual error model.
 
 ```{r error_model}
-error_model <- function(f,xi){     #additive model if xi[2] == 0
-  g <- xi[1] + xi[2]*f             #proportional model if xi[1] == 0
+error_model <- function(f,sigma){     #additive model if sigma[2] == 0
+  g <- sigma[1] + sigma[2]*f             #proportional model if sigma[1] == 0
   return(g)
 }
 ```
@@ -122,11 +122,11 @@ The names of every covariate defined in **ppk_model**, in a character vector.
 covariates  = c("CLCREAT","WT","DIAL")
 ```
 
-## xi
+## sigma
 The estimates of the parameters for the residual error model, in a vector.
 
-```{r xi}
-xi          = c(additive_a = 3.4, proportional_b = 0.227)
+```{r sigma}
+sigma       = c(additive_a = 3.4, proportional_b = 0.227)
 ```
 
 ## Full model
@@ -152,8 +152,8 @@ mymod_vancomyin_Goti2018 <- list(
     d/dt(periph) =            + k12*centr - k21*periph;
     d/dt(AUC)    =   Cc;
   }),
-  error_model = function(f,xi){
-    g <- xi[1] + xi[2]*f
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
     return(g)
   },
   theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
@@ -163,7 +163,7 @@ mymod_vancomyin_Goti2018 <- list(
                            0     ,       0,   0.282,
                            0     ,       0,       0,    0)}),
   covariates  = c("CLCREAT","WT","DIAL"),
-  xi          = c(additive_a = 3.4, proportional_b = 0.227))
+  sigma       = c(additive_a = 3.4, proportional_b = 0.227))
 ```
 
 ### Resulting R object

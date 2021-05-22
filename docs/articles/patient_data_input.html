@@ -54,10 +54,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
     </li>
     <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
+    </li>
+    <li>
+      <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
     </li>
   </ul>
 </li>
@@ -129,7 +135,7 @@
 <dd>For concentrations. Must be NA when EVID is not 0.
 </dd>
 <dt>Covariates</dt>
-<dd>Every covariate defined in the prior <code>posologyr</code> model. The column labels must match the <strong>covariate</strong> vector.
+<dd>Every covariate defined in the prior <code>posologyr</code> model. The column labels must match the <strong>covariate</strong> vector from the popPK model.
 </dd>
 </dl>
 </div>
@@ -137,11 +143,26 @@
 <div id="common-use-cases" class="section level1">
 <h1 class="hasAnchor">
 <a href="#common-use-cases" class="anchor"></a>Common use cases</h1>
+<div id="a-priori-dose-adjustment" class="section level2">
+<h2 class="hasAnchor">
+<a href="#a-priori-dose-adjustment" class="anchor"></a>A priori dose adjustment</h2>
+<p>Before dosing: the simplest patient record is a single line dataframe, with individual patient covariates, and all other columns (TIME, DV, AMT, EVID) set to zero.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
+           TIME<span class="op">=</span><span class="fl">0</span>,
+           DV<span class="op">=</span><span class="fl">0</span>,
+           AMT<span class="op">=</span><span class="fl">0</span>,
+           EVID<span class="op">=</span><span class="fl">0</span>,
+           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
+           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt;   ID TIME DV AMT EVID COVAR1 COVAR2</span>
+<span class="co">#&gt; 1  1    0  0   0    0      X      Y</span></code></pre></div>
+</div>
 <div id="oral-administration-or-iv-bolus" class="section level2">
 <h2 class="hasAnchor">
 <a href="#oral-administration-or-iv-bolus" class="anchor"></a>Oral administration or IV bolus</h2>
 <p><code>EVID = 101</code> for an instantaneous administration in the first compartment defined in the popPK model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
            DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">60.0</span><span class="op">)</span>,
@@ -160,7 +181,7 @@
 <p>The <code>DUR</code> field is not mandatory. The end of the infusion is encoded by a negative amount record.</p>
 <p><code>AMT</code> is the infusion rate in this scenario RATE = AMT/DUR, not the amount administered.</p>
 <p>The total dose administered is <code>RATE*DUR = 1000*0.5 = 500</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">0.5</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,
            DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,
