@@ -3,7 +3,7 @@
 \docType{data}
 \name{mod_tobramycin_2cpt_fictional}
 \alias{mod_tobramycin_2cpt_fictional}
-\title{Fictional IV tobramycin model for test purpose}
+\title{FICTIONAL IV tobramycin model for test purpose}
 \format{
 A  list of six objects:
 \describe{
@@ -19,7 +19,7 @@ terminology)}
 population parameters inter-individual variability}
 \item{covariates}{A character vector of the covariates of
 the model}
-\item{xi}{The estimates of the parameters of the residual error model}
+\item{sigma}{The estimates of the parameters of the residual error model}
 }
 }
 \source{
@@ -29,7 +29,7 @@ the model}
 mod_tobramycin_2cpt_fictional
 }
 \description{
-A fictional bicompartmental population pharmacokinetic
+A FICTIONAL bicompartmental population pharmacokinetic
 model of intravenous tobramycin.
 }
 \keyword{datasets}

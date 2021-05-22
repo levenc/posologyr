@@ -54,10 +54,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
     </li>
     <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
+    </li>
+    <li>
+      <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
     </li>
   </ul>
 </li>
@@ -117,7 +123,7 @@
 <dt>covariates</dt>
 <dd>A character vector of the covariates of the model
 </dd>
-<dt>xi</dt>
+<dt>sigma</dt>
 <dd>The estimates of the parameters of the residual error model
 </dd>
 </dl>
@@ -143,9 +149,9 @@
     <span class="va">Vc</span>    <span class="op">=</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span>;
     <span class="va">Vp</span>    <span class="op">=</span> <span class="va">TVVp</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vp</span><span class="op">)</span>;
     <span class="va">Q</span>     <span class="op">=</span> <span class="va">TVQ</span>;
-    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vp</span>;
+    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vp</span>;
     <span class="va">Cc</span>    <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
@@ -155,10 +161,10 @@
 <div id="error_model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#error_model" class="anchor"></a>error_model</h2>
-<p>A function of the residual error model, taking two arguments: the simulated concentrations, and a vector <strong>xi</strong> of the estimates of the parameters for the residual error model.</p>
+<p>A function of the residual error model, taking two arguments: the simulated concentrations, and a vector <strong>sigma</strong> of the estimates of the parameters for the residual error model.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">error_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>,<span class="va">xi</span><span class="op">)</span><span class="op">{</span>     <span class="co">#additive model if xi[2] == 0</span>
-  <span class="va">g</span> <span class="op">&lt;-</span> <span class="va">xi</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">xi</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">f</span>             <span class="co">#proportional model if xi[1] == 0</span>
+<code class="sourceCode R"><span class="va">error_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>,<span class="va">sigma</span><span class="op">)</span><span class="op">{</span>     <span class="co">#additive model if sigma[2] == 0</span>
+  <span class="va">g</span> <span class="op">&lt;-</span> <span class="va">sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">sigma</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">f</span>             <span class="co">#proportional model if sigma[1] == 0</span>
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
@@ -225,19 +231,19 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">covariates</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CLCREAT"</span>,<span class="st">"WT"</span>,<span class="st">"DIAL"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="xi" class="section level2">
+<div id="sigma" class="section level2">
 <h2 class="hasAnchor">
-<a href="#xi" class="anchor"></a>xi</h2>
+<a href="#sigma" class="anchor"></a>sigma</h2>
 <p>The estimates of the parameters for the residual error model, in a vector.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">xi</span>          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sigma</span>       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="full-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#full-model" class="anchor"></a>Full model</h2>
 <p>The <code>posologyr</code> model is the list of all these objects.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mod_vancomyin_2cpt_Goti2018</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">mymod_vancomyin_Goti2018</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
   ppk_model   <span class="op">=</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html">RxODE</a></span><span class="op">(</span><span class="op">{</span>
      <span class="fu">centr</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;
     <span class="va">TVCl</span>  <span class="op">=</span> <span class="va">THETA_Cl</span><span class="op">*</span><span class="op">(</span><span class="va">CLCREAT</span><span class="op">/</span><span class="fl">120</span><span class="op">)</span><span class="op">^</span><span class="fl">0.8</span><span class="op">*</span><span class="op">(</span><span class="fl">0.7</span><span class="op">^</span><span class="va">DIAL</span><span class="op">)</span>;
@@ -248,16 +254,16 @@
     <span class="va">Vc</span>    <span class="op">=</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span>;
     <span class="va">Vp</span>    <span class="op">=</span> <span class="va">TVVp</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">ETA_Vp</span><span class="op">)</span>;
     <span class="va">Q</span>     <span class="op">=</span> <span class="va">TVQ</span>;
-    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vc</span>;
-    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">*</span><span class="va">Vp</span>;
+    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vp</span>;
     <span class="va">Cc</span>    <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
     <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span>    <span class="op">=</span>   <span class="va">Cc</span>;
   <span class="op">}</span><span class="op">)</span>,
-  error_model <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>,<span class="va">xi</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">g</span> <span class="op">&lt;-</span> <span class="va">xi</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">xi</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">f</span>
+  error_model <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>,<span class="va">sigma</span><span class="op">)</span><span class="op">{</span>
+    <span class="va">g</span> <span class="op">&lt;-</span> <span class="va">sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">sigma</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">f</span>
     <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>
   <span class="op">}</span>,
   theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.5</span>, THETA_Vc<span class="op">=</span><span class="fl">58.4</span>, THETA_Vp<span class="op">=</span><span class="fl">38.4</span>,THETA_Q<span class="op">=</span><span class="fl">6.5</span><span class="op">)</span>,
@@ -267,21 +273,21 @@
                            <span class="fl">0</span>     ,       <span class="fl">0</span>,   <span class="fl">0.282</span>,
                            <span class="fl">0</span>     ,       <span class="fl">0</span>,       <span class="fl">0</span>,    <span class="fl">0</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,
   covariates  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CLCREAT"</span>,<span class="st">"WT"</span>,<span class="st">"DIAL"</span><span class="op">)</span>,
-  xi          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  sigma       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div id="resulting-r-object" class="section level3">
 <h3 class="hasAnchor">
 <a href="#resulting-r-object" class="anchor"></a>Resulting R object</h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mod_vancomyin_2cpt_Goti2018</span>
+<code class="sourceCode R"><span class="va">mymod_vancomyin_Goti2018</span>
 <span class="co">#&gt; $ppk_model</span>
-<span class="co">#&gt; RxODE NA model named rx_fade7d4e3299aba40c652ec8fce10461 model (✓ ready). </span>
+<span class="co">#&gt; RxODE NA model named rx_98a5ee9cea50c1f69bd9427f38167bf9 model (✓ ready). </span>
 <span class="co">#&gt; $state: centr, periph, AUC</span>
 <span class="co">#&gt; $params: THETA_Cl, CLCREAT, DIAL, THETA_Vc, WT, THETA_Vp, THETA_Q, ETA_Cl, ETA_Vc, ETA_Vp</span>
 <span class="co">#&gt; $lhs: TVCl, TVVc, TVVp, TVQ, Cl, Vc, Vp, Q, ke, k12, k21, Cc</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $error_model</span>
-<span class="co">#&gt; function(f,xi){</span>
-<span class="co">#&gt;     g &lt;- xi[1] + xi[2]*f</span>
+<span class="co">#&gt; function(f,sigma){</span>
+<span class="co">#&gt;     g &lt;- sigma[1] + sigma[2]*f</span>
 <span class="co">#&gt;     return(g)</span>
 <span class="co">#&gt;   }</span>
 <span class="co">#&gt; </span>
@@ -299,7 +305,7 @@
 <span class="co">#&gt; $covariates</span>
 <span class="co">#&gt; [1] "CLCREAT" "WT"      "DIAL"   </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; $xi</span>
+<span class="co">#&gt; $sigma</span>
 <span class="co">#&gt;     additive_a proportional_b </span>
 <span class="co">#&gt;          3.400          0.227</span></code></pre></div>
 </div>

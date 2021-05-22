@@ -96,10 +96,16 @@ Chain Monte Carlo (using a Metropolis-Hastings algorithm)" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
     </li>
     <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
+    </li>
+    <li>
+      <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
     </li>
   </ul>
 </li>
@@ -203,7 +209,7 @@ Journal of Statistical Software 80, 3 (2017), 1-41.</p>
                                 dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
 <span class='co'># estimate the posterior distribution of population parameters</span>
 <span class='fu'>poso_estim_mcmc</span><span class='op'>(</span><span class='va'>patient01_tobra</span>,n_iter<span class='op'>=</span><span class='fl'>100</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [[1]]
+</div><div class='output co'>#&gt; $eta
 #&gt;         ETA_ke        ETA_V ETA_k12 ETA_k21
 #&gt; 1   -0.7660286  0.046042672       0       0
 #&gt; 2   -0.9772889 -0.076432065       0       0
@@ -306,7 +312,7 @@ Journal of Statistical Software 80, 3 (2017), 1-41.</p>
 #&gt; 99  -0.7877811 -0.020849573       0       0
 #&gt; 100 -0.6971771  0.066244406       0       0
 #&gt; 
-#&gt; [[2]]
+#&gt; $model
 #&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style='font-weight: bold;'>Solved RxODE object</span><span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #&gt; ── </span><span style='font-weight: bold;'>Parameters</span><span> (</span><span style='color: #0000BB;font-weight: bold;'>$params</span><span>): ───────────────────────────────────────────────────────
 #&gt; </span><span style='color: #949494;'># A tibble: 100 x 9</span><span>

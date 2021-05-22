@@ -35,7 +35,8 @@
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'    function.
-#' @param n_simul An integer, the number of simulations to be run.
+#' @param n_simul An integer, the number of simulations to be run. For `n_simul
+#'    = 0`, all ETAs are set to 0.
 #' @param return_model A boolean. Returns a RxODE model using the simulated
 #'    ETAs if set to `TRUE`.
 #'
@@ -65,17 +66,22 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
                           return_model = TRUE){
 
   omega      <- object$omega
-  eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(omega))
+  eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
 
-  for (k in (1:n_simul)){
-    eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(omega)),
-                             Sigma=omega)
-    #faster than asking mvrnorm for n_simul samples
-    eta_mat[k,] <- eta_sim
+  if (n_simul > 0) {
+    eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(omega))
+    for (k in (1:n_simul)){
+      eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(omega)),
+                                   Sigma=omega)
+      #faster than asking mvrnorm for n_simul samples
+      eta_mat[k,] <- eta_sim
+    }
   }
 
   eta_df        <- data.frame(eta_mat)
   names(eta_df) <- attr(omega,"dimnames")[[1]]
+
+  eta_pop       <- list(eta=eta_df)
 
   if(return_model){
     model_pop         <- object$solved_ppk_model
@@ -83,9 +89,7 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
     covar             <- object$tdm_data[1,object$covariates]
     names(covar)      <- object$covariates
     model_pop$params  <- cbind(theta,eta_df,covar,row.names = NULL)
-    eta_pop           <- list(eta_df,model_pop)
-  } else {
-    eta_pop           <- eta_df
+    eta_pop$model     <- model_pop
   }
 
   return(eta_pop)
@@ -100,6 +104,10 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #'    function.
 #' @param return_model A boolean. Returns a RxODE model using the estimated
 #'    ETAs if set to `TRUE`.
+#' @param return_fim A boolean. Returns the Fisher Information Matrix
+#'    (FIM) if set to `TRUE`.
+#' @param return_rse A boolean. Returns the relative standard errors
+#'    (RSE) of the MAP estimates of ETA if set to `TRUE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a named vector of the MAP estimates
 #' of the individual values of ETA.
@@ -123,7 +131,8 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(object=NULL,return_model = TRUE)
+poso_estim_map <- function(object=NULL,return_model = TRUE,
+                           return_fim = FALSE,return_rse = FALSE)
 {
 
   # Update model predictions with a new set of parameters, for all obs-----
@@ -132,16 +141,16 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
     return(model$Cc)
     }
 
-  errpred <- function(eta_estim,run_model,y,theta,ind_eta,xi,solve_omega){
+  errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega){
     eta          <- diag(omega)*0
     eta[ind_eta] <- eta_estim
 
     #simulated concentrations with the proposed eta estimates
     f <- do.call(run_model,list(c(theta,eta)))
-    g <- error_model(f,xi)
+    g <- error_model(f,sigma)
 
-    #http://sia.webpopix.org/nlme.html#estimation-of-the-individual-parameters
-    #doi:10.1006/jbin.2001.1033
+    #objective function for the Empirical Bayes Estimates
+    #doi: 10.4196/kjpp.2012.16.2.97
     U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
     #the transpose of a diagonal matrix is itself
     U_eta <- 0.5 * eta_estim %*% solve_omega %*% eta_estim
@@ -154,7 +163,7 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
   solved_model <- object$solved_ppk_model
   omega        <- object$omega
   theta        <- object$theta
-  xi           <- object$xi
+  sigma        <- object$sigma
   error_model  <- object$error_model
 
   y_obs        <- dat$DV[dat$EVID == 0]         # only observations
@@ -164,19 +173,29 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
 
   r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
-             ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
+             ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,hessian=TRUE)
 
   eta_map            <- diag(omega)*0
   eta_map[ind_eta]   <- r$par
+
+  estim_map          <- list(eta=eta_map)
 
   if(return_model){
     model_map        <- solved_model
     covar            <- t(dat[1,object$covariates]) #results in a matrix
     names(covar)     <- object$covariates
     model_map$params <- c(theta,eta_map,covar)
-    estim_map        <- list(eta_map,model_map)
-  } else {
-    estim_map        <- eta_map
+    estim_map$model  <- model_map
+  }
+  if(return_fim){
+    estim_map$fim    <- r$hessian #the objective function minimized is -LogLikelihood
+                                  # hence the hessian is the Fisher Information Matrix
+  }
+  if(return_rse){
+    map_se           <- sqrt(diag(solve(r$hessian))) #the inverse of the fim is the
+                                                     # variance-covariance matrix
+    map_rse          <- map_se/abs(eta_map)
+    estim_map$rse    <- map_rse
   }
 
   return(estim_map)
@@ -250,7 +269,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
   omega        <- object$omega
-  xi           <- object$xi
+  sigma        <- object$sigma
   error_model  <- object$error_model
 
   y_obs        <- dat$DV[dat$EVID == 0]     # only observations
@@ -268,7 +287,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
   theta    <- object$theta
   eta      <- diag(omega_eta)*0
   f        <- do.call(run_model,list(c(theta,eta)))
-  g        <- error_model(f,xi)
+  g        <- error_model(f,sigma)
   U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
   U_eta    <- 0.5 * eta %*% solve_omega %*% eta
 
@@ -284,7 +303,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
         etac <- as.vector(chol_omega%*%rnorm(nb_etas))
         names(etac)   <- attr(omega_eta,"dimnames")[[1]]
         f             <- do.call(run_model,list(c(theta,etac)))
-        g             <- error_model(f,xi)
+        g             <- error_model(f,sigma)
         Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
         deltu         <- Uc_y - U_y
         if(deltu < (-1) * log(runif(1)))
@@ -311,7 +330,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
             etac          <- eta
             etac[vk2]     <- eta[vk2] + rnorm(nrs2)*d_omega[vk2]
             f             <- do.call(run_model,list(c(theta,etac)))
-            g             <- error_model(f,xi)
+            g             <- error_model(f,sigma)
             Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
             Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
             deltu         <- Uc_y - U_y + Uc_eta - U_eta
@@ -344,7 +363,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
           etac            <- eta
           etac[vk2]       <- eta[vk2]+matrix(rnorm(nrs2), ncol=nrs2)%*%diag(d_omega[vk2])
           f               <- do.call(run_model,list(c(theta,etac)))
-          g               <- error_model(f,xi)
+          g               <- error_model(f,sigma)
           Uc_y            <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
           Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
           deltu           <- Uc_y-U_y+Uc_eta-U_eta
@@ -363,15 +382,16 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
   eta_df_mcmc            <- data.frame(eta_mat[(burn_in+1):n_iter,])
   names(eta_df_mcmc)     <- attr(omega,"dimnames")[[1]]
 
+  estim_mcmc             <- list(eta=eta_df_mcmc)
+
   if(return_model){
     model_mcmc        <- solved_model
     theta_return      <- rbind(theta)
     covar             <- dat[1,object$covariates]
     names(covar)      <- object$covariates
     model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names = NULL)
-    estim_mcmc        <- list(eta_df_mcmc,model_mcmc)
-  } else {
-    estim_mcmc        <- eta_df_mcmc
+    estim_mcmc$model  <- model_mcmc
   }
+
   return(estim_mcmc)
 }

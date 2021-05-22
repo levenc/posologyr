@@ -99,10 +99,16 @@ created from the prior ppk model and the individual event record." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
     </li>
     <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
+    </li>
+    <li>
+      <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
     </li>
   </ul>
 </li>
@@ -179,7 +185,7 @@ terminology)</p></dd>
 population parameters inter-individual variability</p></dd>
 <dt>covariates</dt><dd><p>A character vector of the covariates of
 the model</p></dd>
-<dt>xi</dt><dd><p>The estimates of the parameters of the residual error model</p></dd>
+<dt>sigma</dt><dd><p>The estimates of the parameters of the residual error model</p></dd>
 <dt>tdm_data</dt><dd><p>A dataframe. The individual subject dataset
 given as <code>dat</code> parameter</p></dd>
 <dt>solved_ppk_model</dt><dd><p>An <code><a href='https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html'>rxSolve</a></code> solve object,
@@ -208,12 +214,12 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 #&gt; </span><span style='color: #0000BB;font-weight: bold;'>$lhs</span><span>: tTVke, tTVV, tTVk12, tTVk21, ke, V, k12, k21, Cc
 #&gt; 
 #&gt; $error_model
-#&gt; function (f, xi) 
+#&gt; function (f, sigma) 
 #&gt; {
-#&gt;     g &lt;- xi[1] + xi[2] * f
+#&gt;     g &lt;- sigma[1] + sigma[2] * f
 #&gt;     return(g)
 #&gt; }
-#&gt; &lt;bytecode: 0x557d7a0ee1d0&gt;
+#&gt; &lt;bytecode: 0x55fc6e045208&gt;
 #&gt; 
 #&gt; $theta
 #&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21 
@@ -229,7 +235,7 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 #&gt; $covariates
 #&gt; [1] "CLCREAT" "WT"     
 #&gt; 
-#&gt; $xi
+#&gt; $sigma
 #&gt;     additive_a proportional_b 
 #&gt;          0.000          0.198 
 #&gt; 

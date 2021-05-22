@@ -2,7 +2,9 @@ pandoc: 2.3.1
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  case_study_amikacin: case_study_amikacin.html
   patient_data_input: patient_data_input.html
   posologyr_user_defined_models: posologyr_user_defined_models.html
-last_built: 2021-05-14T17:36Z
+  uncertainty_estimates: uncertainty_estimates.html
+last_built: 2021-05-22T23:38Z
 

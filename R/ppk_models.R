@@ -51,7 +51,7 @@
 #'      population parameters inter-individual variability}
 #'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
+#'  \item{sigma}{The estimates of the parameters of the residual error model}
 #'  \item{tdm_data}{A dataframe. The individual subject dataset
 #'   given as `dat` parameter}
 #'  \item{solved_ppk_model}{An \code{\link[RxODE]{rxSolve}} solve object,
@@ -108,16 +108,16 @@ posologyr <- function(prior_model=NULL,dat=NULL){
 #' coefficient is provided.
 #'
 #' @param f Numeric vector, output of a pharmacokinetic model
-#' @param xi Numeric vector of the coefficients for the
+#' @param sigma Numeric vector of the coefficients for the
 #' residual error model
 #'
 #' @details Implements the following function:
-#' \code{g <- xi[1] + xi[2]*f}
+#' \code{g <- sigma[1] + sigma[2]*f}
 #'
 #' @return Numeric vector, residual error
 #' @export
-error_model_comb1 <- function(f,xi){
-  g <- xi[1] + xi[2]*f
+error_model_comb1 <- function(f,sigma){
+  g <- sigma[1] + sigma[2]*f
   return(g)
 }
 
@@ -126,15 +126,15 @@ error_model_comb1 <- function(f,xi){
 #' Residual error model combined 2.
 #'
 #' @param f Numeric vector, output of a pharmacokinetic model
-#' @param xi Numeric vector of the coefficients for the
+#' @param sigma Numeric vector of the coefficients for the
 #' residual error model
 #'
 #' @details Implements the following function:
-#' \code{g <- sqrt(xi[1]^2 + xi[2]^2*f^2)}
+#' \code{g <- sqrt(sigma[1]^2 + sigma[2]^2*f^2)}
 #'
 #' @return Numeric vector, residual error
 #' @export
-error_model_comb2 <- function(f,xi){
-  g <- sqrt(xi[1]^2 + xi[2]^2*f^2)
+error_model_comb2 <- function(f,sigma){
+  g <- sqrt(sigma[1]^2 + sigma[2]^2*f^2)
   return(g)
 }

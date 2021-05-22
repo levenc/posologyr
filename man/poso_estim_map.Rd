@@ -4,7 +4,12 @@
 \alias{poso_estim_map}
 \title{Estimate the Maximum A Posteriori individual parameters}
 \usage{
-poso_estim_map(object = NULL, return_model = TRUE)
+poso_estim_map(
+  object = NULL,
+  return_model = TRUE,
+  return_fim = FALSE,
+  return_rse = FALSE
+)
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
@@ -12,6 +17,12 @@ function.}
 
 \item{return_model}{A boolean. Returns a RxODE model using the estimated
 ETAs if set to \code{TRUE}.}
+
+\item{return_fim}{A boolean. Returns the Fisher Information Matrix
+(FIM) if set to \code{TRUE}.}
+
+\item{return_rse}{A boolean. Returns the relative standard errors
+(RSE) of the MAP estimates of ETA if set to \code{TRUE}.}
 }
 \value{
 If \code{return_model} is set to \code{FALSE}, a named vector of the MAP estimates
