@@ -35,7 +35,7 @@
 #'      population parameters inter-individual variability}
 #'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
+#'  \item{sigma}{The estimates of the parameters of the residual error model}
 #' }
 #' @source \url{https://www.page-meeting.org/pdf_assets/1954-2017_05_01_poster_Tobramycin.pdf}
 "mod_tobramycin_2cpt_fictional"
@@ -61,7 +61,7 @@
 #'      population parameters inter-individual variability}
 #'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
+#'  \item{sigma}{The estimates of the parameters of the residual error model}
 #' }
 #' @source In-house model created specifically for posologyr
 "mod_amoxicillin_oral_1cpt_fictional"
@@ -85,7 +85,7 @@
 #'      population parameters inter-individual variability}
 #'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
+#'  \item{sigma}{The estimates of the parameters of the residual error model}
 #' }
 #' @details
 #' Covariates included in the model:
@@ -116,7 +116,7 @@
 #'      population parameters inter-individual variability}
 #'  \item{covariates}{A character vector of the covariates of
 #'      the model}
-#'  \item{xi}{The estimates of the parameters of the residual error model}
+#'  \item{sigma}{The estimates of the parameters of the residual error model}
 #' }
 #' @details
 #' Covariates included in the model:

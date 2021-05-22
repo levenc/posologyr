@@ -4,12 +4,12 @@
 \alias{error_model_comb2}
 \title{Residual error model combined 2}
 \usage{
-error_model_comb2(f, xi)
+error_model_comb2(f, sigma)
 }
 \arguments{
 \item{f}{Numeric vector, output of a pharmacokinetic model}
 
-\item{xi}{Numeric vector of the coefficients for the
+\item{sigma}{Numeric vector of the coefficients for the
 residual error model}
 }
 \value{
@@ -20,5 +20,5 @@ Residual error model combined 2.
 }
 \details{
 Implements the following function:
-\code{g <- sqrt(xi[1]^2 + xi[2]^2*f^2)}
+\code{g <- sqrt(sigma[1]^2 + sigma[2]^2*f^2)}
 }

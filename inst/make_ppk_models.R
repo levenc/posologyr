@@ -32,8 +32,8 @@ mod_tobramycin_2cpt_fictional <- list(
     d/dt(periph) =            + k12*centr - k21*periph;
     d/dt(AUC)    =   Cc;
   }),
-  error_model = function(f,xi){
-    g <- xi[1] + xi[2]*f
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
     return(g)
   },
   theta = c(THETA_ke=0.21, THETA_V=19.8,THETA_k12=0.041, THETA_k21=0.12),
@@ -43,7 +43,7 @@ mod_tobramycin_2cpt_fictional <- list(
                             0      , 0      ,  0,
                             0      , 0      ,  0, 0)}),
   covariates  = c("CLCREAT","WT"),
-  xi          = c(additive_a = 0, proportional_b = 0.198))
+  sigma       = c(additive_a = 0, proportional_b = 0.198))
 
 mod_amoxicillin_oral_1cpt_fictional <- list(
   ppk_model   = RxODE::RxODE({
@@ -61,8 +61,8 @@ mod_amoxicillin_oral_1cpt_fictional <- list(
     d/dt(centr) =  ka*depot - ke*centr;
     d/dt(AUC)   =  Cc;
   }),
-  error_model = function(f,xi){
-    g <- xi[1] + xi[2]*f
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
     return(g)
   },
   theta = c(THETA_ka=0.52, THETA_V=0.56,THETA_Cl=7.33),
@@ -71,7 +71,7 @@ mod_amoxicillin_oral_1cpt_fictional <- list(
                            0     , 0.0256 ,
                            0     ,-0.01792,  0.0400)}),
   covariates  = c("CLCREAT"),
-  xi          = c(additive_a = 0.24, proportional_b = 0.27))
+  sigma       = c(additive_a = 0.24, proportional_b = 0.27))
 
 mod_vancomycin_2cpt_Goti2018 <- list(
   ppk_model   = RxODE::RxODE({
@@ -92,8 +92,8 @@ mod_vancomycin_2cpt_Goti2018 <- list(
     d/dt(periph) =            + k12*centr - k21*periph;
     d/dt(AUC)    =   Cc;
   }),
-  error_model = function(f,xi){
-    g <- xi[1] + xi[2]*f
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
     return(g)
   },
   theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
@@ -103,7 +103,7 @@ mod_vancomycin_2cpt_Goti2018 <- list(
         0     ,       0,   0.282,
         0     ,       0,       0,    0)}),
   covariates  = c("CLCREAT","WT","DIAL"),
-  xi          = c(additive_a = 3.4, proportional_b = 0.227))
+  sigma       = c(additive_a = 3.4, proportional_b = 0.227))
 
 mod_amikacin_2cpt_Burdet2015 <- list(
   ppk_model   = RxODE::RxODE({
@@ -124,8 +124,8 @@ mod_amikacin_2cpt_Burdet2015 <- list(
     d/dt(periph) =            + k12*centr - k21*periph;
     d/dt(AUC)    =   Cc;
   }),
-  error_model = function(f,xi){
-    g <- xi[1] + xi[2]*f
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
     return(g)
   },
   theta = c(THETA_Cl=4.3, THETA_Vc=15.9, THETA_Vp=21.4,THETA_Q=12.1),
@@ -135,7 +135,7 @@ mod_amikacin_2cpt_Burdet2015 <- list(
         0.01     ,   0.02 ,   0.2  ,
         -0.06    ,   0.004,   0.003,    0.08)}),
   covariates  = c("CLCREAT4H","TBW","PoverF"),
-  xi          = c(additive_a = 0.2, proportional_b = 0.1))
+  sigma       = c(additive_a = 0.2, proportional_b = 0.1))
 
 ## save the models in a .rda data file
 save(mod_tobramycin_2cpt_fictional,

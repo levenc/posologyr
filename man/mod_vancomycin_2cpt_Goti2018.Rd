@@ -19,7 +19,7 @@ terminology)}
 population parameters inter-individual variability}
 \item{covariates}{A character vector of the covariates of
 the model}
-\item{xi}{The estimates of the parameters of the residual error model}
+\item{sigma}{The estimates of the parameters of the residual error model}
 }
 }
 \source{

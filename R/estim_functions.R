@@ -136,16 +136,16 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
     return(model$Cc)
     }
 
-  errpred <- function(eta_estim,run_model,y,theta,ind_eta,xi,solve_omega){
+  errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega){
     eta          <- diag(omega)*0
     eta[ind_eta] <- eta_estim
 
     #simulated concentrations with the proposed eta estimates
     f <- do.call(run_model,list(c(theta,eta)))
-    g <- error_model(f,xi)
+    g <- error_model(f,sigma)
 
-    #http://sia.webpopix.org/nlme.html#estimation-of-the-individual-parameters
-    #doi:10.1006/jbin.2001.1033
+    #objective function for the Empirical Bayes Estimates
+    #doi: 10.4196/kjpp.2012.16.2.97
     U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
     #the transpose of a diagonal matrix is itself
     U_eta <- 0.5 * eta_estim %*% solve_omega %*% eta_estim
@@ -158,7 +158,7 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
   solved_model <- object$solved_ppk_model
   omega        <- object$omega
   theta        <- object$theta
-  xi           <- object$xi
+  sigma        <- object$sigma
   error_model  <- object$error_model
 
   y_obs        <- dat$DV[dat$EVID == 0]         # only observations
@@ -168,7 +168,7 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
 
   r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
-             ind_eta=ind_eta,xi=xi,solve_omega=solve_omega,hessian=TRUE)
+             ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,hessian=TRUE)
 
   eta_map            <- diag(omega)*0
   eta_map[ind_eta]   <- r$par
@@ -254,7 +254,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
   omega        <- object$omega
-  xi           <- object$xi
+  sigma        <- object$sigma
   error_model  <- object$error_model
 
   y_obs        <- dat$DV[dat$EVID == 0]     # only observations
@@ -272,7 +272,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
   theta    <- object$theta
   eta      <- diag(omega_eta)*0
   f        <- do.call(run_model,list(c(theta,eta)))
-  g        <- error_model(f,xi)
+  g        <- error_model(f,sigma)
   U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
   U_eta    <- 0.5 * eta %*% solve_omega %*% eta
 
@@ -288,7 +288,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
         etac <- as.vector(chol_omega%*%rnorm(nb_etas))
         names(etac)   <- attr(omega_eta,"dimnames")[[1]]
         f             <- do.call(run_model,list(c(theta,etac)))
-        g             <- error_model(f,xi)
+        g             <- error_model(f,sigma)
         Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
         deltu         <- Uc_y - U_y
         if(deltu < (-1) * log(runif(1)))
@@ -315,7 +315,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
             etac          <- eta
             etac[vk2]     <- eta[vk2] + rnorm(nrs2)*d_omega[vk2]
             f             <- do.call(run_model,list(c(theta,etac)))
-            g             <- error_model(f,xi)
+            g             <- error_model(f,sigma)
             Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
             Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
             deltu         <- Uc_y - U_y + Uc_eta - U_eta
@@ -348,7 +348,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
           etac            <- eta
           etac[vk2]       <- eta[vk2]+matrix(rnorm(nrs2), ncol=nrs2)%*%diag(d_omega[vk2])
           f               <- do.call(run_model,list(c(theta,etac)))
-          g               <- error_model(f,xi)
+          g               <- error_model(f,sigma)
           Uc_y            <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
           Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
           deltu           <- Uc_y-U_y+Uc_eta-U_eta

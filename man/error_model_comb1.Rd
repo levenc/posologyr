@@ -4,12 +4,12 @@
 \alias{error_model_comb1}
 \title{Residual error model combined 1}
 \usage{
-error_model_comb1(f, xi)
+error_model_comb1(f, sigma)
 }
 \arguments{
 \item{f}{Numeric vector, output of a pharmacokinetic model}
 
-\item{xi}{Numeric vector of the coefficients for the
+\item{sigma}{Numeric vector of the coefficients for the
 residual error model}
 }
 \value{
@@ -23,5 +23,5 @@ coefficient is provided.
 }
 \details{
 Implements the following function:
-\code{g <- xi[1] + xi[2]*f}
+\code{g <- sigma[1] + sigma[2]*f}
 }
