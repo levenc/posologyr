@@ -45,34 +45,6 @@ mod_tobramycin_2cpt_fictional <- list(
   covariates  = c("CLCREAT","WT"),
   sigma       = c(additive_a = 0, proportional_b = 0.198))
 
-mod_amoxicillin_oral_1cpt_fictional <- list(
-  ppk_model   = RxODE::RxODE({
-    depot(0) = 0;
-    centr(0) = 0;
-    tTVka  = log(THETA_ka);
-    tTVV   = log(THETA_V);
-    tTVCl  = log(THETA_Cl)+log(CLCREAT/90)*0.62;
-    ka     = exp(tTVka+ETA_ka);
-    V      = exp(tTVV+ETA_V);
-    Cl     = exp(tTVCl+ETA_Cl);
-    ke     = Cl/V;
-    Cc     = centr/V;
-    d/dt(depot) = -ka*depot;
-    d/dt(centr) =  ka*depot - ke*centr;
-    d/dt(AUC)   =  Cc;
-  }),
-  error_model = function(f,sigma){
-    g <- sigma[1] + sigma[2]*f
-    return(g)
-  },
-  theta = c(THETA_ka=0.52, THETA_V=0.56,THETA_Cl=7.33),
-  omega = lotri::lotri({ETA_ka + ETA_V + ETA_Cl ~
-                          c(0.0289,
-                           0     , 0.0256 ,
-                           0     ,-0.01792,  0.0400)}),
-  covariates  = c("CLCREAT"),
-  sigma       = c(additive_a = 0.24, proportional_b = 0.27))
-
 mod_vancomycin_2cpt_Goti2018 <- list(
   ppk_model   = RxODE::RxODE({
     centr(0) = 0;
@@ -139,7 +111,6 @@ mod_amikacin_2cpt_Burdet2015 <- list(
 
 ## save the models in a .rda data file
 save(mod_tobramycin_2cpt_fictional,
-     mod_amoxicillin_oral_1cpt_fictional,
      mod_vancomycin_2cpt_Goti2018,
      mod_amikacin_2cpt_Burdet2015,
      file="data/lib_ppk_model.rda")
