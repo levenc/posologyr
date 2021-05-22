@@ -81,15 +81,15 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
   eta_df        <- data.frame(eta_mat)
   names(eta_df) <- attr(omega,"dimnames")[[1]]
 
+  eta_pop       <- list(eta=eta_df)
+
   if(return_model){
     model_pop         <- object$solved_ppk_model
     theta             <- rbind(object$theta)
     covar             <- object$tdm_data[1,object$covariates]
     names(covar)      <- object$covariates
     model_pop$params  <- cbind(theta,eta_df,covar,row.names = NULL)
-    eta_pop           <- list(eta_df,model_pop)
-  } else {
-    eta_pop           <- eta_df
+    eta_pop$model     <- model_pop
   }
 
   return(eta_pop)
@@ -127,7 +127,8 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(object=NULL,return_model = TRUE)
+poso_estim_map <- function(object=NULL,return_model = TRUE,
+                           return_fim = FALSE,return_rse = FALSE)
 {
 
   # Update model predictions with a new set of parameters, for all obs-----
@@ -173,14 +174,24 @@ poso_estim_map <- function(object=NULL,return_model = TRUE)
   eta_map            <- diag(omega)*0
   eta_map[ind_eta]   <- r$par
 
+  estim_map          <- list(eta=eta_map)
+
   if(return_model){
     model_map        <- solved_model
     covar            <- t(dat[1,object$covariates]) #results in a matrix
     names(covar)     <- object$covariates
     model_map$params <- c(theta,eta_map,covar)
-    estim_map        <- list(eta_map,model_map)
-  } else {
-    estim_map        <- eta_map
+    estim_map$model  <- model_map
+  }
+  if(return_fim){
+    estim_map$fim    <- r$hessian #the objective function minimized is -LogLikelihood
+                                  # hence the hessian is the Fisher Information Matrix
+  }
+  if(return_rse){
+    map_se           <- sqrt(diag(solve(fim))) #the inverse of the fim is the variance
+                                               # covariance matrix
+    map_rse          <- map_se/abs(eta_map)
+    estim_map$rse    <- map_rse
   }
 
   return(estim_map)
@@ -367,15 +378,16 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
   eta_df_mcmc            <- data.frame(eta_mat[(burn_in+1):n_iter,])
   names(eta_df_mcmc)     <- attr(omega,"dimnames")[[1]]
 
+  estim_mcmc             <- list(eta=eta_df_mcmc)
+
   if(return_model){
     model_mcmc        <- solved_model
     theta_return      <- rbind(theta)
     covar             <- dat[1,object$covariates]
     names(covar)      <- object$covariates
     model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names = NULL)
-    estim_mcmc        <- list(eta_df_mcmc,model_mcmc)
-  } else {
-    estim_mcmc        <- eta_df_mcmc
+    estim_mcmc$model  <- model_mcmc
   }
+
   return(estim_mcmc)
 }

@@ -35,16 +35,16 @@ patient03_amik_map  <- poso_estim_map(patient03_amik,
                                       return_model = TRUE)
 
 test_that("MAP estimates match Monolix MAP estimates", {
-  expect_equal(patient01_tobra_map[[2]]$ke[1], 0.1258, tolerance = 1e-3)
-  expect_equal(patient01_tobra_map[[2]]$V[1], 18.21, tolerance = 1e-2)
-  expect_equal(patient02_vanco_map[[2]]$Cl[1], 1.72, tolerance = 1e-2)
-  expect_equal(patient02_vanco_map[[2]]$Vc[1], 59.8, tolerance = 1e-2)
-  expect_equal(patient02_vanco_map[[2]]$Vp[1], 41.6, tolerance = 1e-2)
+  expect_equal(patient01_tobra_map$model$ke[1], 0.1258, tolerance = 1e-3)
+  expect_equal(patient01_tobra_map$model$V[1], 18.21, tolerance = 1e-2)
+  expect_equal(patient02_vanco_map$model$Cl[1], 1.72, tolerance = 1e-2)
+  expect_equal(patient02_vanco_map$model$Vc[1], 59.8, tolerance = 1e-2)
+  expect_equal(patient02_vanco_map$model$Vp[1], 41.6, tolerance = 1e-2)
 })
 
 test_that("MAP estimates match nlmixr posthoc estimates", {
-  expect_equal(patient03_amik_map[[2]]$Cl[1], 2.62, tolerance = 1e-2)
-  expect_equal(patient03_amik_map[[2]]$Vc[1], 11.01, tolerance = 1e-2)
-  expect_equal(patient03_amik_map[[2]]$Vp[1], 14.57, tolerance = 1e-2)
-  expect_equal(patient03_amik_map[[2]]$Q[1], 11.96, tolerance = 1e-2)
+  expect_equal(patient03_amik_map$model$Cl[1], 2.62, tolerance = 1e-2)
+  expect_equal(patient03_amik_map$model$Vc[1], 11.01, tolerance = 1e-2)
+  expect_equal(patient03_amik_map$model$Vp[1], 14.57, tolerance = 1e-2)
+  expect_equal(patient03_amik_map$model$Q[1], 11.96, tolerance = 1e-2)
 })
