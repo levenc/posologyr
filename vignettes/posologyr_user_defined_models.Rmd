@@ -113,7 +113,7 @@ omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
 
 The estimates of covariance (off diagonal) are sometimes given as coefficients of correlation between ETAs. The covariance between ETA_a and ETA_b can be computed with the following product: `standard_deviation(ETA_a) * standard_deviation(ETA_b) * correlation(ETA_a and ETA_b)`.
 
-In this example, all covariances are egal to zero.
+In this example, all covariances are equal to zero.
 
 ## covariates
 The names of every covariate defined in **ppk_model**, in a character vector.
