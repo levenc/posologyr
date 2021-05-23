@@ -25,10 +25,11 @@ ETAs if set to \code{TRUE}.}
 (RSE) of the MAP estimates of ETA if set to \code{TRUE}.}
 }
 \value{
-If \code{return_model} is set to \code{FALSE}, a named vector of the MAP estimates
-of the individual values of ETA.
-If \code{return_model} is set to \code{TRUE}, a list of the MAP estimates of the individual
-values of ETA, and a RxODE model using the estimated ETAs.
+A named list consisting of one or more of the following elements
+depending on the input parameters of the function: a named vector of the
+MAP estimates of the individual values of ETA, an RxODE model using the
+estimated ETAs, the Fisher information matrix, a named vector of RSEs
+of the MAP estimates of ETAs.
 }
 \description{
 Estimates the Maximum A Posteriori (MAP) individual parameters,

@@ -174,10 +174,11 @@ ETAs if set to <code>TRUE</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>return_model</code> is set to <code>FALSE</code>, a named vector of the MAP estimates
-of the individual values of ETA.
-If <code>return_model</code> is set to <code>TRUE</code>, a list of the MAP estimates of the individual
-values of ETA, and a RxODE model using the estimated ETAs.</p>
+    <p>A named list consisting of one or more of the following elements
+depending on the input parameters of the function: a named vector of the
+MAP estimates of the individual values of ETA, an RxODE model using the
+estimated ETAs, the Fisher information matrix, a named vector of RSEs
+of the MAP estimates of ETAs.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>

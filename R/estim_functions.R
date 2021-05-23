@@ -26,6 +26,7 @@
 #   - variable names changed to snake_case
 #   - square matrix taken as input, not diagonal
 #   - functions return values for both etas and theta
+#   - relative standard error of MAP estimates
 #-------------------------------------------------------------------------
 
 #' Estimate the prior distribution of population parameters
@@ -109,10 +110,11 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #' @param return_rse A boolean. Returns the relative standard errors
 #'    (RSE) of the MAP estimates of ETA if set to `TRUE`.
 #'
-#' @return If `return_model` is set to `FALSE`, a named vector of the MAP estimates
-#' of the individual values of ETA.
-#' If `return_model` is set to `TRUE`, a list of the MAP estimates of the individual
-#' values of ETA, and a RxODE model using the estimated ETAs.
+#' @return A named list consisting of one or more of the following elements
+#' depending on the input parameters of the function: a named vector of the
+#' MAP estimates of the individual values of ETA, an RxODE model using the
+#' estimated ETAs, the Fisher information matrix, a named vector of RSEs
+#' of the MAP estimates of ETAs.
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
