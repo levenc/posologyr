@@ -75,14 +75,14 @@ patA_tdm_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,df_patientA_tdm)
 
 ## Relative standard error (RSE) of the MAP estimates
 
-The precision of the the maximum a posteriori (MAP) estimates can be computed by setting `return_rse = TRUE` when using the `poso_estim_map()` function; `$fim` is the Fisher Information Matrix. 
+The precision of the the maximum a posteriori (MAP) estimates can be assessed by setting `return_rse = TRUE` when using the `poso_estim_map()` function; `$fim` is the Fisher Information Matrix. 
 
 ```{r estim_map}
 patA_map <- poso_estim_map(patA_tdm_amik,return_fim = TRUE,return_rse = TRUE)
 patA_map
 ```
 
-RSE below 30% are usually considered acceptable.
+RSE below 30% are usually considered acceptable. More data points would allow for a better estimation.
 
 # Conditionnal distribution of the individual parameters
 

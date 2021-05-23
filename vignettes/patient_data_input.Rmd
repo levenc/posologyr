@@ -35,10 +35,10 @@ data.frame(ID=1,
 ## Required fields and data
 
 TIME
-: Dosing times, and sampling times of therapeutic drug monitoring (TDM). The units depend on the specification of the popPK model.
+: Dosing times, and sampling times of therapeutic drug monitoring (TDM). The units depend on the specification of the population pharmacokinetics (ppk) model.
 
 AMT
-: Amount of drug administered. The units depend on the specification of the popPK model.
+: Amount of drug administered. The units depend on the specification of the ppk model.
 
 EVID
 : Event type. Must be 0 for all observations (concentrations from TDM).
@@ -47,7 +47,7 @@ DV
 : For concentrations. Must be NA when EVID is not 0.
 
 Covariates
-: Every covariate defined in the prior `posologyr` model. The column labels must match the **covariate** vector from the popPK model.
+: Every covariate defined in the prior `posologyr` model. The column labels must match the **covariate** vector from the ppk model.
 
 # Common use cases
 ## A priori dose adjustment
@@ -64,7 +64,7 @@ data.frame(ID=1,
 ```
 
 ## Oral administration or IV bolus
-`EVID = 101` for an instantaneous administration in the first compartment defined in the popPK model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.
+`EVID = 101` for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.
 
 ```{r oral_IV_bolus_df}
 data.frame(ID=1,
@@ -77,7 +77,7 @@ data.frame(ID=1,
 ```
 
 ## Intermittent infusion
-`EVID = 10101` for a bolus infusion defined by its duration, administered in the first compartment defined in the popPK model.
+`EVID = 10101` for a bolus infusion defined by its duration, administered in the first compartment defined in the ppk model.
 
 The `DUR` field is not mandatory. The end of the infusion is encoded by a negative amount record.
 

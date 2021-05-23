@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-`posologyr` is an R package for drug treatment individualisation, taking advantage of population pharmacokinetics (popPK), patient characteristics, and the results of therapeutic drug monitoring.
+`posologyr` is an R package for drug treatment individualisation, taking advantage of population pharmacokinetics (ppk), patient characteristics, and the results of therapeutic drug monitoring.
 
 `posologyr` provides functions for estimating the pharmacokinetic (PK) parameters:
 
-+ `poso_simu_pop()` for estimating the a priori distributions of popPK parameters by Monte-Carlo simulations
++ `poso_simu_pop()` for estimating the a priori distributions of ppk parameters by Monte-Carlo simulations
 + `poso_estim_map()` for computing the Maximum A Posteriori (MAP), aka Empirical Bayes Estimates (EBE), of individual PK parameters from the results of therapeutic drug monitoring
 + `poso_estim_mcmc()` for estimating the posterior distributions of individual PK parameters by Markov Chain Monte Carlo (MCMC)
 
@@ -34,7 +34,7 @@ Functions for dosage optimisation are included in `posologyr`:
 + `poso_dose_auc()` estimates the optimal dose to reach a target AUC
 + `poso_dose_ctime()` estimates the optimal dose to reach a target concentration at any given time
 
-Posologyr requires a popPK model written in the `RxODE` mini-language.
+`posologyr` takes advantage of the simulation framework provided by the [RxODE](https://github.com/nlmixrdevelopment/RxODE) package.
 
 ## Installation
 
@@ -49,9 +49,7 @@ devtools::install_github("levenc/posologyr")
 
 An example of a dosage adjustment with posologyr is available in the following vignette: `vignette("case_study_amikacin")`.
 
-All the vignettes are also available on the [posologyr package website](https://levenc.github.io/posologyr/).
+All the vignettes are also available at [https://levenc.github.io/posologyr/](https://levenc.github.io/posologyr/).
 
 ## Acknowledgments
-`posologyr` takes advantage of the simulation framework provided by the  [RxODE](https://github.com/nlmixrdevelopment/RxODE) package.
-
 `posologyr`'s estimation functions were based on [Marc Lavielle's shiny app]( http://shiny.webpopix.org/mcmc/bayes1/)

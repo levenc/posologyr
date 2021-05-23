@@ -14,10 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 # Introduction
-This describes the structure of prior models usable by `posologyr` and illustrates how to define new models from published population pharmacokinetic (popPK) models.
+This describes the structure of prior models usable by `posologyr` and illustrates how to define new models from published population pharmacokinetic (ppk) models.
 
 # Structure
-A `posologyr` prior popPK model is a list of six objects:
+A `posologyr` prior ppk model is a list of six objects:
 
 ppk_model 
 : A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
@@ -38,10 +38,10 @@ sigma
 : The estimates of the parameters of the residual error model
 
 # Definition of a prior model through an example
-The model to implement is a two-compartment popPK model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
+The model to implement is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
 
 ## ppk_model
-A model defined in the RxODE::RxODE mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an invidivual model.
+A model defined in the `RxODE::RxODE()` mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an invidivual model.
 
 The concentration in the central compartment *must* be named Cc.
 
@@ -73,7 +73,7 @@ A function of the residual error model, taking two arguments: the simulated conc
 
 ```{r error_model}
 error_model <- function(f,sigma){     #additive model if sigma[2] == 0
-  g <- sigma[1] + sigma[2]*f             #proportional model if sigma[1] == 0
+  g <- sigma[1] + sigma[2]*f          #proportional model if sigma[1] == 0
   return(g)
 }
 ```
@@ -86,7 +86,7 @@ theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4, THETA_Q=6.5)
 ```
 
 ## omega
-The variance-covariance matrix of the random effects (ETA) for the individual model. A symmetric matrix. The names must match the names used in **ppk_model**. The easiest way to define it is with `lotri::lotri`.
+The variance-covariance matrix of the random effects (ETA) for the individual model. A symmetric matrix. The names must match the names used in **ppk_model**. The easiest way to define it is with `lotri::lotri()`.
 
 The estimates of the variances of the random effects can be given under different parameterizations depending on the authors.
 
@@ -105,15 +105,15 @@ In the case of the [vancomycin model](https://doi.org/10.1097/FTD.00000000000004
 ```{r omega}
 omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
                           c(0.147,
-                           0     ,  0.510 ,
-                           0     ,       0,   0.282,
-                           0     ,       0,       0,    0)})
+                            0    ,  0.510 ,
+                            0    ,  0     ,   0.282,
+                            0    ,  0     ,   0    ,    0)})
 
 ```
 
 The estimates of covariance (off diagonal) are sometimes given as coefficients of correlation between ETAs. The covariance between ETA_a and ETA_b can be computed with the following product: `standard_deviation(ETA_a) * standard_deviation(ETA_b) * correlation(ETA_a and ETA_b)`.
 
-In this example, all covariances are egal to zero.
+In this example, all covariances are equal to zero.
 
 ## covariates
 The names of every covariate defined in **ppk_model**, in a character vector.
@@ -159,9 +159,9 @@ mymod_vancomyin_Goti2018 <- list(
   theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
   omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
                           c(0.147,
-                           0     ,  0.510 ,
-                           0     ,       0,   0.282,
-                           0     ,       0,       0,    0)}),
+                            0    ,  0.510 ,
+                            0    ,  0     ,   0.282,
+                            0    ,  0     ,   0    ,    0)}),
   covariates  = c("CLCREAT","WT","DIAL"),
   sigma       = c(additive_a = 3.4, proportional_b = 0.227))
 ```

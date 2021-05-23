@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -66,6 +66,9 @@
       <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -167,7 +170,7 @@
 <div id="relative-standard-error-rse-of-the-map-estimates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#relative-standard-error-rse-of-the-map-estimates" class="anchor"></a>Relative standard error (RSE) of the MAP estimates</h2>
-<p>The precision of the the maximum a posteriori (MAP) estimates can be computed by setting <code>return_rse = TRUE</code> when using the <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> function; <code>$fim</code> is the Fisher Information Matrix.</p>
+<p>The precision of the the maximum a posteriori (MAP) estimates can be assessed by setting <code>return_rse = TRUE</code> when using the <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> function; <code>$fim</code> is the Fisher Information Matrix.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">patA_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,return_fim <span class="op">=</span> <span class="cn">TRUE</span>,return_rse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">patA_map</span>
@@ -204,7 +207,7 @@
 <span class="co">#&gt; $rse</span>
 <span class="co">#&gt;    ETA_Cl    ETA_Vc    ETA_Vp     ETA_Q </span>
 <span class="co">#&gt; 0.6015548 0.6811285 0.6101811 1.6250431</span></code></pre></div>
-<p>RSE below 30% are usually considered acceptable.</p>
+<p>RSE below 30% are usually considered acceptable. More data points would allow for a better estimation.</p>
 </div>
 </div>
 <div id="conditionnal-distribution-of-the-individual-parameters" class="section level1">
@@ -259,10 +262,10 @@
 <span class="co">#&gt; ETA_Q   -0.06  0.004  0.003  0.080</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">eta</span><span class="op">)</span>
 <span class="co">#&gt;              ETA_Cl       ETA_Vc       ETA_Vp        ETA_Q</span>
-<span class="co">#&gt; ETA_Cl  0.072710143  0.006107368 -0.089782099 -0.038254126</span>
-<span class="co">#&gt; ETA_Vc  0.006107368  0.041394991 -0.005092782 -0.009549649</span>
-<span class="co">#&gt; ETA_Vp -0.089782099 -0.005092782  0.181199960  0.061716996</span>
-<span class="co">#&gt; ETA_Q  -0.038254126 -0.009549649  0.061716996  0.053018616</span></code></pre></div>
+<span class="co">#&gt; ETA_Cl  0.076405636  0.003487769 -0.082758610 -0.041408850</span>
+<span class="co">#&gt; ETA_Vc  0.003487769  0.039672433 -0.005444228 -0.007907489</span>
+<span class="co">#&gt; ETA_Vp -0.082758610 -0.005444228  0.162755599  0.060021068</span>
+<span class="co">#&gt; ETA_Q  -0.041408850 -0.007907489  0.060021068  0.054951964</span></code></pre></div>
 </div>
 <div id="prior-and-posterior-distribution-of-the-parameters" class="section level2">
 <h2 class="hasAnchor">

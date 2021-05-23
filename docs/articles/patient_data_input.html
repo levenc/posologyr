@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -66,6 +66,9 @@
       <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -123,10 +126,10 @@
 <a href="#required-fields-and-data" class="anchor"></a>Required fields and data</h2>
 <dl>
 <dt>TIME</dt>
-<dd>Dosing times, and sampling times of therapeutic drug monitoring (TDM). The units depend on the specification of the popPK model.
+<dd>Dosing times, and sampling times of therapeutic drug monitoring (TDM). The units depend on the specification of the population pharmacokinetics (ppk) model.
 </dd>
 <dt>AMT</dt>
-<dd>Amount of drug administered. The units depend on the specification of the popPK model.
+<dd>Amount of drug administered. The units depend on the specification of the ppk model.
 </dd>
 <dt>EVID</dt>
 <dd>Event type. Must be 0 for all observations (concentrations from TDM).
@@ -135,7 +138,7 @@
 <dd>For concentrations. Must be NA when EVID is not 0.
 </dd>
 <dt>Covariates</dt>
-<dd>Every covariate defined in the prior <code>posologyr</code> model. The column labels must match the <strong>covariate</strong> vector from the popPK model.
+<dd>Every covariate defined in the prior <code>posologyr</code> model. The column labels must match the <strong>covariate</strong> vector from the ppk model.
 </dd>
 </dl>
 </div>
@@ -161,7 +164,7 @@
 <div id="oral-administration-or-iv-bolus" class="section level2">
 <h2 class="hasAnchor">
 <a href="#oral-administration-or-iv-bolus" class="anchor"></a>Oral administration or IV bolus</h2>
-<p><code>EVID = 101</code> for an instantaneous administration in the first compartment defined in the popPK model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.</p>
+<p><code>EVID = 101</code> for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
@@ -177,7 +180,7 @@
 <div id="intermittent-infusion" class="section level2">
 <h2 class="hasAnchor">
 <a href="#intermittent-infusion" class="anchor"></a>Intermittent infusion</h2>
-<p><code>EVID = 10101</code> for a bolus infusion defined by its duration, administered in the first compartment defined in the popPK model.</p>
+<p><code>EVID = 10101</code> for a bolus infusion defined by its duration, administered in the first compartment defined in the ppk model.</p>
 <p>The <code>DUR</code> field is not mandatory. The end of the infusion is encoded by a negative amount record.</p>
 <p><code>AMT</code> is the infusion rate in this scenario RATE = AMT/DUR, not the amount administered.</p>
 <p>The total dose administered is <code>RATE*DUR = 1000*0.5 = 500</code>.</p>
