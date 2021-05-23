@@ -50,8 +50,8 @@ devtools::install_github("levenc/posologyr")
 An example of a dosage adjustment with posologyr is available in the
 following vignette: `vignette("case_study_amikacin")`.
 
-All the vignettes are also available on the [posologyr package
-website](https://levenc.github.io/posologyr/).
+All the vignettes are also available at
+<https://levenc.github.io/posologyr/>.
 
 ## Acknowledgments
 
