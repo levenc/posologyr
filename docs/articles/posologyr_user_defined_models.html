@@ -101,12 +101,12 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This describes the structure of prior models usable by <code>posologyr</code> and illustrates how to define new models from published population pharmacokinetic (popPK) models.</p>
+<p>This describes the structure of prior models usable by <code>posologyr</code> and illustrates how to define new models from published population pharmacokinetic (ppk) models.</p>
 </div>
 <div id="structure" class="section level1">
 <h1 class="hasAnchor">
 <a href="#structure" class="anchor"></a>Structure</h1>
-<p>A <code>posologyr</code> prior popPK model is a list of six objects:</p>
+<p>A <code>posologyr</code> prior ppk model is a list of six objects:</p>
 <dl>
 <dt>ppk_model</dt>
 <dd>A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
@@ -131,7 +131,7 @@
 <div id="definition-of-a-prior-model-through-an-example" class="section level1">
 <h1 class="hasAnchor">
 <a href="#definition-of-a-prior-model-through-an-example" class="anchor"></a>Definition of a prior model through an example</h1>
-<p>The model to implement is a two-compartment popPK model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients (<a href="https://doi.org/10.1097/FTD.0000000000000490">doi:10.1097/FTD.0000000000000490</a>).</p>
+<p>The model to implement is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients (<a href="https://doi.org/10.1097/FTD.0000000000000490">doi:10.1097/FTD.0000000000000490</a>).</p>
 <div id="ppk_model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ppk_model" class="anchor"></a>ppk_model</h2>

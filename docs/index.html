@@ -95,11 +95,11 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><code>posologyr</code> is an R package for drug treatment individualisation, taking advantage of population pharmacokinetics (popPK), patient characteristics, and the results of therapeutic drug monitoring.</p>
+<p><code>posologyr</code> is an R package for drug treatment individualisation, taking advantage of population pharmacokinetics (ppk), patient characteristics, and the results of therapeutic drug monitoring.</p>
 <p><code>posologyr</code> provides functions for estimating the pharmacokinetic (PK) parameters:</p>
 <ul>
 <li>
-<code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> for estimating the a priori distributions of popPK parameters by Monte-Carlo simulations</li>
+<code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> for estimating the a priori distributions of ppk parameters by Monte-Carlo simulations</li>
 <li>
 <code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> for computing the Maximum A Posteriori (MAP), aka Empirical Bayes Estimates (EBE), of individual PK parameters from the results of therapeutic drug monitoring</li>
 <li>
@@ -114,7 +114,7 @@
 <li>
 <code><a href="reference/poso_dose_ctime.html">poso_dose_ctime()</a></code> estimates the optimal dose to reach a target concentration at any given time</li>
 </ul>
-<p>Posologyr requires a popPK model written in the <code>RxODE</code> mini-language.</p>
+<p><code>posologyr</code> takes advantage of the simulation framework provided by the <a href="https://github.com/nlmixrdevelopment/RxODE">RxODE</a> package.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -128,12 +128,11 @@
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>An example of a dosage adjustment with posologyr is available in the following vignette: <code><a href="articles/case_study_amikacin.html">vignette("case_study_amikacin")</a></code>.</p>
-<p>All the vignettes are available on the <a href="https://levenc.github.io/posologyr/">posologyr package website</a>.</p>
+<p>All the vignettes are also available on the <a href="https://levenc.github.io/posologyr/">posologyr package website</a>.</p>
 </div>
 <div id="acknowledgments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#acknowledgments" class="anchor"></a>Acknowledgments</h2>
-<p><code>posologyr</code> takes advantage of the simulation framework provided by the <a href="https://github.com/nlmixrdevelopment/RxODE">RxODE</a> package.</p>
 <p><code>posologyr</code>’s estimation functions were based on <a href="http://shiny.webpopix.org/mcmc/bayes1/">Marc Lavielle’s shiny app</a></p>
 </div>
 </div>

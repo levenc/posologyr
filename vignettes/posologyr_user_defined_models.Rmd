@@ -14,10 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 # Introduction
-This describes the structure of prior models usable by `posologyr` and illustrates how to define new models from published population pharmacokinetic (popPK) models.
+This describes the structure of prior models usable by `posologyr` and illustrates how to define new models from published population pharmacokinetic (ppk) models.
 
 # Structure
-A `posologyr` prior popPK model is a list of six objects:
+A `posologyr` prior ppk model is a list of six objects:
 
 ppk_model 
 : A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
@@ -38,7 +38,7 @@ sigma
 : The estimates of the parameters of the residual error model
 
 # Definition of a prior model through an example
-The model to implement is a two-compartment popPK model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
+The model to implement is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
 
 ## ppk_model
 A model defined in the RxODE::RxODE mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an invidivual model.
