@@ -26,10 +26,10 @@ ETAs if set to \code{TRUE}.}
 }
 \value{
 A named list consisting of one or more of the following elements
-depending on the input parameters of the function: a named vector of the
-MAP estimates of the individual values of ETA, an RxODE model using the
-estimated ETAs, the Fisher information matrix, a named vector of RSEs
-of the MAP estimates of ETAs.
+depending on the input parameters of the function: \verb{$eta} a named vector
+of the MAP estimates of the individual values of ETA, \verb{$model} an RxODE
+model using the estimated ETAs, \verb{$fim} the Fisher information matrix,
+\verb{$rse} a named vector of RSEs of the MAP estimates of ETAs.
 }
 \description{
 Estimates the Maximum A Posteriori (MAP) individual parameters,

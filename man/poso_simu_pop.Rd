@@ -16,8 +16,8 @@ function.}
 ETAs if set to \code{TRUE}.}
 }
 \value{
-If \code{return_model} is set to \code{FALSE}, a dataframe of the
-individual values of ETA.
+If \code{return_model} is set to \code{FALSE}, a list of one element: a
+dataframe \verb{$eta} of the individual values of ETA.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the
 individual values of ETA, and a RxODE model using the simulated ETAs.
 }

@@ -41,8 +41,8 @@
 #' @param return_model A boolean. Returns a RxODE model using the simulated
 #'    ETAs if set to `TRUE`.
 #'
-#' @return If `return_model` is set to `FALSE`, a dataframe of the
-#' individual values of ETA.
+#' @return If `return_model` is set to `FALSE`, a list of one element: a
+#' dataframe `$eta` of the individual values of ETA.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the
 #' individual values of ETA, and a RxODE model using the simulated ETAs.
 #'
@@ -111,10 +111,10 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #'    (RSE) of the MAP estimates of ETA if set to `TRUE`.
 #'
 #' @return A named list consisting of one or more of the following elements
-#' depending on the input parameters of the function: a named vector of the
-#' MAP estimates of the individual values of ETA, an RxODE model using the
-#' estimated ETAs, the Fisher information matrix, a named vector of RSEs
-#' of the MAP estimates of ETAs.
+#' depending on the input parameters of the function: `$eta` a named vector
+#' of the MAP estimates of the individual values of ETA, `$model` an RxODE
+#' model using the estimated ETAs, `$fim` the Fisher information matrix,
+#' `$rse` a named vector of RSEs of the MAP estimates of ETAs.
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
@@ -231,8 +231,9 @@ poso_estim_map <- function(object=NULL,return_model = TRUE,
 #' @param control A list of parameters controlling the Metropolis-Hastings
 #' algorithm.
 #'
-#' @return If `return_model` is set to `FALSE`, a dataframe of ETAs from
-#' the posterior distribution, estimated by Markov Chain Monte Carlo.
+#' @return If `return_model` is set to `FALSE`, , a list of one element: a
+#' dataframe `$eta` of ETAs from the posterior distribution, estimated by
+#' Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
 #'
