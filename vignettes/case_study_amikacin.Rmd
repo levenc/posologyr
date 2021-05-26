@@ -41,7 +41,8 @@ df_patientA_prior
 The `posologyr()` function combines the patient record and the ppk model into a single object.
 
 ```{r posologyr_prior_patientA}
-patA_prior_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,df_patientA_prior)
+patA_prior_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,
+                             df_patientA_prior)
 ```
 
 ## Optimal dose selection
@@ -49,7 +50,10 @@ patA_prior_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,df_patientA_prior)
 In the absence of measured concentrations, the optimal dose in mg to achieve a so-called peak concentration of 80 mg/l (one hour after the start of the 30-minute infusion) is determined from the typical profile of the ppk model.
 
 ```{r prior_Cmax_optim_patientA}
-prior_dose <- poso_dose_ctime(patA_prior_amik,time_c = 1,duration = 0.5,target_conc = 80)
+prior_dose <- poso_dose_ctime(patA_prior_amik,
+                              time_c = 1,
+                              duration = 0.5,
+                              target_conc = 80)
 prior_dose
 ```
 
@@ -58,7 +62,10 @@ prior_dose
 With this dose, the time in hours required to reach a target Cmin concentration of 2.5 mg/l can be estimated.
 
 ```{r prior_Cmin_optim_patientA}
-prior_timecmin <- poso_time_cmin(patA_prior_amik,dose = prior_dose,target_cmin = 2.5)
+prior_timecmin <- poso_time_cmin(patA_prior_amik,
+                                 dose = prior_dose,
+                                 duration = 0.5,
+                                 target_cmin = 2.5)
 prior_timecmin
 ```
 
@@ -114,7 +121,8 @@ df_patientA_tdm
 The updated patient record and the ppk model are combined into a single object by `posologyr()`.
 
 ```{r posologyr_tdm_patientA}
-patA_tdm_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,df_patientA_tdm)
+patA_tdm_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,
+                           df_patientA_tdm)
 ```
 
 ## Plot the observations from TDM over the simulated a priori dosage
@@ -167,7 +175,10 @@ The MAP profile matches the observations.
 With the MAP estimates of the individual parameters, the prediction of the time in hours needed before reaching the target Cmin can be updated.
 
 ```{r map_Cmin_priordose_patientA}
-map_timecmin_priordose <- poso_time_cmin(patA_tdm_amik,dose = prior_dose,target_cmin = 2.5)
+map_timecmin_priordose <- poso_time_cmin(patA_tdm_amik,
+                                         dose = prior_dose,
+                                         duration = 0.5,
+                                         target_cmin = 2.5)
 map_timecmin_priordose
 ```
 
@@ -176,7 +187,10 @@ map_timecmin_priordose
 An optimal a posteriori dose to achieve a peak concentration of 80 mg/l is determined using the MAP estimates.
 
 ```{r map_Cmax_optim_patientA}
-map_dose <- poso_dose_ctime(patA_tdm_amik,time_c = 1,duration = 0.5,target_conc = 80)
+map_dose <- poso_dose_ctime(patA_tdm_amik,
+                            time_c = 1,
+                            duration = 0.5,
+                            target_conc = 80)
 map_dose
 ```
 
@@ -185,7 +199,10 @@ map_dose
 The time required to reach a Cmin of 2 mg/L after a single administration is determined using the MAP estimates.
 
 ```{r map_Cmin_optim_patientA}
-map_timecmin <- poso_time_cmin(patA_tdm_amik,dose = map_dose,target_cmin = 2)
+map_timecmin <- poso_time_cmin(patA_tdm_amik,
+                               dose = map_dose,
+                               duration = 0.5,
+                               target_cmin = 2)
 map_timecmin
 ```
 
@@ -195,7 +212,7 @@ map_timecmin
 
 ```{r map_dose_plot}
 event_table_mapdose <- RxODE::et(time=0,amt=map_dose,dur=0.5)
-event_table_mapdose$add.sampling(seq(0,24,by=0.2))
+event_table_mapdose$add.sampling(seq(0,24,by=0.1))
 
 map_param_patA      <- patA_map$model$params
 

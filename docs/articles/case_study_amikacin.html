@@ -130,14 +130,18 @@
 <a href="#apply-the-selected-prior-ppk-model-to-patient-data" class="anchor"></a>Apply the selected prior ppk model to patient data</h2>
 <p>The <code><a href="../reference/posologyr.html">posologyr()</a></code> function combines the patient record and the ppk model into a single object.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">patA_prior_amik</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_amikacin_2cpt_Burdet2015</span>,<span class="va">df_patientA_prior</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">patA_prior_amik</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_amikacin_2cpt_Burdet2015</span>,
+                             <span class="va">df_patientA_prior</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="optimal-dose-selection" class="section level2">
 <h2 class="hasAnchor">
 <a href="#optimal-dose-selection" class="anchor"></a>Optimal dose selection</h2>
 <p>In the absence of measured concentrations, the optimal dose in mg to achieve a so-called peak concentration of 80 mg/l (one hour after the start of the 30-minute infusion) is determined from the typical profile of the ppk model.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">prior_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,time_c <span class="op">=</span> <span class="fl">1</span>,duration <span class="op">=</span> <span class="fl">0.5</span>,target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">prior_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,
+                              time_c <span class="op">=</span> <span class="fl">1</span>,
+                              duration <span class="op">=</span> <span class="fl">0.5</span>,
+                              target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>
 <span class="va">prior_dose</span>
 <span class="co">#&gt; [1] 2087.669</span></code></pre></div>
 </div>
@@ -146,9 +150,12 @@
 <a href="#time-required-to-reach-the-target-cmin" class="anchor"></a>Time required to reach the target Cmin</h2>
 <p>With this dose, the time in hours required to reach a target Cmin concentration of 2.5 mg/l can be estimated.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">prior_timecmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,dose <span class="op">=</span> <span class="va">prior_dose</span>,target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">prior_timecmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,
+                                 dose <span class="op">=</span> <span class="va">prior_dose</span>,
+                                 duration <span class="op">=</span> <span class="fl">0.5</span>,
+                                 target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>
 <span class="va">prior_timecmin</span>
-<span class="co">#&gt; [1] 37.3</span></code></pre></div>
+<span class="co">#&gt; [1] 37.5</span></code></pre></div>
 </div>
 <div id="simulate-and-plot-the-a-priori-dosage" class="section level2">
 <h2 class="hasAnchor">
@@ -201,7 +208,8 @@
 <a href="#apply-the-selected-prior-ppk-model-to-patient-data-1" class="anchor"></a>Apply the selected prior ppk model to patient data</h2>
 <p>The updated patient record and the ppk model are combined into a single object by <code><a href="../reference/posologyr.html">posologyr()</a></code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">patA_tdm_amik</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_amikacin_2cpt_Burdet2015</span>,<span class="va">df_patientA_tdm</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">patA_tdm_amik</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_amikacin_2cpt_Burdet2015</span>,
+                           <span class="va">df_patientA_tdm</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="plot-the-observations-from-tdm-over-the-simulated-a-priori-dosage" class="section level2">
 <h2 class="hasAnchor">
@@ -272,16 +280,22 @@
 <a href="#time-required-to-reach-the-target-cmin-following-the-first-administration" class="anchor"></a>Time required to reach the target Cmin following the first administration</h2>
 <p>With the MAP estimates of the individual parameters, the prediction of the time in hours needed before reaching the target Cmin can be updated.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">map_timecmin_priordose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,dose <span class="op">=</span> <span class="va">prior_dose</span>,target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">map_timecmin_priordose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
+                                         dose <span class="op">=</span> <span class="va">prior_dose</span>,
+                                         duration <span class="op">=</span> <span class="fl">0.5</span>,
+                                         target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>
 <span class="va">map_timecmin_priordose</span>
-<span class="co">#&gt; [1] 34.4</span></code></pre></div>
+<span class="co">#&gt; [1] 34.6</span></code></pre></div>
 </div>
 <div id="optimal-dose-selection-a-posteriori" class="section level2">
 <h2 class="hasAnchor">
 <a href="#optimal-dose-selection-a-posteriori" class="anchor"></a>Optimal dose selection a posteriori</h2>
 <p>An optimal a posteriori dose to achieve a peak concentration of 80 mg/l is determined using the MAP estimates.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">map_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,time_c <span class="op">=</span> <span class="fl">1</span>,duration <span class="op">=</span> <span class="fl">0.5</span>,target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">map_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
+                            time_c <span class="op">=</span> <span class="fl">1</span>,
+                            duration <span class="op">=</span> <span class="fl">0.5</span>,
+                            target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>
 <span class="va">map_dose</span>
 <span class="co">#&gt; [1] 2578.836</span></code></pre></div>
 </div>
@@ -290,9 +304,12 @@
 <a href="#interdose-interval-selection-a-posteriori" class="anchor"></a>Interdose interval selection a posteriori</h2>
 <p>The time required to reach a Cmin of 2 mg/L after a single administration is determined using the MAP estimates.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">map_timecmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,dose <span class="op">=</span> <span class="va">map_dose</span>,target_cmin <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">map_timecmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
+                               dose <span class="op">=</span> <span class="va">map_dose</span>,
+                               duration <span class="op">=</span> <span class="fl">0.5</span>,
+                               target_cmin <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">map_timecmin</span>
-<span class="co">#&gt; [1] 41.5</span></code></pre></div>
+<span class="co">#&gt; [1] 41.7</span></code></pre></div>
 </div>
 <div id="simulate-and-plot-the-optimal-a-posteriori-dosage" class="section level2">
 <h2 class="hasAnchor">
@@ -302,7 +319,7 @@
 <a href="#single-administration" class="anchor"></a>Single administration</h3>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">event_table_mapdose</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html">et</a></span><span class="op">(</span>time<span class="op">=</span><span class="fl">0</span>,amt<span class="op">=</span><span class="va">map_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
-<span class="va">event_table_mapdose</span><span class="op">$</span><span class="fu">add.sampling</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">event_table_mapdose</span><span class="op">$</span><span class="fu">add.sampling</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">map_param_patA</span>      <span class="op">&lt;-</span> <span class="va">patA_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>
 
