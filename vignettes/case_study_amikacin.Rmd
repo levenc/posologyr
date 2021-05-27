@@ -89,7 +89,7 @@ prior_dose_model_patA <- RxODE::rxSolve(object=patA_prior_amik$ppk_model,
                                   events=event_table_priordose)
 ```
 
-The resulting model is plotted with an horizontal ribbon showing the 60-80 mg/l target intervall of 1 h peak concentration, and a vertical dashed line marking 1 hour.
+The resulting model is plotted with an horizontal ribbon showing the 60-80 mg/l target interval of 1 h peak concentration, and a vertical dashed line marking 1 hour.
 
 ```{r prior_plot}
 plot(prior_dose_model_patA,Cc) + 
@@ -145,7 +145,7 @@ The observations are not close to the a priori population profile. The target pe
 
 ## Estimate the MAP individual parameters
 
-The individual maximum a posteriori (MAP) invidual parameter are estimated.
+The maximum a posteriori (MAP) individual parameters are estimated.
 
 ```{r estim_map}
 patA_map <- poso_estim_map(patA_tdm_amik)

@@ -89,7 +89,7 @@ patA_map
 
 RSE below 30% are usually considered acceptable. More data points would allow for a better estimation.
 
-# Conditionnal distribution of the individual parameters
+# Conditional distribution of the individual parameters
 
 ## MCMC estimation
 Beyond point estimates, the a posteriori distribution of the individual parameters can be computed by Markov Chain Monte Carlo (MCMC) estimation. The `poso_estim_mcmc()` function can be slow, the number of iterations of the Metropolis-Hastings algorithm can be tuned.

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -196,9 +196,9 @@
 <p>RSE below 30% are usually considered acceptable. More data points would allow for a better estimation.</p>
 </div>
 </div>
-<div id="conditionnal-distribution-of-the-individual-parameters" class="section level1">
+<div id="conditional-distribution-of-the-individual-parameters" class="section level1">
 <h1 class="hasAnchor">
-<a href="#conditionnal-distribution-of-the-individual-parameters" class="anchor"></a>Conditionnal distribution of the individual parameters</h1>
+<a href="#conditional-distribution-of-the-individual-parameters" class="anchor"></a>Conditional distribution of the individual parameters</h1>
 <div id="mcmc-estimation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mcmc-estimation" class="anchor"></a>MCMC estimation</h2>
@@ -247,11 +247,11 @@
 <span class="co">#&gt; ETA_Vp   0.01  0.020  0.200  0.003</span>
 <span class="co">#&gt; ETA_Q   -0.06  0.004  0.003  0.080</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">eta</span><span class="op">)</span>
-<span class="co">#&gt;              ETA_Cl       ETA_Vc      ETA_Vp        ETA_Q</span>
-<span class="co">#&gt; ETA_Cl  0.065575604  0.004305677 -0.07687358 -0.034115866</span>
-<span class="co">#&gt; ETA_Vc  0.004305677  0.040790320 -0.00758402 -0.009942891</span>
-<span class="co">#&gt; ETA_Vp -0.076873580 -0.007584020  0.16225172  0.057913151</span>
-<span class="co">#&gt; ETA_Q  -0.034115866 -0.009942891  0.05791315  0.051631250</span></code></pre></div>
+<span class="co">#&gt;              ETA_Cl       ETA_Vc       ETA_Vp        ETA_Q</span>
+<span class="co">#&gt; ETA_Cl  0.067382755  0.006868638 -0.075181826 -0.036120584</span>
+<span class="co">#&gt; ETA_Vc  0.006868638  0.037572559 -0.006400561 -0.007596925</span>
+<span class="co">#&gt; ETA_Vp -0.075181826 -0.006400561  0.143513765  0.054596322</span>
+<span class="co">#&gt; ETA_Q  -0.036120584 -0.007596925  0.054596322  0.049853135</span></code></pre></div>
 </div>
 <div id="prior-and-posterior-distribution-of-the-parameters" class="section level2">
 <h2 class="hasAnchor">
@@ -260,32 +260,32 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prior_estimates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_simu_pop.html">poso_simu_pop</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Cl</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Cl"</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Cl</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Cl</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Cl"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Cl</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>,
        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"prior distribution"</span>, <span class="st">"posterior distribution"</span><span class="op">)</span>,
        col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,
        lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p><img src="uncertainty_estimates_files/figure-html/density_plots-1.png" width="700"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vc</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Vc"</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vc</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vc</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Vc"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vc</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>,
        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"prior distribution"</span>, <span class="st">"posterior distribution"</span><span class="op">)</span>,
        col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,
        lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p><img src="uncertainty_estimates_files/figure-html/density_plots-2.png" width="700"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vp</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.06</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Vp"</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vp</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vp</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.06</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Vp"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Vp</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>,
        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"prior distribution"</span>, <span class="st">"posterior distribution"</span><span class="op">)</span>,
        col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,
        lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p><img src="uncertainty_estimates_files/figure-html/density_plots-3.png" width="700"></p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Q</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Q"</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Q</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span>,lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Q</span><span class="op">)</span>,ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>,main<span class="op">=</span><span class="st">"Distributions of Q"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">prior_estimates</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Q</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>,
        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"prior distribution"</span>, <span class="st">"posterior distribution"</span><span class="op">)</span>,
        col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,

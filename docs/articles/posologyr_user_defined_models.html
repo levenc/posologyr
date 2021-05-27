@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@
 <div id="ppk_model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ppk_model" class="anchor"></a>ppk_model</h2>
-<p>A model defined in the <code><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html">RxODE::RxODE()</a></code> mini-language. <code>posologyr</code> needs a structural model, defined with either differential or algebraic equations, and an invidivual model.</p>
+<p>A model defined in the <code><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html">RxODE::RxODE()</a></code> mini-language. <code>posologyr</code> needs a structural model, defined with either differential or algebraic equations, and an individual model.</p>
 <p>The concentration in the central compartment <em>must</em> be named Cc.</p>
 <p>The differential function <code>d/dt(AUC) =  Cc;</code> is needed for the optimisation function <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">

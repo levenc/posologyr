@@ -41,7 +41,7 @@ sigma
 The model to implement is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
 
 ## ppk_model
-A model defined in the `RxODE::RxODE()` mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an invidivual model.
+A model defined in the `RxODE::RxODE()` mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an individual model.
 
 The concentration in the central compartment *must* be named Cc.
 
