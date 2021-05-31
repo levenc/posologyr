@@ -37,7 +37,7 @@
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'    function.
 #' @param n_simul An integer, the number of simulations to be run. For `n_simul
-#'    = 0`, all ETAs are set to 0.
+#'   =0`, all ETAs are set to 0.
 #' @param return_model A boolean. Returns a RxODE model using the simulated
 #'    ETAs if set to `TRUE`.
 #'
@@ -64,7 +64,7 @@
 #'
 #' @export
 poso_simu_pop <- function(object=NULL,n_simul=1000,
-                          return_model = TRUE){
+                          return_model=TRUE){
 
   omega      <- object$omega
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
@@ -89,7 +89,7 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
     theta             <- rbind(object$theta)
     covar             <- object$tdm_data[1,object$covariates]
     names(covar)      <- object$covariates
-    model_pop$params  <- cbind(theta,eta_df,covar,row.names = NULL)
+    model_pop$params  <- cbind(theta,eta_df,covar,row.names=NULL)
     eta_pop$model     <- model_pop
   }
 
@@ -133,8 +133,8 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(object=NULL,return_model = TRUE,
-                           return_fim = FALSE,return_rse = FALSE)
+poso_estim_map <- function(object=NULL,return_model=TRUE,
+                           return_fim=FALSE,return_rse=FALSE)
 {
 
   # Update model predictions with a new set of parameters, for all obs-----
@@ -260,7 +260,7 @@ poso_estim_map <- function(object=NULL,return_model = TRUE,
 #' poso_estim_mcmc(patient01_tobra,n_iter=100)
 #'
 #' @export
-poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
+poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
                             n_iter=1000,control=list(n_kernel=c(2,2,2),
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
   # Update model predictions with a new set of parameters, for all obs-----
@@ -392,7 +392,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
     theta_return      <- rbind(theta)
     covar             <- dat[1,object$covariates]
     names(covar)      <- object$covariates
-    model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names = NULL)
+    model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names=NULL)
     estim_mcmc$model  <- model_mcmc
   }
 

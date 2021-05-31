@@ -38,38 +38,38 @@ params_patient04_vanco_map <- c(THETA_Cl=4.5,
 
 test_that("Same optimal dose with or without providing MAP estimates", {
   expect_equal(poso_dose_ctime(patient01_tobra,
-                               param_map = params_patient01_tobra_map,
-                               time_c = 1,
-                               duration = 0.5,
-                               target_conc = 30),
+                               param_map=params_patient01_tobra_map,
+                               time_c=1,
+                               duration=0.5,
+                               target_conc=30),
                poso_dose_ctime(patient01_tobra,
-                               param_map = NULL,
-                               time_c = 1,
-                               duration = 0.5,
-                               target_conc = 30),
-               tolerance = 1e-3)
+                               param_map=NULL,
+                               time_c=1,
+                               duration=0.5,
+                               target_conc=30),
+               tolerance=1e-3)
   expect_equal(poso_dose_auc(patient01_tobra,
-                               param_map = params_patient01_tobra_map,
-                               time_auc = 12,
-                               duration = 0.5,
-                               target_auc = 200),
+                               param_map=params_patient01_tobra_map,
+                               time_auc=12,
+                               duration=0.5,
+                               target_auc=200),
                poso_dose_auc(patient01_tobra,
-                               param_map = NULL,
-                               time_auc = 12,
-                               duration = 0.5,
-                               target_auc = 200),
-               tolerance = 1e-3)
+                               param_map=NULL,
+                               time_auc=12,
+                               duration=0.5,
+                               target_auc=200),
+               tolerance=1e-3)
   expect_equal(poso_time_cmin(patient01_tobra,
-                             param_map = params_patient01_tobra_map,
-                             dose = 620,
-                             duration = 0.5,
-                             target_cmin = 0.5),
+                             param_map=params_patient01_tobra_map,
+                             dose=620,
+                             duration=0.5,
+                             target_cmin=0.5),
                poso_time_cmin(patient01_tobra,
-                             param_map = NULL,
-                             dose = 620,
-                             duration = 0.5,
-                             target_cmin = 0.5),
-               tolerance = 1e-3)
+                             param_map=NULL,
+                             dose=620,
+                             duration=0.5,
+                             target_cmin=0.5),
+               tolerance=1e-3)
 })
 
 test_that("Optimization results do not deviate from known values
@@ -87,14 +87,14 @@ test_that("Optimization results do not deviate from known values
                              duration=2,
                              target_auc=400),
                2377.758,
-               tolerance = 1e-3)
+               tolerance=1e-3)
   expect_equal(poso_dose_ctime(patient04_tdm_vanco,
                                param_map=params_patient04_vanco_map,
                                time_c=24,
                                duration=2,
                                target_conc=11.04931),
                2530.699,
-               tolerance = 1e-3)
+               tolerance=1e-3)
 })
 
 test_that("Optimization results do not deviate from known values
@@ -117,14 +117,14 @@ test_that("Optimization results do not deviate from known values
                              duration=2,
                              target_auc=400),
                1229.366,
-               tolerance = 1e-3)
+               tolerance=1e-3)
   expect_equal(poso_dose_ctime(patient04_tdm_vanco,
                                param_map=params_patient04_vanco_map,
                                time_c=24*9.9,
                                interdose_interval=24,
-                               time_span = 24*10,
+                               time_span=24*10,
                                duration=24,
                                target_conc=400/24),
                1229.426,
-               tolerance = 1e-3)
+               tolerance=1e-3)
 })

@@ -70,13 +70,13 @@ poso_time_cmin <- function(object=NULL,param_map=NULL,from=0.2,
                            target_cmin=NULL){
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-      model_map <- poso_estim_map(object,return_model = TRUE)
+      model_map <- poso_estim_map(object,return_model=TRUE)
       param_map <- model_map[[2]]$params
   }
   if (!is.null(time_span)){
     if (is.null(interdose_interval)){
       stop("interdose_interval is mandatory when time_span is used.",
-           call. = FALSE)
+           call.=FALSE)
     }
   }
 
@@ -155,18 +155,18 @@ poso_dose_auc <- function(object=NULL,param_map=NULL,time_auc=NULL,
                           duration=NULL,target_auc=NULL){
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,return_model = TRUE)
+    model_map <- poso_estim_map(object,return_model=TRUE)
     param_map <- model_map[[2]]$params
   }
   if (!is.null(time_span)){
     if (is.null(interdose_interval)){
       stop("interdose_interval is mandatory when time_span is used.",
-           call. = FALSE)
+           call.=FALSE)
     }
     if (starting_time+time_auc>time_span){
       stop("The auc time window is outside of the dosing time range:
            starting_time+time_auc>time_span.",
-           call. = FALSE)
+           call.=FALSE)
     }
   }
 
@@ -194,7 +194,7 @@ poso_dose_auc <- function(object=NULL,param_map=NULL,time_auc=NULL,
    auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
 
    #return the difference between the computed AUC and the target
-   delta_auc = (target_auc - auc_proposal)^2
+   delta_auc<-(target_auc - auc_proposal)^2
    return(delta_auc)
  }
 
@@ -260,18 +260,18 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
                             target_conc=NULL){
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,return_model = TRUE)
+    model_map <- poso_estim_map(object,return_model=TRUE)
     param_map <- model_map[[2]]$params
   }
   if (!is.null(time_span)){
     if (is.null(interdose_interval)){
       stop("interdose_interval is mandatory when time_span is used.",
-           call. = FALSE)
+           call.=FALSE)
     }
     if (time_c>time_span){
       stop("The target time is outside of the dosing time range:
            time_c>time_span.",
-           call. = FALSE)
+           call.=FALSE)
     }
   }
 
@@ -294,7 +294,7 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
                                     params=param_map,
                                     event_table_ctime)
     #return the difference between the computed ctime and the target
-    delta_ctime = (target_conc - ctime_ppk_model$Cc)^2
+    delta_ctime <- (target_conc - ctime_ppk_model$Cc)^2
     return(delta_ctime)
   }
 

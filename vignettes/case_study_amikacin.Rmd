@@ -224,7 +224,7 @@ plot(map_dose_model_patA,Cc) +
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_vline(xintercept=1, linetype="dashed") +
   ggplot2::geom_ribbon(ggplot2::aes(ymin=60, ymax=80),
-                       fill="seagreen",show.legend = FALSE, alpha=0.15)
+                       fill="seagreen",show.legend=FALSE, alpha=0.15)
 ```
 
 ### Multiple administrations

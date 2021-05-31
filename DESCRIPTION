@@ -29,6 +29,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     ggplot2,
+    magrittr,
     data.table
 URL: https://levenc.github.io/posologyr/, https://github.com/levenc/posologyr
 BugReports: https://github.com/levenc/posologyr/issues
