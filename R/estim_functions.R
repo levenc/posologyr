@@ -196,7 +196,7 @@ poso_estim_map <- function(object=NULL,return_model = TRUE,
   if(return_rse){
     map_se           <- sqrt(diag(solve(r$hessian))) #the inverse of the fim is the
                                                      # variance-covariance matrix
-    map_rse          <- map_se/abs(eta_map)
+    map_rse          <- map_se/abs(eta_map[ind_eta])
     estim_map$rse    <- map_rse
   }
 
