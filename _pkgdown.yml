@@ -10,6 +10,7 @@ reference:
   - poso_dose_auc
   - poso_dose_ctime
   - poso_time_cmin
+  - poso_inter_cmin
 - title: "Creation of a posologyr list"
 - contents:
   - posologyr

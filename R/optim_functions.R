@@ -310,12 +310,12 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
   return(optim_dose_ctime$par)
 }
 
-#' Estimate the optimal interdose interval for a given dose and a
+#' Estimate the optimal inter-dose interval for a given dose and a
 #' selected target trough concentration
 #'
-#' Estimates the optimal interdose interval for a selected target
-#' trough concentration (Cmin) given a dose, a population
-#' pharmacokinetic model, a set of individual parameters,and a
+#' Estimates the optimal inter-dose interval for a selected target
+#' trough concentration (Cmin), given a dose, a population
+#' pharmacokinetic model, a set of individual parameters, and a
 #' target concentration.
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
@@ -324,7 +324,7 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
 #' @param dose Numeric. The dose given.
-#' @param starting_interval Numeric. Starting interdose interval for
+#' @param starting_interval Numeric. Starting inter-dose interval for
 #'     the optimization algorithm.
 #' @param add_dose Numeric. Additional doses administered at
 #'     inter-dose interval after the first dose.
@@ -333,7 +333,7 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #'
 #' @return A numeric inter-dose interval to reach the target trough
-#'     concentration before each dosing of a multiple dose regiment.
+#'     concentration before each dosing of a multiple dose regimen.
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous

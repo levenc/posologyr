@@ -10,7 +10,7 @@ poso_simu_pop(object = NULL, n_simul = 1000, return_model = TRUE)
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
 
-\item{n_simul}{An integer, the number of simulations to be run. For \code{n_simul = 0}, all ETAs are set to 0.}
+\item{n_simul}{An integer, the number of simulations to be run. For \code{n_simul =0}, all ETAs are set to 0.}
 
 \item{return_model}{A boolean. Returns a RxODE model using the simulated
 ETAs if set to \code{TRUE}.}

@@ -76,7 +76,7 @@ created from the prior ppk model and the individual event record." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -100,6 +100,9 @@ created from the prior ppk model and the individual event record." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
+      <a href="../articles/case_study_vancomycin.html">Case study: vancomycin dose adjustment</a>
     </li>
     <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
@@ -211,10 +214,10 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 <span class='fu'>posologyr</span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
                                 dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $ppk_model
-#&gt; <span style='font-weight: bold;'>RxODE </span><span>NA model named </span><span style='color: #BBBB00;font-weight: bold;'>rx_3c631b45cde586c4365cbf2cb969cbb7</span><span> model (</span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #00BB00;font-weight: bold;'>ready</span><span>). 
-#&gt; </span><span style='color: #0000BB;font-weight: bold;'>$state</span><span>: centr, periph, AUC
-#&gt; </span><span style='color: #0000BB;font-weight: bold;'>$params</span><span>: THETA_ke, CLCREAT, WT, THETA_V, THETA_k12, THETA_k21, ETA_ke, ETA_V
-#&gt; </span><span style='color: #0000BB;font-weight: bold;'>$lhs</span><span>: tTVke, tTVV, tTVk12, tTVk21, ke, V, k12, k21, Cc
+#&gt; <span style='font-weight: bold;'>RxODE </span>NA model named <span style='color: #BBBB00; font-weight: bold;'>rx_ba95c3c0737a253203d12e49e5670e69</span> model (<span style='color: #00BB00;'>✓</span> <span style='color: #00BB00; font-weight: bold;'>ready</span>). 
+#&gt; <span style='color: #0000BB; font-weight: bold;'>$state</span>: centr, periph, AUC
+#&gt; <span style='color: #0000BB; font-weight: bold;'>$params</span>: THETA_ke, CLCREAT, WT, THETA_V, THETA_k12, THETA_k21, ETA_ke, ETA_V
+#&gt; <span style='color: #0000BB; font-weight: bold;'>$lhs</span>: tTVke, tTVV, tTVk12, tTVk21, ke, V, k12, k21, Cc
 #&gt; 
 #&gt; $error_model
 #&gt; function (f, sigma) 
@@ -222,7 +225,7 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 #&gt;     g &lt;- sigma[1] + sigma[2] * f
 #&gt;     return(g)
 #&gt; }
-#&gt; &lt;bytecode: 0x5598b7265cb0&gt;
+#&gt; &lt;bytecode: 0x565461c56878&gt;
 #&gt; 
 #&gt; $theta
 #&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21 
@@ -250,23 +253,23 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 #&gt; 4  1 14.0  5.5     0     0  NA      80 65
 #&gt; 
 #&gt; $solved_ppk_model
-#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ </span><span style='font-weight: bold;'>Solved RxODE object</span><span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#&gt; ── </span><span style='font-weight: bold;'>Parameters</span><span> (</span><span style='color: #0000BB;font-weight: bold;'>$params</span><span>): ───────────────────────────────────────────────────────
+#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style='font-weight: bold;'>Solved RxODE object</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#&gt; ── <span style='font-weight: bold;'>Parameters</span> (<span style='color: #0000BB; font-weight: bold;'>$params</span>): ───────────────────────────────────────────────────────
 #&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21    ETA_ke     ETA_V 
 #&gt;     0.210    19.800     0.041     0.120     0.000     0.000 
-#&gt; ── </span><span style='font-weight: bold;'>Initial Conditions</span><span> (</span><span style='color: #0000BB;font-weight: bold;'>$inits</span><span>): ────────────────────────────────────────────────
+#&gt; ── <span style='font-weight: bold;'>Initial Conditions</span> (<span style='color: #0000BB; font-weight: bold;'>$inits</span>): ────────────────────────────────────────────────
 #&gt;  centr periph    AUC 
 #&gt;      0      0      0 
-#&gt; ── </span><span style='font-weight: bold;'>First part of data (object):</span><span> ────────────────────────────────────────────────
-#&gt; </span><span style='color: #949494;'># A tibble: 2 x 13</span><span>
+#&gt; ── <span style='font-weight: bold;'>First part of data (object):</span> ────────────────────────────────────────────────
+#&gt; <span style='color: #949494;'># A tibble: 2 x 13</span>
 #&gt;    time tTVke  tTVV tTVk12 tTVk21    ke     V   k12   k21    Cc centr periph
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.249  19.5 0.041  0.12 20.7  403.    13.1
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>    14 -</span><span style='color: #BB0000;'>1.39</span><span>  2.97  -</span><span style='color: #BB0000;'>3.19</span><span>  -</span><span style='color: #BB0000;'>2.12</span><span> 0.249  19.5 0.041  0.12  1.10  21.3   24.0
-#&gt; </span><span style='color: #949494;'># … with 1 more variable: AUC &lt;dbl&gt;</span><span>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>     1 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.249  19.5 0.041  0.12 20.7  403.    13.1
+#&gt; <span style='color: #BCBCBC;'>2</span>    14 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.249  19.5 0.041  0.12  1.10  21.3   24.0
+#&gt; <span style='color: #949494;'># … with 1 more variable: AUC &lt;dbl&gt;</span>
 #&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #&gt; </div><div class='input'>
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

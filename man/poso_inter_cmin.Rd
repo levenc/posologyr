@@ -2,7 +2,7 @@
 % Please edit documentation in R/optim_functions.R
 \name{poso_inter_cmin}
 \alias{poso_inter_cmin}
-\title{Estimate the optimal interdose interval for a given dose and a
+\title{Estimate the optimal inter-dose interval for a given dose and a
 selected target trough concentration}
 \usage{
 poso_inter_cmin(
@@ -25,7 +25,7 @@ will be called.}
 
 \item{dose}{Numeric. The dose given.}
 
-\item{starting_interval}{Numeric. Starting interdose interval for
+\item{starting_interval}{Numeric. Starting inter-dose interval for
 the optimization algorithm.}
 
 \item{add_dose}{Numeric. Additional doses administered at
@@ -34,16 +34,16 @@ inter-dose interval after the first dose.}
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
 
-\item{target_conc}{Numeric. Target concentration.}
+\item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 }
 \value{
 A numeric inter-dose interval to reach the target trough
-concentration before each dosing of a multiple dose regiment.
+concentration before each dosing of a multiple dose regimen.
 }
 \description{
-Estimates the optimal interdose interval for a selected target
-trough concentration (Cmin) given a dose, a population
-pharmacokinetic model, a set of individual parameters,and a
+Estimates the optimal inter-dose interval for a selected target
+trough concentration (Cmin), given a dose, a population
+pharmacokinetic model, a set of individual parameters, and a
 target concentration.
 }
 \examples{
