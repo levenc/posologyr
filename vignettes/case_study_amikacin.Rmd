@@ -196,14 +196,14 @@ map_dose
 
 ## Interdose interval selection a posteriori
 
-The time required to reach a Cmin of 2 mg/L after a single administration is determined using the MAP estimates.
+The optimal inter-dose interval to reach a Cmin of 2.5 mg/L before each dosing is determined using the MAP estimates.
 
 ```{r map_Cmin_optim_patientA}
-map_timecmin <- poso_time_cmin(patA_tdm_amik,
+map_interval <- poso_inter_cmin(patA_tdm_amik,
                                dose = map_dose,
                                duration = 0.5,
-                               target_cmin = 2)
-map_timecmin
+                               target_cmin = 2.5)
+map_interval
 ```
 
 ## Simulate and plot the optimal a posteriori dosage
@@ -230,8 +230,8 @@ plot(map_dose_model_patA,Cc) +
 ### Multiple administrations
 
 ```{r map_dose_ss_plot}
-event_table_mapdose_ss <- RxODE::et(amt=map_dose,dur=0.5,ii=map_timecmin,addl=2)
-event_table_mapdose_ss$add.sampling(seq(0,3.5*map_timecmin,by=0.1))
+event_table_mapdose_ss <- RxODE::et(amt=map_dose,dur=0.5,ii=map_interval,addl=2)
+event_table_mapdose_ss$add.sampling(seq(0,3.5*map_interval,by=0.1))
 
 map_dose_model_patA_ss <- RxODE::rxSolve(object=patA_tdm_amik$ppk_model,
                                   params=map_param_patA,

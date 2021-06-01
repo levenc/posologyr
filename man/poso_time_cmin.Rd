@@ -10,7 +10,7 @@ poso_time_cmin(
   from = 0.2,
   last_time = 72,
   dose = NULL,
-  time_span = NULL,
+  add_dose = NULL,
   interdose_interval = NULL,
   duration = NULL,
   target_cmin = NULL
@@ -34,11 +34,11 @@ individual time-concentration profile. The default value is
 
 \item{dose}{Numeric. Dose administered.}
 
-\item{time_span}{Numeric. Period over which the doses are
-administered for multiple dose regimen. Optional.}
+\item{add_dose}{Numeric. Additional doses administered at
+inter-dose interval after the first dose. Optional.}
 
-\item{interdose_interval}{Numeric. Time for the interdose interval
-for multiple dose regimen. Must be provided when time_span is used.}
+\item{interdose_interval}{Numeric. Time for the inter-dose interval
+for multiple dose regimen. Must be provided when add_dose is used.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}

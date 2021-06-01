@@ -12,7 +12,7 @@ poso_dose_auc(
   starting_time = 0,
   starting_dose = 100,
   interdose_interval = NULL,
-  time_span = NULL,
+  add_dose = NULL,
   duration = NULL,
   target_auc = NULL
 )
@@ -35,10 +35,10 @@ dose regimen. The default is zero.}
 algorithm.}
 
 \item{interdose_interval}{Numeric. Time for the interdose interval
-for multiple dose regimen. Must be provided when time_span is used.}
+for multiple dose regimen. Must be provided when add_dose is used.}
 
-\item{time_span}{Numeric. Period over which the doses are
-administered for multiple dose regimen. Optional.}
+\item{add_dose}{Numeric. Additional doses administered at
+inter-dose interval after the first dose. Optional.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
