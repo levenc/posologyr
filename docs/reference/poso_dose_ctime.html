@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Estimate the optimal dose for a selected target concentration at a
-selected time point — poso_dose_ctime • posologyr</title>
+selected point in time — poso_dose_ctime • posologyr</title>
 
 
 <!-- jquery -->
@@ -41,9 +41,9 @@ selected time point — poso_dose_ctime • posologyr</title>
 
 
 <meta property="og:title" content="Estimate the optimal dose for a selected target concentration at a
-selected time point — poso_dose_ctime" />
+selected point in time — poso_dose_ctime" />
 <meta property="og:description" content="Estimates the optimal dose for a selected target concentration at a
-selected time point given a population pharmacokinetic model, a set
+selected point in time given a population pharmacokinetic model, a set
 of individual parameters, a selected point in time, and a target
 concentration." />
 
@@ -77,7 +77,7 @@ concentration." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ concentration." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
+      <a href="../articles/case_study_vancomycin.html">Case study: vancomycin dose adjustment</a>
     </li>
     <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
@@ -138,14 +141,14 @@ concentration." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate the optimal dose for a selected target concentration at a
-selected time point</h1>
+selected point in time</h1>
     <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/optim_functions.R'><code>R/optim_functions.R</code></a></small>
     <div class="hidden name"><code>poso_dose_ctime.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Estimates the optimal dose for a selected target concentration at a
-selected time point given a population pharmacokinetic model, a set
+selected point in time given a population pharmacokinetic model, a set
 of individual parameters, a selected point in time, and a target
 concentration.</p>
     </div>
@@ -155,6 +158,8 @@ concentration.</p>
   param_map <span class='op'>=</span> <span class='cn'>NULL</span>,
   time_c <span class='op'>=</span> <span class='cn'>NULL</span>,
   starting_dose <span class='op'>=</span> <span class='fl'>100</span>,
+  interdose_interval <span class='op'>=</span> <span class='cn'>NULL</span>,
+  add_dose <span class='op'>=</span> <span class='cn'>NULL</span>,
   duration <span class='op'>=</span> <span class='cn'>NULL</span>,
   target_conc <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
@@ -171,33 +176,43 @@ function.</p></td>
       <th>param_map</th>
       <td><p>A vector of individual parameters. May be omitted,
 in which case the <code><a href='poso_estim_map.html'>poso_estim_map</a></code> function
-will be called</p></td>
+will be called.</p></td>
     </tr>
     <tr>
       <th>time_c</th>
-      <td><p>a numeric point in time for which the dose is to be
-optimized</p></td>
+      <td><p>Numeric. Point in time for which the dose is to be
+optimized.</p></td>
     </tr>
     <tr>
       <th>starting_dose</th>
-      <td><p>numeric starting dose for the optimization
-algorithm</p></td>
+      <td><p>Numeric. Starting dose for the optimization
+algorithm.</p></td>
+    </tr>
+    <tr>
+      <th>interdose_interval</th>
+      <td><p>Numeric. Time for the interdose interval
+for multiple dose regimen. Must be provided when add_dose is used.</p></td>
+    </tr>
+    <tr>
+      <th>add_dose</th>
+      <td><p>Numeric. Additional doses administered at
+inter-dose interval after the first dose. Optional.</p></td>
     </tr>
     <tr>
       <th>duration</th>
-      <td><p>a numeric duration of infusion, for zero-order
-administrations</p></td>
+      <td><p>Numeric. Duration of infusion, for zero-order
+administrations.</p></td>
     </tr>
     <tr>
       <th>target_conc</th>
-      <td><p>a numeric target concentration</p></td>
+      <td><p>Numeric. Target concentration.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A numeric optimal dose to reach the target concentration
-at the selected point in time</p>
+at the selected point in time.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>
@@ -213,9 +228,9 @@ at the selected point in time</p>
 <span class='va'>patient01_tobra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='posologyr.html'>posologyr</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
                                 dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
 <span class='co'># estimate the optimal dose to reach a concentration of 80 mg/l</span>
-<span class='co'># one hour after starting the infusion</span>
-<span class='fu'>poso_dose_ctime</span><span class='op'>(</span><span class='va'>patient01_tobra</span>,time_c<span class='op'>=</span><span class='fl'>1</span>,target_conc<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 1717.512</div><div class='input'>
+<span class='co'># one hour after starting the 30-minutes infusion</span>
+<span class='fu'>poso_dose_ctime</span><span class='op'>(</span><span class='va'>patient01_tobra</span>,time_c<span class='op'>=</span><span class='fl'>1</span>,duration<span class='op'>=</span><span class='fl'>0.5</span>,target_conc<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1648.628</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

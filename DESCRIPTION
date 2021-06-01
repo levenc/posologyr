@@ -1,6 +1,6 @@
 Package: posologyr
 Title: Individual dose optimization using population pharmacokinetics
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
@@ -29,6 +29,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     ggplot2,
+    magrittr,
     data.table
 URL: https://levenc.github.io/posologyr/, https://github.com/levenc/posologyr
 BugReports: https://github.com/levenc/posologyr/issues

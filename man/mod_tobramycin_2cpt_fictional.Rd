@@ -29,7 +29,7 @@ the model}
 mod_tobramycin_2cpt_fictional
 }
 \description{
-A FICTIONAL bicompartmental population pharmacokinetic
+A FICTIONAL two-compartment population pharmacokinetic
 model of intravenous tobramycin.
 }
 \keyword{datasets}

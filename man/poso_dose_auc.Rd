@@ -9,7 +9,10 @@ poso_dose_auc(
   object = NULL,
   param_map = NULL,
   time_auc = NULL,
+  starting_time = 0,
   starting_dose = 100,
+  interdose_interval = NULL,
+  add_dose = NULL,
   duration = NULL,
   target_auc = NULL
 )
@@ -20,21 +23,30 @@ function.}
 
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
-will be called}
+will be called.}
 
-\item{time_auc}{a numeric last point in time of the AUC for which the dose
-is to be optimized. The AUC is computed from 0 to \code{time_auc}}
+\item{time_auc}{Numeric. Last point in time of the AUC for which the dose
+is to be optimized. The AUC is computed from 0 to \code{time_auc}.}
 
-\item{starting_dose}{numeric starting dose for the optimization
-algorithm}
+\item{starting_time}{Numeric. First point in time of the AUC, for multiple
+dose regimen. The default is zero.}
 
-\item{duration}{a numeric duration of infusion, for zero-order
-administrations}
+\item{starting_dose}{Numeric. Starting dose for the optimization
+algorithm.}
 
-\item{target_auc}{a numeric target AUC}
+\item{interdose_interval}{Numeric. Time for the interdose interval
+for multiple dose regimen. Must be provided when add_dose is used.}
+
+\item{add_dose}{Numeric. Additional doses administered at
+inter-dose interval after the first dose. Optional.}
+
+\item{duration}{Numeric. Duration of infusion, for zero-order
+administrations.}
+
+\item{target_auc}{Numeric. Target AUC}
 }
 \value{
-A numeric optimal dose to reach the target AUC
+A numeric optimal dose to reach the target AUC.
 }
 \description{
 Estimates the optimal dose for a selected target area under the

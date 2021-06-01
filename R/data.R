@@ -18,7 +18,7 @@
 
 #' FICTIONAL IV tobramycin model for test purpose
 #'
-#' A FICTIONAL bicompartmental population pharmacokinetic
+#' A FICTIONAL two-compartment population pharmacokinetic
 #' model of intravenous tobramycin.
 #'
 #' @format A  list of six objects:

@@ -3,13 +3,15 @@
 \name{poso_dose_ctime}
 \alias{poso_dose_ctime}
 \title{Estimate the optimal dose for a selected target concentration at a
-selected time point}
+selected point in time}
 \usage{
 poso_dose_ctime(
   object = NULL,
   param_map = NULL,
   time_c = NULL,
   starting_dose = 100,
+  interdose_interval = NULL,
+  add_dose = NULL,
   duration = NULL,
   target_conc = NULL
 )
@@ -20,26 +22,32 @@ function.}
 
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
-will be called}
+will be called.}
 
-\item{time_c}{a numeric point in time for which the dose is to be
-optimized}
+\item{time_c}{Numeric. Point in time for which the dose is to be
+optimized.}
 
-\item{starting_dose}{numeric starting dose for the optimization
-algorithm}
+\item{starting_dose}{Numeric. Starting dose for the optimization
+algorithm.}
 
-\item{duration}{a numeric duration of infusion, for zero-order
-administrations}
+\item{interdose_interval}{Numeric. Time for the interdose interval
+for multiple dose regimen. Must be provided when add_dose is used.}
 
-\item{target_conc}{a numeric target concentration}
+\item{add_dose}{Numeric. Additional doses administered at
+inter-dose interval after the first dose. Optional.}
+
+\item{duration}{Numeric. Duration of infusion, for zero-order
+administrations.}
+
+\item{target_conc}{Numeric. Target concentration.}
 }
 \value{
 A numeric optimal dose to reach the target concentration
-at the selected point in time
+at the selected point in time.
 }
 \description{
 Estimates the optimal dose for a selected target concentration at a
-selected time point given a population pharmacokinetic model, a set
+selected point in time given a population pharmacokinetic model, a set
 of individual parameters, a selected point in time, and a target
 concentration.
 }
@@ -57,7 +65,7 @@ df_patient01 <- data.frame(ID=1,
 patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
                                 dat=df_patient01)
 # estimate the optimal dose to reach a concentration of 80 mg/l
-# one hour after starting the infusion
-poso_dose_ctime(patient01_tobra,time_c=1,target_conc=80)
+# one hour after starting the 30-minutes infusion
+poso_dose_ctime(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
 
 }

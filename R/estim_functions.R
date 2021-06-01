@@ -37,12 +37,12 @@
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'    function.
 #' @param n_simul An integer, the number of simulations to be run. For `n_simul
-#'    = 0`, all ETAs are set to 0.
+#'   =0`, all ETAs are set to 0.
 #' @param return_model A boolean. Returns a RxODE model using the simulated
 #'    ETAs if set to `TRUE`.
 #'
-#' @return If `return_model` is set to `FALSE`, a dataframe of the
-#' individual values of ETA.
+#' @return If `return_model` is set to `FALSE`, a list of one element: a
+#' dataframe `$eta` of the individual values of ETA.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the
 #' individual values of ETA, and a RxODE model using the simulated ETAs.
 #'
@@ -64,7 +64,7 @@
 #'
 #' @export
 poso_simu_pop <- function(object=NULL,n_simul=1000,
-                          return_model = TRUE){
+                          return_model=TRUE){
 
   omega      <- object$omega
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
@@ -89,7 +89,7 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
     theta             <- rbind(object$theta)
     covar             <- object$tdm_data[1,object$covariates]
     names(covar)      <- object$covariates
-    model_pop$params  <- cbind(theta,eta_df,covar,row.names = NULL)
+    model_pop$params  <- cbind(theta,eta_df,covar,row.names=NULL)
     eta_pop$model     <- model_pop
   }
 
@@ -111,10 +111,10 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #'    (RSE) of the MAP estimates of ETA if set to `TRUE`.
 #'
 #' @return A named list consisting of one or more of the following elements
-#' depending on the input parameters of the function: a named vector of the
-#' MAP estimates of the individual values of ETA, an RxODE model using the
-#' estimated ETAs, the Fisher information matrix, a named vector of RSEs
-#' of the MAP estimates of ETAs.
+#' depending on the input parameters of the function: `$eta` a named vector
+#' of the MAP estimates of the individual values of ETA, `$model` an RxODE
+#' model using the estimated ETAs, `$fim` the Fisher information matrix,
+#' `$rse` a named vector of RSEs of the MAP estimates of ETAs.
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
@@ -133,8 +133,8 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(object=NULL,return_model = TRUE,
-                           return_fim = FALSE,return_rse = FALSE)
+poso_estim_map <- function(object=NULL,return_model=TRUE,
+                           return_fim=FALSE,return_rse=FALSE)
 {
 
   # Update model predictions with a new set of parameters, for all obs-----
@@ -196,7 +196,7 @@ poso_estim_map <- function(object=NULL,return_model = TRUE,
   if(return_rse){
     map_se           <- sqrt(diag(solve(r$hessian))) #the inverse of the fim is the
                                                      # variance-covariance matrix
-    map_rse          <- map_se/abs(eta_map)
+    map_rse          <- map_se/abs(eta_map[ind_eta])
     estim_map$rse    <- map_rse
   }
 
@@ -231,8 +231,9 @@ poso_estim_map <- function(object=NULL,return_model = TRUE,
 #' @param control A list of parameters controlling the Metropolis-Hastings
 #' algorithm.
 #'
-#' @return If `return_model` is set to `FALSE`, a dataframe of ETAs from
-#' the posterior distribution, estimated by Markov Chain Monte Carlo.
+#' @return If `return_model` is set to `FALSE`, , a list of one element: a
+#' dataframe `$eta` of ETAs from the posterior distribution, estimated by
+#' Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
 #'
@@ -259,7 +260,7 @@ poso_estim_map <- function(object=NULL,return_model = TRUE,
 #' poso_estim_mcmc(patient01_tobra,n_iter=100)
 #'
 #' @export
-poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
+poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
                             n_iter=1000,control=list(n_kernel=c(2,2,2),
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
   # Update model predictions with a new set of parameters, for all obs-----
@@ -391,7 +392,7 @@ poso_estim_mcmc <- function(object=NULL,return_model = TRUE,burn_in=50,
     theta_return      <- rbind(theta)
     covar             <- dat[1,object$covariates]
     names(covar)      <- object$covariates
-    model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names = NULL)
+    model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names=NULL)
     estim_mcmc$model  <- model_mcmc
   }
 

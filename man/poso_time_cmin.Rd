@@ -10,6 +10,8 @@ poso_time_cmin(
   from = 0.2,
   last_time = 72,
   dose = NULL,
+  add_dose = NULL,
+  interdose_interval = NULL,
   duration = NULL,
   target_cmin = NULL
 )
@@ -22,24 +24,30 @@ function.}
 in which case the \code{\link{poso_estim_map}} function
 will be called.}
 
-\item{from}{a numeric starting time for the simulation of the
+\item{from}{Numeric. Starting time for the simulation of the
 individual time-concentration profile. The default value is
 0.2}
 
-\item{last_time}{a numeric ending time for the simulation of the
+\item{last_time}{Numeric. Ending time for the simulation of the
 individual time-concentration profile. The default value is
 72.}
 
-\item{dose}{a numeric dose administered.}
+\item{dose}{Numeric. Dose administered.}
 
-\item{duration}{a numeric duration of infusion, for zero-order
+\item{add_dose}{Numeric. Additional doses administered at
+inter-dose interval after the first dose. Optional.}
+
+\item{interdose_interval}{Numeric. Time for the inter-dose interval
+for multiple dose regimen. Must be provided when add_dose is used.}
+
+\item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
 
-\item{target_cmin}{a numeric target trough concentration.}
+\item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 }
 \value{
 A numeric time to the selected trough concentration, from the
-time of administration
+time of administration.
 }
 \description{
 Predicts the time needed to reach a selected trough concentration
@@ -60,7 +68,8 @@ df_patient01 <- data.frame(ID=1,
 patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
                                 dat=df_patient01)
 # predict the time needed to reach a concentration of 2.5 mg/l
-# after the administration of a 2500 mg dose
-poso_time_cmin(patient01_tobra,dose=2500,target_cmin=2.5)
+# after the administration of a 2500 mg dose over a 30 minutes
+# infusion
+poso_time_cmin(patient01_tobra,dose=2500,duration=0.5,target_cmin=2.5)
 
 }

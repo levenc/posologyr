@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -55,6 +55,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/case_study_amikacin.html">Case study: amikacin dose adjustment</a>
+    </li>
+    <li>
+      <a href="../articles/case_study_vancomycin.html">Case study: vancomycin dose adjustment</a>
     </li>
     <li>
       <a href="../articles/patient_data_input.html">Patient data input</a>
@@ -88,7 +91,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="posologyr_user_defined_models_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>User defined models</h1>
@@ -138,7 +141,7 @@
 <div id="ppk_model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ppk_model" class="anchor"></a>ppk_model</h2>
-<p>A model defined in the <code><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html">RxODE::RxODE()</a></code> mini-language. <code>posologyr</code> needs a structural model, defined with either differential or algebraic equations, and an invidivual model.</p>
+<p>A model defined in the <code><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html">RxODE::RxODE()</a></code> mini-language. <code>posologyr</code> needs a structural model, defined with either differential or algebraic equations, and an individual model.</p>
 <p>The concentration in the central compartment <em>must</em> be named Cc.</p>
 <p>The differential function <code>d/dt(AUC) =  Cc;</code> is needed for the optimisation function <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -283,7 +286,7 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mymod_vancomyin_Goti2018</span>
 <span class="co">#&gt; $ppk_model</span>
-<span class="co">#&gt; RxODE NA model named rx_98a5ee9cea50c1f69bd9427f38167bf9 model (✓ ready). </span>
+<span class="co">#&gt; RxODE NA model named rx_a3fdf8762d9f597ea3e2d8af95d20b38 model (✓ ready). </span>
 <span class="co">#&gt; $state: centr, periph, AUC</span>
 <span class="co">#&gt; $params: THETA_Cl, CLCREAT, DIAL, THETA_Vc, WT, THETA_Vp, THETA_Q, ETA_Cl, ETA_Vc, ETA_Vp</span>
 <span class="co">#&gt; $lhs: TVCl, TVVc, TVVp, TVQ, Cl, Vc, Vp, Q, ke, k12, k21, Cc</span>

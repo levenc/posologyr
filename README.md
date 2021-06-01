@@ -4,7 +4,6 @@
 # posologyr
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 ## Overview
@@ -16,20 +15,20 @@ and the results of therapeutic drug monitoring.
 `posologyr` provides functions for estimating the pharmacokinetic (PK)
 parameters:
 
-  - `poso_simu_pop()` for estimating the a priori distributions of ppk
+-   `poso_simu_pop()` for estimating the a priori distributions of ppk
     parameters by Monte-Carlo simulations
-  - `poso_estim_map()` for computing the Maximum A Posteriori (MAP), aka
+-   `poso_estim_map()` for computing the Maximum A Posteriori (MAP), aka
     Empirical Bayes Estimates (EBE), of individual PK parameters from
     the results of therapeutic drug monitoring
-  - `poso_estim_mcmc()` for estimating the posterior distributions of
+-   `poso_estim_mcmc()` for estimating the posterior distributions of
     individual PK parameters by Markov Chain Monte Carlo (MCMC)
 
 Functions for dosage optimisation are included in `posologyr`:
 
-  - `poso_time_cmin()` computes the time needed to reach a target trough
+-   `poso_time_cmin()` computes the time needed to reach a target trough
     concentration (Cmin)
-  - `poso_dose_auc()` estimates the optimal dose to reach a target AUC
-  - `poso_dose_ctime()` estimates the optimal dose to reach a target
+-   `poso_dose_auc()` estimates the optimal dose to reach a target AUC
+-   `poso_dose_ctime()` estimates the optimal dose to reach a target
     concentration at any given time
 
 `posologyr` takes advantage of the simulation framework provided by the
@@ -45,10 +44,13 @@ You can install the development version of `posologyr` from
 devtools::install_github("levenc/posologyr")
 ```
 
-## Example
+## Examples
 
-An example of a dosage adjustment with posologyr is available in the
-following vignette: `vignette("case_study_amikacin")`.
+Examples of dosage adjustment with posologyr are available in the
+following vignettes:
+
+-   `vignette("case_study_amikacin")`
+-   `vignette("case_study_vancomycin")`
 
 All the vignettes are also available at
 <https://levenc.github.io/posologyr/>.
