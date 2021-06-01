@@ -127,4 +127,12 @@ test_that("Optimization results do not deviate from known values
                                target_conc=400/24),
                1229.426,
                tolerance=1e-3)
+  expect_equal(poso_inter_cmin(patient04_tdm_vanco,
+                               param_map=params_patient04_vanco_map,
+                               dose=2000,
+                               add_dose=10,
+                               duration=2,
+                               target_cmin=10),
+               35.9,
+               tolerance=1e-3)
 })
