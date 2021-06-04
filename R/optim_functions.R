@@ -383,7 +383,7 @@ poso_inter_cmin <- function(object=NULL,param_map=NULL,dose=NULL,
                            target_cmin=target_cmin,prior_model=object,
                            add_dose=add_dose,duration=duration,
                            param_map=param_map,method="Brent",
-                           lower=0,upper=1e5)
+                           lower=0,upper=1e3)
 
   return(optim_dose_cmin$par)
 }
