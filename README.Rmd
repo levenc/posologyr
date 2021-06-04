@@ -31,9 +31,10 @@ knitr::opts_chunk$set(
 
 Functions for dosage optimisation are included in `posologyr`:
 
-+ `poso_time_cmin()` computes the time needed to reach a target trough concentration (Cmin)
 + `poso_dose_auc()` estimates the optimal dose to reach a target AUC
 + `poso_dose_ctime()` estimates the optimal dose to reach a target concentration at any given time
++ `poso_time_cmin()` computes the time needed to reach a target trough concentration (Cmin)
++ `poso_inter_cmin()` estimates the optimal inter-dose interval to reliably achieve a target Cmin between each administration 
 
 `posologyr` takes advantage of the simulation framework provided by the [RxODE](https://github.com/nlmixrdevelopment/RxODE) package.
 

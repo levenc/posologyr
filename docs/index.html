@@ -97,7 +97,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#posologyr" class="anchor"></a>posologyr</h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -114,11 +114,13 @@
 <p>Functions for dosage optimisation are included in <code>posologyr</code>:</p>
 <ul>
 <li>
-<code><a href="reference/poso_time_cmin.html">poso_time_cmin()</a></code> computes the time needed to reach a target trough concentration (Cmin)</li>
-<li>
 <code><a href="reference/poso_dose_auc.html">poso_dose_auc()</a></code> estimates the optimal dose to reach a target AUC</li>
 <li>
 <code><a href="reference/poso_dose_ctime.html">poso_dose_ctime()</a></code> estimates the optimal dose to reach a target concentration at any given time</li>
+<li>
+<code><a href="reference/poso_time_cmin.html">poso_time_cmin()</a></code> computes the time needed to reach a target trough concentration (Cmin)</li>
+<li>
+<code><a href="reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> estimates the optimal inter-dose interval to reliably achieve a target Cmin between each administration</li>
 </ul>
 <p><code>posologyr</code> takes advantage of the simulation framework provided by the <a href="https://github.com/nlmixrdevelopment/RxODE">RxODE</a> package.</p>
 </div>
@@ -173,7 +175,13 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/levenc/posologyr/actions"><img src="https://github.com/levenc/posologyr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
