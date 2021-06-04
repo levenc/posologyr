@@ -4,6 +4,8 @@
 # posologyr
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/levenc/posologyr/workflows/R-CMD-check/badge.svg)](https://github.com/levenc/posologyr/actions)
 <!-- badges: end -->
 
 ## Overview
