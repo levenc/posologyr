@@ -211,15 +211,19 @@ map_interval
 ### Single administration
 
 ```{r map_dose_plot}
+#event table: optimal loading dose over 30 minutes
 event_table_mapdose <- RxODE::et(time=0,amt=map_dose,dur=0.5)
 event_table_mapdose$add.sampling(seq(0,24,by=0.1))
 
+#MAP parameters
 map_param_patA      <- patA_map$model$params
 
+#Simulate with the event table and the individual MAP parameters
 map_dose_model_patA <- RxODE::rxSolve(object=patA_tdm_amik$ppk_model,
                                   params=map_param_patA,
                                   events=event_table_mapdose)
 
+#Plot the results of the simulation
 plot(map_dose_model_patA,Cc) + 
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_vline(xintercept=1, linetype="dashed") +
@@ -230,13 +234,17 @@ plot(map_dose_model_patA,Cc) +
 ### Multiple administrations
 
 ```{r map_dose_ss_plot}
+#event table: optimal loading dose over 30 minutes
+# 3 administrations with the optimal inter-dose interval
 event_table_mapdose_ss <- RxODE::et(amt=map_dose,dur=0.5,ii=map_interval,addl=2)
 event_table_mapdose_ss$add.sampling(seq(0,3.5*map_interval,by=0.1))
 
+#Simulate with the event table and the individual MAP parameters
 map_dose_model_patA_ss <- RxODE::rxSolve(object=patA_tdm_amik$ppk_model,
                                   params=map_param_patA,
                                   events=event_table_mapdose_ss)
 
+#Plot the results of the simulation
 plot(map_dose_model_patA_ss,Cc) + 
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_ribbon(ggplot2::aes(ymin=60, ymax=80),

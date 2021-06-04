@@ -135,15 +135,19 @@
 <a href="#distribution-of-the-population-parameters" class="anchor"></a>Distribution of the population parameters</h2>
 <p>The inter-individual variability of the pharmacokinetic parameters can be explored by simulation, using the <code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code> function to generate sets of ETAs. The resulting distribution of ETAs is used to simulate and plot the pk profiles.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">event_table_priordose</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html">et</a></span><span class="op">(</span>time<span class="op">=</span><span class="fl">0</span>,amt<span class="op">=</span><span class="fl">2080</span>,dur<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co">#event table: a single 30-minutes infusion</span>
+<span class="va">event_table_priordose</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html">et</a></span><span class="op">(</span>time<span class="op">=</span><span class="fl">0</span>,amt<span class="op">=</span><span class="fl">2080</span>,dur<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
 <span class="va">event_table_priordose</span><span class="op">$</span><span class="fu">add.sampling</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>
 
+<span class="co">#Simulate sets of ETAs from the prior ppk model</span>
 <span class="va">priordist_param_patA</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_simu_pop.html">poso_simu_pop</a></span><span class="op">(</span><span class="va">patA_prior_amik</span><span class="op">)</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>
 
+<span class="co">#Simulate with the event table and the simulated population parameters</span>
 <span class="va">priordist_dose_model_patA</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html">rxSolve</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">patA_prior_amik</span><span class="op">$</span><span class="va">ppk_model</span>,
                                   params<span class="op">=</span><span class="va">priordist_param_patA</span>,
                                   <span class="va">event_table_priordose</span><span class="op">)</span>
 
+<span class="co">#Plot the results of the simulations</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">priordist_dose_model_patA</span>,<span class="st">"Cc"</span>, level<span class="op">=</span><span class="fl">0.95</span><span class="op">)</span>,ylab<span class="op">=</span><span class="st">"Central concentration"</span><span class="op">)</span>
 <span class="co">#&gt; ! in order to put confidence bands around the intervals, you need at least 2500 simulations</span>
 <span class="co">#&gt; summarizing data...done</span></code></pre></div>
@@ -214,9 +218,11 @@
 <a href="#plot-of-the-distribution-of-the-individual-profiles" class="anchor"></a>Plot of the distribution of the individual profiles</h2>
 <p>The distribution of the individual profiles obtained can be plotted. The dispersion is significantly lower than that observed for the a priori population profile.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mcmc_model_patA</span>      <span class="op">&lt;-</span> <span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span>
+<code class="sourceCode R"><span class="co">#Add sampling times to the RxODE model of MCMC estimations</span>
+<span class="va">mcmc_model_patA</span>      <span class="op">&lt;-</span> <span class="va">patA_mcmc</span><span class="op">$</span><span class="va">model</span>
 <span class="va">mcmc_model_patA</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span> 
 
+<span class="co">#Plot the results of the estimations</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">mcmc_model_patA</span>,<span class="st">"Cc"</span>, level<span class="op">=</span><span class="fl">0.95</span><span class="op">)</span>,ylab<span class="op">=</span><span class="st">"Central concentration"</span><span class="op">)</span>
 <span class="co">#&gt; ! in order to put confidence bands around the intervals, you need at least 2500 simulations</span>
 <span class="co">#&gt; summarizing data...done</span></code></pre></div>
@@ -251,10 +257,10 @@
 <span class="co">#&gt; ETA_Q   -0.06  0.004  0.003  0.080</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">eta</span><span class="op">)</span>
 <span class="co">#&gt;              ETA_Cl       ETA_Vc       ETA_Vp        ETA_Q</span>
-<span class="co">#&gt; ETA_Cl  0.075855193  0.003763635 -0.086160861 -0.039938390</span>
-<span class="co">#&gt; ETA_Vc  0.003763635  0.038120842 -0.002749125 -0.008776889</span>
-<span class="co">#&gt; ETA_Vp -0.086160861 -0.002749125  0.175272230  0.059690870</span>
-<span class="co">#&gt; ETA_Q  -0.039938390 -0.008776889  0.059690870  0.052911619</span></code></pre></div>
+<span class="co">#&gt; ETA_Cl  0.070583209  0.004997293 -0.084337434 -0.037803443</span>
+<span class="co">#&gt; ETA_Vc  0.004997293  0.037167126 -0.003788056 -0.009872405</span>
+<span class="co">#&gt; ETA_Vp -0.084337434 -0.003788056  0.169321302  0.060538471</span>
+<span class="co">#&gt; ETA_Q  -0.037803443 -0.009872405  0.060538471  0.053832456</span></code></pre></div>
 </div>
 <div id="prior-and-posterior-distribution-of-the-parameters" class="section level2">
 <h2 class="hasAnchor">

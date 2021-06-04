@@ -187,18 +187,18 @@ maintenance_dose_map_ci
 
 ```{r ci_plots}
 #event table: loading dose followed by continuous infusion
-et_maint_ci        <- RxODE::et(time=2,
-                                amt=maintenance_dose_map_ci,
-                                dur=24,
-                                ii=24,
-                                until=240)
-et_ci              <- et_maint_ci %>% RxODE::add.dosing(dose=loading_dose_map,dur=2)
-et_optim_dosage_ci <- et_ci %>% RxODE::et(seq(0,240,by=0.1))
+et_maint_ci <- RxODE::et(time=2,
+                         amt=maintenance_dose_map_ci,
+                         dur=24,
+                         ii=24,
+                         until=240)
+et_ci       <- et_maint_ci %>% RxODE::add.dosing(dose=loading_dose_map,dur=2)
+et_ci       %<>% RxODE::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
 map_optim_model_patB_ci  <- RxODE::rxSolve(object=patB_tdm_vanco$ppk_model,
                                           params=patB_map$model$params,
-                                          events=et_optim_dosage_ci)
+                                          events=et_ci)
 
 #Plot the results of the simulation
 plot(map_optim_model_patB_ci,Cc) + 

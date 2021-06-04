@@ -321,15 +321,19 @@
 <h3 class="hasAnchor">
 <a href="#single-administration" class="anchor"></a>Single administration</h3>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">event_table_mapdose</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html">et</a></span><span class="op">(</span>time<span class="op">=</span><span class="fl">0</span>,amt<span class="op">=</span><span class="va">map_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co">#event table: optimal loading dose over 30 minutes</span>
+<span class="va">event_table_mapdose</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html">et</a></span><span class="op">(</span>time<span class="op">=</span><span class="fl">0</span>,amt<span class="op">=</span><span class="va">map_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
 <span class="va">event_table_mapdose</span><span class="op">$</span><span class="fu">add.sampling</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>
 
+<span class="co">#MAP parameters</span>
 <span class="va">map_param_patA</span>      <span class="op">&lt;-</span> <span class="va">patA_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>
 
+<span class="co">#Simulate with the event table and the individual MAP parameters</span>
 <span class="va">map_dose_model_patA</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html">rxSolve</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">patA_tdm_amik</span><span class="op">$</span><span class="va">ppk_model</span>,
                                   params<span class="op">=</span><span class="va">map_param_patA</span>,
                                   events<span class="op">=</span><span class="va">event_table_mapdose</span><span class="op">)</span>
 
+<span class="co">#Plot the results of the simulation</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">map_dose_model_patA</span>,<span class="va">Cc</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Central concentration"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept<span class="op">=</span><span class="fl">1</span>, linetype<span class="op">=</span><span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span>
@@ -341,13 +345,17 @@
 <h3 class="hasAnchor">
 <a href="#multiple-administrations" class="anchor"></a>Multiple administrations</h3>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">event_table_mapdose_ss</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html">et</a></span><span class="op">(</span>amt<span class="op">=</span><span class="va">map_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span>,ii<span class="op">=</span><span class="va">map_interval</span>,addl<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co">#event table: optimal loading dose over 30 minutes</span>
+<span class="co"># 3 administrations with the optimal inter-dose interval</span>
+<span class="va">event_table_mapdose_ss</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html">et</a></span><span class="op">(</span>amt<span class="op">=</span><span class="va">map_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span>,ii<span class="op">=</span><span class="va">map_interval</span>,addl<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
 <span class="va">event_table_mapdose_ss</span><span class="op">$</span><span class="fu">add.sampling</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3.5</span><span class="op">*</span><span class="va">map_interval</span>,by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>
 
+<span class="co">#Simulate with the event table and the individual MAP parameters</span>
 <span class="va">map_dose_model_patA_ss</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html">rxSolve</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">patA_tdm_amik</span><span class="op">$</span><span class="va">ppk_model</span>,
                                   params<span class="op">=</span><span class="va">map_param_patA</span>,
                                   events<span class="op">=</span><span class="va">event_table_mapdose_ss</span><span class="op">)</span>
 
+<span class="co">#Plot the results of the simulation</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">map_dose_model_patA_ss</span>,<span class="va">Cc</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Central concentration"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_ribbon</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin<span class="op">=</span><span class="fl">60</span>, ymax<span class="op">=</span><span class="fl">80</span><span class="op">)</span>,

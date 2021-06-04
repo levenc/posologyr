@@ -45,15 +45,19 @@ patA_prior_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,
 The inter-individual variability of the pharmacokinetic parameters can be explored by simulation, using the `poso_simu_pop()` function to generate sets of ETAs. The resulting distribution of ETAs is used to simulate and plot the pk profiles.
 
 ```{r priordist_plot}
+#event table: a single 30-minutes infusion
 event_table_priordose <- RxODE::et(time=0,amt=2080,dur=0.5)
 event_table_priordose$add.sampling(seq(0,24,by=0.1))
 
+#Simulate sets of ETAs from the prior ppk model
 priordist_param_patA      <- poso_simu_pop(patA_prior_amik)$model$params
 
+#Simulate with the event table and the simulated population parameters
 priordist_dose_model_patA <- RxODE::rxSolve(object=patA_prior_amik$ppk_model,
                                   params=priordist_param_patA,
                                   event_table_priordose)
 
+#Plot the results of the simulations
 plot(confint(priordist_dose_model_patA,"Cc", level=0.95),ylab="Central concentration")
 ```
 
@@ -103,9 +107,11 @@ patA_mcmc <- poso_estim_mcmc(patA_tdm_amik)
 The distribution of the individual profiles obtained can be plotted. The dispersion is significantly lower than that observed for the a priori population profile.
 
 ```{r mcmc_plot_tdm}
+#Add sampling times to the RxODE model of MCMC estimations
 mcmc_model_patA      <- patA_mcmc$model
 mcmc_model_patA$time <- seq(0,24,by=0.1) 
 
+#Plot the results of the estimations
 plot(confint(mcmc_model_patA,"Cc", level=0.95),ylab="Central concentration")
 ```
 
