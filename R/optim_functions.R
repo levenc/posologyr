@@ -200,7 +200,7 @@ poso_dose_auc <- function(object=NULL,param_map=NULL,time_auc=NULL,
    return(delta_auc)
  }
 
- optim_dose_auc <- optim(starting_dose,err_dose,time_auc=time_auc,
+ optim_dose_auc <- stats::optim(starting_dose,err_dose,time_auc=time_auc,
                          starting_time=starting_time,add_dose=add_dose,
                          interdose_interval=interdose_interval,
                          target_auc=target_auc,prior_model=object,
@@ -300,7 +300,7 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
     return(delta_ctime)
   }
 
-  optim_dose_ctime <- optim(starting_dose,err_dose,time_c=time_c,
+  optim_dose_ctime <- stats::optim(starting_dose,err_dose,time_c=time_c,
                           target_conc=target_conc,prior_model=object,
                           add_dose=add_dose,
                           interdose_interval=interdose_interval,
@@ -379,7 +379,7 @@ poso_inter_cmin <- function(object=NULL,param_map=NULL,dose=NULL,
     return(delta_cmin)
   }
 
-  optim_dose_cmin <- optim(starting_interval,err_inter,dose=dose,
+  optim_dose_cmin <- stats::optim(starting_interval,err_inter,dose=dose,
                            target_cmin=target_cmin,prior_model=object,
                            add_dose=add_dose,duration=duration,
                            param_map=param_map,method="Brent",

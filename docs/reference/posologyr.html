@@ -9,6 +9,13 @@
 <title>Creates a posologyr list from a prior model and an individual event
 record — posologyr • posologyr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -45,6 +52,7 @@ record — posologyr" />
 <meta property="og:description" content="Creates a list for a posologyr prior model, an individual event
 record, and an rxSolve solve object,
 created from the prior ppk model and the individual event record." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -76,7 +84,7 @@ created from the prior ppk model and the individual event record." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
       </span>
     </div>
 
@@ -158,8 +166,8 @@ created from the prior ppk model and the individual event record.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>prior_model</th>
-      <td><p>A <code>posologyr</code> prior population pharmacokinetics model, a
-list of six objects.</p></td>
+      <td><p>A <code>posologyr</code> prior population pharmacokinetics
+model, a list of six objects.</p></td>
     </tr>
     <tr>
       <th>dat</th>
@@ -225,7 +233,7 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 #&gt;     g &lt;- sigma[1] + sigma[2] * f
 #&gt;     return(g)
 #&gt; }
-#&gt; &lt;bytecode: 0x565461c56878&gt;
+#&gt; &lt;bytecode: 0x5590d97f9a70&gt;
 #&gt; 
 #&gt; $theta
 #&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21 

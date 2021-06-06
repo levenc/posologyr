@@ -1,15 +1,15 @@
 Package: posologyr
 Title: Individual Dose Optimization using Population Pharmacokinetics
-Version: 0.1.1
+Version: 0.1.1.9000
 Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
            comment = c(ORCID = "0000-0002-0697-4370")),
-    person("Emmanuelle","Comets",role = c("cph"),
+    person("Emmanuelle","Comets",role = c("ctb"),
            comment = c("Author of the saemix R package")),
-    person("Audrey","Lavenu",role = c("cph"),
+    person("Audrey","Lavenu",role = c("ctb"),
            comment = c("Author of the saemix R package")),
-    person("Marc","Lavielle",role = c("cph"),
+    person("Marc","Lavielle",role = c("ctb"),
            comment = c("Author of the saemix R package"))
     )
 Description: Individualization of drug treatments taking advantage of population pharmacokinetics, patient characteristics, and the results of therapeutic drug monitoring.
@@ -22,6 +22,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     RxODE (>= 0.9.2.1),
+    stats,
     MASS,
     lotri
 Suggests: 

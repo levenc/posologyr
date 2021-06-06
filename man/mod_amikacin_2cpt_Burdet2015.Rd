@@ -23,7 +23,7 @@ the model}
 }
 }
 \source{
-\url{https://doi.org/10.1007/s00228-014-1766-y}
+\doi{10.1007/s00228-014-1766-y}
 }
 \usage{
 mod_amikacin_2cpt_Burdet2015

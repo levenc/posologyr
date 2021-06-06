@@ -174,7 +174,7 @@ poso_estim_map <- function(object=NULL,return_model=TRUE,
   solve_omega  <- try(solve(omega_eta))         # inverse of omega_eta
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
 
-  r <- optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
+  r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
              ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,hessian=TRUE)
 
   eta_map            <- diag(omega)*0
@@ -257,7 +257,7 @@ poso_estim_map <- function(object=NULL,return_model=TRUE,
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
 #'                                 dat=df_patient01)
 #' # estimate the posterior distribution of population parameters
-#' poso_estim_mcmc(patient01_tobra,n_iter=100)
+#' \donttest{poso_estim_mcmc(patient01_tobra,n_iter=100)}
 #'
 #' @export
 poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
@@ -303,13 +303,13 @@ poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
     {
       for (u in 1:control$n_kernel[1])
       {
-        etac <- as.vector(chol_omega%*%rnorm(nb_etas))
+        etac <- as.vector(chol_omega%*%stats::rnorm(nb_etas))
         names(etac)   <- attr(omega_eta,"dimnames")[[1]]
         f             <- do.call(run_model,list(c(theta,etac)))
         g             <- error_model(f,sigma)
         Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
         deltu         <- Uc_y - U_y
-        if(deltu < (-1) * log(runif(1)))
+        if(deltu < (-1) * log(stats::runif(1)))
         {
           eta        <- etac
           U_y        <- Uc_y
@@ -331,13 +331,13 @@ poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
             jr            <- jr -jr[1] + j
             vk2           <- jr%%nb_etas + 1
             etac          <- eta
-            etac[vk2]     <- eta[vk2] + rnorm(nrs2)*d_omega[vk2]
+            etac[vk2]     <- eta[vk2] + stats::rnorm(nrs2)*d_omega[vk2]
             f             <- do.call(run_model,list(c(theta,etac)))
             g             <- error_model(f,sigma)
             Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
             Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
             deltu         <- Uc_y - U_y + Uc_eta - U_eta
-            if(deltu < (-1) * log(runif(1)))
+            if(deltu < (-1) * log(stats::runif(1)))
             {
               eta         <- etac
               U_y         <- Uc_y
@@ -364,13 +364,13 @@ poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
         for(k2 in 1:nb_iter2) {
           vk2             <- VK[k2+vk]
           etac            <- eta
-          etac[vk2]       <- eta[vk2]+matrix(rnorm(nrs2), ncol=nrs2)%*%diag(d_omega[vk2])
+          etac[vk2]       <- eta[vk2]+matrix(stats::rnorm(nrs2), ncol=nrs2)%*%diag(d_omega[vk2])
           f               <- do.call(run_model,list(c(theta,etac)))
           g               <- error_model(f,sigma)
           Uc_y            <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
           Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
           deltu           <- Uc_y-U_y+Uc_eta-U_eta
-          ind             <- which(deltu<(-log(runif(1))))
+          ind             <- which(deltu<(-log(stats::runif(1))))
           eta[ind]        <- etac[ind]
           U_y[ind]        <- Uc_y[ind]
           U_eta[ind]      <- Uc_eta[ind]

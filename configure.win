@@ -1,4 +1,2 @@
 #!/bin/sh
-cp inst/make_ppk_models.R make_ppk_models.R
-${R_HOME}/bin/Rscript make_ppk_models.R
-rm make_ppk_models.R
+${R_HOME}/bin/Rscript inst/make_ppk_models.R

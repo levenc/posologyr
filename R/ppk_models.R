@@ -23,8 +23,8 @@
 #' record, and an \code{\link[RxODE]{rxSolve}} solve object,
 #' created from the prior ppk model and the individual event record.
 #'
-#' @param prior_model A \code{posologyr} prior population pharmacokinetics model, a
-#'    list of six objects.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records.
 #'

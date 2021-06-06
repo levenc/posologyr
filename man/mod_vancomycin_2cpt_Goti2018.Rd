@@ -23,7 +23,7 @@ the model}
 }
 }
 \source{
-\url{https//doi.org/10.1097/FTD.0000000000000490}
+\doi{10.1097/FTD.0000000000000490}
 }
 \usage{
 mod_vancomycin_2cpt_Goti2018

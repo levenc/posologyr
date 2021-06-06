@@ -68,7 +68,7 @@
 #'  \item{TBW}{Total body weight in kg}
 #'  \item{PoverF}{PaO2/FIO2 ratio in mmHg}
 #' }
-#' @source \url{https://doi.org/10.1007/s00228-014-1766-y}
+#' @source \doi{10.1007/s00228-014-1766-y}
 "mod_amikacin_2cpt_Burdet2015"
 
 #' Two-compartment model of IV vancomycin (Goti 2018)
@@ -101,5 +101,5 @@
 #'  \item{DIAL}{Hemodialysis status: 0 in the case of non-dialysis
 #'  subjects, 1 in the case of dialysis subjects}
 #' }
-#' @source \url{https//doi.org/10.1097/FTD.0000000000000490}
+#' @source \doi{10.1097/FTD.0000000000000490}
 "mod_vancomycin_2cpt_Goti2018"

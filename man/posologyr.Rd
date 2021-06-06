@@ -8,8 +8,8 @@ record}
 posologyr(prior_model = NULL, dat = NULL)
 }
 \arguments{
-\item{prior_model}{A \code{posologyr} prior population pharmacokinetics model, a
-list of six objects.}
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{dat}{Dataframe. An individual subject dataset following the
 structure of NONMEM/RxODE event records.
