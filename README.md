@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# posologyr
+# posologyr [<img src="man/figures/logo.png" height="120" align="right" />](https://github.com/levenc/posologyr/)
 
 <!-- badges: start -->
 
