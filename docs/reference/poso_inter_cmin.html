@@ -164,6 +164,7 @@ target concentration.</p>
     <pre class="usage"><span class='fu'>poso_inter_cmin</span><span class='op'>(</span>
   object <span class='op'>=</span> <span class='cn'>NULL</span>,
   param_map <span class='op'>=</span> <span class='cn'>NULL</span>,
+  adapt <span class='op'>=</span> <span class='cn'>FALSE</span>,
   dose <span class='op'>=</span> <span class='cn'>NULL</span>,
   starting_interval <span class='op'>=</span> <span class='fl'>12</span>,
   add_dose <span class='op'>=</span> <span class='fl'>10</span>,
@@ -184,6 +185,13 @@ function.</p></td>
       <td><p>A vector of individual parameters. May be omitted,
 in which case the <code><a href='poso_estim_map.html'>poso_estim_map</a></code> function
 will be called.</p></td>
+    </tr>
+    <tr>
+      <th>adapt</th>
+      <td><p>A boolean. If <code>param_map</code> is omitted, should the estimation
+be performed with the adaptive MAP method (as opposed to the
+standard MAP)? A column <code>AMS</code> is required in the patient record
+to define the segments for the adaptive MAP approach.</p></td>
     </tr>
     <tr>
       <th>dose</th>

@@ -7,6 +7,7 @@
 poso_time_cmin(
   object = NULL,
   param_map = NULL,
+  adapt = FALSE,
   from = 0.2,
   last_time = 72,
   dose = NULL,
@@ -23,6 +24,11 @@ function.}
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
 will be called.}
+
+\item{adapt}{A boolean. If \code{param_map} is omitted, should the estimation
+be performed with the adaptive MAP method (as opposed to the
+standard MAP)? A column \code{AMS} is required in the patient record
+to define the segments for the adaptive MAP approach.}
 
 \item{from}{Numeric. Starting time for the simulation of the
 individual time-concentration profile. The default value is

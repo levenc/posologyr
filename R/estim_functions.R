@@ -27,6 +27,7 @@
 #   - square matrix taken as input, not diagonal
 #   - functions return values for both etas and theta
 #   - relative standard error of MAP estimates
+#   - adaptive MAP forecasting
 #-------------------------------------------------------------------------
 
 #' Estimate the prior distribution of population parameters
@@ -103,6 +104,10 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'    function.
+#' @param adapt A boolean. Should the estimation be performed with the
+#'    adaptive MAP method (as opposed to the standard MAP)? A column
+#'    `AMS` is required in the patient record to define the segments for
+#'    the adaptive MAP approach.
 #' @param return_model A boolean. Returns a RxODE model using the estimated
 #'    ETAs if set to `TRUE`.
 #' @param return_fim A boolean. Returns the Fisher Information Matrix
@@ -133,23 +138,35 @@ poso_simu_pop <- function(object=NULL,n_simul=1000,
 #' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(object=NULL,return_model=TRUE,
+poso_estim_map <- function(object=NULL,adapt=FALSE,return_model=TRUE,
                            return_fim=FALSE,return_rse=FALSE)
 {
 
   # Update model predictions with a new set of parameters, for all obs-----
-  run_model <- function(x,model=solved_model){
+  run_model <- function(x,init=model_init,model=solved_model){
     model$params <- x
+    if(adapt){
+      model$inits  <- init
+    }
     return(model$Cc)
     }
 
-  errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega){
+  errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega,
+                      adapt=FALSE){
     eta          <- diag(omega)*0
     eta[ind_eta] <- eta_estim
 
-    #simulated concentrations with the proposed eta estimates
-    f <- do.call(run_model,list(c(theta,eta)))
-    g <- error_model(f,sigma)
+    if(adapt){
+      eta        <- eta + eta_df[i,]
+      #simulated concentrations with the proposed eta estimates
+      f <- do.call(run_model,list(c(theta,eta)))
+      g <- error_model(f,sigma)
+    }
+    else {
+      #simulated concentrations with the proposed eta estimates
+      f <- do.call(run_model,list(c(theta,eta)))
+      g <- error_model(f,sigma)
+    }
 
     #objective function for the Empirical Bayes Estimates
     #doi: 10.4196/kjpp.2012.16.2.97
@@ -168,24 +185,79 @@ poso_estim_map <- function(object=NULL,return_model=TRUE,
   sigma        <- object$sigma
   error_model  <- object$error_model
 
-  y_obs        <- dat$DV[dat$EVID == 0]         # only observations
   ind_eta      <- which(diag(omega)>0)          # only parameters with IIV
   omega_eta    <- omega[ind_eta,ind_eta]        # only variances > 0
   solve_omega  <- try(solve(omega_eta))         # inverse of omega_eta
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
+  eta_map      <- diag(omega)*0
 
-  r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
-             ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,hessian=TRUE)
+  if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
+    segment_id     <- unique(dat$AMS)
+    n_segment      <- length(segment_id)
+    dat_segment    <- dat
 
-  eta_map            <- diag(omega)*0
-  eta_map[ind_eta]   <- r$par
+    eta_mat        <- matrix(0,nrow=n_segment+1,ncol=ncol(omega))
+    eta_df         <- data.frame(eta_mat)
+    names(eta_df ) <- attr(omega,"dimnames")[[1]]
+
+    init_mat       <- matrix(0,nrow=n_segment+1,
+                             ncol=length(solved_model$inits))
+    init_df        <- data.frame(init_mat)
+    init_names     <- names(solved_model$inits)
+    names(init_df) <- init_names
+
+    for(i in 1:n_segment){
+
+      if(i>1){ # set TIME == 0 when a segment starts
+        dat_segment$TIME  <- dat$TIME -
+          utils::tail(which(dat$AMS == segment_id[i-1]),1)$TIME
+      }
+
+      dat_segment  <- dat_segment[which(dat_segment$AMS == segment_id[i]),]
+
+      # solved_model for the current segment
+      solved_model <- RxODE::rxSolve(object$solved_ppk_model,
+                                     c(object$theta,
+                                       diag(object$omega)*0),
+                                     dat_segment)
+
+      y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
+
+      model_init <- init_df[i,]
+
+      r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,
+                        theta=theta,ind_eta=ind_eta,sigma=sigma,
+                        solve_omega=solve_omega,hessian=TRUE)
+
+      eta_map[ind_eta]   <- r$par
+      eta_df[i+1,]       <- eta_map + eta_df[i,]
+
+      # get the ODE compartment states at the end of the segment
+      solved_model$params <- c(object$theta,unlist(eta_df[i+1,]))
+      solved_model$inits  <- init_df[i,]
+      init_df[i+1,]       <- utils::tail(solved_model[,init_names],1)
+    }
+    eta_map <- unlist(utils::tail(eta_df,1))
+
+    covar            <- t(dat_segment[1,object$covariates])
+    names(covar)     <- object$covariates
+  }
+  else{ #standard MAP estimation
+    y_obs            <- dat$DV[dat$EVID == 0]         # only observations
+
+    r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
+                      ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,hessian=TRUE)
+
+    eta_map[ind_eta] <- r$par
+
+    covar            <- t(dat[1,object$covariates]) #results in a matrix
+    names(covar)     <- object$covariates
+  }
 
   estim_map          <- list(eta=eta_map)
 
   if(return_model){
     model_map        <- solved_model
-    covar            <- t(dat[1,object$covariates]) #results in a matrix
-    names(covar)     <- object$covariates
     model_map$params <- c(theta,eta_map,covar)
     estim_map$model  <- model_map
   }

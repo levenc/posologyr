@@ -6,6 +6,7 @@
 \usage{
 poso_estim_map(
   object = NULL,
+  adapt = FALSE,
   return_model = TRUE,
   return_fim = FALSE,
   return_rse = FALSE
@@ -14,6 +15,11 @@ poso_estim_map(
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
+
+\item{adapt}{A boolean. Should the estimation be performed with the
+adaptive MAP method (as opposed to the standard MAP)? A column
+\code{AMS} is required in the patient record to define the segments for
+the adaptive MAP approach.}
 
 \item{return_model}{A boolean. Returns a RxODE model using the estimated
 ETAs if set to \code{TRUE}.}

@@ -27,6 +27,10 @@
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
+#' @param adapt A boolean. If `param_map` is omitted, should the estimation
+#'    be performed with the adaptive MAP method (as opposed to the
+#'    standard MAP)? A column `AMS` is required in the patient record
+#'    to define the segments for the adaptive MAP approach.
 #' @param from Numeric. Starting time for the simulation of the
 #'     individual time-concentration profile. The default value is
 #'     0.2
@@ -64,13 +68,13 @@
 #' poso_time_cmin(patient01_tobra,dose=2500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_time_cmin <- function(object=NULL,param_map=NULL,from=0.2,
-                           last_time=72,dose=NULL,add_dose=NULL,
-                           interdose_interval=NULL,duration=NULL,
-                           target_cmin=NULL){
+poso_time_cmin <- function(object=NULL,param_map=NULL,adapt=FALSE,
+                           from=0.2,last_time=72,dose=NULL,
+                           add_dose=NULL,interdose_interval=NULL,
+                           duration=NULL,target_cmin=NULL){
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-      model_map <- poso_estim_map(object,return_model=TRUE)
+      model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
       param_map <- model_map[[2]]$params
   }
   if (!is.null(add_dose)){
@@ -119,6 +123,10 @@ poso_time_cmin <- function(object=NULL,param_map=NULL,from=0.2,
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
+#' @param adapt A boolean. If `param_map` is omitted, should the estimation
+#'    be performed with the adaptive MAP method (as opposed to the
+#'    standard MAP)? A column `AMS` is required in the patient record
+#'    to define the segments for the adaptive MAP approach.
 #' @param time_auc Numeric. Last point in time of the AUC for which the dose
 #'     is to be optimized. The AUC is computed from 0 to `time_auc`.
 #' @param starting_time Numeric. First point in time of the AUC, for multiple
@@ -151,13 +159,13 @@ poso_time_cmin <- function(object=NULL,param_map=NULL,from=0.2,
 #' poso_dose_auc(patient01_tobra,time_auc=12,target_auc=45)
 #'
 #' @export
-poso_dose_auc <- function(object=NULL,param_map=NULL,time_auc=NULL,
-                          starting_time=0,starting_dose=100,
-                          interdose_interval=NULL,add_dose=NULL,
-                          duration=NULL,target_auc=NULL){
+poso_dose_auc <- function(object=NULL,param_map=NULL,adapt=FALSE,
+                          time_auc=NULL,starting_time=0,
+                          starting_dose=100,interdose_interval=NULL,
+                          add_dose=NULL,duration=NULL,target_auc=NULL){
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,return_model=TRUE)
+    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
     param_map <- model_map[[2]]$params
   }
   if (!is.null(add_dose)){
@@ -223,6 +231,10 @@ poso_dose_auc <- function(object=NULL,param_map=NULL,time_auc=NULL,
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
+#' @param adapt A boolean. If `param_map` is omitted, should the estimation
+#'    be performed with the adaptive MAP method (as opposed to the
+#'    standard MAP)? A column `AMS` is required in the patient record
+#'    to define the segments for the adaptive MAP approach.
 #' @param time_c Numeric. Point in time for which the dose is to be
 #'     optimized.
 #' @param starting_dose Numeric. Starting dose for the optimization
@@ -256,13 +268,13 @@ poso_dose_auc <- function(object=NULL,param_map=NULL,time_auc=NULL,
 #' poso_dose_ctime(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
 #'
 #' @export
-poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
-                            starting_dose=100,interdose_interval=NULL,
-                            add_dose=NULL,duration=NULL,
-                            target_conc=NULL){
+poso_dose_ctime <- function(object=NULL,param_map=NULL,adapt=FALSE,
+                            time_c=NULL,starting_dose=100,
+                            interdose_interval=NULL,add_dose=NULL,
+                            duration=NULL,target_conc=NULL){
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,return_model=TRUE)
+    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
     param_map <- model_map[[2]]$params
   }
   if (!is.null(add_dose)){
@@ -323,6 +335,10 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
+#' @param adapt A boolean. If `param_map` is omitted, should the estimation
+#'    be performed with the adaptive MAP method (as opposed to the
+#'    standard MAP)? A column `AMS` is required in the patient record
+#'    to define the segments for the adaptive MAP approach.
 #' @param dose Numeric. The dose given.
 #' @param starting_interval Numeric. Starting inter-dose interval for
 #'     the optimization algorithm.
@@ -353,12 +369,12 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,time_c=NULL,
 #' poso_inter_cmin(patient01_tobra,dose=1500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_inter_cmin <- function(object=NULL,param_map=NULL,dose=NULL,
-                            starting_interval=12,add_dose=10,
+poso_inter_cmin <- function(object=NULL,param_map=NULL,adapt=FALSE,
+                            dose=NULL,starting_interval=12,add_dose=10,
                             duration=NULL,target_cmin=NULL){
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,return_model=TRUE)
+    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
     param_map <- model_map[[2]]$params
   }
 

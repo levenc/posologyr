@@ -8,6 +8,7 @@ selected target trough concentration}
 poso_inter_cmin(
   object = NULL,
   param_map = NULL,
+  adapt = FALSE,
   dose = NULL,
   starting_interval = 12,
   add_dose = 10,
@@ -22,6 +23,11 @@ function.}
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
 will be called.}
+
+\item{adapt}{A boolean. If \code{param_map} is omitted, should the estimation
+be performed with the adaptive MAP method (as opposed to the
+standard MAP)? A column \code{AMS} is required in the patient record
+to define the segments for the adaptive MAP approach.}
 
 \item{dose}{Numeric. The dose given.}
 
