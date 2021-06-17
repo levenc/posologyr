@@ -29,10 +29,11 @@ This case study presents the dosage adjustment for a patient treated with vancom
 The dosage individualized using the results of therapeutic drug monitoring (TDM). See `vignette("patient_data_input")` for more details regarding the patient records.
 
 ```{r tdm_patientB}
-df_patientB_tdm <- data.frame(ID=1,TIME=c(0.0,2,13.0,24.2,26.2,48),
-                              DV=c(NA,NA,12,NA,NA,10.5),
-                              AMT=c(1000,-1000,0,700,-700,0),
-                              EVID=c(10101,10101,0,10101,10101,0),
+df_patientB_tdm <- data.frame(ID=1,TIME=c(0.0,13.0,24.2,48),
+                              DV=c(NA,12,NA,10.5),
+                              AMT=c(2000,0,1400,0),
+                              DUR=c(2,NA,2,NA),
+                              EVID=c(1,0,1,0),
                               CLCREAT=65,WT=70,DIAL=0)
 df_patientB_tdm
 ```

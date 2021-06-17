@@ -98,7 +98,7 @@
 
       
 
-      </header><script src="patient_data_input_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="patient_data_input_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Patient data input</h1>
@@ -174,39 +174,38 @@
 <div id="oral-administration-or-iv-bolus" class="section level2">
 <h2 class="hasAnchor">
 <a href="#oral-administration-or-iv-bolus" class="anchor"></a>Oral administration or IV bolus</h2>
-<p><code>EVID = 101</code> for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.</p>
+<p><code>EVID = 1</code> for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
            DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">60.0</span><span class="op">)</span>,
            AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span><span class="op">)</span>,
-           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">101</span>,<span class="fl">0</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,
            COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
            COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   ID TIME DV  AMT EVID COVAR1 COVAR2</span>
-<span class="co">#&gt; 1  1    0 NA 1000  101      X      Y</span>
+<span class="co">#&gt; 1  1    0 NA 1000    1      X      Y</span>
 <span class="co">#&gt; 2  1    3 60    0    0      X      Y</span></code></pre></div>
 </div>
 <div id="intermittent-infusion" class="section level2">
 <h2 class="hasAnchor">
 <a href="#intermittent-infusion" class="anchor"></a>Intermittent infusion</h2>
-<p><code>EVID = 10101</code> for a bolus infusion defined by its duration, administered in the first compartment defined in the ppk model.</p>
-<p>The <code>DUR</code> field is not mandatory. The end of the infusion is encoded by a negative amount record.</p>
-<p><code>AMT</code> is the infusion rate in this scenario RATE = AMT/DUR, not the amount administered.</p>
-<p>The total dose administered is <code>RATE*DUR = 1000*0.5 = 500</code>.</p>
+<p><code>EVID = 1</code> for a bolus infusion, administered in the first compartment defined in the ppk model.</p>
+<p><code>DUR</code> defines its duration.</p>
+<p><code>AMT</code> is the amount administered over the duration <code>DUR</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
-           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">0.5</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,
-           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,
-           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="op">-</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10101</span>,<span class="fl">10101</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,
+           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,
+           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
            COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
            COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;   ID TIME   DV   AMT  EVID COVAR1 COVAR2</span>
-<span class="co">#&gt; 1  1  0.0   NA  1000 10101      X      Y</span>
-<span class="co">#&gt; 2  1  0.5   NA -1000 10101      X      Y</span>
-<span class="co">#&gt; 3  1  1.0 25.0     0     0      X      Y</span>
-<span class="co">#&gt; 4  1 14.0  5.5     0     0      X      Y</span></code></pre></div>
+<span class="co">#&gt;   ID TIME   DV  AMT DUR EVID COVAR1 COVAR2</span>
+<span class="co">#&gt; 1  1    0   NA 1000 0.5    1      X      Y</span>
+<span class="co">#&gt; 2  1    1 25.0    0  NA    0      X      Y</span>
+<span class="co">#&gt; 3  1   14  5.5    0  NA    0      X      Y</span></code></pre></div>
 </div>
 <div id="steady-state" class="section level2">
 <h2 class="hasAnchor">

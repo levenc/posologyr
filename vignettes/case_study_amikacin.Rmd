@@ -108,10 +108,11 @@ For a patient with a pharmacokinetic profile typical of the model population, th
 After the first administration, the dosage selection can be refined using the results of therapeutic drug monitoring (TDM). The new data are added to the patient file, see `vignette("patient_data_input")` for more details.
 
 ```{r tdm_patientA}
-df_patientA_tdm <- data.frame(ID=1,TIME=c(0,0.5,1,6),
-                              DV=c(NA,NA,58,14),
-                              EVID=c(10101,10101,0,0),
-                              AMT=c(4160,-4160,0,0),
+df_patientA_tdm <- data.frame(ID=1,TIME=c(0,1,6),
+                              DV=c(NA,58,14),
+                              EVID=c(1,0,0),
+                              AMT=c(2080,0,0),
+                              DUR=c(0.5,NA,NA),
                               CLCREAT4H=50,TBW=62,PoverF=169)
 df_patientA_tdm
 ```

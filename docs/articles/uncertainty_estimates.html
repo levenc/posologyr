@@ -98,7 +98,7 @@
 
       
 
-      </header><script src="uncertainty_estimates_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="uncertainty_estimates_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Uncertainty of estimates</h1>
@@ -168,17 +168,17 @@
 <h2 class="hasAnchor">
 <a href="#patient-record-with-tdm-and-prior-model-from-the-amikacin-case-study" class="anchor"></a>Patient record with TDM and prior model from the amikacin case study</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df_patientA_tdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span>,
-                              DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">60</span>,<span class="fl">14</span><span class="op">)</span>,
-                              EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10101</span>,<span class="fl">10101</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-                              AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4160</span>,<span class="op">-</span><span class="fl">4160</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">df_patientA_tdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span>,
+                              DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">60</span>,<span class="fl">14</span><span class="op">)</span>,
+                              EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+                              AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2080</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+                              DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
                               CLCREAT4H<span class="op">=</span><span class="fl">50</span>,TBW<span class="op">=</span><span class="fl">62</span>,PoverF<span class="op">=</span><span class="fl">169</span><span class="op">)</span>
 <span class="va">df_patientA_tdm</span>
-<span class="co">#&gt;   ID TIME DV  EVID   AMT CLCREAT4H TBW PoverF</span>
-<span class="co">#&gt; 1  1  0.0 NA 10101  4160        50  62    169</span>
-<span class="co">#&gt; 2  1  0.5 NA 10101 -4160        50  62    169</span>
-<span class="co">#&gt; 3  1  1.0 60     0     0        50  62    169</span>
-<span class="co">#&gt; 4  1  6.0 14     0     0        50  62    169</span></code></pre></div>
+<span class="co">#&gt;   ID TIME DV EVID  AMT DUR CLCREAT4H TBW PoverF</span>
+<span class="co">#&gt; 1  1    0 NA    1 2080 0.5        50  62    169</span>
+<span class="co">#&gt; 2  1    1 60    0    0  NA        50  62    169</span>
+<span class="co">#&gt; 3  1    6 14    0    0  NA        50  62    169</span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">patA_tdm_amik</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_amikacin_2cpt_Burdet2015</span>,
                            <span class="va">df_patientA_tdm</span><span class="op">)</span></code></pre></div>
@@ -263,11 +263,11 @@
 <span class="co">#&gt; ETA_Vp   0.01  0.020  0.200  0.003</span>
 <span class="co">#&gt; ETA_Q   -0.06  0.004  0.003  0.080</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">patA_mcmc</span><span class="op">$</span><span class="va">eta</span><span class="op">)</span>
-<span class="co">#&gt;              ETA_Cl        ETA_Vc        ETA_Vp        ETA_Q</span>
-<span class="co">#&gt; ETA_Cl  0.066298648  0.0024492867 -0.0765139086 -0.033229018</span>
-<span class="co">#&gt; ETA_Vc  0.002449287  0.0390585946 -0.0001328159 -0.006895128</span>
-<span class="co">#&gt; ETA_Vp -0.076513909 -0.0001328159  0.1505882073  0.051990050</span>
-<span class="co">#&gt; ETA_Q  -0.033229018 -0.0068951276  0.0519900503  0.046763750</span></code></pre></div>
+<span class="co">#&gt;             ETA_Cl       ETA_Vc       ETA_Vp        ETA_Q</span>
+<span class="co">#&gt; ETA_Cl  0.07251457  0.005463240 -0.084053307 -0.039496957</span>
+<span class="co">#&gt; ETA_Vc  0.00546324  0.037406560 -0.004857047 -0.009906639</span>
+<span class="co">#&gt; ETA_Vp -0.08405331 -0.004857047  0.171107062  0.061670875</span>
+<span class="co">#&gt; ETA_Q  -0.03949696 -0.009906639  0.061670875  0.056288722</span></code></pre></div>
 </div>
 <div id="prior-and-posterior-distribution-of-the-parameters" class="section level2">
 <h2 class="hasAnchor">

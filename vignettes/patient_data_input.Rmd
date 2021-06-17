@@ -64,33 +64,32 @@ data.frame(ID=1,
 ```
 
 ## Oral administration or IV bolus
-`EVID = 101` for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.
+`EVID = 1` for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.
 
 ```{r oral_IV_bolus_df}
 data.frame(ID=1,
            TIME=c(0.0,3),
            DV=c(NA,60.0),
            AMT=c(1000,0),
-           EVID=c(101,0),
+           EVID=c(1,0),
            COVAR1=c("X"),
            COVAR2=c("Y"))
 ```
 
 ## Intermittent infusion
-`EVID = 10101` for a bolus infusion defined by its duration, administered in the first compartment defined in the ppk model.
+`EVID = 1` for a bolus infusion, administered in the first compartment defined in the ppk model.
 
-The `DUR` field is not mandatory. The end of the infusion is encoded by a negative amount record.
+`DUR` defines its duration.
 
-`AMT` is the infusion rate in this scenario RATE = AMT/DUR, not the amount administered. 
-
-The total dose administered is `RATE*DUR = 1000*0.5 = 500`.
+`AMT` is the amount administered over the duration `DUR`.
 
 ```{r intermittent_infusion_df}
 data.frame(ID=1,
-           TIME=c(0.0,0.5,1.0,14.0),
-           DV=c(NA,NA,25.0,5.5),
-           AMT=c(1000,-1000,0,0),
-           EVID=c(10101,10101,0,0),
+           TIME=c(0.0,1.0,14.0),
+           DV=c(NA,25.0,5.5),
+           AMT=c(1000,0,0),
+           DUR=c(0.5,NA,NA),
+           EVID=c(1,0,0),
            COVAR1=c("X"),
            COVAR2=c("Y"))
 ```

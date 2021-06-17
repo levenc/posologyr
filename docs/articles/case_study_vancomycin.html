@@ -98,7 +98,7 @@
 
       
 
-      </header><script src="case_study_vancomycin_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="case_study_vancomycin_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Case study: vancomycin dose adjustment</h1>
@@ -127,19 +127,18 @@
 <a href="#patient-record-with-tdm-data" class="anchor"></a>Patient record with TDM data</h2>
 <p>The dosage individualized using the results of therapeutic drug monitoring (TDM). See <code><a href="../articles/patient_data_input.html">vignette("patient_data_input")</a></code> for more details regarding the patient records.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df_patientB_tdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">2</span>,<span class="fl">13.0</span>,<span class="fl">24.2</span>,<span class="fl">26.2</span>,<span class="fl">48</span><span class="op">)</span>,
-                              DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">12</span>,<span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">10.5</span><span class="op">)</span>,
-                              AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="op">-</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">700</span>,<span class="op">-</span><span class="fl">700</span>,<span class="fl">0</span><span class="op">)</span>,
-                              EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10101</span>,<span class="fl">10101</span>,<span class="fl">0</span>,<span class="fl">10101</span>,<span class="fl">10101</span>,<span class="fl">0</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">df_patientB_tdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">13.0</span>,<span class="fl">24.2</span>,<span class="fl">48</span><span class="op">)</span>,
+                              DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">12</span>,<span class="cn">NA</span>,<span class="fl">10.5</span><span class="op">)</span>,
+                              AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2000</span>,<span class="fl">0</span>,<span class="fl">1400</span>,<span class="fl">0</span><span class="op">)</span>,
+                              DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="cn">NA</span>,<span class="fl">2</span>,<span class="cn">NA</span><span class="op">)</span>,
+                              EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,
                               CLCREAT<span class="op">=</span><span class="fl">65</span>,WT<span class="op">=</span><span class="fl">70</span>,DIAL<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
 <span class="va">df_patientB_tdm</span>
-<span class="co">#&gt;   ID TIME   DV   AMT  EVID CLCREAT WT DIAL</span>
-<span class="co">#&gt; 1  1  0.0   NA  1000 10101      65 70    0</span>
-<span class="co">#&gt; 2  1  2.0   NA -1000 10101      65 70    0</span>
-<span class="co">#&gt; 3  1 13.0 12.0     0     0      65 70    0</span>
-<span class="co">#&gt; 4  1 24.2   NA   700 10101      65 70    0</span>
-<span class="co">#&gt; 5  1 26.2   NA  -700 10101      65 70    0</span>
-<span class="co">#&gt; 6  1 48.0 10.5     0     0      65 70    0</span></code></pre></div>
+<span class="co">#&gt;   ID TIME   DV  AMT DUR EVID CLCREAT WT DIAL</span>
+<span class="co">#&gt; 1  1  0.0   NA 2000   2    1      65 70    0</span>
+<span class="co">#&gt; 2  1 13.0 12.0    0  NA    0      65 70    0</span>
+<span class="co">#&gt; 3  1 24.2   NA 1400   2    1      65 70    0</span>
+<span class="co">#&gt; 4  1 48.0 10.5    0  NA    0      65 70    0</span></code></pre></div>
 </div>
 <div id="apply-the-selected-prior-ppk-model-to-patient-data" class="section level2">
 <h2 class="hasAnchor">
