@@ -4,6 +4,7 @@ reference:
 - contents:
   - poso_estim_map
   - poso_estim_mcmc
+  - poso_estim_sir
   - poso_simu_pop
 - title: "Dose optimisation functions"
 - contents:

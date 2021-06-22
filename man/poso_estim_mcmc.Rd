@@ -2,7 +2,7 @@
 % Please edit documentation in R/estim_functions.R
 \name{poso_estim_mcmc}
 \alias{poso_estim_mcmc}
-\title{Estimate the posterior distribution of individual parameters}
+\title{Estimate the posterior distribution of individual parameters by MCMC}
 \usage{
 poso_estim_mcmc(
   object = NULL,

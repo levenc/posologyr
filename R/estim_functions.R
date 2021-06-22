@@ -287,7 +287,7 @@ poso_estim_map <- function(object=NULL,adapt=FALSE,return_model=TRUE,
 #
 # (GPLv2+)
 
-#' Estimate the posterior distribution of individual parameters
+#' Estimate the posterior distribution of individual parameters by MCMC
 #'
 #' Estimates the posterior distribution of individual parameters by Markov
 #' Chain Monte Carlo (using a Metropolis-Hastings algorithm)
@@ -469,4 +469,83 @@ poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
   }
 
   return(estim_mcmc)
+}
+
+#' Estimate the posterior distribution of individual parameters by SIR
+#'
+#' Estimates the posterior distribution of individual parameters by
+#' Sequential Importance Resampling (SIR)
+#'
+#' @param object A posologyr list, created by the \code{\link{posologyr}}
+#' function.
+#' @param n_sample Number of samples from the S-step
+#' @param n_resample Number of samples from the R-step
+#'
+#' @return If `return_model` is set to `FALSE`, , a list of one element: a
+#' dataframe `$eta` of ETAs from the posterior distribution, estimated by
+#' Sequential Importance Resampling.
+#' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
+#' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+#'
+#' @export
+poso_estim_sir <- function(object=NULL,n_sample=1e5,n_resample=1e4){
+
+  dat          <- object$tdm_data
+  solved_model <- object$solved_ppk_model
+  omega        <- object$omega
+  sigma        <- object$sigma
+  error_model  <- object$error_model
+
+  y_obs        <- dat$DV[dat$EVID == 0]     # only observations
+  ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
+  nb_etas      <- length(ind_eta)
+  omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
+  solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
+
+  theta    <- rbind(object$theta)
+
+  #S-step
+  eta_sim  <- mvnfast::rmvn(n_sample,mu=rep(0,ncol(omega_eta)),
+                            sigma=omega_eta)
+  eta_df        <- data.frame(eta_sim)
+  names(eta_df) <- attr(omega,"dimnames")[[1]]
+
+  #I-step
+  solved_model$params  <- cbind(theta,eta_df,row.names=NULL)
+  wide_cc  <- tidyr::pivot_wider(solved_model,
+                                id_cols = "sim.id",
+                                names_from = "time",
+                                values_from = "Cc")
+
+  LL_func  <- function(simu_obs){
+    eta_id   <- simu_obs[1]
+    eta      <- eta_sim[eta_id,]
+    f        <- simu_obs[-1]
+    g        <- error_model(f,sigma)
+    U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+    U_eta    <- 0.5 * eta %*% solve_omega %*% eta
+    minus_LL <- U_y + U_eta
+    return(-minus_LL)
+  }
+
+  lf        <- apply(wide_cc,MARGIN=1,FUN=LL_func)
+  lp        <- mvnfast::dmvn(eta_sim,mu=rep(0,ncol(omega_eta)),
+                             sigma=omega_eta,log=T)
+  md        <- max(lf - lp)
+  wt        <- exp(lf - lp - md)
+  probs     <- wt/sum(wt)
+
+  #R-step
+  indices   <- sample(1:n_sample, size = n_resample, prob = probs,
+                      replace = TRUE)
+  if (nb_etas > 1) {
+    eta_sim   <- eta_sim[indices, ]
+  }
+  else {
+    eta_sim <- eta_sim[indices]
+  }
+  estim_sir        <- data.frame(eta_sim)
+  names(estim_sir) <- attr(omega,"dimnames")[[1]]
+
+  return(estim_sir)
 }

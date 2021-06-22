@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • posologyr</title>
+<title>Estimate the posterior distribution of individual parameters by SIR — poso_estim_sir • posologyr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Estimate the posterior distribution of individual parameters by SIR — poso_estim_sir" />
+<meta property="og:description" content="Estimates the posterior distribution of individual parameters by
+Sequential Importance Resampling (SIR)" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -66,7 +68,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -140,176 +142,47 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Estimate the posterior distribution of individual parameters by SIR</h1>
+    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/estim_functions.R'><code>R/estim_functions.R</code></a></small>
+    <div class="hidden name"><code>poso_estim_sir.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Estimates the posterior distribution of individual parameters by
+Sequential Importance Resampling (SIR)</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>poso_estim_sir</span><span class='op'>(</span>object <span class='op'>=</span> <span class='cn'>NULL</span>, n_sample <span class='op'>=</span> <span class='fl'>1e+05</span>, n_resample <span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-estimation-functions" class="hasAnchor"><a href="#section-estimation-functions" class="anchor"></a>Estimation functions</h2>
-          <p class="section-desc"><p>Functions for estimating the pharmacokinetic parameters</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="poso_estim_map.html">poso_estim_map()</a></code> </p>
-        </td>
-        <td><p>Estimate the Maximum A Posteriori individual parameters</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_estim_mcmc.html">poso_estim_mcmc()</a></code> </p>
-        </td>
-        <td><p>Estimate the posterior distribution of individual parameters by MCMC</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_estim_sir.html">poso_estim_sir()</a></code> </p>
-        </td>
-        <td><p>Estimate the posterior distribution of individual parameters by SIR</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_simu_pop.html">poso_simu_pop()</a></code> </p>
-        </td>
-        <td><p>Estimate the prior distribution of population parameters</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-dose-optimisation-functions" class="hasAnchor"><a href="#section-dose-optimisation-functions" class="anchor"></a>Dose optimisation functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="poso_dose_auc.html">poso_dose_auc()</a></code> </p>
-        </td>
-        <td><p>Estimate the optimal dose for a selected target area under the
-time-concentration curve (AUC)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_dose_ctime.html">poso_dose_ctime()</a></code> </p>
-        </td>
-        <td><p>Estimate the optimal dose for a selected target concentration at a
-selected point in time</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_time_cmin.html">poso_time_cmin()</a></code> </p>
-        </td>
-        <td><p>Predict time to a selected trough concentration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_inter_cmin.html">poso_inter_cmin()</a></code> </p>
-        </td>
-        <td><p>Estimate the optimal inter-dose interval for a given dose and a
-selected target trough concentration</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-creation-of-a-posologyr-list" class="hasAnchor"><a href="#section-creation-of-a-posologyr-list" class="anchor"></a>Creation of a posologyr list</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="posologyr.html">posologyr()</a></code> </p>
-        </td>
-        <td><p>Creates a posologyr list from a prior model and an individual event
-record</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-error-models" class="hasAnchor"><a href="#section-error-models" class="anchor"></a>Error models</h2>
-          <p class="section-desc"><p>Functions for user-defined posologyr models</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="error_model_comb1.html">error_model_comb1()</a></code> </p>
-        </td>
-        <td><p>Residual error model combined 1</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="error_model_comb2.html">error_model_comb2()</a></code> </p>
-        </td>
-        <td><p>Residual error model combined 2</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-built-in-models" class="hasAnchor"><a href="#section-built-in-models" class="anchor"></a>Built-in models</h2>
-          <p class="section-desc"><p>ppk models built-in for tests and examples</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="mod_tobramycin_2cpt_fictional.html">mod_tobramycin_2cpt_fictional</a></code> </p>
-        </td>
-        <td><p>FICTIONAL IV tobramycin model for test purpose</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mod_vancomycin_2cpt_Goti2018.html">mod_vancomycin_2cpt_Goti2018</a></code> </p>
-        </td>
-        <td><p>Two-compartment model of IV vancomycin (Goti 2018)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mod_amikacin_2cpt_Burdet2015.html">mod_amikacin_2cpt_Burdet2015</a></code> </p>
-        </td>
-        <td><p>Two-compartment model of IV amikacin (Burdet 2015)</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>A posologyr list, created by the <code><a href='posologyr.html'>posologyr</a></code>
+function.</p></td>
+    </tr>
+    <tr>
+      <th>n_sample</th>
+      <td><p>Number of samples from the S-step</p></td>
+    </tr>
+    <tr>
+      <th>n_resample</th>
+      <td><p>Number of samples from the R-step</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>If <code>return_model</code> is set to <code>FALSE</code>, , a list of one element: a
+dataframe <code>$eta</code> of ETAs from the posterior distribution, estimated by
+Sequential Importance Resampling.
+If <code>return_model</code> is set to <code>TRUE</code>, a list of the dataframe of the posterior
+distribution of ETA, and a RxODE model using the estimated distributions of ETAs.</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
