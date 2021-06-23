@@ -154,7 +154,12 @@ Sequential Importance Resampling (SIR)" />
 Sequential Importance Resampling (SIR)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>poso_estim_sir</span><span class='op'>(</span><span class='va'>object</span>, n_sample <span class='op'>=</span> <span class='fl'>1e+05</span>, n_resample <span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>poso_estim_sir</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  n_sample <span class='op'>=</span> <span class='fl'>1e+05</span>,
+  n_resample <span class='op'>=</span> <span class='fl'>10000</span>,
+  return_model <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +176,11 @@ function.</p></td>
     <tr>
       <th>n_resample</th>
       <td><p>Number of samples from the R-step</p></td>
+    </tr>
+    <tr>
+      <th>return_model</th>
+      <td><p>A boolean. Returns a RxODE model using the estimated
+ETAs if set to <code>TRUE</code>.</p></td>
     </tr>
     </table>
 

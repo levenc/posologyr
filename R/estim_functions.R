@@ -490,6 +490,8 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #' function.
 #' @param n_sample Number of samples from the S-step
 #' @param n_resample Number of samples from the R-step
+#' @param return_model A boolean. Returns a RxODE model using the estimated
+#'    ETAs if set to `TRUE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
@@ -498,7 +500,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
 #'
 #' @export
-poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4){
+poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4,return_model=TRUE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
@@ -520,7 +522,7 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4){
   eta_sim  <- mvnfast::rmvn(n_sample,mu=rep(0,ncol(omega_eta)),
                             sigma=omega_eta)
   eta_df        <- data.frame(eta_sim)
-  names(eta_df) <- attr(omega,"dimnames")[[1]]
+  names(eta_df) <- attr(omega_eta,"dimnames")[[1]]
 
   #I-step
   solved_model$params  <- cbind(theta,eta_df,row.names=NULL)
@@ -556,8 +558,22 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4){
   else {
     eta_sim <- eta_sim[indices]
   }
-  estim_sir        <- data.frame(eta_sim)
-  names(estim_sir) <- attr(omega,"dimnames")[[1]]
+
+  eta_sir           <- matrix(0,nrow=n_resample,ncol=ncol(omega))
+  eta_sir[,ind_eta] <- eta_sim
+  eta_df_sir        <- data.frame(eta_sir)
+  names(eta_df_sir) <- attr(omega,"dimnames")[[1]]
+
+  estim_sir         <- list(eta=eta_df_sir)
+
+  if(return_model){
+    model_sir         <- solved_model
+    theta_return      <- rbind(theta)
+    covar             <- dat[1,object$covariates]
+    names(covar)      <- object$covariates
+    model_sir$params  <- cbind(theta_return,eta_df_sir,covar,row.names=NULL)
+    estim_sir$model   <- model_sir
+  }
 
   return(estim_sir)
 }

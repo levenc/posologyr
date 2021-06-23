@@ -4,7 +4,12 @@
 \alias{poso_estim_sir}
 \title{Estimate the posterior distribution of individual parameters by SIR}
 \usage{
-poso_estim_sir(object, n_sample = 1e+05, n_resample = 10000)
+poso_estim_sir(
+  object,
+  n_sample = 1e+05,
+  n_resample = 10000,
+  return_model = TRUE
+)
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
@@ -13,6 +18,9 @@ function.}
 \item{n_sample}{Number of samples from the S-step}
 
 \item{n_resample}{Number of samples from the R-step}
+
+\item{return_model}{A boolean. Returns a RxODE model using the estimated
+ETAs if set to \code{TRUE}.}
 }
 \value{
 If \code{return_model} is set to \code{FALSE}, a list of one element: a

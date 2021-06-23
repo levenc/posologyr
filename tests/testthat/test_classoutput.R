@@ -53,3 +53,17 @@ test_that("poso_estim_mcmc returns the expected objects", {
   expect_equal("rxSolve" %in% attributes(p01_mcmc_nomod$model)$class,
                FALSE)
 })
+
+test_that("poso_estim_sir returns the expected objects", {
+  p01_sir_mod   <- poso_estim_sir(patient01_tobra)
+  p01_sir_nomod <- poso_estim_sir(patient01_tobra,return_model = FALSE)
+
+  expect_equal("data.frame" %in% attributes(p01_sir_mod$eta)$class,
+               TRUE)
+  expect_equal("rxSolve" %in% attributes(p01_sir_mod$model)$class,
+               TRUE)
+  expect_equal("data.frame" %in% attributes(p01_sir_nomod$eta)$class,
+               TRUE)
+  expect_equal("rxSolve" %in% attributes(p01_sir_nomod$model)$class,
+               FALSE)
+})
