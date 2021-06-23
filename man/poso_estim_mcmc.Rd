@@ -30,7 +30,7 @@ for the Metropolis-Hastings algorithm.}
 algorithm.}
 }
 \value{
-If \code{return_model} is set to \code{FALSE}, , a list of one element: a
+If \code{return_model} is set to \code{FALSE}, a list of one element: a
 dataframe \verb{$eta} of ETAs from the posterior distribution, estimated by
 Markov Chain Monte Carlo.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the posterior

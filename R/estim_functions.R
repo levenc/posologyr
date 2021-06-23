@@ -64,26 +64,25 @@
 #' poso_simu_pop(patient01_tobra,n_simul=100)
 #'
 #' @export
-poso_simu_pop <- function(object=NULL,n_simul=1000,
+poso_simu_pop <- function(object,n_simul=1000,
                           return_model=TRUE){
 
   omega      <- object$omega
+  ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
+  omega_eta  <- omega[ind_eta,ind_eta]
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
 
   if (n_simul > 0) {
-    eta_mat    <- matrix(0,nrow=n_simul,ncol=ncol(omega))
-    for (k in (1:n_simul)){
-      eta_sim     <- MASS::mvrnorm(1,mu=rep(0,ncol(omega)),
-                                   Sigma=omega)
-      #faster than asking mvrnorm for n_simul samples
-      eta_mat[k,] <- eta_sim
-    }
+    eta_mat <- matrix(0,nrow=n_simul,ncol=ncol(omega))
+    eta_sim <- mvnfast::rmvn(n_simul,mu=rep(0,ncol(omega_eta)),
+                             sigma=omega_eta)
+    eta_mat[,ind_eta] <- eta_sim
   }
 
-  eta_df        <- data.frame(eta_mat)
-  names(eta_df) <- attr(omega,"dimnames")[[1]]
+  eta_df             <- data.frame(eta_mat)
+  names(eta_df)      <- attr(omega,"dimnames")[[1]]
 
-  eta_pop       <- list(eta=eta_df)
+  eta_pop            <- list(eta=eta_df)
 
   if(return_model){
     model_pop         <- object$solved_ppk_model
@@ -303,7 +302,7 @@ poso_estim_map <- function(object=NULL,adapt=FALSE,return_model=TRUE,
 #' @param control A list of parameters controlling the Metropolis-Hastings
 #' algorithm.
 #'
-#' @return If `return_model` is set to `FALSE`, , a list of one element: a
+#' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
@@ -481,7 +480,7 @@ poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
 #' @param n_sample Number of samples from the S-step
 #' @param n_resample Number of samples from the R-step
 #'
-#' @return If `return_model` is set to `FALSE`, , a list of one element: a
+#' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Sequential Importance Resampling.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior

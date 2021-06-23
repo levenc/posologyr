@@ -15,7 +15,7 @@ function.}
 \item{n_resample}{Number of samples from the R-step}
 }
 \value{
-If \code{return_model} is set to \code{FALSE}, , a list of one element: a
+If \code{return_model} is set to \code{FALSE}, a list of one element: a
 dataframe \verb{$eta} of ETAs from the posterior distribution, estimated by
 Sequential Importance Resampling.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the posterior
