@@ -53,11 +53,11 @@
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
 #' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,0.5,1.0,14.0),
-#'                         DV=c(NA,NA,25.0,5.5),
-#'                         AMT=c(1000,-1000,0,0),
-#'                         EVID=c(10102,10102,0,0),
-#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
@@ -149,11 +149,11 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
 #' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,0.5,1.0,14.0),
-#'                         DV=c(NA,NA,25.0,5.5),
-#'                         AMT=c(1000,-1000,0,0),
-#'                         EVID=c(10102,10102,0,0),
-#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
 #'                                 dat=df_patient01)
@@ -257,11 +257,11 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
 #' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,0.5,1.0,14.0),
-#'                         DV=c(NA,NA,25.0,5.5),
-#'                         AMT=c(1000,-1000,0,0),
-#'                         EVID=c(10102,10102,0,0),
-#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
@@ -359,11 +359,11 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
 #' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,0.5,1.0,14.0),
-#'                         DV=c(NA,NA,25.0,5.5),
-#'                         AMT=c(1000,-1000,0,0),
-#'                         EVID=c(10102,10102,0,0),
-#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,

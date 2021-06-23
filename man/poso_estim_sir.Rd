@@ -33,3 +33,20 @@ distribution of ETA, and a RxODE model using the estimated distributions of ETAs
 Estimates the posterior distribution of individual parameters by
 Sequential Importance Resampling (SIR)
 }
+\examples{
+# df_patient01: event table for Patient01, following a 30 minutes intravenous
+# infusion of tobramycin
+df_patient01 <- data.frame(ID=1,
+                        TIME=c(0.0,1.0,14.0),
+                        DV=c(NA,25.0,5.5),
+                        AMT=c(2000,0,0),
+                        EVID=c(1,0,0),
+                        DUR=c(0.5,NA,NA),
+                        CLCREAT=80,WT=65)
+# loading a tobramycin model and Patient01's event record
+patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+                                dat=df_patient01)
+# estimate the posterior distribution of population parameters
+poso_estim_sir(patient01_tobra,n_sample=1e4,n_resample=1e3)
+
+}

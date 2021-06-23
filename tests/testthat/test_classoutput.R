@@ -1,11 +1,12 @@
-df_patient01 <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
-                        DV=c(NA,NA,25.0,5.5),
-                        AMT=c(1000,-1000,0,0),
-                        EVID=c(10102,10102,0,0),
-                        CLCREAT=80,WT=65)
+df_patient01_tobra <- data.frame(ID=1,TIME=c(0.0,1.0,14.0),
+                                 DV=c(NA,25.0,5.5),
+                                 AMT=c(2000,0,0),
+                                 DUR=c(0.5,NA,NA),
+                                 EVID=c(1,0,0),
+                                 CLCREAT=80,WT=65)
 
 patient01_tobra      <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                          dat=df_patient01)
+                          dat=df_patient01_tobra)
 
 test_that("poso_simu_pop returns the expected objects", {
   p01_pop_mod    <- poso_simu_pop(patient01_tobra)

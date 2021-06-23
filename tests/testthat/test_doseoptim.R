@@ -1,17 +1,19 @@
-df_patient01 <- data.frame(ID=1,TIME=c(0.0,0.5,1.0,14.0),
-                        DV=c(NA,NA,25.0,5.5),
-                        AMT=c(1000,-1000,0,0),
-                        EVID=c(10102,10102,0,0),
-                        CLCREAT=80,WT=65)
+df_patient01_tobra <- data.frame(ID=1,TIME=c(0.0,1.0,14.0),
+                                 DV=c(NA,25.0,5.5),
+                                 AMT=c(500,0,0),
+                                 DUR=c(0.5,NA,NA),
+                                 EVID=c(1,0,0),
+                                 CLCREAT=80,WT=65)
 
-df_patient04_vanco <- data.frame(ID=1,TIME=c(0.0,2,13.0,24.2,26.2,48),
-                                 DV=c(NA,NA,12,NA,NA,10.5),
-                                 AMT=c(1000,-1000,0,700,-700,0),
-                                 EVID=c(10101,10101,0,10101,10101,0),
+df_patient04_vanco <- data.frame(ID=1,TIME=c(0.0,13.0,24.2,48),
+                                 DV=c(NA,12,NA,10.5),
+                                 AMT=c(2000,0,1400,0),
+                                 DUR=c(2,NA,2,NA),
+                                 EVID=c(1,0,1,0),
                                  CLCREAT=65,WT=70,DIAL=0)
 
 patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                             dat=df_patient01)
+                             dat=df_patient01_tobra)
 
 patient04_tdm_vanco <- posologyr(prior_model=mod_vancomycin_2cpt_Goti2018,
                             dat=df_patient04_vanco)

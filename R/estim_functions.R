@@ -51,11 +51,11 @@
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
 #' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,0.5,1.0,14.0),
-#'                         DV=c(NA,NA,25.0,5.5),
-#'                         AMT=c(1000,-1000,0,0),
-#'                         EVID=c(10102,10102,0,0),
-#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
@@ -126,11 +126,11 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
 #' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,0.5,1.0,14.0),
-#'                         DV=c(NA,NA,25.0,5.5),
-#'                         AMT=c(1000,-1000,0,0),
-#'                         EVID=c(10102,10102,0,0),
-#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
@@ -326,11 +326,11 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
 #' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,0.5,1.0,14.0),
-#'                         DV=c(NA,NA,25.0,5.5),
-#'                         AMT=c(1000,-1000,0,0),
-#'                         EVID=c(10102,10102,0,0),
-#'                         DUR=c(0.5,0.5,NA,NA),
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
@@ -498,6 +498,22 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #' Sequential Importance Resampling.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+#'
+#' @examples
+#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
+#' # infusion of tobramycin
+#' df_patient01 <- data.frame(ID=1,
+#'                         TIME=c(0.0,1.0,14.0),
+#'                         DV=c(NA,25.0,5.5),
+#'                         AMT=c(2000,0,0),
+#'                         EVID=c(1,0,0),
+#'                         DUR=c(0.5,NA,NA),
+#'                         CLCREAT=80,WT=65)
+#' # loading a tobramycin model and Patient01's event record
+#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
+#'                                 dat=df_patient01)
+#' # estimate the posterior distribution of population parameters
+#' poso_estim_sir(patient01_tobra,n_sample=1e4,n_resample=1e3)
 #'
 #' @export
 poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4,return_model=TRUE){
