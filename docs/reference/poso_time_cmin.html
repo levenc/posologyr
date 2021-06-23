@@ -157,16 +157,16 @@ parameters, a dose, and a target Cmin.</p>
     </div>
 
     <pre class="usage"><span class='fu'>poso_time_cmin</span><span class='op'>(</span>
-  object <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>object</span>,
+  <span class='va'>dose</span>,
+  <span class='va'>target_cmin</span>,
   param_map <span class='op'>=</span> <span class='cn'>NULL</span>,
   adapt <span class='op'>=</span> <span class='cn'>FALSE</span>,
   from <span class='op'>=</span> <span class='fl'>0.2</span>,
   last_time <span class='op'>=</span> <span class='fl'>72</span>,
-  dose <span class='op'>=</span> <span class='cn'>NULL</span>,
   add_dose <span class='op'>=</span> <span class='cn'>NULL</span>,
   interdose_interval <span class='op'>=</span> <span class='cn'>NULL</span>,
-  duration <span class='op'>=</span> <span class='cn'>NULL</span>,
-  target_cmin <span class='op'>=</span> <span class='cn'>NULL</span>
+  duration <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -176,6 +176,14 @@ parameters, a dose, and a target Cmin.</p>
       <th>object</th>
       <td><p>A posologyr list, created by the <code><a href='posologyr.html'>posologyr</a></code>
 function.</p></td>
+    </tr>
+    <tr>
+      <th>dose</th>
+      <td><p>Numeric. Dose administered.</p></td>
+    </tr>
+    <tr>
+      <th>target_cmin</th>
+      <td><p>Numeric. Target trough concentration (Cmin).</p></td>
     </tr>
     <tr>
       <th>param_map</th>
@@ -203,10 +211,6 @@ individual time-concentration profile. The default value is
 72.</p></td>
     </tr>
     <tr>
-      <th>dose</th>
-      <td><p>Numeric. Dose administered.</p></td>
-    </tr>
-    <tr>
       <th>add_dose</th>
       <td><p>Numeric. Additional doses administered at
 inter-dose interval after the first dose. Optional.</p></td>
@@ -220,10 +224,6 @@ for multiple dose regimen. Must be provided when add_dose is used.</p></td>
       <th>duration</th>
       <td><p>Numeric. Duration of infusion, for zero-order
 administrations.</p></td>
-    </tr>
-    <tr>
-      <th>target_cmin</th>
-      <td><p>Numeric. Target trough concentration (Cmin).</p></td>
     </tr>
     </table>
 

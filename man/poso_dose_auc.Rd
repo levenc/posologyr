@@ -7,20 +7,25 @@ time-concentration curve (AUC)}
 \usage{
 poso_dose_auc(
   object,
+  time_auc,
+  target_auc,
   param_map = NULL,
   adapt = FALSE,
-  time_auc,
   starting_time = 0,
   starting_dose = 100,
   interdose_interval = NULL,
   add_dose = NULL,
-  duration = NULL,
-  target_auc
+  duration = NULL
 )
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
+
+\item{time_auc}{Numeric. Last point in time of the AUC for which the dose
+is to be optimized. The AUC is computed from 0 to \code{time_auc}.}
+
+\item{target_auc}{Numeric. Target AUC}
 
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
@@ -30,9 +35,6 @@ will be called.}
 be performed with the adaptive MAP method (as opposed to the
 standard MAP)? A column \code{AMS} is required in the patient record
 to define the segments for the adaptive MAP approach.}
-
-\item{time_auc}{Numeric. Last point in time of the AUC for which the dose
-is to be optimized. The AUC is computed from 0 to \code{time_auc}.}
 
 \item{starting_time}{Numeric. First point in time of the AUC, for multiple
 dose regimen. The default is zero.}
@@ -48,8 +50,6 @@ inter-dose interval after the first dose. Optional.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
-
-\item{target_auc}{Numeric. Target AUC}
 }
 \value{
 A numeric optimal dose to reach the target AUC.

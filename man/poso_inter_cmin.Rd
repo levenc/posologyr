@@ -7,18 +7,22 @@ selected target trough concentration}
 \usage{
 poso_inter_cmin(
   object,
+  dose,
+  target_cmin,
   param_map = NULL,
   adapt = FALSE,
-  dose,
   starting_interval = 12,
   add_dose = 10,
-  duration = NULL,
-  target_cmin
+  duration = NULL
 )
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
+
+\item{dose}{Numeric. The dose given.}
+
+\item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
@@ -29,8 +33,6 @@ be performed with the adaptive MAP method (as opposed to the
 standard MAP)? A column \code{AMS} is required in the patient record
 to define the segments for the adaptive MAP approach.}
 
-\item{dose}{Numeric. The dose given.}
-
 \item{starting_interval}{Numeric. Starting inter-dose interval for
 the optimization algorithm.}
 
@@ -39,8 +41,6 @@ inter-dose interval after the first dose.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
-
-\item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 }
 \value{
 A numeric inter-dose interval to reach the target trough

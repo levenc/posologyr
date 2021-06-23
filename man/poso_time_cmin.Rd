@@ -6,20 +6,24 @@
 \usage{
 poso_time_cmin(
   object,
+  dose,
+  target_cmin,
   param_map = NULL,
   adapt = FALSE,
   from = 0.2,
   last_time = 72,
-  dose,
   add_dose = NULL,
   interdose_interval = NULL,
-  duration = NULL,
-  target_cmin
+  duration = NULL
 )
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
+
+\item{dose}{Numeric. Dose administered.}
+
+\item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
@@ -38,8 +42,6 @@ individual time-concentration profile. The default value is
 individual time-concentration profile. The default value is
 72.}
 
-\item{dose}{Numeric. Dose administered.}
-
 \item{add_dose}{Numeric. Additional doses administered at
 inter-dose interval after the first dose. Optional.}
 
@@ -48,8 +50,6 @@ for multiple dose regimen. Must be provided when add_dose is used.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
-
-\item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 }
 \value{
 A numeric time to the selected trough concentration, from the

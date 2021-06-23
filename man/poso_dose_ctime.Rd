@@ -7,19 +7,24 @@ selected point in time}
 \usage{
 poso_dose_ctime(
   object,
+  time_c,
+  target_conc,
   param_map = NULL,
   adapt = FALSE,
-  time_c,
   starting_dose = 100,
   interdose_interval = NULL,
   add_dose = NULL,
-  duration = NULL,
-  target_conc
+  duration = NULL
 )
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
+
+\item{time_c}{Numeric. Point in time for which the dose is to be
+optimized.}
+
+\item{target_conc}{Numeric. Target concentration.}
 
 \item{param_map}{A vector of individual parameters. May be omitted,
 in which case the \code{\link{poso_estim_map}} function
@@ -29,9 +34,6 @@ will be called.}
 be performed with the adaptive MAP method (as opposed to the
 standard MAP)? A column \code{AMS} is required in the patient record
 to define the segments for the adaptive MAP approach.}
-
-\item{time_c}{Numeric. Point in time for which the dose is to be
-optimized.}
 
 \item{starting_dose}{Numeric. Starting dose for the optimization
 algorithm.}
@@ -44,8 +46,6 @@ inter-dose interval after the first dose. Optional.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
-
-\item{target_conc}{Numeric. Target concentration.}
 }
 \value{
 A numeric optimal dose to reach the target concentration

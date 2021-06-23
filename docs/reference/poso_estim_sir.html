@@ -154,7 +154,7 @@ Sequential Importance Resampling (SIR)" />
 Sequential Importance Resampling (SIR)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>poso_estim_sir</span><span class='op'>(</span>object <span class='op'>=</span> <span class='cn'>NULL</span>, n_sample <span class='op'>=</span> <span class='fl'>1e+05</span>, n_resample <span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>poso_estim_sir</span><span class='op'>(</span><span class='va'>object</span>, n_sample <span class='op'>=</span> <span class='fl'>1e+05</span>, n_resample <span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -176,7 +176,7 @@ function.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>return_model</code> is set to <code>FALSE</code>, , a list of one element: a
+    <p>If <code>return_model</code> is set to <code>FALSE</code>, a list of one element: a
 dataframe <code>$eta</code> of ETAs from the posterior distribution, estimated by
 Sequential Importance Resampling.
 If <code>return_model</code> is set to <code>TRUE</code>, a list of the dataframe of the posterior

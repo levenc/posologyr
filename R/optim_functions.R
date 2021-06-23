@@ -24,6 +24,8 @@
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'     function.
+#' @param dose Numeric. Dose administered.
+#' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
@@ -37,14 +39,12 @@
 #' @param last_time Numeric. Ending time for the simulation of the
 #'     individual time-concentration profile. The default value is
 #'     72.
-#' @param dose Numeric. Dose administered.
 #' @param add_dose Numeric. Additional doses administered at
 #'     inter-dose interval after the first dose. Optional.
 #' @param interdose_interval Numeric. Time for the inter-dose interval
 #'     for multiple dose regimen. Must be provided when add_dose is used.
 #' @param duration Numeric. Duration of infusion, for zero-order
 #'     administrations.
-#' @param target_cmin Numeric. Target trough concentration (Cmin).
 #'
 #' @return A numeric time to the selected trough concentration, from the
 #'     time of administration.
@@ -122,6 +122,9 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'     function.
+#' @param target_auc Numeric. Target AUC
+#' @param time_auc Numeric. Last point in time of the AUC for which the dose
+#'     is to be optimized. The AUC is computed from 0 to `time_auc`.
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
@@ -129,8 +132,6 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #'    be performed with the adaptive MAP method (as opposed to the
 #'    standard MAP)? A column `AMS` is required in the patient record
 #'    to define the segments for the adaptive MAP approach.
-#' @param time_auc Numeric. Last point in time of the AUC for which the dose
-#'     is to be optimized. The AUC is computed from 0 to `time_auc`.
 #' @param starting_time Numeric. First point in time of the AUC, for multiple
 #' dose regimen. The default is zero.
 #' @param starting_dose Numeric. Starting dose for the optimization
@@ -141,7 +142,6 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #'     inter-dose interval after the first dose. Optional.
 #' @param interdose_interval Numeric. Time for the interdose interval
 #'     for multiple dose regimen. Must be provided when add_dose is used.
-#' @param target_auc Numeric. Target AUC
 #'
 #' @return A numeric optimal dose to reach the target AUC.
 #'
@@ -231,6 +231,9 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'     function.
+#' @param time_c Numeric. Point in time for which the dose is to be
+#'     optimized.
+#' @param target_conc Numeric. Target concentration.
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
@@ -238,8 +241,6 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
 #'    be performed with the adaptive MAP method (as opposed to the
 #'    standard MAP)? A column `AMS` is required in the patient record
 #'    to define the segments for the adaptive MAP approach.
-#' @param time_c Numeric. Point in time for which the dose is to be
-#'     optimized.
 #' @param starting_dose Numeric. Starting dose for the optimization
 #'     algorithm.
 #' @param add_dose Numeric. Additional doses administered at
@@ -248,7 +249,6 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
 #'     for multiple dose regimen. Must be provided when add_dose is used.
 #' @param duration Numeric. Duration of infusion, for zero-order
 #'     administrations.
-#' @param target_conc Numeric. Target concentration.
 #'
 #' @return A numeric optimal dose to reach the target concentration
 #'     at the selected point in time.
@@ -336,6 +336,8 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'     function.
+#' @param target_cmin Numeric. Target trough concentration (Cmin).
+#' @param dose Numeric. The dose given.
 #' @param param_map A vector of individual parameters. May be omitted,
 #'     in which case the \code{\link{poso_estim_map}} function
 #'     will be called.
@@ -343,14 +345,12 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
 #'    be performed with the adaptive MAP method (as opposed to the
 #'    standard MAP)? A column `AMS` is required in the patient record
 #'    to define the segments for the adaptive MAP approach.
-#' @param dose Numeric. The dose given.
 #' @param starting_interval Numeric. Starting inter-dose interval for
 #'     the optimization algorithm.
 #' @param add_dose Numeric. Additional doses administered at
 #'     inter-dose interval after the first dose.
 #' @param duration Numeric. Duration of infusion, for zero-order
 #'     administrations.
-#' @param target_cmin Numeric. Target trough concentration (Cmin).
 #'
 #' @return A numeric inter-dose interval to reach the target trough
 #'     concentration before each dosing of a multiple dose regimen.
