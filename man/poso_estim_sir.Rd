@@ -4,7 +4,7 @@
 \alias{poso_estim_sir}
 \title{Estimate the posterior distribution of individual parameters by SIR}
 \usage{
-poso_estim_sir(object = NULL, n_sample = 1e+05, n_resample = 10000)
+poso_estim_sir(object, n_sample = 1e+05, n_resample = 10000)
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}

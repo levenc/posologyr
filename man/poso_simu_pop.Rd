@@ -4,7 +4,7 @@
 \alias{poso_simu_pop}
 \title{Estimate the prior distribution of population parameters}
 \usage{
-poso_simu_pop(object = NULL, n_simul = 1000, return_model = TRUE)
+poso_simu_pop(object, n_simul = 1000, return_model = TRUE)
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}

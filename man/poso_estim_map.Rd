@@ -5,7 +5,7 @@
 \title{Estimate the Maximum A Posteriori individual parameters}
 \usage{
 poso_estim_map(
-  object = NULL,
+  object,
   adapt = FALSE,
   return_model = TRUE,
   return_fim = FALSE,

@@ -6,16 +6,16 @@
 time-concentration curve (AUC)}
 \usage{
 poso_dose_auc(
-  object = NULL,
+  object,
   param_map = NULL,
   adapt = FALSE,
-  time_auc = NULL,
+  time_auc,
   starting_time = 0,
   starting_dose = 100,
   interdose_interval = NULL,
   add_dose = NULL,
   duration = NULL,
-  target_auc = NULL
+  target_auc
 )
 }
 \arguments{

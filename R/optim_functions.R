@@ -68,10 +68,12 @@
 #' poso_time_cmin(patient01_tobra,dose=2500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_time_cmin <- function(object=NULL,param_map=NULL,adapt=FALSE,
-                           from=0.2,last_time=72,dose=NULL,
+poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
+                           adapt=FALSE,from=0.2,last_time=72,
                            add_dose=NULL,interdose_interval=NULL,
-                           duration=NULL,target_cmin=NULL){
+                           duration=NULL){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
       model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
@@ -159,10 +161,11 @@ poso_time_cmin <- function(object=NULL,param_map=NULL,adapt=FALSE,
 #' poso_dose_auc(patient01_tobra,time_auc=12,target_auc=45)
 #'
 #' @export
-poso_dose_auc <- function(object=NULL,param_map=NULL,adapt=FALSE,
-                          time_auc=NULL,starting_time=0,
-                          starting_dose=100,interdose_interval=NULL,
-                          add_dose=NULL,duration=NULL,target_auc=NULL){
+poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
+                          adapt=FALSE,starting_time=0,starting_dose=100,
+                          interdose_interval=NULL,add_dose=NULL,duration=NULL){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
     model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
@@ -268,10 +271,11 @@ poso_dose_auc <- function(object=NULL,param_map=NULL,adapt=FALSE,
 #' poso_dose_ctime(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
 #'
 #' @export
-poso_dose_ctime <- function(object=NULL,param_map=NULL,adapt=FALSE,
-                            time_c=NULL,starting_dose=100,
-                            interdose_interval=NULL,add_dose=NULL,
-                            duration=NULL,target_conc=NULL){
+poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
+                            adapt=FALSE,starting_dose=100,interdose_interval=NULL,
+                            add_dose=NULL,duration=NULL){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
     model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
@@ -369,9 +373,11 @@ poso_dose_ctime <- function(object=NULL,param_map=NULL,adapt=FALSE,
 #' poso_inter_cmin(patient01_tobra,dose=1500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_inter_cmin <- function(object=NULL,param_map=NULL,adapt=FALSE,
-                            dose=NULL,starting_interval=12,add_dose=10,
-                            duration=NULL,target_cmin=NULL){
+poso_inter_cmin <- function(object,dose,target_cmin,param_map=NULL,
+                            adapt=FALSE,starting_interval=12,add_dose=10,
+                            duration=NULL){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
     model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)

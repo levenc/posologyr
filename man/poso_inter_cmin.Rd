@@ -6,14 +6,14 @@
 selected target trough concentration}
 \usage{
 poso_inter_cmin(
-  object = NULL,
+  object,
   param_map = NULL,
   adapt = FALSE,
-  dose = NULL,
+  dose,
   starting_interval = 12,
   add_dose = 10,
   duration = NULL,
-  target_cmin = NULL
+  target_cmin
 )
 }
 \arguments{

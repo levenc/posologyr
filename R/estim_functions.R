@@ -66,6 +66,8 @@
 #' @export
 poso_simu_pop <- function(object,n_simul=1000,
                           return_model=TRUE){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
 
   omega      <- object$omega
   ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
@@ -137,9 +139,10 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(object=NULL,adapt=FALSE,return_model=TRUE,
-                           return_fim=FALSE,return_rse=FALSE)
-{
+poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
+                           return_fim=FALSE,return_rse=FALSE){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
 
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,init=model_init,model=solved_model){
@@ -191,6 +194,11 @@ poso_estim_map <- function(object=NULL,adapt=FALSE,return_model=TRUE,
   eta_map      <- diag(omega)*0
 
   if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
+    if (is.null(dat$AMS)){
+      stop("The AMS column is required in the patient record to define the
+      segments for adaptive MAP forecasting")
+    }
+
     segment_id     <- unique(dat$AMS)
     n_segment      <- length(segment_id)
     dat_segment    <- dat
@@ -331,9 +339,12 @@ poso_estim_map <- function(object=NULL,adapt=FALSE,return_model=TRUE,
 #' \donttest{poso_estim_mcmc(patient01_tobra,n_iter=100)}
 #'
 #' @export
-poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
+poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
                             n_iter=1000,control=list(n_kernel=c(2,2,2),
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
+
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
     model$params <- x
@@ -487,7 +498,9 @@ poso_estim_mcmc <- function(object=NULL,return_model=TRUE,burn_in=50,
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
 #'
 #' @export
-poso_estim_sir <- function(object=NULL,n_sample=1e5,n_resample=1e4){
+poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4){
+  validate_priormod(object)
+  validate_dat(object$tdm_data)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model

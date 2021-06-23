@@ -5,16 +5,16 @@
 \title{Predict time to a selected trough concentration}
 \usage{
 poso_time_cmin(
-  object = NULL,
+  object,
   param_map = NULL,
   adapt = FALSE,
   from = 0.2,
   last_time = 72,
-  dose = NULL,
+  dose,
   add_dose = NULL,
   interdose_interval = NULL,
   duration = NULL,
-  target_cmin = NULL
+  target_cmin
 )
 }
 \arguments{

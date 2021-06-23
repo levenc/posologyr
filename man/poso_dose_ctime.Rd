@@ -6,15 +6,15 @@
 selected point in time}
 \usage{
 poso_dose_ctime(
-  object = NULL,
+  object,
   param_map = NULL,
   adapt = FALSE,
-  time_c = NULL,
+  time_c,
   starting_dose = 100,
   interdose_interval = NULL,
   add_dose = NULL,
   duration = NULL,
-  target_conc = NULL
+  target_conc
 )
 }
 \arguments{

@@ -5,7 +5,7 @@
 \title{Estimate the posterior distribution of individual parameters by MCMC}
 \usage{
 poso_estim_mcmc(
-  object = NULL,
+  object,
   return_model = TRUE,
   burn_in = 50,
   n_iter = 1000,

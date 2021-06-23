@@ -75,6 +75,9 @@
 #' @export
 posologyr <- function(prior_model=NULL,dat=NULL){
 
+  validate_priormod(prior_model)
+  validate_dat(dat)
+
   # check the validity of the compiled model and call RxODE::RxODE
   # on invalid models
     if (!prior_model$ppk_model$isValid()){
