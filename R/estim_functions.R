@@ -534,6 +534,9 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
 
   theta    <- rbind(object$theta)
 
+  #SIR algorithm
+  # doi: 10.1002/psp4.12492; doi: 10.1007/s10928-016-9487-8
+
   #S-step
   eta_sim  <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_eta)),
                             sigma=omega_eta)
@@ -547,7 +550,7 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
                                 names_from = "time",
                                 values_from = "Cc")
 
-  LL_func  <- function(simu_obs){
+  LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
