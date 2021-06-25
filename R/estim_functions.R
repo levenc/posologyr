@@ -76,7 +76,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 
   if (n_simul > 0) {
     eta_mat <- matrix(0,nrow=n_simul,ncol=ncol(omega))
-    eta_sim <- mvnfast::rmvn(n_simul,mu=rep(0,ncol(omega_eta)),
+    eta_sim <- mvtnorm::rmvnorm(n_simul,mean=rep(0,ncol(omega_eta)),
                              sigma=omega_eta)
     eta_mat[,ind_eta] <- eta_sim
   }
@@ -516,7 +516,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #' poso_estim_sir(patient01_tobra,n_sample=1e4,n_resample=1e3)
 #'
 #' @export
-poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4,return_model=TRUE){
+poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
@@ -535,7 +535,7 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4,return_model=TRUE)
   theta    <- rbind(object$theta)
 
   #S-step
-  eta_sim  <- mvnfast::rmvn(n_sample,mu=rep(0,ncol(omega_eta)),
+  eta_sim  <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_eta)),
                             sigma=omega_eta)
   eta_df        <- data.frame(eta_sim)
   names(eta_df) <- attr(omega_eta,"dimnames")[[1]]
@@ -559,8 +559,8 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4,return_model=TRUE)
   }
 
   lf        <- apply(wide_cc,MARGIN=1,FUN=LL_func)
-  lp        <- mvnfast::dmvn(eta_sim,mu=rep(0,ncol(omega_eta)),
-                             sigma=omega_eta,log=T)
+  lp        <- mvtnorm::dmvnorm(eta_sim,mean=rep(0,ncol(omega_eta)),
+                             sigma=omega_eta,log=TRUE)
   md        <- max(lf - lp)
   wt        <- exp(lf - lp - md)
   probs     <- wt/sum(wt)
@@ -575,19 +575,19 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e4,return_model=TRUE)
     eta_sim <- eta_sim[indices]
   }
 
-  eta_sir           <- matrix(0,nrow=n_resample,ncol=ncol(omega))
-  eta_sir[,ind_eta] <- eta_sim
-  eta_df_sir        <- data.frame(eta_sir)
-  names(eta_df_sir) <- attr(omega,"dimnames")[[1]]
+  eta_mat           <- matrix(0,nrow=n_resample,ncol=ncol(omega))
+  eta_mat[,ind_eta] <- eta_sim
+  eta_df            <- data.frame(eta_mat)
+  names(eta_df)     <- attr(omega,"dimnames")[[1]]
 
-  estim_sir         <- list(eta=eta_df_sir)
+  estim_sir         <- list(eta=eta_df)
 
   if(return_model){
     model_sir         <- solved_model
     theta_return      <- rbind(theta)
     covar             <- dat[1,object$covariates]
     names(covar)      <- object$covariates
-    model_sir$params  <- cbind(theta_return,eta_df_sir,covar,row.names=NULL)
+    model_sir$params  <- cbind(theta_return,eta_df,covar,row.names=NULL)
     estim_sir$model   <- model_sir
   }
 

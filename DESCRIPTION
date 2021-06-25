@@ -23,7 +23,7 @@ Depends:
 Imports:
     RxODE (>= 0.9.2.1),
     stats,
-    mvnfast,
+    mvtnorm,
     tidyr,
     lotri
 Suggests: 

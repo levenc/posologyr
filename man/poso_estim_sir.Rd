@@ -7,7 +7,7 @@
 poso_estim_sir(
   object,
   n_sample = 1e+05,
-  n_resample = 10000,
+  n_resample = 1000,
   return_model = TRUE
 )
 }
