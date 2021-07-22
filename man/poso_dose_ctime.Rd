@@ -69,7 +69,7 @@ df_patient01 <- data.frame(ID=1,
                         CLCREAT=80,WT=65)
 # loading a tobramycin model and Patient01's event record
 patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                                dat=df_patient01)
+                             dat=df_patient01)
 # estimate the optimal dose to reach a concentration of 80 mg/l
 # one hour after starting the 30-minutes infusion
 poso_dose_ctime(patient01_tobra,time_c=1,duration=0.5,target_conc=80)

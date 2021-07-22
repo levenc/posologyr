@@ -61,7 +61,7 @@
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # predict the time needed to reach a concentration of 2.5 mg/l
 #' # after the administration of a 2500 mg dose over a 30 minutes
 #' # infusion
@@ -89,8 +89,8 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
   #compute the individual time-concentration profile
   if (!is.null(add_dose)){
     event_table_cmin <- RxODE::et(amt=dose,dur=duration,
-                                   ii=interdose_interval,
-                                   addl=add_dose)
+                                  ii=interdose_interval,
+                                  addl=add_dose)
     time_last_dose   <- add_dose*interdose_interval
     event_table_cmin$add.sampling(seq(time_last_dose+from,
                                       time_last_dose+last_time,
@@ -101,7 +101,6 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
     event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
     time_last_dose   <- 0
   }
-
 
   cmin_ppk_model <- RxODE::rxSolve(object=object$ppk_model,
                                    params=param_map,
@@ -156,7 +155,7 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
 #' poso_dose_auc(patient01_tobra,time_auc=12,target_auc=45)
 #'
@@ -182,7 +181,6 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
            call.=FALSE)
     }
   }
-
 
   err_dose <- function(dose,time_auc,starting_time,target_auc,
                        interdose_interval,add_dose,prior_model,
@@ -265,7 +263,7 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the optimal dose to reach a concentration of 80 mg/l
 #' # one hour after starting the 30-minutes infusion
 #' poso_dose_ctime(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
@@ -300,8 +298,8 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
     #compute the individual time-concentration profile
     if (!is.null(add_dose)){
       event_table_ctime <- RxODE::et(amt=dose,dur=duration,
-                                   ii=interdose_interval,
-                                   addl=add_dose)
+                                     ii=interdose_interval,
+                                     addl=add_dose)
     }
     else {
       event_table_ctime <- RxODE::et(amt=dose,dur=duration)
@@ -309,19 +307,19 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
     event_table_ctime$add.sampling(time_c)
 
     ctime_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                    params=param_map,
-                                    event_table_ctime)
+                                      params=param_map,
+                                      event_table_ctime)
     #return the difference between the computed ctime and the target
     delta_ctime <- (target_conc - ctime_ppk_model$Cc)^2
     return(delta_ctime)
   }
 
   optim_dose_ctime <- stats::optim(starting_dose,err_dose,time_c=time_c,
-                          target_conc=target_conc,prior_model=object,
-                          add_dose=add_dose,
-                          interdose_interval=interdose_interval,
-                          duration=duration,param_map=param_map,
-                          method="Brent",lower=0, upper=1e5)
+                                   target_conc=target_conc,prior_model=object,
+                                   add_dose=add_dose,
+                                   interdose_interval=interdose_interval,
+                                   duration=duration,param_map=param_map,
+                                   method="Brent",lower=0, upper=1e5)
 
   return(optim_dose_ctime$par)
 }
@@ -402,10 +400,10 @@ poso_inter_cmin <- function(object,dose,target_cmin,param_map=NULL,
   }
 
   optim_dose_cmin <- stats::optim(starting_interval,err_inter,dose=dose,
-                           target_cmin=target_cmin,prior_model=object,
-                           add_dose=add_dose,duration=duration,
-                           param_map=param_map,method="Brent",
-                           lower=0,upper=1e3)
+                                  target_cmin=target_cmin,prior_model=object,
+                                  add_dose=add_dose,duration=duration,
+                                  param_map=param_map,method="Brent",
+                                  lower=0,upper=1e3)
 
   return(optim_dose_cmin$par)
 }

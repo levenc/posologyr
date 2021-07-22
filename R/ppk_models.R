@@ -81,23 +81,24 @@ posologyr <- function(prior_model=NULL,dat=NULL){
   # check the validity of the compiled model and call RxODE::RxODE
   # on invalid models
     if (!prior_model$ppk_model$isValid()){
-    cat("Invalid RxODE model, trying to recompile...")
-    prior_model$ppk_model <-
-      try(RxODE::RxODE(prior_model$ppk_model), silent=TRUE)
-    if (prior_model$ppk_model$isValid()){
-      cat("Success","\n")
-    } else {
-      stop("Failed. The RxODE model is still invalid. Aborting",
-           call. = FALSE)
-    }
-  }
+      cat("Invalid RxODE model, trying to recompile...")
+      prior_model$ppk_model <- try(RxODE::RxODE(prior_model$ppk_model),
+                                   silent=TRUE)
+      if (prior_model$ppk_model$isValid()){
+        cat("Success","\n")
+       } else {
+         stop("Failed. The RxODE model is still invalid. Aborting",
+              call. = FALSE)
+       }
+      }
+
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
                                      c(prior_model$theta,
                                        diag(prior_model$omega)*0),
                                      dat)
 
   # assign the objects to a single list
-  prior_model$tdm_data    <- dat
+  prior_model$tdm_data         <- dat
   prior_model$solved_ppk_model <- solved_ppk_model
 
   return(prior_model)

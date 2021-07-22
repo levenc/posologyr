@@ -70,7 +70,7 @@ df_patient01 <- data.frame(ID=1,
                         DUR=c(0.5,NA,NA),
                         CLCREAT=80,WT=65)
 patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                                dat=df_patient01)
+                             dat=df_patient01)
 # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
 poso_dose_auc(patient01_tobra,time_auc=12,target_auc=45)
 
