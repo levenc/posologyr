@@ -116,9 +116,6 @@ parameters, a dose, and a target Cmin." />
     <li>
       <a href="../articles/posologyr_user_defined_models.html">User defined models</a>
     </li>
-    <li>
-      <a href="../articles/uncertainty_estimates.html">Uncertainty of estimates</a>
-    </li>
   </ul>
 </li>
 <li>
@@ -244,7 +241,7 @@ time of administration.</p>
                         CLCREAT<span class='op'>=</span><span class='fl'>80</span>,WT<span class='op'>=</span><span class='fl'>65</span><span class='op'>)</span>
 <span class='co'># loading a tobramycin model and Patient01's event record</span>
 <span class='va'>patient01_tobra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='posologyr.html'>posologyr</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
-                                dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
+                             dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
 <span class='co'># predict the time needed to reach a concentration of 2.5 mg/l</span>
 <span class='co'># after the administration of a 2500 mg dose over a 30 minutes</span>
 <span class='co'># infusion</span>

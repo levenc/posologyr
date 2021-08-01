@@ -101,7 +101,7 @@ maintenance_dose_map <- poso_dose_auc(patB_tdm_vanco,
                                       interdose_interval=24,
                                       add_dose=10,
                                       duration=2,
-                                      target_auc=400)
+                                      target_auc=400)$dose
 maintenance_dose_map
 ```
 
