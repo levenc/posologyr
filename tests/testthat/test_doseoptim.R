@@ -54,12 +54,12 @@ test_that("Same optimal dose with or without providing MAP estimates", {
                                time_auc=12,
                                duration=0.5,
                                target_auc=200,
-                               indiv_param=params_patient01_tobra_map),
+                               indiv_param=params_patient01_tobra_map)$dose,
                poso_dose_auc(patient01_tobra,
                                time_auc=12,
                                duration=0.5,
                                target_auc=200,
-                               indiv_param=NULL),
+                               indiv_param=NULL)$dose,
                tolerance=1e-3)
   expect_equal(poso_time_cmin(patient01_tobra,
                              param_map=params_patient01_tobra_map,
@@ -87,7 +87,7 @@ test_that("Optimization results do not deviate from known values
                              time_auc=24,
                              duration=2,
                              target_auc=400,
-                             indiv_param=params_patient04_vanco_map),
+                             indiv_param=params_patient04_vanco_map)$dose,
                2377.758,
                tolerance=1e-3)
   expect_equal(poso_dose_ctime(patient04_tdm_vanco,
@@ -117,7 +117,7 @@ test_that("Optimization results do not deviate from known values
                              add_dose=10,
                              duration=2,
                              target_auc=400,
-                             indiv_param=params_patient04_vanco_map),
+                             indiv_param=params_patient04_vanco_map)$dose,
                1229.366,
                tolerance=1e-3)
   expect_equal(poso_dose_ctime(patient04_tdm_vanco,

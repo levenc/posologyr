@@ -67,7 +67,17 @@ algorithm.}
 estimates of ETA, and covariates.}
 }
 \value{
-A numeric optimal dose to reach the target AUC.
+A list containing the following components:
+\describe{
+\item{dose}{Numeric. An optimal dose for the selected target AUC.}
+\item{type_of_estimate}{Character string. The type of estimate of the
+individual parameters. Either a point estimate, or a distribution.}
+\item{auc_estimate}{A vector of numeric estimates of the AUC. Either a
+single value (for a point estimate of ETA), or a distribution.}
+\item{indiv_param}{A \code{data.frame}. The set of individual parameters used
+for the determination of the optimal dose : THETA, estimates of ETA, and
+covariates}
+}
 }
 \description{
 Estimates the optimal dose for a selected target area under the

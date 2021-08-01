@@ -151,7 +151,17 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #' @param indiv_param Optional. A set of individual parameters : THETA,
 #'     estimates of ETA, and covariates.
 #'
-#' @return A numeric optimal dose to reach the target AUC.
+#' @return A list containing the following components:
+#' \describe{
+#'   \item{dose}{Numeric. An optimal dose for the selected target AUC.}
+#'   \item{type_of_estimate}{Character string. The type of estimate of the
+#'   individual parameters. Either a point estimate, or a distribution.}
+#'   \item{auc_estimate}{A vector of numeric estimates of the AUC. Either a
+#'   single value (for a point estimate of ETA), or a distribution.}
+#'   \item{indiv_param}{A `data.frame`. The set of individual parameters used
+#'   for the determination of the optimal dose : THETA, estimates of ETA, and
+#'   covariates}
+#' }
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
@@ -173,8 +183,6 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
                           estim_method="map",p=NULL,greater_than=TRUE,
                           starting_time=0,interdose_interval=NULL,add_dose=NULL,
                           duration=NULL,starting_dose=100,indiv_param=NULL){
-  # TODO
-  # return a list: dose,estim_method,distribution,indiv_param
 
   # Input validation -----------------------------------------------------------
   validate_priormod(object)
@@ -259,6 +267,7 @@ be used.")
                                     event_table_auc)
     if (select_proposal_from_distribution == FALSE){
       auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
+      auc_distribution <<- auc_proposal
     }
     if (select_proposal_from_distribution == TRUE){
       wide_auc      <- tidyr::pivot_wider(auc_ppk_model,
@@ -276,6 +285,9 @@ be used.")
       n_auc          <- length(sorted_auc)
       auc_index      <- ceiling(p * n_auc)
 
+      # assign the distribution of auc to the parent environment
+      auc_distribution <<- sorted_auc
+
       if (greater_than){
         auc_proposal <- sorted_auc[n_auc - auc_index]
       } else {
@@ -288,6 +300,9 @@ be used.")
     return(delta_auc)
   }
 
+  #initialization of auc_distribution to avoid a global variable
+  auc_distribution <- 0
+
   optim_dose_auc <- stats::optim(starting_dose,err_dose,time_auc=time_auc,
                                  starting_time=starting_time,add_dose=add_dose,
                                  interdose_interval=interdose_interval,
@@ -295,7 +310,15 @@ be used.")
                                  duration=duration,indiv_param=indiv_param,
                                  method="Brent",lower=0,upper=1e5)
 
-  return(optim_dose_auc$par)
+  ifelse(select_proposal_from_distribution,
+         type_of_estimate <-"distribution",
+         type_of_estimate <- "point estimate")
+
+  dose_auc <- list(dose=optim_dose_auc$par,
+                   type_of_estimate=type_of_estimate,
+                   auc_estimate=auc_distribution,
+                   indiv_param=indiv_param)
+  return(dose_auc)
 }
 
 #' Estimate the optimal dose for a selected target concentration at a

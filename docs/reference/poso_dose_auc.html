@@ -252,7 +252,18 @@ estimates of ETA, and covariates.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numeric optimal dose to reach the target AUC.</p>
+    <p>A list containing the following components:</p><dl>
+<dt>dose</dt><dd><p>Numeric. An optimal dose for the selected target AUC.</p></dd>
+<dt>type_of_estimate</dt><dd><p>Character string. The type of estimate of the
+individual parameters. Either a point estimate, or a distribution.</p></dd>
+<dt>auc_estimate</dt><dd><p>A vector of numeric estimates of the AUC. Either a
+single value (for a point estimate of ETA), or a distribution.</p></dd>
+<dt>indiv_param</dt><dd><p>A <code>data.frame</code>. The set of individual parameters used
+for the determination of the optimal dose : THETA, estimates of ETA, and
+covariates</p></dd>
+
+</dl>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>
@@ -268,7 +279,19 @@ estimates of ETA, and covariates.</p></td>
                              dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
 <span class='co'># estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l</span>
 <span class='fu'>poso_dose_auc</span><span class='op'>(</span><span class='va'>patient01_tobra</span>,time_auc<span class='op'>=</span><span class='fl'>12</span>,target_auc<span class='op'>=</span><span class='fl'>45</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 244.7216</div><div class='input'>
+</div><div class='output co'>#&gt; $dose
+#&gt; [1] 244.7216
+#&gt; 
+#&gt; $type_of_estimate
+#&gt; [1] "point estimate"
+#&gt; 
+#&gt; $auc_estimate
+#&gt; [1] 45
+#&gt; 
+#&gt; $indiv_param
+#&gt;   THETA_ke CLCREAT WT THETA_V THETA_k12 THETA_k21      ETA_ke      ETA_V
+#&gt; 1     0.21      80 65    19.8     0.041      0.12 -0.09255706 0.06709432
+#&gt; </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
