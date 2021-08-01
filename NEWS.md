@@ -11,7 +11,7 @@ distributions.
 * Input validation is added to all exported functions.
 * `poso_dose_auc()` now work with distributions of ETA, and not only with point
 estimates (such as the MAP).
-* `vignette("case_study_vancomycin")` is removed.
+* `vignette("uncertainty_estimates")` is removed.
 
 # posologyr v0.1.1
 
