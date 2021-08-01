@@ -53,7 +53,7 @@ df_patient01 <- data.frame(ID=1,
                         CLCREAT=80,WT=65)
 # loading a tobramycin model and Patient01's event record
 patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                                dat=df_patient01)
+                             dat=df_patient01)
 # estimate the Maximum A Posteriori individual parameters
 poso_estim_map(patient01_tobra)
 

@@ -9,50 +9,75 @@ poso_dose_auc(
   object,
   time_auc,
   target_auc,
-  param_map = NULL,
   adapt = FALSE,
+  estim_method = "map",
+  p = NULL,
+  greater_than = TRUE,
   starting_time = 0,
-  starting_dose = 100,
   interdose_interval = NULL,
   add_dose = NULL,
-  duration = NULL
+  duration = NULL,
+  starting_dose = 100,
+  indiv_param = NULL
 )
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
 
-\item{time_auc}{Numeric. Last point in time of the AUC for which the dose
-is to be optimized. The AUC is computed from 0 to \code{time_auc}.}
+\item{time_auc}{Numeric. The target AUC is computed from 0 to \code{time_auc}.}
 
-\item{target_auc}{Numeric. Target AUC}
+\item{target_auc}{Numeric. The target AUC.}
 
-\item{param_map}{A vector of individual parameters. May be omitted,
-in which case the \code{\link{poso_estim_map}} function
-will be called.}
-
-\item{adapt}{A boolean. If \code{param_map} is omitted, should the estimation
+\item{adapt}{A boolean. If \code{estim_method="map"}, should the estimation
 be performed with the adaptive MAP method (as opposed to the
-standard MAP)? A column \code{AMS} is required in the patient record
+standard MAP)? A column named \code{AMS} is required in the patient record
 to define the segments for the adaptive MAP approach.}
+
+\item{estim_method}{A character string. An estimation method to be used for
+the individual parameters. The default method "map" is the Maximum A
+Posteriori estimation, the method "prior" simulates from the prior
+population model, and "sir" uses the Sequential Importance Resampling
+algorithm to estimate the a posteriori distribution of the individual
+parameters. This argument is ignored if \code{indiv_param} is provided.}
+
+\item{p}{Numeric. The proportion of the distribution of AUC to consider for
+the optimization.}
+
+\item{greater_than}{A boolean. If \code{TRUE}: targets a dose leading to a
+proportion \code{p} of the AUCs be greater than \code{target_auc}. Respectively,
+lower if \code{FALSE}.}
 
 \item{starting_time}{Numeric. First point in time of the AUC, for multiple
 dose regimen. The default is zero.}
 
-\item{starting_dose}{Numeric. Starting dose for the optimization
-algorithm.}
-
-\item{interdose_interval}{Numeric. Time for the interdose interval
-for multiple dose regimen. Must be provided when add_dose is used.}
+\item{interdose_interval}{Numeric. Time for the interdose interval for
+multiple dose regimen. Must be provided when add_dose is used.}
 
 \item{add_dose}{Numeric. Additional doses administered at
 inter-dose interval after the first dose. Optional.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
+
+\item{starting_dose}{Numeric. Starting dose for the optimization
+algorithm.}
+
+\item{indiv_param}{Optional. A set of individual parameters : THETA,
+estimates of ETA, and covariates.}
 }
 \value{
-A numeric optimal dose to reach the target AUC.
+A list containing the following components:
+\describe{
+\item{dose}{Numeric. An optimal dose for the selected target AUC.}
+\item{type_of_estimate}{Character string. The type of estimate of the
+individual parameters. Either a point estimate, or a distribution.}
+\item{auc_estimate}{A vector of numeric estimates of the AUC. Either a
+single value (for a point estimate of ETA), or a distribution.}
+\item{indiv_param}{A \code{data.frame}. The set of individual parameters used
+for the determination of the optimal dose : THETA, estimates of ETA, and
+covariates}
+}
 }
 \description{
 Estimates the optimal dose for a selected target area under the
@@ -70,7 +95,7 @@ df_patient01 <- data.frame(ID=1,
                         DUR=c(0.5,NA,NA),
                         CLCREAT=80,WT=65)
 patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                                dat=df_patient01)
+                             dat=df_patient01)
 # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
 poso_dose_auc(patient01_tobra,time_auc=12,target_auc=45)
 

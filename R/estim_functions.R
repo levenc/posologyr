@@ -59,7 +59,7 @@
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the prior distribution of population parameters
 #' poso_simu_pop(patient01_tobra,n_simul=100)
 #'
@@ -77,7 +77,7 @@ poso_simu_pop <- function(object,n_simul=1000,
   if (n_simul > 0) {
     eta_mat <- matrix(0,nrow=n_simul,ncol=ncol(omega))
     eta_sim <- mvtnorm::rmvnorm(n_simul,mean=rep(0,ncol(omega_eta)),
-                             sigma=omega_eta)
+                                sigma=omega_eta)
     eta_mat[,ind_eta] <- eta_sim
   }
 
@@ -134,7 +134,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the Maximum A Posteriori individual parameters
 #' poso_estim_map(patient01_tobra)
 #'
@@ -159,15 +159,15 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     eta[ind_eta] <- eta_estim
 
     if(adapt){
-      eta        <- eta + eta_df[i,]
+      eta <- eta + eta_df[i,]
       #simulated concentrations with the proposed eta estimates
-      f <- do.call(run_model,list(c(theta,eta)))
-      g <- error_model(f,sigma)
+      f   <- do.call(run_model,list(c(theta,eta)))
+      g   <- error_model(f,sigma)
     }
     else {
       #simulated concentrations with the proposed eta estimates
-      f <- do.call(run_model,list(c(theta,eta)))
-      g <- error_model(f,sigma)
+      f   <- do.call(run_model,list(c(theta,eta)))
+      g   <- error_model(f,sigma)
     }
 
     #objective function for the Empirical Bayes Estimates
@@ -230,7 +230,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
       y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
 
-      model_init <- init_df[i,]
+      model_init   <- init_df[i,]
 
       r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,
                         theta=theta,ind_eta=ind_eta,sigma=sigma,
@@ -334,7 +334,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the posterior distribution of population parameters
 #' \donttest{poso_estim_mcmc(patient01_tobra,n_iter=100)}
 #'
@@ -385,7 +385,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
     {
       for (u in 1:control$n_kernel[1])
       {
-        etac <- as.vector(chol_omega%*%stats::rnorm(nb_etas))
+        etac          <- as.vector(chol_omega%*%stats::rnorm(nb_etas))
         names(etac)   <- attr(omega_eta,"dimnames")[[1]]
         f             <- do.call(run_model,list(c(theta,etac)))
         g             <- error_model(f,sigma)
@@ -433,7 +433,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
       d_omega <- d_omega*(1 + control$stepsize_rw*(nbc2/nt2 - control$proba_mcmc))
     }
     if(control$n_kernel[3]>0) {
-      nt2          <- nbc2     <-matrix(data=0,nrow=nb_etas,ncol=1)
+      nt2          <- nbc2     <- matrix(data=0,nrow=nb_etas,ncol=1)
       nrs2         <- k_iter%%(nb_etas-1)+2
       for (u in 1:control$n_kernel[3]) {
         if(nrs2<nb_etas) {
@@ -446,7 +446,8 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
         for(k2 in 1:nb_iter2) {
           vk2             <- VK[k2+vk]
           etac            <- eta
-          etac[vk2]       <- eta[vk2]+matrix(stats::rnorm(nrs2), ncol=nrs2)%*%diag(d_omega[vk2])
+          etac[vk2]       <- eta[vk2]+matrix(stats::rnorm(nrs2),
+                                             ncol=nrs2)%*%diag(d_omega[vk2])
           f               <- do.call(run_model,list(c(theta,etac)))
           g               <- error_model(f,sigma)
           Uc_y            <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
@@ -511,7 +512,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the posterior distribution of population parameters
 #' poso_estim_sir(patient01_tobra,n_sample=1e4,n_resample=1e3)
 #'
@@ -532,14 +533,14 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
   omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
   solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
 
-  theta    <- rbind(object$theta)
+  theta        <- rbind(object$theta)
 
   #SIR algorithm
   # doi: 10.1002/psp4.12492; doi: 10.1007/s10928-016-9487-8
 
   #S-step
-  eta_sim  <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_eta)),
-                            sigma=omega_eta)
+  eta_sim       <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_eta)),
+                                    sigma=omega_eta)
   eta_df        <- data.frame(eta_sim)
   names(eta_df) <- attr(omega_eta,"dimnames")[[1]]
 
@@ -563,7 +564,7 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
 
   lf        <- apply(wide_cc,MARGIN=1,FUN=LL_func)
   lp        <- mvtnorm::dmvnorm(eta_sim,mean=rep(0,ncol(omega_eta)),
-                             sigma=omega_eta,log=TRUE)
+                                sigma=omega_eta,log=TRUE)
   md        <- max(lf - lp)
   wt        <- exp(lf - lp - md)
   probs     <- wt/sum(wt)
@@ -572,7 +573,7 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
   indices   <- sample(1:n_sample, size = n_resample, prob = probs,
                       replace = TRUE)
   if (nb_etas > 1) {
-    eta_sim   <- eta_sim[indices, ]
+    eta_sim <- eta_sim[indices, ]
   }
   else {
     eta_sim <- eta_sim[indices]

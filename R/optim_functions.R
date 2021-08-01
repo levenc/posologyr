@@ -61,7 +61,7 @@
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # predict the time needed to reach a concentration of 2.5 mg/l
 #' # after the administration of a 2500 mg dose over a 30 minutes
 #' # infusion
@@ -76,8 +76,8 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
   validate_dat(object$tdm_data)
 
   if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-      model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
-      param_map <- model_map[[2]]$params
+    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
+    param_map <- model_map[[2]]$params
   }
   if (!is.null(add_dose)){
     if (is.null(interdose_interval)){
@@ -89,8 +89,8 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
   #compute the individual time-concentration profile
   if (!is.null(add_dose)){
     event_table_cmin <- RxODE::et(amt=dose,dur=duration,
-                                   ii=interdose_interval,
-                                   addl=add_dose)
+                                  ii=interdose_interval,
+                                  addl=add_dose)
     time_last_dose   <- add_dose*interdose_interval
     event_table_cmin$add.sampling(seq(time_last_dose+from,
                                       time_last_dose+last_time,
@@ -101,7 +101,6 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
     event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
     time_last_dose   <- 0
   }
-
 
   cmin_ppk_model <- RxODE::rxSolve(object=object$ppk_model,
                                    params=param_map,
@@ -122,28 +121,47 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'     function.
-#' @param target_auc Numeric. Target AUC
-#' @param time_auc Numeric. Last point in time of the AUC for which the dose
-#'     is to be optimized. The AUC is computed from 0 to `time_auc`.
-#' @param param_map A vector of individual parameters. May be omitted,
-#'     in which case the \code{\link{poso_estim_map}} function
-#'     will be called.
-#' @param adapt A boolean. If `param_map` is omitted, should the estimation
+#' @param time_auc Numeric. The target AUC is computed from 0 to `time_auc`.
+#' @param target_auc Numeric. The target AUC.
+#' @param adapt A boolean. If `estim_method="map"`, should the estimation
 #'    be performed with the adaptive MAP method (as opposed to the
-#'    standard MAP)? A column `AMS` is required in the patient record
+#'    standard MAP)? A column named `AMS` is required in the patient record
 #'    to define the segments for the adaptive MAP approach.
+#' @param estim_method A character string. An estimation method to be used for
+#'    the individual parameters. The default method "map" is the Maximum A
+#'    Posteriori estimation, the method "prior" simulates from the prior
+#'    population model, and "sir" uses the Sequential Importance Resampling
+#'    algorithm to estimate the a posteriori distribution of the individual
+#'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param p Numeric. The proportion of the distribution of AUC to consider for
+#'    the optimization.
+#' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
+#'    proportion `p` of the AUCs be greater than `target_auc`. Respectively,
+#'    lower if `FALSE`.
 #' @param starting_time Numeric. First point in time of the AUC, for multiple
-#' dose regimen. The default is zero.
-#' @param starting_dose Numeric. Starting dose for the optimization
-#'     algorithm.
-#' @param duration Numeric. Duration of infusion, for zero-order
-#'     administrations.
+#'     dose regimen. The default is zero.
+#' @param interdose_interval Numeric. Time for the interdose interval for
+#'     multiple dose regimen. Must be provided when add_dose is used.
 #' @param add_dose Numeric. Additional doses administered at
 #'     inter-dose interval after the first dose. Optional.
-#' @param interdose_interval Numeric. Time for the interdose interval
-#'     for multiple dose regimen. Must be provided when add_dose is used.
+#' @param duration Numeric. Duration of infusion, for zero-order
+#'     administrations.
+#' @param starting_dose Numeric. Starting dose for the optimization
+#'     algorithm.
+#' @param indiv_param Optional. A set of individual parameters : THETA,
+#'     estimates of ETA, and covariates.
 #'
-#' @return A numeric optimal dose to reach the target AUC.
+#' @return A list containing the following components:
+#' \describe{
+#'   \item{dose}{Numeric. An optimal dose for the selected target AUC.}
+#'   \item{type_of_estimate}{Character string. The type of estimate of the
+#'   individual parameters. Either a point estimate, or a distribution.}
+#'   \item{auc_estimate}{A vector of numeric estimates of the AUC. Either a
+#'   single value (for a point estimate of ETA), or a distribution.}
+#'   \item{indiv_param}{A `data.frame`. The set of individual parameters used
+#'   for the determination of the optimal dose : THETA, estimates of ETA, and
+#'   covariates}
+#' }
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
@@ -156,20 +174,65 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #'                         DUR=c(0.5,NA,NA),
 #'                         CLCREAT=80,WT=65)
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
 #' poso_dose_auc(patient01_tobra,time_auc=12,target_auc=45)
 #'
 #' @export
-poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
-                          adapt=FALSE,starting_time=0,starting_dose=100,
-                          interdose_interval=NULL,add_dose=NULL,duration=NULL){
+poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
+                          estim_method="map",p=NULL,greater_than=TRUE,
+                          starting_time=0,interdose_interval=NULL,add_dose=NULL,
+                          duration=NULL,starting_dose=100,indiv_param=NULL){
+
+  # Input validation -----------------------------------------------------------
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
-  if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
-    param_map <- model_map[[2]]$params
+  if (is.null(indiv_param)){ #theta_pop + MAP estimates of eta + covariates
+    if (estim_method=="map"){
+      model_map   <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
+      indiv_param <- model_map[[2]]$params
+      select_proposal_from_distribution <- FALSE
+      if (!is.null(p)){
+        warning('p is not needed with estim_method="map", p is ignored')
+      }
+    } else  if (estim_method=="prior"){
+      if (p < 0 || p >= 1){
+        stop('p must be between 0 and 1')
+      }
+      model_pop   <- poso_simu_pop(object,return_model=TRUE)
+      indiv_param <- model_pop[[2]]$params
+      select_proposal_from_distribution <- TRUE
+    } else if (estim_method=="sir"){
+      if (p < 0 || p >= 1){
+        stop('p must be between 0 and 1')
+      }
+      model_sir   <- poso_estim_sir(object,return_model=TRUE)
+      indiv_param <- model_sir[[2]]$params
+      select_proposal_from_distribution <- TRUE
+    } else {
+      print(estim_method)
+      stop("'estim_method' not recognized")
+    }
+  } else {
+    if (FALSE %in% (c(names(object$solved_ppk_model$params),
+                      object$covariates) %in% names(indiv_param))){
+      stop("The names of indiv_param do not match the parameters of the object")
+    }
+    if (!is.null(p) && (length(rbind(indiv_param[,1])) < 1000)){
+      warn_1000 <-
+sprintf("In order to perform the optimization using a parameter distribution, you
+need at least 1000 parameter samples. Only the first set of parameters will
+be used.")
+      warning(warn_1000)
+      indiv_param <- rbind(indiv_param)[1,]
+      select_proposal_from_distribution <- FALSE
+    } else if (!is.null(p) && (length(rbind(indiv_param)[,1]) >= 1000)){
+      select_proposal_from_distribution <- TRUE
+    } else { # p==NULL, using one set of parameters
+      indiv_param <- rbind(indiv_param)[1,]
+      select_proposal_from_distribution <- FALSE
+    }
   }
   if (!is.null(add_dose)){
     if (is.null(interdose_interval)){
@@ -182,43 +245,80 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
            call.=FALSE)
     }
   }
-
-
+  # Optimization ---------------------------------------------------------------
   err_dose <- function(dose,time_auc,starting_time,target_auc,
                        interdose_interval,add_dose,prior_model,
-                       duration=duration,param_map){
+                       duration,indiv_param){
 
-   #compute the individual time-concentration profile
-  if (!is.null(add_dose)){
-    event_table_auc <- RxODE::et(amt=dose,dur=duration,
-                                ii=interdose_interval,
-                                addl=add_dose)
+    #compute the individual time-concentration profile
+    if (!is.null(add_dose)){
+      event_table_auc <- RxODE::et(amt=dose,dur=duration,
+                                   ii=interdose_interval,
+                                   addl=add_dose)
+    } else {
+      event_table_auc <- RxODE::et(amt=dose,dur=duration)
+    }
+
+    event_table_auc$add.sampling(starting_time)
+    event_table_auc$add.sampling(starting_time+time_auc)
+
+    auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
+                                    params=indiv_param,
+                                    event_table_auc)
+    if (select_proposal_from_distribution == FALSE){
+      auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
+      auc_distribution <<- auc_proposal
+    }
+    if (select_proposal_from_distribution == TRUE){
+      wide_auc      <- tidyr::pivot_wider(auc_ppk_model,
+                                          id_cols = "sim.id",
+                                          names_from = "time",
+                                          values_from = "AUC")
+
+      get_auc_difference <- function(auc_pairs){
+        auc_diff <- auc_pairs[3] - auc_pairs[2]
+        return(auc_diff)
+      }
+
+      auc_difference <- apply(wide_auc,MARGIN=1,FUN=get_auc_difference)
+      sorted_auc     <- sort(auc_difference)
+      n_auc          <- length(sorted_auc)
+      auc_index      <- ceiling(p * n_auc)
+
+      # assign the distribution of auc to the parent environment
+      auc_distribution <<- sorted_auc
+
+      if (greater_than){
+        auc_proposal <- sorted_auc[n_auc - auc_index]
+      } else {
+        auc_proposal <- sorted_auc[auc_index]
+      }
+    }
+
+    #return the difference between the computed AUC and the target
+    delta_auc<-(target_auc - auc_proposal)^2
+    return(delta_auc)
   }
-  else {
-    event_table_auc <- RxODE::et(amt=dose,dur=duration)
-  }
-   event_table_auc$add.sampling(starting_time)
-   event_table_auc$add.sampling(starting_time+time_auc)
 
-   auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                   params=param_map,
-                                   event_table_auc)
+  #initialization of auc_distribution to avoid a global variable
+  auc_distribution <- 0
 
-   auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
+  optim_dose_auc <- stats::optim(starting_dose,err_dose,time_auc=time_auc,
+                                 starting_time=starting_time,add_dose=add_dose,
+                                 interdose_interval=interdose_interval,
+                                 target_auc=target_auc,prior_model=object,
+                                 duration=duration,indiv_param=indiv_param,
+                                 method="Brent",lower=0,upper=1e5)
 
-   #return the difference between the computed AUC and the target
-   delta_auc<-(target_auc - auc_proposal)^2
-   return(delta_auc)
- }
+  ifelse(select_proposal_from_distribution,
+         type_of_estimate <-"distribution",
+         type_of_estimate <- "point estimate")
 
- optim_dose_auc <- stats::optim(starting_dose,err_dose,time_auc=time_auc,
-                         starting_time=starting_time,add_dose=add_dose,
-                         interdose_interval=interdose_interval,
-                         target_auc=target_auc,prior_model=object,
-                         duration=duration,param_map=param_map,
-                         method="Brent",lower=0,upper=1e5)
-
- return(optim_dose_auc$par)
+  dose_auc <- list(dose=optim_dose_auc$par,
+                   type_of_estimate=type_of_estimate,
+                   auc_estimate=auc_distribution,
+                   indiv_param=indiv_param)
+  return(dose_auc)
 }
 
 #' Estimate the optimal dose for a selected target concentration at a
@@ -265,7 +365,7 @@ poso_dose_auc <- function(object,time_auc,target_auc,param_map=NULL,
 #'                         CLCREAT=80,WT=65)
 #' # loading a tobramycin model and Patient01's event record
 #' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                                 dat=df_patient01)
+#'                              dat=df_patient01)
 #' # estimate the optimal dose to reach a concentration of 80 mg/l
 #' # one hour after starting the 30-minutes infusion
 #' poso_dose_ctime(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
@@ -300,8 +400,8 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
     #compute the individual time-concentration profile
     if (!is.null(add_dose)){
       event_table_ctime <- RxODE::et(amt=dose,dur=duration,
-                                   ii=interdose_interval,
-                                   addl=add_dose)
+                                     ii=interdose_interval,
+                                     addl=add_dose)
     }
     else {
       event_table_ctime <- RxODE::et(amt=dose,dur=duration)
@@ -309,19 +409,19 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
     event_table_ctime$add.sampling(time_c)
 
     ctime_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                    params=param_map,
-                                    event_table_ctime)
+                                      params=param_map,
+                                      event_table_ctime)
     #return the difference between the computed ctime and the target
     delta_ctime <- (target_conc - ctime_ppk_model$Cc)^2
     return(delta_ctime)
   }
 
   optim_dose_ctime <- stats::optim(starting_dose,err_dose,time_c=time_c,
-                          target_conc=target_conc,prior_model=object,
-                          add_dose=add_dose,
-                          interdose_interval=interdose_interval,
-                          duration=duration,param_map=param_map,
-                          method="Brent",lower=0, upper=1e5)
+                                   target_conc=target_conc,prior_model=object,
+                                   add_dose=add_dose,
+                                   interdose_interval=interdose_interval,
+                                   duration=duration,param_map=param_map,
+                                   method="Brent",lower=0, upper=1e5)
 
   return(optim_dose_ctime$par)
 }
@@ -402,10 +502,10 @@ poso_inter_cmin <- function(object,dose,target_cmin,param_map=NULL,
   }
 
   optim_dose_cmin <- stats::optim(starting_interval,err_inter,dose=dose,
-                           target_cmin=target_cmin,prior_model=object,
-                           add_dose=add_dose,duration=duration,
-                           param_map=param_map,method="Brent",
-                           lower=0,upper=1e3)
+                                  target_cmin=target_cmin,prior_model=object,
+                                  add_dose=add_dose,duration=duration,
+                                  param_map=param_map,method="Brent",
+                                  lower=0,upper=1e3)
 
   return(optim_dose_cmin$par)
 }
