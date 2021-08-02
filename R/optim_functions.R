@@ -16,6 +16,66 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
+read_optim_distribution_input <- function(object,
+                                          p,
+                                          estim_method,
+                                          adapt,
+                                          indiv_param){
+  if (is.null(indiv_param)){ #theta_pop + MAP estimates of eta + covariates
+    if (estim_method=="map"){
+      model_map   <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
+      indiv_param <- model_map[[2]]$params
+      select_proposal_from_distribution <- FALSE
+      if (!is.null(p)){
+        warning('p is not needed with estim_method="map", p is ignored')
+      }
+    } else  if (estim_method=="prior"){
+      if (!is.null(p)){
+        if (p < 0 || p >= 1){
+          stop('p must be between 0 and 1')
+        }
+        model_pop   <- poso_simu_pop(object,return_model=TRUE)
+        indiv_param <- model_pop[[2]]$params
+        select_proposal_from_distribution <- TRUE
+      } else {
+        model_pop   <- poso_simu_pop(object,n_simul=0,return_model=TRUE)
+        indiv_param <- model_pop[[2]]$params
+        select_proposal_from_distribution <- FALSE
+      }
+    } else if (estim_method=="sir"){
+      if (p < 0 || p >= 1){
+        stop('p must be between 0 and 1')
+      }
+      model_sir   <- poso_estim_sir(object,return_model=TRUE)
+      indiv_param <- model_sir[[2]]$params
+      select_proposal_from_distribution <- TRUE
+    } else {
+      print(estim_method)
+      stop("'estim_method' not recognized")
+    }
+  } else {
+    if (FALSE %in% (c(names(object$solved_ppk_model$params),
+                      object$covariates) %in% names(indiv_param))){
+      stop("The names of indiv_param do not match the parameters of the object")
+    }
+    if (!is.null(p) && (length(rbind(indiv_param[,1])) < 1000)){
+      warn_1000 <-
+        sprintf("In order to perform the optimization using a parameter distribution, you
+need at least 1000 parameter samples. Only the first set of parameters will
+be used.")
+      warning(warn_1000)
+      indiv_param <- rbind(indiv_param)[1,]
+      select_proposal_from_distribution <- FALSE
+    } else if (!is.null(p) && (length(rbind(indiv_param)[,1]) >= 1000)){
+      select_proposal_from_distribution <- TRUE
+    } else { # p==NULL, using one set of parameters
+      indiv_param <- rbind(indiv_param)[1,]
+      select_proposal_from_distribution <- FALSE
+    }
+  }
+  return(list(indiv_param,select_proposal_from_distribution))
+}
+
 #' Predict time to a selected trough concentration
 #'
 #' Predicts the time needed to reach a selected trough concentration
@@ -134,7 +194,7 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #'    algorithm to estimate the a posteriori distribution of the individual
 #'    parameters. This argument is ignored if `indiv_param` is provided.
 #' @param p Numeric. The proportion of the distribution of AUC to consider for
-#'    the optimization.
+#'    the optimization. Mandatory for `estim_method=sir`.
 #' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
 #'    proportion `p` of the AUCs be greater than `target_auc`. Respectively,
 #'    lower if `FALSE`.
@@ -188,52 +248,14 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
-  if (is.null(indiv_param)){ #theta_pop + MAP estimates of eta + covariates
-    if (estim_method=="map"){
-      model_map   <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
-      indiv_param <- model_map[[2]]$params
-      select_proposal_from_distribution <- FALSE
-      if (!is.null(p)){
-        warning('p is not needed with estim_method="map", p is ignored')
-      }
-    } else  if (estim_method=="prior"){
-      if (p < 0 || p >= 1){
-        stop('p must be between 0 and 1')
-      }
-      model_pop   <- poso_simu_pop(object,return_model=TRUE)
-      indiv_param <- model_pop[[2]]$params
-      select_proposal_from_distribution <- TRUE
-    } else if (estim_method=="sir"){
-      if (p < 0 || p >= 1){
-        stop('p must be between 0 and 1')
-      }
-      model_sir   <- poso_estim_sir(object,return_model=TRUE)
-      indiv_param <- model_sir[[2]]$params
-      select_proposal_from_distribution <- TRUE
-    } else {
-      print(estim_method)
-      stop("'estim_method' not recognized")
-    }
-  } else {
-    if (FALSE %in% (c(names(object$solved_ppk_model$params),
-                      object$covariates) %in% names(indiv_param))){
-      stop("The names of indiv_param do not match the parameters of the object")
-    }
-    if (!is.null(p) && (length(rbind(indiv_param[,1])) < 1000)){
-      warn_1000 <-
-sprintf("In order to perform the optimization using a parameter distribution, you
-need at least 1000 parameter samples. Only the first set of parameters will
-be used.")
-      warning(warn_1000)
-      indiv_param <- rbind(indiv_param)[1,]
-      select_proposal_from_distribution <- FALSE
-    } else if (!is.null(p) && (length(rbind(indiv_param)[,1]) >= 1000)){
-      select_proposal_from_distribution <- TRUE
-    } else { # p==NULL, using one set of parameters
-      indiv_param <- rbind(indiv_param)[1,]
-      select_proposal_from_distribution <- FALSE
-    }
-  }
+  read_input  <- read_optim_distribution_input(object=object,
+                                               p=p,
+                                               estim_method=estim_method,
+                                               adapt=adapt,
+                                               indiv_param=indiv_param)
+  indiv_param <- read_input[[1]]
+  select_proposal_from_distribution <- read_input[[2]]
+
   if (!is.null(add_dose)){
     if (is.null(interdose_interval)){
       stop("interdose_interval is mandatory when add_dose is used.",
@@ -265,6 +287,7 @@ be used.")
     auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
                                     params=indiv_param,
                                     event_table_auc)
+
     if (select_proposal_from_distribution == FALSE){
       auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
       auc_distribution <<- auc_proposal
@@ -321,8 +344,7 @@ be used.")
   return(dose_auc)
 }
 
-#' Estimate the optimal dose for a selected target concentration at a
-#' selected point in time
+#' Estimate the optimal dose for a selected target concentration
 #'
 #' Estimates the optimal dose for a selected target concentration at a
 #' selected point in time given a population pharmacokinetic model, a set
@@ -334,13 +356,21 @@ be used.")
 #' @param time_c Numeric. Point in time for which the dose is to be
 #'     optimized.
 #' @param target_conc Numeric. Target concentration.
-#' @param param_map A vector of individual parameters. May be omitted,
-#'     in which case the \code{\link{poso_estim_map}} function
-#'     will be called.
-#' @param adapt A boolean. If `param_map` is omitted, should the estimation
+#' @param adapt A boolean. If `estim_method="map"`, should the estimation
 #'    be performed with the adaptive MAP method (as opposed to the
-#'    standard MAP)? A column `AMS` is required in the patient record
+#'    standard MAP)? A column named `AMS` is required in the patient record
 #'    to define the segments for the adaptive MAP approach.
+#' @param estim_method A character string. An estimation method to be used for
+#'    the individual parameters. The default method "map" is the Maximum A
+#'    Posteriori estimation, the method "prior" simulates from the prior
+#'    population model, and "sir" uses the Sequential Importance Resampling
+#'    algorithm to estimate the a posteriori distribution of the individual
+#'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param p Numeric. The proportion of the distribution of AUC to consider for
+#'    the optimization. Mandatory for `estim_method=sir`.
+#' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
+#'    proportion `p` of the AUCs be greater than `target_auc`. Respectively,
+#'    lower if `FALSE`.
 #' @param starting_dose Numeric. Starting dose for the optimization
 #'     algorithm.
 #' @param add_dose Numeric. Additional doses administered at
@@ -349,9 +379,20 @@ be used.")
 #'     for multiple dose regimen. Must be provided when add_dose is used.
 #' @param duration Numeric. Duration of infusion, for zero-order
 #'     administrations.
+#' @param indiv_param Optional. A set of individual parameters : THETA,
+#'     estimates of ETA, and covariates.
 #'
-#' @return A numeric optimal dose to reach the target concentration
-#'     at the selected point in time.
+#' @return A list containing the following components:
+#' \describe{
+#'   \item{dose}{Numeric. An optimal dose for the selected target concentration.}
+#'   \item{type_of_estimate}{Character string. The type of estimate of the
+#'   individual parameters. Either a point estimate, or a distribution.}
+#'   \item{conc_estimate}{A vector of numeric estimates of the conc. Either a
+#'   single value (for a point estimate of ETA), or a distribution.}
+#'   \item{indiv_param}{A `data.frame`. The set of individual parameters used
+#'   for the determination of the optimal dose : THETA, estimates of ETA, and
+#'   covariates}
+#' }
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
@@ -368,19 +409,24 @@ be used.")
 #'                              dat=df_patient01)
 #' # estimate the optimal dose to reach a concentration of 80 mg/l
 #' # one hour after starting the 30-minutes infusion
-#' poso_dose_ctime(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
+#' poso_dose_conc(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
 #'
 #' @export
-poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
-                            adapt=FALSE,starting_dose=100,interdose_interval=NULL,
-                            add_dose=NULL,duration=NULL){
+poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
+                           estim_method="map",p=NULL,greater_than=TRUE,
+                           starting_dose=100,interdose_interval=NULL,
+                           add_dose=NULL,duration=NULL,indiv_param=NULL){
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
-  if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
-    param_map <- model_map[[2]]$params
-  }
+  read_input  <- read_optim_distribution_input(object=object,
+                                               p=p,
+                                               estim_method=estim_method,
+                                               adapt=adapt,
+                                               indiv_param=indiv_param)
+  indiv_param <- read_input[[1]]
+  select_proposal_from_distribution <- read_input[[2]]
+
   if (!is.null(add_dose)){
     if (is.null(interdose_interval)){
       stop("interdose_interval is mandatory when add_dose is used.",
@@ -395,7 +441,7 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
 
   err_dose <- function(dose,time_c,target_conc,prior_model,
                        add_dose,interdose_interval,
-                       duration=duration,param_map){
+                       duration=duration,indiv_param){
 
     #compute the individual time-concentration profile
     if (!is.null(add_dose)){
@@ -409,21 +455,53 @@ poso_dose_ctime <- function(object,time_c,target_conc,param_map=NULL,
     event_table_ctime$add.sampling(time_c)
 
     ctime_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                      params=param_map,
+                                      params=indiv_param,
                                       event_table_ctime)
+
+    if (select_proposal_from_distribution == FALSE){
+      conc_proposal     <- ctime_ppk_model$Cc
+      conc_distribution <<- conc_proposal
+    }
+    if (select_proposal_from_distribution == TRUE){
+
+      sorted_conc     <- sort(ctime_ppk_model$Cc)
+      n_conc          <- length(sorted_conc)
+      conc_index      <- ceiling(p * n_conc)
+
+      # assign the distribution of auc to the parent environment
+      conc_distribution <<- sorted_conc
+
+      if (greater_than){
+        conc_proposal <- sorted_conc[n_conc - conc_index]
+      } else {
+        conc_proposal <- sorted_conc[conc_index]
+      }
+    }
+
     #return the difference between the computed ctime and the target
-    delta_ctime <- (target_conc - ctime_ppk_model$Cc)^2
-    return(delta_ctime)
+    delta_conc <- (target_conc - conc_proposal)^2
+    return(delta_conc)
   }
 
-  optim_dose_ctime <- stats::optim(starting_dose,err_dose,time_c=time_c,
+  #initialization of conc_distribution to avoid a global variable
+  conc_distribution <- 0
+
+  optim_dose_conc <- stats::optim(starting_dose,err_dose,time_c=time_c,
                                    target_conc=target_conc,prior_model=object,
                                    add_dose=add_dose,
                                    interdose_interval=interdose_interval,
-                                   duration=duration,param_map=param_map,
+                                   duration=duration,indiv_param=indiv_param,
                                    method="Brent",lower=0, upper=1e5)
 
-  return(optim_dose_ctime$par)
+  ifelse(select_proposal_from_distribution,
+         type_of_estimate <-"distribution",
+         type_of_estimate <- "point estimate")
+
+  dose_conc <- list(dose=optim_dose_conc$par,
+                   type_of_estimate=type_of_estimate,
+                   conc_estimate=conc_distribution,
+                   indiv_param=indiv_param)
+  return(dose_conc)
 }
 
 #' Estimate the optimal inter-dose interval for a given dose and a

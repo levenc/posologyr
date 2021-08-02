@@ -3,7 +3,7 @@
 export(error_model_comb1)
 export(error_model_comb2)
 export(poso_dose_auc)
-export(poso_dose_ctime)
+export(poso_dose_conc)
 export(poso_estim_map)
 export(poso_estim_mcmc)
 export(poso_estim_sir)

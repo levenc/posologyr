@@ -244,10 +244,10 @@
 <span class="co">#&gt; [1] 11.02455</span></code></pre></div>
 <p>The dose needed to achieve the steady-state Cmin following the first administration can now be identified.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">loading_dose_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patB_tdm_vanco</span>,
+<code class="sourceCode R"><span class="va">loading_dose_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patB_tdm_vanco</span>,
                                     time_c<span class="op">=</span><span class="fl">24</span>,
                                     duration<span class="op">=</span><span class="fl">2</span>,
-                                    target_conc<span class="op">=</span><span class="va">target_cmin_ss</span><span class="op">)</span>
+                                    target_conc<span class="op">=</span><span class="va">target_cmin_ss</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">loading_dose_map</span>
 <span class="co">#&gt; [1] 2525.03</span></code></pre></div>
 </div>
@@ -295,12 +295,12 @@
 <code class="sourceCode R"><span class="co">#Target Css for a continuous infusion</span>
 <span class="va">target_css</span> <span class="op">&lt;-</span> <span class="fl">400</span><span class="op">/</span><span class="fl">24</span>
 
-<span class="va">maintenance_dose_map_ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patB_tdm_vanco</span>,
+<span class="va">maintenance_dose_map_ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patB_tdm_vanco</span>,
                                            time_c<span class="op">=</span><span class="fl">24</span><span class="op">*</span><span class="fl">9.9</span>,
                                            interdose_interval<span class="op">=</span><span class="fl">24</span>,
                                            add_dose<span class="op">=</span><span class="fl">10</span>,
                                            duration<span class="op">=</span><span class="fl">24</span>,
-                                           target_conc<span class="op">=</span><span class="va">target_css</span><span class="op">)</span>
+                                           target_conc<span class="op">=</span><span class="va">target_css</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">maintenance_dose_map_ci</span>
 <span class="co">#&gt; [1] 1229.426</span></code></pre></div>
 <div id="simulate-and-plot-the-optimal-a-posteriori-dosage-1" class="section level2">

@@ -145,10 +145,10 @@
 <a href="#optimal-dose-selection" class="anchor"></a>Optimal dose selection</h2>
 <p>In the absence of measured concentrations, the optimal dose in mg to achieve a so-called peak concentration of 80 mg/l (one hour after the start of the 30-minute infusion) is determined from the typical profile of the ppk model.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">prior_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,
+<code class="sourceCode R"><span class="va">prior_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,
                               time_c <span class="op">=</span> <span class="fl">1</span>,
                               duration <span class="op">=</span> <span class="fl">0.5</span>,
-                              target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>
+                              target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">prior_dose</span>
 <span class="co">#&gt; [1] 2087.669</span></code></pre></div>
 </div>
@@ -299,10 +299,10 @@
 <a href="#optimal-dose-selection-a-posteriori" class="anchor"></a>Optimal dose selection a posteriori</h2>
 <p>An optimal a posteriori dose to achieve a peak concentration of 80 mg/l is determined using the MAP estimates.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">map_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_ctime.html">poso_dose_ctime</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
+<code class="sourceCode R"><span class="va">map_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
                             time_c <span class="op">=</span> <span class="fl">1</span>,
                             duration <span class="op">=</span> <span class="fl">0.5</span>,
-                            target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>
+                            target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">map_dose</span>
 <span class="co">#&gt; [1] 2578.836</span></code></pre></div>
 </div>

@@ -42,7 +42,7 @@ algorithm to estimate the a posteriori distribution of the individual
 parameters. This argument is ignored if \code{indiv_param} is provided.}
 
 \item{p}{Numeric. The proportion of the distribution of AUC to consider for
-the optimization.}
+the optimization. Mandatory for \code{estim_method=sir}.}
 
 \item{greater_than}{A boolean. If \code{TRUE}: targets a dose leading to a
 proportion \code{p} of the AUCs be greater than \code{target_auc}. Respectively,

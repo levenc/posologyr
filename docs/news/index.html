@@ -155,9 +155,11 @@
 <code>MASS:mvrnorm</code> is replaced by <code><a href="https://rdrr.io/pkg/mvtnorm/man/Mvnorm.html">mvtnorm::rmvnorm</a></code> for multivariate normal distributions.</li>
 <li>Input validation is added to all exported functions.</li>
 <li>
-<code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> now work with distributions of ETA, and not only with point estimates (such as the MAP).</li>
+<code>poso_dose_conc</code> is the new name of <code>poso_dose_ctime</code>.</li>
 <li>
-<code><a href="../articles/case_study_vancomycin.html">vignette("case_study_vancomycin")</a></code> is removed.</li>
+<code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>, and <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code> now work with distributions of ETA, and not only with point estimates (such as the MAP).</li>
+<li>
+<code>vignette("uncertainty_estimates")</code> is removed.</li>
 </ul>
 </div>
     <div id="posologyr-v011" class="section level1">
@@ -165,7 +167,7 @@
 <a href="#posologyr-v011" class="anchor"></a>posologyr v0.1.1</h1>
 <ul>
 <li>
-<code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_ctime.html">poso_dose_ctime()</a></code>, and <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> now work for multiple dose regimen.</li>
+<code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code>poso_dose_ctime()</code>, and <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> now work for multiple dose regimen.</li>
 <li>
 <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> allows the optimization of the inter-dose interval for multiple dose regimen.</li>
 <li>
