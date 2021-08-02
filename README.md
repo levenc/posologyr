@@ -28,7 +28,7 @@ parameters:
 Functions for dosage optimisation are included in `posologyr`:
 
 -   `poso_dose_auc()` estimates the optimal dose to reach a target AUC
--   `poso_dose_ctime()` estimates the optimal dose to reach a target
+-   `poso_dose_conc()` estimates the optimal dose to reach a target
     concentration at any given time
 -   `poso_time_cmin()` computes the time needed to reach a target trough
     concentration (Cmin)
