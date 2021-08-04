@@ -16,6 +16,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
+# get the parameters for distribution-based optimal dosing
 read_optim_distribution_input <- function(object,
                                           p,
                                           estim_method,
@@ -86,13 +87,21 @@ be used.")
 #'     function.
 #' @param dose Numeric. Dose administered.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
-#' @param param_map A vector of individual parameters. May be omitted,
-#'     in which case the \code{\link{poso_estim_map}} function
-#'     will be called.
 #' @param adapt A boolean. If `param_map` is omitted, should the estimation
 #'    be performed with the adaptive MAP method (as opposed to the
 #'    standard MAP)? A column `AMS` is required in the patient record
 #'    to define the segments for the adaptive MAP approach.
+#' @param estim_method A character string. An estimation method to be used for
+#'    the individual parameters. The default method "map" is the Maximum A
+#'    Posteriori estimation, the method "prior" simulates from the prior
+#'    population model, and "sir" uses the Sequential Importance Resampling
+#'    algorithm to estimate the a posteriori distribution of the individual
+#'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param p Numeric. The proportion of the distribution of cmin to consider for
+#'    the estimation. Mandatory for `estim_method=sir`.
+#' @param greater_than A boolean. If `TRUE`: targets a time leading to a
+#'    proportion `p` of the cmins to be greater than `target_cmin`.
+#'    Respectively, lower if `FALSE`.
 #' @param from Numeric. Starting time for the simulation of the
 #'     individual time-concentration profile. The default value is
 #'     0.2
@@ -105,6 +114,8 @@ be used.")
 #'     for multiple dose regimen. Must be provided when add_dose is used.
 #' @param duration Numeric. Duration of infusion, for zero-order
 #'     administrations.
+#' @param indiv_param Optional. A set of individual parameters : THETA,
+#'     estimates of ETA, and covariates.
 #'
 #' @return A numeric time to the selected trough concentration, from the
 #'     time of administration.
@@ -128,17 +139,22 @@ be used.")
 #' poso_time_cmin(patient01_tobra,dose=2500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
+poso_time_cmin <- function(object,dose,target_cmin,
+                           estim_method="map",p=NULL,greater_than=TRUE,
                            adapt=FALSE,from=0.2,last_time=72,
                            add_dose=NULL,interdose_interval=NULL,
-                           duration=NULL){
+                           duration=NULL,indiv_param=NULL){
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
-  if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
-    param_map <- model_map[[2]]$params
-  }
+  read_input  <- read_optim_distribution_input(object=object,
+                                               p=p,
+                                               estim_method=estim_method,
+                                               adapt=adapt,
+                                               indiv_param=indiv_param)
+  indiv_param <- read_input[[1]]
+  select_proposal_from_distribution <- read_input[[2]]
+
   if (!is.null(add_dose)){
     if (is.null(interdose_interval)){
       stop("interdose_interval is mandatory when add_dose is used.",
@@ -152,6 +168,7 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
                                   ii=interdose_interval,
                                   addl=add_dose)
     time_last_dose   <- add_dose*interdose_interval
+    #add observations from the time of the last dose onward only
     event_table_cmin$add.sampling(seq(time_last_dose+from,
                                       time_last_dose+last_time,
                                       by=0.1))
@@ -163,13 +180,66 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
   }
 
   cmin_ppk_model <- RxODE::rxSolve(object=object$ppk_model,
-                                   params=param_map,
+                                   params=indiv_param,
                                    event_table_cmin)
 
-  time_to_target <-
-    min(cmin_ppk_model$time[which(cmin_ppk_model$Cc < target_cmin)]) -
-    time_last_dose
-  return(time_to_target)
+  if (select_proposal_from_distribution == FALSE){
+    #compute time_to_target taking into account the multiple doses if needed
+    # time_to_target: time after the last dose for which Cc is lower than
+    # target_cmin
+    time_to_target <-
+      min(cmin_ppk_model$time[cmin_ppk_model$Cc < target_cmin]) - time_last_dose
+    #here cmin_distribution is a point estimate of Cc
+    cmin_distribution <<-
+      cmin_ppk_model$Cc[cmin_ppk_model$time == (time_to_target +
+                                                        time_last_dose)]
+  }
+  if (select_proposal_from_distribution == TRUE){
+    wide_cmin      <- tidyr::pivot_wider(cmin_ppk_model,
+                                        id_cols = "time",
+                                        names_from = "sim.id",
+                                        values_from = "Cc")
+
+    get_p_cmin <- function(all_cmin){
+      all_cmin     <- all_cmin[-1]
+      sorted_cmin  <- sort(all_cmin)
+      n_cmin       <- length(sorted_cmin)
+      cmin_index   <- ceiling(p * n_cmin)
+
+      if (greater_than){
+        cmin_proposal <- sorted_cmin[n_cmin - cmin_index]
+      } else {
+        cmin_proposal <- sorted_cmin[cmin_index]
+      }
+
+      return(cmin_proposal)
+    }
+
+    cmin_p            <- apply(wide_cmin,MARGIN=1,FUN=get_p_cmin)
+    wide_cmin$cmin_p  <- cmin_p
+
+    # compute time_to_target taking into account the multiple doses if needed
+    # time_to_target: time after the last dose for which cmin_p is lower than
+    # target_cmin
+    time_to_target <-
+      min(wide_cmin$time[wide_cmin$cmin_p < target_cmin]) - time_last_dose
+
+    # unlist cmin_distribution to get a vector of numeric values
+    cmin_distribution <- wide_cmin[wide_cmin$time == (time_to_target +
+                                     time_last_dose),]
+    cmin_distribution$time <- cmin_distribution$cmin_p <- NULL
+    cmin_distribution      <- unlist(cmin_distribution,use.names=FALSE)
+  }
+
+  ifelse(select_proposal_from_distribution,
+         type_of_estimate <-"distribution",
+         type_of_estimate <- "point estimate")
+
+  time_cmin <- list(time=time_to_target,
+                   type_of_estimate=type_of_estimate,
+                   cmin_estimate=cmin_distribution,
+                   indiv_param=indiv_param)
+  return(time_cmin)
 }
 
 #' Estimate the optimal dose for a selected target area under the
@@ -196,7 +266,7 @@ poso_time_cmin <- function(object,dose,target_cmin,param_map=NULL,
 #' @param p Numeric. The proportion of the distribution of AUC to consider for
 #'    the optimization. Mandatory for `estim_method=sir`.
 #' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
-#'    proportion `p` of the AUCs be greater than `target_auc`. Respectively,
+#'    proportion `p` of the AUCs to be greater than `target_auc`. Respectively,
 #'    lower if `FALSE`.
 #' @param starting_time Numeric. First point in time of the AUC, for multiple
 #'     dose regimen. The default is zero.
@@ -366,11 +436,11 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 #'    population model, and "sir" uses the Sequential Importance Resampling
 #'    algorithm to estimate the a posteriori distribution of the individual
 #'    parameters. This argument is ignored if `indiv_param` is provided.
-#' @param p Numeric. The proportion of the distribution of AUC to consider for
-#'    the optimization. Mandatory for `estim_method=sir`.
+#' @param p Numeric. The proportion of the distribution of concentrations to
+#'    consider for the optimization. Mandatory for `estim_method=sir`.
 #' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
-#'    proportion `p` of the AUCs be greater than `target_auc`. Respectively,
-#'    lower if `FALSE`.
+#'    proportion `p` of the concentrations to be greater than `target_conc`.
+#'    Respectively, lower if `FALSE`.
 #' @param starting_dose Numeric. Starting dose for the optimization
 #'     algorithm.
 #' @param add_dose Numeric. Additional doses administered at

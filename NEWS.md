@@ -10,8 +10,9 @@ roughly 25 times faster than `poso_estim_mcmc()` for 1000 samples.
 distributions. 
 * Input validation is added to all exported functions.
 * `poso_dose_conc` is the new name of `poso_dose_ctime`.
-* `poso_dose_auc()`, and `poso_dose_conc()` now work with distributions of ETA, 
-and not only with point estimates (such as the MAP).
+* `poso_time_cmin`, `poso_dose_auc()`, and `poso_dose_conc()` now work with 
+prior and posterior distributions of ETA, and not only with point estimates 
+(such as the MAP).
 * `vignette("uncertainty_estimates")` is removed.
 
 # posologyr v0.1.1

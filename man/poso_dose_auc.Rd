@@ -45,7 +45,7 @@ parameters. This argument is ignored if \code{indiv_param} is provided.}
 the optimization. Mandatory for \code{estim_method=sir}.}
 
 \item{greater_than}{A boolean. If \code{TRUE}: targets a dose leading to a
-proportion \code{p} of the AUCs be greater than \code{target_auc}. Respectively,
+proportion \code{p} of the AUCs to be greater than \code{target_auc}. Respectively,
 lower if \code{FALSE}.}
 
 \item{starting_time}{Numeric. First point in time of the AUC, for multiple

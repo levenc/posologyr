@@ -61,26 +61,25 @@ test_that("Same optimal dose with or without providing MAP estimates", {
                                indiv_param=NULL)$dose,
                tolerance=1e-3)
   expect_equal(poso_time_cmin(patient01_tobra,
-                             param_map=params_patient01_tobra_map,
                              dose=620,
                              duration=0.5,
-                             target_cmin=0.5),
+                             target_cmin=0.5,
+                             indiv_param=params_patient01_tobra_map,)$time,
                poso_time_cmin(patient01_tobra,
-                             param_map=NULL,
                              dose=620,
                              duration=0.5,
-                             target_cmin=0.5),
+                             target_cmin=0.5)$time,
                tolerance=1e-3)
 })
 
 test_that("Optimization results do not deviate from known values
           for single dose administration", {
   expect_equal(poso_time_cmin(patient04_tdm_vanco,
-                              param_map=params_patient04_vanco_map,
                               from=2,
                               dose=1500,
                               duration=2,
-                              target_cmin=10),
+                              target_cmin=10,
+                              indiv_param=params_patient04_vanco_map)$time,
                11.2)
   expect_equal(poso_dose_auc(patient04_tdm_vanco,
                              time_auc=24,
@@ -101,13 +100,13 @@ test_that("Optimization results do not deviate from known values
 test_that("Optimization results do not deviate from known values
           for multiple dose regimen", {
   expect_equal(poso_time_cmin(patient04_tdm_vanco,
-                              param_map=params_patient04_vanco_map,
                               from=2,
                               dose=1500,
                               interdose_interval=24,
                               add_dose=10,
                               duration=2,
-                              target_cmin=10),
+                              target_cmin=10,
+                              indiv_param=params_patient04_vanco_map)$time,
                34.8)
   expect_equal(poso_dose_auc(patient04_tdm_vanco,
                              time_auc=24,

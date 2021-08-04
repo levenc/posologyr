@@ -160,7 +160,7 @@
 <code class="sourceCode R"><span class="va">prior_timecmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,
                                  dose <span class="op">=</span> <span class="va">prior_dose</span>,
                                  duration <span class="op">=</span> <span class="fl">0.5</span>,
-                                 target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>
+                                 target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">$</span><span class="va">time</span>
 <span class="va">prior_timecmin</span>
 <span class="co">#&gt; [1] 37.5</span></code></pre></div>
 </div>
@@ -290,7 +290,7 @@
 <code class="sourceCode R"><span class="va">map_timecmin_priordose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
                                          dose <span class="op">=</span> <span class="va">prior_dose</span>,
                                          duration <span class="op">=</span> <span class="fl">0.5</span>,
-                                         target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>
+                                         target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">$</span><span class="va">time</span>
 <span class="va">map_timecmin_priordose</span>
 <span class="co">#&gt; [1] 34.6</span></code></pre></div>
 </div>

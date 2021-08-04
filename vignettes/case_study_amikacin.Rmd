@@ -65,7 +65,7 @@ With this dose, the time in hours required to reach a target Cmin concentration 
 prior_timecmin <- poso_time_cmin(patA_prior_amik,
                                  dose = prior_dose,
                                  duration = 0.5,
-                                 target_cmin = 2.5)
+                                 target_cmin = 2.5)$time
 prior_timecmin
 ```
 
@@ -179,7 +179,7 @@ With the MAP estimates of the individual parameters, the prediction of the time 
 map_timecmin_priordose <- poso_time_cmin(patA_tdm_amik,
                                          dose = prior_dose,
                                          duration = 0.5,
-                                         target_cmin = 2.5)
+                                         target_cmin = 2.5)$time
 map_timecmin_priordose
 ```
 

@@ -40,12 +40,12 @@ population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
 parameters. This argument is ignored if \code{indiv_param} is provided.}
 
-\item{p}{Numeric. The proportion of the distribution of AUC to consider for
-the optimization. Mandatory for \code{estim_method=sir}.}
+\item{p}{Numeric. The proportion of the distribution of concentrations to
+consider for the optimization. Mandatory for \code{estim_method=sir}.}
 
 \item{greater_than}{A boolean. If \code{TRUE}: targets a dose leading to a
-proportion \code{p} of the AUCs be greater than \code{target_auc}. Respectively,
-lower if \code{FALSE}.}
+proportion \code{p} of the concentrations to be greater than \code{target_conc}.
+Respectively, lower if \code{FALSE}.}
 
 \item{starting_dose}{Numeric. Starting dose for the optimization
 algorithm.}
