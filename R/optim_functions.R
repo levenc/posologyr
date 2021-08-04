@@ -644,16 +644,20 @@ poso_inter_cmin <- function(object,dose,target_cmin,param_map=NULL,
     cmin_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
                                      params=param_map,
                                      event_table_cmin)
-    #return the difference between the computed cmin and the target
-    delta_cmin <- (target_cmin - cmin_ppk_model$Cc)^2
+    #return the difference between the computed cmin and the target,
+    # normalized by the computed cmin to avoid divergence of the algorithm
+    delta_cmin <- ((target_cmin - cmin_ppk_model$Cc)/cmin_ppk_model$Cc)^2
     return(delta_cmin)
   }
 
+  #cf. optim documentation: optim will work with one-dimensional pars, but the
+  # default method does not work well (and will warn). Method "Brent" uses
+  # optimize and needs bounds to be available; "BFGS" often works well enough if
+  # not.
   optim_dose_cmin <- stats::optim(starting_interval,err_inter,dose=dose,
                                   target_cmin=target_cmin,prior_model=object,
                                   add_dose=add_dose,duration=duration,
-                                  param_map=param_map,method="Brent",
-                                  lower=0,upper=1e3)
+                                  param_map=param_map,method="BFGS")
 
   return(optim_dose_cmin$par)
 }
