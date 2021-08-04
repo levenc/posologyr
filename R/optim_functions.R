@@ -657,7 +657,7 @@ poso_inter_cmin <- function(object,dose,target_cmin,param_map=NULL,
   optim_dose_cmin <- stats::optim(starting_interval,err_inter,dose=dose,
                                   target_cmin=target_cmin,prior_model=object,
                                   add_dose=add_dose,duration=duration,
-                                  param_map=param_map,method="BFGS")
+                                  param_map=param_map,method="L-BFGS-B")
 
   return(optim_dose_cmin$par)
 }
