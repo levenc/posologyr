@@ -89,7 +89,7 @@ poso_simu_pop <- function(object,n_simul=1000,
   if(return_model){
     model_pop         <- object$solved_ppk_model
     theta             <- rbind(object$theta)
-    covar             <- object$tdm_data[1,object$covariates]
+    covar             <- as.data.frame(object$tdm_data[1,object$covariates])
     names(covar)      <- object$covariates
     model_pop$params  <- cbind(theta,eta_df,covar,row.names=NULL)
     eta_pop$model     <- model_pop
@@ -473,7 +473,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
   if(return_model){
     model_mcmc        <- solved_model
     theta_return      <- rbind(theta)
-    covar             <- dat[1,object$covariates]
+    covar             <- as.data.frame(dat[1,object$covariates])
     names(covar)      <- object$covariates
     model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names=NULL)
     estim_mcmc$model  <- model_mcmc
@@ -589,7 +589,7 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
   if(return_model){
     model_sir         <- solved_model
     theta_return      <- rbind(theta)
-    covar             <- dat[1,object$covariates]
+    covar             <- as.data.frame(dat[1,object$covariates])
     names(covar)      <- object$covariates
     model_sir$params  <- cbind(theta_return,eta_df,covar,row.names=NULL)
     estim_sir$model   <- model_sir
