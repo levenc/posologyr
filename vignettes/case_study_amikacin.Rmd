@@ -203,7 +203,7 @@ The optimal inter-dose interval to reach a Cmin of 2.5 mg/L before each dosing i
 map_interval <- poso_inter_cmin(patA_tdm_amik,
                                dose = map_dose,
                                duration = 0.5,
-                               target_cmin = 2.5)
+                               target_cmin = 2.5)$interval
 map_interval
 ```
 

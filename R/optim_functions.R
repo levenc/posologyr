@@ -22,7 +22,7 @@ read_optim_distribution_input <- function(object,
                                           estim_method,
                                           adapt,
                                           indiv_param){
-  if (is.null(indiv_param)){ #theta_pop + MAP estimates of eta + covariates
+  if (is.null(indiv_param)){ #theta_pop + estimates of eta + covariates
     if (estim_method=="map"){
       model_map   <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
       indiv_param <- model_map[[2]]$params
@@ -538,7 +538,7 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
       n_conc          <- length(sorted_conc)
       conc_index      <- ceiling(p * n_conc)
 
-      # assign the distribution of auc to the parent environment
+      # assign the distribution of concentrations to the parent environment
       conc_distribution <<- sorted_conc
 
       if (greater_than){
@@ -586,22 +586,44 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 #'     function.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. The dose given.
-#' @param param_map A vector of individual parameters. May be omitted,
-#'     in which case the \code{\link{poso_estim_map}} function
-#'     will be called.
 #' @param adapt A boolean. If `param_map` is omitted, should the estimation
 #'    be performed with the adaptive MAP method (as opposed to the
 #'    standard MAP)? A column `AMS` is required in the patient record
 #'    to define the segments for the adaptive MAP approach.
+#' @param estim_method A character string. An estimation method to be used for
+#'    the individual parameters. The default method "map" is the Maximum A
+#'    Posteriori estimation, the method "prior" simulates from the prior
+#'    population model, and "sir" uses the Sequential Importance Resampling
+#'    algorithm to estimate the a posteriori distribution of the individual
+#'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param p Numeric. The proportion of the distribution of concentrations to
+#'    consider for the optimization. Mandatory for `estim_method=sir`.
+#' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
+#'    proportion `p` of the concentrations to be greater than `target_conc`.
+#'    Respectively, lower if `FALSE`.
 #' @param starting_interval Numeric. Starting inter-dose interval for
 #'     the optimization algorithm.
 #' @param add_dose Numeric. Additional doses administered at
 #'     inter-dose interval after the first dose.
 #' @param duration Numeric. Duration of infusion, for zero-order
 #'     administrations.
+#' @param indiv_param Optional. A set of individual parameters : THETA,
+#'     estimates of ETA, and covariates.
 #'
-#' @return A numeric inter-dose interval to reach the target trough
-#'     concentration before each dosing of a multiple dose regimen.
+#' @return A numeric
+#'
+#' @return A list containing the following components:
+#' \describe{
+#'   \item{interval}{Numeric. An inter-dose interval to reach the target trough
+#'     concentration before each dosing of a multiple dose regimen.}
+#'   \item{type_of_estimate}{Character string. The type of estimate of the
+#'   individual parameters. Either a point estimate, or a distribution.}
+#'   \item{conc_estimate}{A vector of numeric estimates of the conc. Either a
+#'   single value (for a point estimate of ETA), or a distribution.}
+#'   \item{indiv_param}{A `data.frame`. The set of individual parameters used
+#'   for the determination of the optimal dose : THETA, estimates of ETA, and
+#'   covariates}
+#' }
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
@@ -621,20 +643,24 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 #' poso_inter_cmin(patient01_tobra,dose=1500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_inter_cmin <- function(object,dose,target_cmin,param_map=NULL,
-                            adapt=FALSE,starting_interval=12,add_dose=10,
-                            duration=NULL){
+poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
+                            estim_method="map",p=NULL,greater_than=TRUE,
+                            starting_interval=12,add_dose=10,
+                            duration=NULL,indiv_param=NULL){
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
-  if (is.null(param_map)){ #theta_pop + MAP estimates of eta + covariates
-    model_map <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
-    param_map <- model_map[[2]]$params
-  }
+  read_input  <- read_optim_distribution_input(object=object,
+                                               p=p,
+                                               estim_method=estim_method,
+                                               adapt=adapt,
+                                               indiv_param=indiv_param)
+  indiv_param <- read_input[[1]]
+  select_proposal_from_distribution <- read_input[[2]]
 
   err_inter <- function(interdose_interval,dose,target_cmin,
                         prior_model,add_dose,duration=duration,
-                        param_map){
+                        indiv_param){
     #compute the individual time-concentration profile
     event_table_cmin <- RxODE::et(amt=dose,dur=duration,
                                   ii=interdose_interval,
@@ -642,22 +668,55 @@ poso_inter_cmin <- function(object,dose,target_cmin,param_map=NULL,
     event_table_cmin$add.sampling(interdose_interval*add_dose-0.1)
 
     cmin_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
-                                     params=param_map,
+                                     params=indiv_param,
                                      event_table_cmin)
+
+    if (select_proposal_from_distribution == FALSE){
+      cmin_proposal     <-  cmin_ppk_model$Cc
+      cmin_distribution <<- cmin_proposal
+    }
+    if (select_proposal_from_distribution == TRUE){
+
+      sorted_cmin     <- sort(cmin_ppk_model$Cc)
+      n_cmin          <- length(sorted_cmin)
+      cmin_index      <- ceiling(p * n_cmin)
+
+      # assign the distribution of cmin to the parent environment
+      cmin_distribution <<- sorted_cmin
+
+      if (greater_than){
+        cmin_proposal <- sorted_cmin[n_cmin - cmin_index]
+      } else {
+        cmin_proposal <- sorted_cmin[cmin_index]
+      }
+    }
+
     #return the difference between the computed cmin and the target,
     # normalized by the computed cmin to avoid divergence of the algorithm
-    delta_cmin <- ((target_cmin - cmin_ppk_model$Cc)/cmin_ppk_model$Cc)^2
+    delta_cmin <- ((target_cmin - cmin_proposal)/cmin_proposal)^2
     return(delta_cmin)
   }
+
+  #initialization of cmin_distribution to avoid a global variable
+  cmin_distribution <- 0
 
   #cf. optim documentation: optim will work with one-dimensional pars, but the
   # default method does not work well (and will warn). Method "Brent" uses
   # optimize and needs bounds to be available; "BFGS" often works well enough if
   # not.
-  optim_dose_cmin <- stats::optim(starting_interval,err_inter,dose=dose,
+  optim_inter_cmin <- stats::optim(starting_interval,err_inter,dose=dose,
                                   target_cmin=target_cmin,prior_model=object,
                                   add_dose=add_dose,duration=duration,
-                                  param_map=param_map,method="L-BFGS-B")
+                                  indiv_param=indiv_param,method="L-BFGS-B")
 
-  return(optim_dose_cmin$par)
+  ifelse(select_proposal_from_distribution,
+         type_of_estimate <-"distribution",
+         type_of_estimate <- "point estimate")
+
+  inter_cmin <- list(interval=optim_inter_cmin$par,
+                    type_of_estimate=type_of_estimate,
+                    conc_estimate=cmin_distribution,
+                    indiv_param=indiv_param)
+
+  return(inter_cmin)
 }

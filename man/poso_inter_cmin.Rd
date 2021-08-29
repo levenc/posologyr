@@ -9,11 +9,14 @@ poso_inter_cmin(
   object,
   dose,
   target_cmin,
-  param_map = NULL,
   adapt = FALSE,
+  estim_method = "map",
+  p = NULL,
+  greater_than = TRUE,
   starting_interval = 12,
   add_dose = 10,
-  duration = NULL
+  duration = NULL,
+  indiv_param = NULL
 )
 }
 \arguments{
@@ -24,14 +27,24 @@ function.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 
-\item{param_map}{A vector of individual parameters. May be omitted,
-in which case the \code{\link{poso_estim_map}} function
-will be called.}
-
 \item{adapt}{A boolean. If \code{param_map} is omitted, should the estimation
 be performed with the adaptive MAP method (as opposed to the
 standard MAP)? A column \code{AMS} is required in the patient record
 to define the segments for the adaptive MAP approach.}
+
+\item{estim_method}{A character string. An estimation method to be used for
+the individual parameters. The default method "map" is the Maximum A
+Posteriori estimation, the method "prior" simulates from the prior
+population model, and "sir" uses the Sequential Importance Resampling
+algorithm to estimate the a posteriori distribution of the individual
+parameters. This argument is ignored if \code{indiv_param} is provided.}
+
+\item{p}{Numeric. The proportion of the distribution of concentrations to
+consider for the optimization. Mandatory for \code{estim_method=sir}.}
+
+\item{greater_than}{A boolean. If \code{TRUE}: targets a dose leading to a
+proportion \code{p} of the concentrations to be greater than \code{target_conc}.
+Respectively, lower if \code{FALSE}.}
 
 \item{starting_interval}{Numeric. Starting inter-dose interval for
 the optimization algorithm.}
@@ -41,10 +54,25 @@ inter-dose interval after the first dose.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
+
+\item{indiv_param}{Optional. A set of individual parameters : THETA,
+estimates of ETA, and covariates.}
 }
 \value{
-A numeric inter-dose interval to reach the target trough
-concentration before each dosing of a multiple dose regimen.
+A numeric
+
+A list containing the following components:
+\describe{
+\item{interval}{Numeric. An inter-dose interval to reach the target trough
+concentration before each dosing of a multiple dose regimen.}
+\item{type_of_estimate}{Character string. The type of estimate of the
+individual parameters. Either a point estimate, or a distribution.}
+\item{conc_estimate}{A vector of numeric estimates of the conc. Either a
+single value (for a point estimate of ETA), or a distribution.}
+\item{indiv_param}{A \code{data.frame}. The set of individual parameters used
+for the determination of the optimal dose : THETA, estimates of ETA, and
+covariates}
+}
 }
 \description{
 Estimates the optimal inter-dose interval for a selected target
