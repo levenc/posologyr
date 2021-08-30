@@ -110,17 +110,17 @@ poso_simu_pop <- function(object,n_simul=1000,
 #'    `AMS` is required in the patient record to define the segments for
 #'    the adaptive MAP approach.
 #' @param return_model A boolean. Returns a RxODE model using the estimated
-#'    ETAs if set to `TRUE`.
-#' @param return_fim A boolean. Returns the Fisher Information Matrix
-#'    (FIM) if set to `TRUE`.
-#' @param return_rse A boolean. Returns the relative standard errors
-#'    (RSE) of the MAP estimates of ETA if set to `TRUE`.
+#'    ETAs if set to `TRUE`. If `adapt=TRUE`, the model is solved using the
+#'    parameters estimated on the last segment.
+#' @param return_AMS_models A boolean. Returns a RxODE model using the estimated
+#'    ETAs for each Adaptive MAP Segment (AMS) if set to `TRUE`. Ignored if
+#'    `adapt=FALSE`.
 #'
 #' @return A named list consisting of one or more of the following elements
 #' depending on the input parameters of the function: `$eta` a named vector
 #' of the MAP estimates of the individual values of ETA, `$model` an RxODE
-#' model using the estimated ETAs, `$fim` the Fisher information matrix,
-#' `$rse` a named vector of RSEs of the MAP estimates of ETAs.
+#' model using the estimated ETAs, `AMS_models` a list of RxODE models, one for
+#' each Adaptive MAP Segment (AMS).
 #'
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
@@ -140,7 +140,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 #'
 #' @export
 poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
-                           return_fim=FALSE,return_rse=FALSE){
+                           return_AMS_models=FALSE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
@@ -213,6 +213,10 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     init_names     <- names(solved_model$inits)
     names(init_df) <- init_names
 
+    if(return_AMS_models){
+      AMS_models <- list()
+    }
+
     for(i in 1:n_segment){
 
       dat_segment  <- dat[which(dat$AMS == segment_id[i]),]
@@ -243,6 +247,11 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
       solved_model$params <- c(object$theta,unlist(eta_df[i+1,]))
       solved_model$inits  <- init_df[i,]
       init_df[i+1,]       <- utils::tail(solved_model[,init_names],1)
+
+      if(return_AMS_models){
+        # get the RxODE model for the current segment
+        AMS_models[[i]]      <- solved_model
+      }
     }
     eta_map <- unlist(utils::tail(eta_df,1))
 
@@ -268,15 +277,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     model_map$params <- c(theta,eta_map,covar)
     estim_map$model  <- model_map
   }
-  if(return_fim){
-    estim_map$fim    <- r$hessian #the objective function minimized is -LogLikelihood
-                                  # hence the hessian is the Fisher Information Matrix
-  }
-  if(return_rse){
-    map_se           <- sqrt(diag(solve(r$hessian))) #the inverse of the fim is the
-                                                     # variance-covariance matrix
-    map_rse          <- map_se/abs(eta_map[ind_eta])
-    estim_map$rse    <- map_rse
+  if(return_AMS_models){
+    estim_map$AMS_models <- AMS_models
   }
 
   return(estim_map)

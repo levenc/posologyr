@@ -155,8 +155,7 @@ also known as Empirical Bayes Estimates (EBE).</p>
   <span class='va'>object</span>,
   adapt <span class='op'>=</span> <span class='cn'>FALSE</span>,
   return_model <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  return_fim <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  return_rse <span class='op'>=</span> <span class='cn'>FALSE</span>
+  return_AMS_models <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -177,17 +176,14 @@ the adaptive MAP approach.</p></td>
     <tr>
       <th>return_model</th>
       <td><p>A boolean. Returns a RxODE model using the estimated
-ETAs if set to <code>TRUE</code>.</p></td>
+ETAs if set to <code>TRUE</code>. If <code>adapt=TRUE</code>, the model is solved using the
+parameters estimated on the last segment.</p></td>
     </tr>
     <tr>
-      <th>return_fim</th>
-      <td><p>A boolean. Returns the Fisher Information Matrix
-(FIM) if set to <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>return_rse</th>
-      <td><p>A boolean. Returns the relative standard errors
-(RSE) of the MAP estimates of ETA if set to <code>TRUE</code>.</p></td>
+      <th>return_AMS_models</th>
+      <td><p>A boolean. Returns a RxODE model using the estimated
+ETAs for each Adaptive MAP Segment (AMS) if set to <code>TRUE</code>. Ignored if
+<code>adapt=FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -196,8 +192,8 @@ ETAs if set to <code>TRUE</code>.</p></td>
     <p>A named list consisting of one or more of the following elements
 depending on the input parameters of the function: <code>$eta</code> a named vector
 of the MAP estimates of the individual values of ETA, <code>$model</code> an RxODE
-model using the estimated ETAs, <code>$fim</code> the Fisher information matrix,
-<code>$rse</code> a named vector of RSEs of the MAP estimates of ETAs.</p>
+model using the estimated ETAs, <code>AMS_models</code> a list of RxODE models, one for
+each Adaptive MAP Segment (AMS).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>
