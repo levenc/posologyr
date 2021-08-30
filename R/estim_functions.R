@@ -215,12 +215,12 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
     for(i in 1:n_segment){
 
-      if(i>1){ # set TIME == 0 when a segment starts
-        dat_segment$TIME  <- dat$TIME -
-          utils::tail(which(dat$AMS == segment_id[i-1]),1)$TIME
-      }
+      dat_segment  <- dat[which(dat$AMS == segment_id[i]),]
 
-      dat_segment  <- dat_segment[which(dat_segment$AMS == segment_id[i]),]
+      if(i>1){ # set TIME == 0 when a segment starts
+        dat_segment$TIME  <- dat_segment$TIME -
+          utils::tail(dat[dat$AMS == segment_id[i-1],]$TIME,1)
+      }
 
       # solved_model for the current segment
       solved_model <- RxODE::rxSolve(object$solved_ppk_model,
