@@ -159,7 +159,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     eta[ind_eta] <- eta_estim
 
     if(adapt){
-      eta <- eta + eta_df[i,]
+      eta        <- eta + eta_df[i,]
+      eta_estim  <- eta_estim + eta[ind_eta]
       #simulated concentrations with the proposed eta estimates
       f   <- do.call(run_model,list(c(theta,eta)))
       g   <- error_model(f,sigma)
@@ -277,7 +278,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     model_map$params <- c(theta,eta_map,covar)
     estim_map$model  <- model_map
   }
-  if(return_AMS_models){
+  if(adapt & return_AMS_models){
     estim_map$AMS_models <- AMS_models
   }
 
