@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimate the Maximum A Posteriori individual parameters — poso_estim_map • posologyr</title>
+<title>Estimate the optimal dose for a selected target concentration — poso_dose_conc • posologyr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,11 @@
 
 
 
-<meta property="og:title" content="Estimate the Maximum A Posteriori individual parameters — poso_estim_map" />
-<meta property="og:description" content="Estimates the Maximum A Posteriori (MAP) individual parameters,
-also known as Empirical Bayes Estimates (EBE)." />
+<meta property="og:title" content="Estimate the optimal dose for a selected target concentration — poso_dose_conc" />
+<meta property="og:description" content="Estimates the optimal dose for a selected target concentration at a
+selected point in time given a population pharmacokinetic model, a set
+of individual parameters, a selected point in time, and a target
+concentration." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -141,21 +143,31 @@ also known as Empirical Bayes Estimates (EBE)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimate the Maximum A Posteriori individual parameters</h1>
-    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/estim_functions.R'><code>R/estim_functions.R</code></a></small>
-    <div class="hidden name"><code>poso_estim_map.Rd</code></div>
+    <h1>Estimate the optimal dose for a selected target concentration</h1>
+    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/optim_functions.R'><code>R/optim_functions.R</code></a></small>
+    <div class="hidden name"><code>poso_dose_conc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Estimates the Maximum A Posteriori (MAP) individual parameters,
-also known as Empirical Bayes Estimates (EBE).</p>
+    <p>Estimates the optimal dose for a selected target concentration at a
+selected point in time given a population pharmacokinetic model, a set
+of individual parameters, a selected point in time, and a target
+concentration.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>poso_estim_map</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>poso_dose_conc</span><span class='op'>(</span>
   <span class='va'>object</span>,
+  <span class='va'>time_c</span>,
+  <span class='va'>target_conc</span>,
   adapt <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  return_model <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  return_AMS_models <span class='op'>=</span> <span class='cn'>FALSE</span>
+  estim_method <span class='op'>=</span> <span class='st'>"map"</span>,
+  p <span class='op'>=</span> <span class='cn'>NULL</span>,
+  greater_than <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  starting_dose <span class='op'>=</span> <span class='fl'>100</span>,
+  interdose_interval <span class='op'>=</span> <span class='cn'>NULL</span>,
+  add_dose <span class='op'>=</span> <span class='cn'>NULL</span>,
+  duration <span class='op'>=</span> <span class='cn'>NULL</span>,
+  indiv_param <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,33 +179,82 @@ also known as Empirical Bayes Estimates (EBE).</p>
 function.</p></td>
     </tr>
     <tr>
+      <th>time_c</th>
+      <td><p>Numeric. Point in time for which the dose is to be
+optimized.</p></td>
+    </tr>
+    <tr>
+      <th>target_conc</th>
+      <td><p>Numeric. Target concentration.</p></td>
+    </tr>
+    <tr>
       <th>adapt</th>
-      <td><p>A boolean. Should the estimation be performed with the
-adaptive MAP method (as opposed to the standard MAP)? A column
-<code>AMS</code> is required in the patient record to define the segments for
-the adaptive MAP approach.</p></td>
+      <td><p>A boolean. If <code>estim_method="map"</code>, should the estimation
+be performed with the adaptive MAP method (as opposed to the
+standard MAP)? A column named <code>AMS</code> is required in the patient record
+to define the segments for the adaptive MAP approach.</p></td>
     </tr>
     <tr>
-      <th>return_model</th>
-      <td><p>A boolean. Returns a RxODE model using the estimated
-ETAs if set to <code>TRUE</code>. If <code>adapt=TRUE</code>, the model is solved using the
-parameters estimated on the last segment.</p></td>
+      <th>estim_method</th>
+      <td><p>A character string. An estimation method to be used for
+the individual parameters. The default method "map" is the Maximum A
+Posteriori estimation, the method "prior" simulates from the prior
+population model, and "sir" uses the Sequential Importance Resampling
+algorithm to estimate the a posteriori distribution of the individual
+parameters. This argument is ignored if <code>indiv_param</code> is provided.</p></td>
     </tr>
     <tr>
-      <th>return_AMS_models</th>
-      <td><p>A boolean. Returns a RxODE model using the estimated
-ETAs for each Adaptive MAP Segment (AMS) if set to <code>TRUE</code>. Ignored if
-<code>adapt=FALSE</code>.</p></td>
+      <th>p</th>
+      <td><p>Numeric. The proportion of the distribution of concentrations to
+consider for the optimization. Mandatory for <code>estim_method=sir</code>.</p></td>
+    </tr>
+    <tr>
+      <th>greater_than</th>
+      <td><p>A boolean. If <code>TRUE</code>: targets a dose leading to a
+proportion <code>p</code> of the concentrations to be greater than <code>target_conc</code>.
+Respectively, lower if <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>starting_dose</th>
+      <td><p>Numeric. Starting dose for the optimization
+algorithm.</p></td>
+    </tr>
+    <tr>
+      <th>interdose_interval</th>
+      <td><p>Numeric. Time for the interdose interval
+for multiple dose regimen. Must be provided when add_dose is used.</p></td>
+    </tr>
+    <tr>
+      <th>add_dose</th>
+      <td><p>Numeric. Additional doses administered at
+inter-dose interval after the first dose. Optional.</p></td>
+    </tr>
+    <tr>
+      <th>duration</th>
+      <td><p>Numeric. Duration of infusion, for zero-order
+administrations.</p></td>
+    </tr>
+    <tr>
+      <th>indiv_param</th>
+      <td><p>Optional. A set of individual parameters : THETA,
+estimates of ETA, and covariates.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A named list consisting of one or more of the following elements
-depending on the input parameters of the function: <code>$eta</code> a named vector
-of the MAP estimates of the individual values of ETA, <code>$model</code> an RxODE
-model using the estimated ETAs, <code>AMS_models</code> a list of RxODE models, one for
-each Adaptive MAP Segment (AMS).</p>
+    <p>A list containing the following components:</p><dl>
+<dt>dose</dt><dd><p>Numeric. An optimal dose for the selected target concentration.</p></dd>
+<dt>type_of_estimate</dt><dd><p>Character string. The type of estimate of the
+individual parameters. Either a point estimate, or a distribution.</p></dd>
+<dt>conc_estimate</dt><dd><p>A vector of numeric estimates of the conc. Either a
+single value (for a point estimate of ETA), or a distribution.</p></dd>
+<dt>indiv_param</dt><dd><p>A <code>data.frame</code>. The set of individual parameters used
+for the determination of the optimal dose : THETA, estimates of ETA, and
+covariates</p></dd>
+
+</dl>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>
@@ -208,30 +269,21 @@ each Adaptive MAP Segment (AMS).</p>
 <span class='co'># loading a tobramycin model and Patient01's event record</span>
 <span class='va'>patient01_tobra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='posologyr.html'>posologyr</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
                              dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
-<span class='co'># estimate the Maximum A Posteriori individual parameters</span>
-<span class='fu'>poso_estim_map</span><span class='op'>(</span><span class='va'>patient01_tobra</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $eta
-#&gt;      ETA_ke       ETA_V     ETA_k12     ETA_k21 
-#&gt; -0.09255706  0.06709432  0.00000000  0.00000000 
+<span class='co'># estimate the optimal dose to reach a concentration of 80 mg/l</span>
+<span class='co'># one hour after starting the 30-minutes infusion</span>
+<span class='fu'>poso_dose_conc</span><span class='op'>(</span><span class='va'>patient01_tobra</span>,time_c<span class='op'>=</span><span class='fl'>1</span>,duration<span class='op'>=</span><span class='fl'>0.5</span>,target_conc<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $dose
+#&gt; [1] 2031.544
 #&gt; 
-#&gt; $model
-#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style='font-weight: bold;'>Solved RxODE object</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#&gt; ── <span style='font-weight: bold;'>Parameters</span> (<span style='color: #0000BB; font-weight: bold;'>$params</span>): ───────────────────────────────────────────────────────
-#&gt;    THETA_ke     CLCREAT          WT     THETA_V   THETA_k12   THETA_k21 
-#&gt;  0.21000000 80.00000000 65.00000000 19.80000000  0.04100000  0.12000000 
-#&gt;      ETA_ke       ETA_V 
-#&gt; -0.09255706  0.06709432 
-#&gt; ── <span style='font-weight: bold;'>Initial Conditions</span> (<span style='color: #0000BB; font-weight: bold;'>$inits</span>): ────────────────────────────────────────────────
-#&gt;  centr periph    AUC 
-#&gt;      0      0      0 
-#&gt; ── <span style='font-weight: bold;'>First part of data (object):</span> ────────────────────────────────────────────────
-#&gt; <span style='color: #949494;'># A tibble: 2 × 13</span>
-#&gt;    time tTVke  tTVV tTVk12 tTVk21    ke     V   k12   k21    Cc centr periph
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>1</span>     1 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.227  20.8 0.041  0.12 78.8  <span style='text-decoration: underline;'>1</span>639.   53.0
-#&gt; <span style='color: #BCBCBC;'>2</span>    14 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.227  20.8 0.041  0.12  5.13  107.  107. 
-#&gt; <span style='color: #949494;'># … with 1 more variable: AUC &lt;dbl&gt;</span>
-#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#&gt; $type_of_estimate
+#&gt; [1] "point estimate"
+#&gt; 
+#&gt; $conc_estimate
+#&gt; [1] 80
+#&gt; 
+#&gt; $indiv_param
+#&gt;   THETA_ke CLCREAT WT THETA_V THETA_k12 THETA_k21      ETA_ke      ETA_V
+#&gt; 1     0.21      80 65    19.8     0.041      0.12 -0.09255706 0.06709432
 #&gt; </div><div class='input'>
 </div></pre>
   </div>

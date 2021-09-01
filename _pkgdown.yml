@@ -9,7 +9,7 @@ reference:
 - title: "Dose optimisation functions"
 - contents:
   - poso_dose_auc
-  - poso_dose_ctime
+  - poso_dose_conc
   - poso_time_cmin
   - poso_inter_cmin
 - title: "Creation of a posologyr list"

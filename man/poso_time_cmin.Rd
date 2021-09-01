@@ -8,13 +8,16 @@ poso_time_cmin(
   object,
   dose,
   target_cmin,
-  param_map = NULL,
+  estim_method = "map",
+  p = NULL,
+  greater_than = TRUE,
   adapt = FALSE,
   from = 0.2,
   last_time = 72,
   add_dose = NULL,
   interdose_interval = NULL,
-  duration = NULL
+  duration = NULL,
+  indiv_param = NULL
 )
 }
 \arguments{
@@ -25,9 +28,19 @@ function.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 
-\item{param_map}{A vector of individual parameters. May be omitted,
-in which case the \code{\link{poso_estim_map}} function
-will be called.}
+\item{estim_method}{A character string. An estimation method to be used for
+the individual parameters. The default method "map" is the Maximum A
+Posteriori estimation, the method "prior" simulates from the prior
+population model, and "sir" uses the Sequential Importance Resampling
+algorithm to estimate the a posteriori distribution of the individual
+parameters. This argument is ignored if \code{indiv_param} is provided.}
+
+\item{p}{Numeric. The proportion of the distribution of cmin to consider for
+the estimation. Mandatory for \code{estim_method=sir}.}
+
+\item{greater_than}{A boolean. If \code{TRUE}: targets a time leading to a
+proportion \code{p} of the cmins to be greater than \code{target_cmin}.
+Respectively, lower if \code{FALSE}.}
 
 \item{adapt}{A boolean. If \code{param_map} is omitted, should the estimation
 be performed with the adaptive MAP method (as opposed to the
@@ -50,6 +63,9 @@ for multiple dose regimen. Must be provided when add_dose is used.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
 administrations.}
+
+\item{indiv_param}{Optional. A set of individual parameters : THETA,
+estimates of ETA, and covariates.}
 }
 \value{
 A numeric time to the selected trough concentration, from the

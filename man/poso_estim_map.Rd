@@ -8,8 +8,7 @@ poso_estim_map(
   object,
   adapt = FALSE,
   return_model = TRUE,
-  return_fim = FALSE,
-  return_rse = FALSE
+  return_AMS_models = FALSE
 )
 }
 \arguments{
@@ -22,20 +21,19 @@ adaptive MAP method (as opposed to the standard MAP)? A column
 the adaptive MAP approach.}
 
 \item{return_model}{A boolean. Returns a RxODE model using the estimated
-ETAs if set to \code{TRUE}.}
+ETAs if set to \code{TRUE}. If \code{adapt=TRUE}, the model is solved using the
+parameters estimated on the last segment.}
 
-\item{return_fim}{A boolean. Returns the Fisher Information Matrix
-(FIM) if set to \code{TRUE}.}
-
-\item{return_rse}{A boolean. Returns the relative standard errors
-(RSE) of the MAP estimates of ETA if set to \code{TRUE}.}
+\item{return_AMS_models}{A boolean. Returns a RxODE model using the estimated
+ETAs for each Adaptive MAP Segment (AMS) if set to \code{TRUE}. Ignored if
+\code{adapt=FALSE}.}
 }
 \value{
 A named list consisting of one or more of the following elements
 depending on the input parameters of the function: \verb{$eta} a named vector
 of the MAP estimates of the individual values of ETA, \verb{$model} an RxODE
-model using the estimated ETAs, \verb{$fim} the Fisher information matrix,
-\verb{$rse} a named vector of RSEs of the MAP estimates of ETAs.
+model using the estimated ETAs, \code{AMS_models} a list of RxODE models, one for
+each Adaptive MAP Segment (AMS).
 }
 \description{
 Estimates the Maximum A Posteriori (MAP) individual parameters,

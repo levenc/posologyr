@@ -50,10 +50,10 @@ patA_prior_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,
 In the absence of measured concentrations, the optimal dose in mg to achieve a so-called peak concentration of 80 mg/l (one hour after the start of the 30-minute infusion) is determined from the typical profile of the ppk model.
 
 ```{r prior_Cmax_optim_patientA}
-prior_dose <- poso_dose_ctime(patA_prior_amik,
+prior_dose <- poso_dose_conc(patA_prior_amik,
                               time_c = 1,
                               duration = 0.5,
-                              target_conc = 80)
+                              target_conc = 80)$dose
 prior_dose
 ```
 
@@ -65,7 +65,7 @@ With this dose, the time in hours required to reach a target Cmin concentration 
 prior_timecmin <- poso_time_cmin(patA_prior_amik,
                                  dose = prior_dose,
                                  duration = 0.5,
-                                 target_cmin = 2.5)
+                                 target_cmin = 2.5)$time
 prior_timecmin
 ```
 
@@ -179,7 +179,7 @@ With the MAP estimates of the individual parameters, the prediction of the time 
 map_timecmin_priordose <- poso_time_cmin(patA_tdm_amik,
                                          dose = prior_dose,
                                          duration = 0.5,
-                                         target_cmin = 2.5)
+                                         target_cmin = 2.5)$time
 map_timecmin_priordose
 ```
 
@@ -188,10 +188,10 @@ map_timecmin_priordose
 An optimal a posteriori dose to achieve a peak concentration of 80 mg/l is determined using the MAP estimates.
 
 ```{r map_Cmax_optim_patientA}
-map_dose <- poso_dose_ctime(patA_tdm_amik,
+map_dose <- poso_dose_conc(patA_tdm_amik,
                             time_c = 1,
                             duration = 0.5,
-                            target_conc = 80)
+                            target_conc = 80)$dose
 map_dose
 ```
 
@@ -203,7 +203,7 @@ The optimal inter-dose interval to reach a Cmin of 2.5 mg/L before each dosing i
 map_interval <- poso_inter_cmin(patA_tdm_amik,
                                dose = map_dose,
                                duration = 0.5,
-                               target_cmin = 2.5)
+                               target_cmin = 2.5)$interval
 map_interval
 ```
 
