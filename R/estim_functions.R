@@ -160,7 +160,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
     if(adapt){
       eta        <- eta + eta_df[i,]
-      eta_estim  <- eta_estim + eta[ind_eta]
       #simulated concentrations with the proposed eta estimates
       f   <- do.call(run_model,list(c(theta,eta)))
       g   <- error_model(f,sigma)
@@ -175,7 +174,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     #doi: 10.4196/kjpp.2012.16.2.97
     U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
     #the transpose of a diagonal matrix is itself
-    U_eta <- 0.5 * eta_estim %*% solve_omega %*% eta_estim
+    U_eta <- 0.5 * eta %*% solve_omega %*% eta
 
     optimize_me <- U_y + U_eta
     return(optimize_me)
