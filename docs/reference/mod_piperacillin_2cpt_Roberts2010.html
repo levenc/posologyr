@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • posologyr</title>
+<title>Two-compartment model of IV piperacillin (Roberts 2010) — mod_piperacillin_2cpt_Roberts2010 • posologyr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Two-compartment model of IV piperacillin (Roberts 2010) — mod_piperacillin_2cpt_Roberts2010" />
+<meta property="og:description" content="Population pharmacokinetics model from a study of piperacillin
+by continuous or intermittent dosing in critically ill patients
+with sepsis" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -66,7 +69,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -137,181 +140,56 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Two-compartment model of IV piperacillin (Roberts 2010)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/data.R'><code>R/data.R</code></a></small>
+    <div class="hidden name"><code>mod_piperacillin_2cpt_Roberts2010.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Population pharmacokinetics model from a study of piperacillin
+by continuous or intermittent dosing in critically ill patients
+with sepsis</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='va'>mod_piperacillin_2cpt_Roberts2010</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-estimation-functions" class="hasAnchor"><a href="#section-estimation-functions" class="anchor"></a>Estimation functions</h2>
-          <p class="section-desc"><p>Functions for estimating the pharmacokinetic parameters</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="poso_estim_map.html">poso_estim_map()</a></code> </p>
-        </td>
-        <td><p>Estimate the Maximum A Posteriori individual parameters</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_estim_mcmc.html">poso_estim_mcmc()</a></code> </p>
-        </td>
-        <td><p>Estimate the posterior distribution of individual parameters by MCMC</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_estim_sir.html">poso_estim_sir()</a></code> </p>
-        </td>
-        <td><p>Estimate the posterior distribution of individual parameters by SIR</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_simu_pop.html">poso_simu_pop()</a></code> </p>
-        </td>
-        <td><p>Estimate the prior distribution of population parameters</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-dose-optimisation-functions" class="hasAnchor"><a href="#section-dose-optimisation-functions" class="anchor"></a>Dose optimisation functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="poso_dose_auc.html">poso_dose_auc()</a></code> </p>
-        </td>
-        <td><p>Estimate the optimal dose for a selected target area under the
-time-concentration curve (AUC)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_dose_conc.html">poso_dose_conc()</a></code> </p>
-        </td>
-        <td><p>Estimate the optimal dose for a selected target concentration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_time_cmin.html">poso_time_cmin()</a></code> </p>
-        </td>
-        <td><p>Predict time to a selected trough concentration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poso_inter_cmin.html">poso_inter_cmin()</a></code> </p>
-        </td>
-        <td><p>Estimate the optimal inter-dose interval for a given dose and a
-selected target trough concentration</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-creation-of-a-posologyr-list" class="hasAnchor"><a href="#section-creation-of-a-posologyr-list" class="anchor"></a>Creation of a posologyr list</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="posologyr.html">posologyr()</a></code> </p>
-        </td>
-        <td><p>Creates a posologyr list from a prior model and an individual event
-record</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-error-models" class="hasAnchor"><a href="#section-error-models" class="anchor"></a>Error models</h2>
-          <p class="section-desc"><p>Functions for user-defined posologyr models</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="error_model_comb1.html">error_model_comb1()</a></code> </p>
-        </td>
-        <td><p>Residual error model combined 1</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="error_model_comb2.html">error_model_comb2()</a></code> </p>
-        </td>
-        <td><p>Residual error model combined 2</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-built-in-models" class="hasAnchor"><a href="#section-built-in-models" class="anchor"></a>Built-in models</h2>
-          <p class="section-desc"><p>ppk models built-in for tests and examples</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="mod_tobramycin_2cpt_fictional.html">mod_tobramycin_2cpt_fictional</a></code> </p>
-        </td>
-        <td><p>FICTIONAL IV tobramycin model for test purpose</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mod_vancomycin_2cpt_Goti2018.html">mod_vancomycin_2cpt_Goti2018</a></code> </p>
-        </td>
-        <td><p>Two-compartment model of IV vancomycin (Goti 2018)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mod_amikacin_2cpt_Burdet2015.html">mod_amikacin_2cpt_Burdet2015</a></code> </p>
-        </td>
-        <td><p>Two-compartment model of IV amikacin (Burdet 2015)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mod_piperacillin_2cpt_Roberts2010.html">mod_piperacillin_2cpt_Roberts2010</a></code> </p>
-        </td>
-        <td><p>Two-compartment model of IV piperacillin (Roberts 2010)</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A  list of seven objects:</p><dl>
+<dt>ppk_model</dt><dd><p>A RxODE model implementing the structural
+population pharmacokinetics model with the individual model
+(i.e. the model of inter-individual variability) and the
+covariates</p></dd>
+<dt>error_model</dt><dd><p>A function of the residual error model</p></dd>
+<dt>theta</dt><dd><p>A named vector of the population estimates of the
+fixed effects parameters (called THETAs, following NONMEM
+terminology)</p></dd>
+<dt>omega</dt><dd><p>A named square variance-covariance matrix of the
+population parameters of inter-individual variability (IIV)</p></dd>
+<dt>pi_matrix</dt><dd><p>A named square variance-covariance matrix of the
+population parameters of intra-individual variability (aka
+inter-occasion variability, IOV)</p></dd>
+<dt>covariates</dt><dd><p>A character vector of the covariates of
+the model</p></dd>
+<dt>sigma</dt><dd><p>The estimates of the parameters of the residual error model</p></dd>
+
+</dl>
+
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>doi: <a href='https://doi.org/10.1016/j.ijantimicag.2009.10.008'>10.1016/j.ijantimicag.2009.10.008</a></p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Covariate included in the model:</p><dl>
+<dt>TBW</dt><dd><p>Total body weight in kg</p></dd>
+
+</dl>
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

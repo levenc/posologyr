@@ -144,6 +144,12 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   validate_priormod(object)
   validate_dat(object$tdm_data)
 
+  if (is.null(object$tdm_data$OCC) | is.null(object$pi_matrix)){
+    estim_with_iov <- FALSE
+  } else {
+    estim_with_iov <- TRUE
+  }
+
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,init=model_init,model=solved_model){
     model$params <- x
@@ -156,7 +162,34 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega,
                       adapt=FALSE){
     eta          <- diag(omega)*0
-    eta[ind_eta] <- eta_estim
+
+    if (estim_with_iov){
+      eta[ind_eta] <- eta_estim[1:omega_dim]
+      n_iov        <- ncol(iov_col)-1   #minus one because of $OCC
+
+      for (i in seq_along(unique(dat$OCC))){
+        if (FALSE){
+          iov_col[iov_col$OCC == i,attr(pimat,"dimnames")[[1]]] <- 0
+        } else {
+          start_estim_iov <- omega_dim+1+n_iov*(i-1)
+          end_estim_iov   <- start_estim_iov+n_iov-1
+          iov_vector_i    <- eta_estim[start_estim_iov:end_estim_iov]
+
+          occ_size   <- length(iov_col[iov_col$OCC == i,1])
+          iov_mat_i  <- matrix(iov_vector_i,
+                               nrow=occ_size,
+                               ncol=n_iov,
+                               byrow=TRUE)
+
+          iov_col[iov_col$OCC == i,attr(pimat,"dimnames")[[1]]] <- iov_mat_i
+        }
+      }
+
+      data_iov     <<- dat <- data.frame(dat,iov_col)
+      solved_model <<- RxODE::rxSolve(solved_model,c(theta,eta),dat)
+    } else {
+      eta[ind_eta] <- eta_estim
+    }
 
     if(adapt){
       eta        <- eta + eta_df[i,]
@@ -193,6 +226,35 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   solve_omega  <- try(solve(omega_eta))         # inverse of omega_eta
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
   eta_map      <- diag(omega)*0
+
+  if (estim_with_iov){
+    data_iov     <- dat
+    pimat        <- object$pi_matrix
+
+    ind_kappa    <- which(diag(pimat)>0)
+    pimat_kappa  <- pimat[ind_kappa,ind_kappa]
+
+    omega_dim    <- ncol(omega_eta)
+    pimat_dim    <- ncol(pimat_kappa)
+    matrix_dim   <- omega_dim+pimat_dim*(length(unique(dat$OCC)))
+    all_the_mat  <- matrix(0,nrow=matrix_dim,ncol=matrix_dim)
+
+    all_the_mat[1:omega_dim,1:omega_dim] <- omega_eta
+    for (i in unique(dat$OCC)){
+      if (TRUE){
+        start_pi_mat <- omega_dim+pimat_dim*(i-1)+1
+        end_pi_mat   <- omega_dim+pimat_dim*(i)
+        all_the_mat[start_pi_mat:end_pi_mat,
+                    start_pi_mat:end_pi_mat] <- pimat_kappa
+      }
+    }
+    solve_omega   <- try(solve(all_the_mat))
+    start_eta     <- diag(all_the_mat)*0
+
+    iov_col        <- matrix(0,nrow=nrow(dat),ncol=nrow(pimat))
+    iov_col        <- data.frame(iov_col,dat$OCC)
+    names(iov_col) <- c(attr(pimat,"dimnames")[[1]],"OCC")
+  }
 
   if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
     if (is.null(dat$AMS)){
@@ -263,9 +325,13 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
     r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
-                      ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,hessian=TRUE)
+                      ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,method="L-BFGS-B")
 
-    eta_map[ind_eta] <- r$par
+    if (estim_with_iov){
+      eta_map[ind_eta] <- r$par[1:omega_dim]
+    } else {
+      eta_map[ind_eta] <- r$par
+    }
 
     covar            <- t(dat[1,object$covariates]) #results in a matrix
     names(covar)     <- object$covariates
@@ -273,6 +339,9 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
   estim_map          <- list(eta=eta_map)
 
+  if (estim_with_iov){
+    estim_map$data   <- data_iov
+  }
   if(return_model){
     model_map        <- solved_model
     model_map$params <- c(theta,eta_map,covar)

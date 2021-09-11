@@ -1,5 +1,7 @@
 # posologyr v0.1.1.9000
 
+* `poso_estim_map()` supports models with both inter-individual (IIV) and 
+inter-occasion variability (IOV).
 * `poso_estim_map()` allows the estimation of the individual parameters by 
 adaptive MAP forecasting (cf. doi: 10.1007/s11095-020-02908-7) with 
 `adapt=TRUE`.
@@ -9,6 +11,8 @@ roughly 25 times faster than `poso_estim_mcmc()` for 1000 samples.
 * `MASS:mvrnorm` is replaced by `mvtnorm::rmvnorm` for multivariate normal 
 distributions. 
 * Input validation is added to all exported functions.
+* `poso_estim_map()` now uses method="L-BFGS-B" in optim for better convergence 
+of the algorithm.
 * `poso_inter_cmin()` now uses method="L-BFGS-B" in optim for better convergence 
 of the algorithm.
 * `poso_dose_conc()` is the new name of `poso_dose_ctime()`.

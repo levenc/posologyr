@@ -103,3 +103,36 @@
 #' }
 #' @source \doi{10.1097/FTD.0000000000000490}
 "mod_vancomycin_2cpt_Goti2018"
+
+#' Two-compartment model of IV piperacillin (Roberts 2010)
+#'
+#' Population pharmacokinetics model from a study of piperacillin
+#' by continuous or intermittent dosing in critically ill patients
+#' with sepsis
+#'
+#' @format A  list of seven objects:
+#' \describe{
+#'  \item{ppk_model}{A RxODE model implementing the structural
+#'      population pharmacokinetics model with the individual model
+#'      (i.e. the model of inter-individual variability) and the
+#'      covariates}
+#'  \item{error_model}{A function of the residual error model}
+#'  \item{theta}{A named vector of the population estimates of the
+#'      fixed effects parameters (called THETAs, following NONMEM
+#'      terminology)}
+#'  \item{omega}{A named square variance-covariance matrix of the
+#'      population parameters of inter-individual variability (IIV)}
+#'  \item{pi_matrix}{A named square variance-covariance matrix of the
+#'      population parameters of intra-individual variability (aka
+#'      inter-occasion variability, IOV)}
+#'  \item{covariates}{A character vector of the covariates of
+#'      the model}
+#'  \item{sigma}{The estimates of the parameters of the residual error model}
+#' }
+#' @details
+#' Covariate included in the model:
+#' \describe{
+#'  \item{TBW}{Total body weight in kg}
+#'  }
+#' @source \doi{10.1016/j.ijantimicag.2009.10.008}
+"mod_piperacillin_2cpt_Roberts2010"

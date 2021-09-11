@@ -59,11 +59,15 @@ test_that("MAP estimates match nlmixr posthoc estimates", {
 test_that("adaptive MAP estimates match standard MAP estimates for
           a single segment", {
   expect_equal(patient03_amik_map$model$Cl[1],
-               patient03_amik_map_ad$model$Cl[1])
+               patient03_amik_map_ad$model$Cl[1],
+               tolerance=1e-3)
   expect_equal(patient03_amik_map$model$Vc[1],
-               patient03_amik_map_ad$model$Vc[1])
+               patient03_amik_map_ad$model$Vc[1],
+               tolerance=1e-3)
   expect_equal(patient03_amik_map$model$Vp[1],
-               patient03_amik_map_ad$model$Vp[1])
+               patient03_amik_map_ad$model$Vp[1],
+               tolerance=1e-3)
   expect_equal(patient03_amik_map$model$Q[1],
-               patient03_amik_map_ad$model$Q[1])
+               patient03_amik_map_ad$model$Q[1],
+               tolerance=1e-3)
 })
