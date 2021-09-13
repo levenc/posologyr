@@ -151,7 +151,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   }
 
   # Update model predictions with a new set of parameters, for all obs-----
-  run_model <- function(x,init=model_init,model=solved_model,dat.=dat){
+  run_model <- function(x,init=model_init,model=solved_model){
     if (!estim_with_iov){
       model$params <- x
       if(adapt){
