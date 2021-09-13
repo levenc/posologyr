@@ -151,13 +151,15 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   }
 
   # Update model predictions with a new set of parameters, for all obs-----
-  run_model <- function(x,init=model_init,model=solved_model){
-    model$params <- x
-    if(adapt){
-      model$inits  <- init
+  run_model <- function(x,init=model_init,model=solved_model,dat.=dat){
+    if (!estim_with_iov){
+      model$params <- x
+      if(adapt){
+        model$inits <- init
+      }
     }
     return(model$Cc)
-    }
+  }
 
   errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega,
                       adapt=FALSE){
