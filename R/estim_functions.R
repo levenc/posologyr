@@ -150,43 +150,17 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     estim_with_iov <- TRUE
   }
 
-  # Update model predictions with a new set of parameters, for all obs-----
-  run_model <- function(x,init=model_init,model=solved_model){
-    if (!estim_with_iov){
-      model$params <- x
-      if(adapt){
-        model$inits <- init
-      }
-    }
-    return(model$Cc)
-  }
-
   errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega,
                       adapt=FALSE){
     eta          <- diag(omega)*0
 
     if (estim_with_iov){
       eta[ind_eta] <- eta_estim[1:omega_dim]
-      n_iov        <- ncol(iov_col)-1   #minus one because of $OCC
-
-      for (i in seq_along(unique(dat$OCC))){
-        if (FALSE){
-          iov_col[iov_col$OCC == i,attr(pimat,"dimnames")[[1]]] <- 0
-        } else {
-          start_estim_iov <- omega_dim+1+n_iov*(i-1)
-          end_estim_iov   <- start_estim_iov+n_iov-1
-          iov_vector_i    <- eta_estim[start_estim_iov:end_estim_iov]
-
-          occ_size   <- length(iov_col[iov_col$OCC == i,1])
-          iov_mat_i  <- matrix(iov_vector_i,
-                               nrow=occ_size,
-                               ncol=n_iov,
-                               byrow=TRUE)
-
-          iov_col[iov_col$OCC == i,attr(pimat,"dimnames")[[1]]] <- iov_mat_i
-        }
-      }
-
+      iov_col <- iov_proposition_as_cols(iov_col=iov_col,
+                                         dat=dat,
+                                         pimat=pimat,
+                                         omega_dim=omega_dim,
+                                         eta_estim=eta_estim)
       data_iov     <<- dat <- data.frame(dat,iov_col)
       solved_model <<- RxODE::rxSolve(solved_model,c(theta,eta),dat)
     } else {
@@ -194,17 +168,18 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     }
 
     if(adapt){
-      eta        <- eta + eta_df[i,]
+      eta       <- eta + eta_df[i,]
       eta_estim <- eta_estim + eta[ind_eta]
-      #simulated concentrations with the proposed eta estimates
-      f   <- do.call(run_model,list(c(theta,eta)))
-      g   <- error_model(f,sigma)
     }
-    else {
-      #simulated concentrations with the proposed eta estimates
-      f   <- do.call(run_model,list(c(theta,eta)))
-      g   <- error_model(f,sigma)
-    }
+
+    #simulated concentrations with the proposed eta estimates
+    f   <- do.call(run_model,list(c(theta,eta),
+                                  model=solved_model,
+                                  init=model_init,
+                                  estim_with_iov.=estim_with_iov,
+                                  adapt=adapt))
+    g   <- error_model(f,sigma)
+
 
     #objective function for the Empirical Bayes Estimates
     #doi: 10.4196/kjpp.2012.16.2.97
@@ -214,7 +189,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
     optimize_me <- U_y + U_eta
     return(optimize_me)
-    }
+  }
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
@@ -324,6 +299,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     names(covar)     <- object$covariates
   }
   else{ #standard MAP estimation
+    model_init       <- 0                             # to appease run_model()
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
     r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
@@ -670,4 +646,43 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
   }
 
   return(estim_sir)
+}
+
+
+
+# Update model predictions with a new set of parameters, for all obs-----
+run_model <- function(x,init=model_init,model=solved_model,
+                      estim_with_iov.=estim_with_iov,adapt=adapt){
+  if (!estim_with_iov.){ #RxODE already updated in errpred() if estim_with_iov
+    model$params <- x
+    if(adapt){
+      model$inits <- init
+    }
+  }
+  return(model$Cc)
+}
+
+# Get propositions for values of kappa and put them in colums to be added
+#  to the dataset for RxODE
+iov_proposition_as_cols <- function(iov_col=iov_col,
+                                    dat=dat,
+                                    pimat=pimat,
+                                    omega_dim=omega_dim,
+                                    eta_estim=eta_estim){
+  n_iov        <- ncol(iov_col)-1   #minus one because of $OCC
+
+  for (i in seq_along(unique(dat$OCC))){
+      start_estim_iov <- omega_dim+1+n_iov*(i-1)
+      end_estim_iov   <- start_estim_iov+n_iov-1
+      iov_vector_i    <- eta_estim[start_estim_iov:end_estim_iov]
+
+      occ_size   <- length(iov_col[iov_col$OCC == i,1])
+      iov_mat_i  <- matrix(iov_vector_i,
+                           nrow=occ_size,
+                           ncol=n_iov,
+                           byrow=TRUE)
+
+      iov_col[iov_col$OCC == i,attr(pimat,"dimnames")[[1]]] <- iov_mat_i
+  }
+  return(iov_col)
 }
