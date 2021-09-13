@@ -174,9 +174,9 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
     #simulated concentrations with the proposed eta estimates
     f   <- do.call(run_model,list(c(theta,eta),
-                                  model=solved_model,
-                                  init=model_init,
-                                  estim_with_iov.=estim_with_iov,
+                                  model_init=model_init,
+                                  solved_model=solved_model,
+                                  estim_with_iov=estim_with_iov,
                                   adapt=adapt))
     g   <- error_model(f,sigma)
 
@@ -651,15 +651,15 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
 
 
 # Update model predictions with a new set of parameters, for all obs-----
-run_model <- function(x,init=model_init,model=solved_model,
-                      estim_with_iov.=estim_with_iov,adapt=adapt){
-  if (!estim_with_iov.){ #RxODE already updated in errpred() if estim_with_iov
-    model$params <- x
+run_model <- function(x,model_init=NULL,solved_model=NULL,
+                      estim_with_iov=NULL,adapt=NULL){
+  if (!estim_with_iov){ #RxODE already updated in errpred() if estim_with_iov
+    solved_model$params <- x
     if(adapt){
-      model$inits <- init
+      solved_model$inits <- model_init
     }
   }
-  return(model$Cc)
+  return(solved_model$Cc)
 }
 
 # Get propositions for values of kappa and put them in colums to be added
