@@ -150,47 +150,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     estim_with_iov <- TRUE
   }
 
-  errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega,
-                      adapt=FALSE){
-    eta          <- diag(omega)*0
-
-    if (estim_with_iov){
-      eta[ind_eta] <- eta_estim[1:omega_dim]
-      iov_col <- iov_proposition_as_cols(iov_col=iov_col,
-                                         dat=dat,
-                                         pimat=pimat,
-                                         omega_dim=omega_dim,
-                                         eta_estim=eta_estim)
-      data_iov     <<- dat <- data.frame(dat,iov_col)
-      solved_model <<- RxODE::rxSolve(solved_model,c(theta,eta),dat)
-    } else {
-      eta[ind_eta] <- eta_estim
-    }
-
-    if(adapt){
-      eta       <- eta + eta_df[i,]
-      eta_estim <- eta_estim + eta[ind_eta]
-    }
-
-    #simulated concentrations with the proposed eta estimates
-    f   <- do.call(run_model,list(c(theta,eta),
-                                  model_init=model_init,
-                                  solved_model=solved_model,
-                                  estim_with_iov=estim_with_iov,
-                                  adapt=adapt))
-    g   <- error_model(f,sigma)
-
-
-    #objective function for the Empirical Bayes Estimates
-    #doi: 10.4196/kjpp.2012.16.2.97
-    U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-    #the transpose of a diagonal matrix is itself
-    U_eta <- 0.5 * eta_estim %*% solve_omega %*% eta_estim
-
-    optimize_me <- U_y + U_eta
-    return(optimize_me)
-  }
-
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
   omega        <- object$omega
@@ -203,6 +162,9 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   solve_omega  <- try(solve(omega_eta))         # inverse of omega_eta
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
   eta_map      <- diag(omega)*0
+
+  # list of outputs
+  estim_map    <- list(eta=eta_map)
 
   if (estim_with_iov){
     data_iov     <- dat
@@ -257,13 +219,13 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
       AMS_models <- list()
     }
 
-    for(i in 1:n_segment){
+    for(index_segment in 1:n_segment){
 
-      dat_segment  <- dat[which(dat$AMS == segment_id[i]),]
+      dat_segment  <- dat[which(dat$AMS == segment_id[index_segment]),]
 
-      if(i>1){ # set TIME == 0 when a segment starts
+      if(index_segment>1){ # set TIME == 0 when a segment starts
         dat_segment$TIME  <- dat_segment$TIME -
-          utils::tail(dat[dat$AMS == segment_id[i-1],]$TIME,1)
+          utils::tail(dat[dat$AMS == segment_id[index_segment-1],]$TIME,1)
       }
 
       # solved_model for the current segment
@@ -274,23 +236,40 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
       y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
 
-      model_init   <- init_df[i,]
+      model_init   <- init_df[index_segment,]
 
-      r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,
-                        theta=theta,ind_eta=ind_eta,sigma=sigma,
-                        solve_omega=solve_omega,hessian=TRUE)
+      r <- stats::optim(start_eta,errpred,
+                        run_model=run_model,
+                        y_obs=y_obs,
+                        theta=theta,
+                        ind_eta=ind_eta,
+                        sigma=sigma,
+                        solve_omega=solve_omega,
+                        omega=omega,
+                        omega_dim=omega_dim,
+                        iov_col=iov_col,
+                        pimat=pimat,
+                        dat=dat,
+                        eta_df=eta_df,
+                        model_init=model_init,
+                        solved_model=solved_model,
+                        error_model=error_model,
+                        estim_with_iov=estim_with_iov,
+                        adapt=adapt,
+                        index_segment=index_segment,
+                        method="L-BFGS-B")
 
-      eta_map[ind_eta]   <- r$par
-      eta_df[i+1,]       <- eta_map + eta_df[i,]
+      eta_map[ind_eta]              <- r$par
+      eta_df[index_segment+1,]      <- eta_map + eta_df[index_segment,]
 
       # get the ODE compartment states at the end of the segment
-      solved_model$params <- c(object$theta,unlist(eta_df[i+1,]))
-      solved_model$inits  <- init_df[i,]
-      init_df[i+1,]       <- utils::tail(solved_model[,init_names],1)
+      solved_model$params <- c(theta,unlist(eta_df[index_segment+1,]))
+      solved_model$inits  <- init_df[index_segment,]
+      init_df[index_segment+1,]       <- utils::tail(solved_model[,init_names],1)
 
       if(return_AMS_models){
         # get the RxODE model for the current segment
-        AMS_models[[i]]      <- solved_model
+        AMS_models[[index_segment]]   <- solved_model
       }
     }
     eta_map <- unlist(utils::tail(eta_df,1))
@@ -302,11 +281,35 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     model_init       <- 0                             # to appease run_model()
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
-    r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
-                      ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,method="L-BFGS-B")
+    r <- stats::optim(start_eta,errpred,
+                      run_model=run_model,
+                      y_obs=y_obs,
+                      theta=theta,
+                      ind_eta=ind_eta,
+                      sigma=sigma,
+                      solve_omega=solve_omega,
+                      omega=omega,
+                      omega_dim=omega_dim,
+                      iov_col=iov_col,
+                      pimat=pimat,
+                      dat=dat,
+                      eta_df=eta_df,
+                      model_init=model_init,
+                      solved_model=solved_model,
+                      error_model=error_model,
+                      estim_with_iov=estim_with_iov,
+                      adapt=adapt,
+                      method="L-BFGS-B")
 
     if (estim_with_iov){
       eta_map[ind_eta] <- r$par[1:omega_dim]
+      iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
+                                         omega_dim=omega_dim,
+                                         eta_estim=r$par)
+      data_iov     <- data.frame(dat,iov_col)
+      solved_model <- RxODE::rxSolve(solved_model,c(theta,eta_map),data_iov)
+
+      estim_map$data   <- data_iov
     } else {
       eta_map[ind_eta] <- r$par
     }
@@ -315,11 +318,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     names(covar)     <- object$covariates
   }
 
-  estim_map          <- list(eta=eta_map)
 
-  if (estim_with_iov){
-    estim_map$data   <- data_iov
-  }
+
   if(return_model){
     model_map        <- solved_model
     model_map$params <- c(theta,eta_map,covar)
@@ -606,9 +606,8 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
     g        <- error_model(f,sigma)
-    U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-    U_eta    <- 0.5 * eta %*% solve_omega %*% eta
-    minus_LL <- U_y + U_eta
+    minus_LL <- objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+                                   solve_omega=solve_omega)
     return(-minus_LL)
   }
 
@@ -664,11 +663,11 @@ run_model <- function(x,model_init=NULL,solved_model=NULL,
 
 # Get propositions for values of kappa and put them in colums to be added
 #  to the dataset for RxODE
-iov_proposition_as_cols <- function(iov_col=iov_col,
-                                    dat=dat,
-                                    pimat=pimat,
-                                    omega_dim=omega_dim,
-                                    eta_estim=eta_estim){
+iov_proposition_as_cols <- function(iov_col=NULL,
+                                    dat=NULL,
+                                    pimat=NULL,
+                                    omega_dim=NULL,
+                                    eta_estim=NULL){
   n_iov        <- ncol(iov_col)-1   #minus one because of $OCC
 
   for (i in seq_along(unique(dat$OCC))){
@@ -685,4 +684,70 @@ iov_proposition_as_cols <- function(iov_col=iov_col,
       iov_col[iov_col$OCC == i,attr(pimat,"dimnames")[[1]]] <- iov_mat_i
   }
   return(iov_col)
+}
+
+
+# Objective function for the Empirical Bayes Estimates
+# doi: 10.4196/kjpp.2012.16.2.97
+objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
+                               eta=NULL,solve_omega=NULL){
+  U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+  #the transpose of a diagonal matrix is itself
+  U_eta <- 0.5 * eta %*% solve_omega %*% eta
+
+  OFV <- U_y + U_eta
+  return(OFV)
+}
+
+# prediction error to optimize for MAP-EBE
+errpred <- function(eta_estim=NULL,
+                    run_model=NULL,
+                    y_obs=NULL,
+                    theta=NULL,
+                    ind_eta=NULL,
+                    sigma=NULL,
+                    solve_omega=NULL,
+                    omega=NULL,
+                    omega_dim=NULL,
+                    iov_col=NULL,
+                    pimat=NULL,
+                    dat=NULL,
+                    eta_df=NULL,
+                    model_init=NULL,
+                    solved_model=NULL,
+                    error_model=NULL,
+                    estim_with_iov=NULL,
+                    adapt=NULL,
+                    index_segment=NULL){
+
+  eta          <- diag(omega)*0
+
+  if (estim_with_iov){
+    eta[ind_eta] <- eta_estim[1:omega_dim]
+    iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
+                                       omega_dim=omega_dim,
+                                       eta_estim=eta_estim)
+    dat <- data.frame(dat,iov_col)
+    solved_model <- RxODE::rxSolve(solved_model,c(theta,eta),dat)
+  } else {
+    eta[ind_eta] <- eta_estim
+  }
+  if(adapt){
+    eta       <- eta + eta_df[index_segment,]
+    eta       <- unlist(eta)                  # avoid conversion to data.frame
+    eta_estim <- eta_estim + eta_df[index_segment,ind_eta]
+    eta_estim <- unlist(eta_estim)            # avoid conversion to data.frame
+  }
+  #simulated concentrations with the proposed eta estimates
+  f   <- do.call(run_model,list(c(theta,eta),
+                                model_init=model_init,
+                                solved_model=solved_model,
+                                estim_with_iov=estim_with_iov,
+                                adapt=adapt))
+  g   <- error_model(f,sigma)
+
+  optimize_me <- objective_function(y_obs=y_obs,f=f,g=g,
+                                    eta=eta_estim,
+                                    solve_omega=solve_omega)
+  return(optimize_me)
 }
