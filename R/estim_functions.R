@@ -732,11 +732,9 @@ errpred <- function(eta_estim=NULL,
   } else {
     eta[ind_eta] <- eta_estim
   }
-  if(adapt){
-    eta       <- eta + eta_df[index_segment,]
-    eta       <- unlist(eta)                  # avoid conversion to data.frame
-    eta_estim <- eta_estim + eta_df[index_segment,ind_eta]
-    eta_estim <- unlist(eta_estim)            # avoid conversion to data.frame
+  if(adapt){     # unlist avoids conversion to data.frame
+    eta       <- unlist(eta + eta_df[index_segment,])
+    eta_estim <- unlist(eta_estim + eta_df[index_segment,ind_eta])
   }
   #simulated concentrations with the proposed eta estimates
   f   <- do.call(run_model,list(c(theta,eta),
