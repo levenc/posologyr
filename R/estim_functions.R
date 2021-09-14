@@ -175,24 +175,16 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
     omega_dim    <- ncol(omega_eta)
     pimat_dim    <- ncol(pimat_kappa)
-    matrix_dim   <- omega_dim+pimat_dim*(length(unique(dat$OCC)))
-    all_the_mat  <- matrix(0,nrow=matrix_dim,ncol=matrix_dim)
 
-    all_the_mat[1:omega_dim,1:omega_dim] <- omega_eta
-    for (i in unique(dat$OCC)){
-      if (TRUE){
-        start_pi_mat <- omega_dim+pimat_dim*(i-1)+1
-        end_pi_mat   <- omega_dim+pimat_dim*(i)
-        all_the_mat[start_pi_mat:end_pi_mat,
-                    start_pi_mat:end_pi_mat] <- pimat_kappa
-      }
-    }
+    iov_col      <- init_iov_col(dat=dat,pimat=pimat)
+    all_the_mat  <- merge_covar_matrices(omega_eta=omega_eta,
+                                         omega_dim=omega_dim,
+                                         pimat_dim=pimat_dim,
+                                         pimat_kappa=pimat_kappa,
+                                         dat=dat)
+
     solve_omega   <- try(solve(all_the_mat))
     start_eta     <- diag(all_the_mat)*0
-
-    iov_col        <- matrix(0,nrow=nrow(dat),ncol=nrow(pimat))
-    iov_col        <- data.frame(iov_col,dat$OCC)
-    names(iov_col) <- c(attr(pimat,"dimnames")[[1]],"OCC")
   }
 
   if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
@@ -201,80 +193,31 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
       segments for adaptive MAP forecasting")
     }
 
-    segment_id     <- unique(dat$AMS)
-    n_segment      <- length(segment_id)
-    dat_segment    <- dat
-
-    eta_mat        <- matrix(0,nrow=n_segment+1,ncol=ncol(omega))
-    eta_df         <- data.frame(eta_mat)
-    names(eta_df ) <- attr(omega,"dimnames")[[1]]
-
-    init_mat       <- matrix(0,nrow=n_segment+1,
-                             ncol=length(solved_model$inits))
-    init_df        <- data.frame(init_mat)
-    init_names     <- names(solved_model$inits)
-    names(init_df) <- init_names
-
+    adaptive_output <- adaptive_map(return_AMS_models=return_AMS_models,
+                                    dat=dat,
+                                    solved_model=solved_model,
+                                    theta=theta,
+                                    omega=omega,
+                                    start_eta=start_eta,
+                                    errpred=errpred,
+                                    run_model=run_model,
+                                    ind_eta=ind_eta,
+                                    sigma=sigma,
+                                    solve_omega=solve_omega,
+                                    omega_dim=omega_dim,
+                                    iov_col=iov_col,
+                                    pimat=pimat,
+                                    eta_map=eta_map,
+                                    error_model=error_model,
+                                    estim_with_iov=estim_with_iov,
+                                    adapt=adapt)
     if(return_AMS_models){
-      AMS_models <- list()
+    AMS_models <- adaptive_output$AMS_models
     }
-
-    for(index_segment in 1:n_segment){
-
-      dat_segment  <- dat[which(dat$AMS == segment_id[index_segment]),]
-
-      if(index_segment>1){ # set TIME == 0 when a segment starts
-        dat_segment$TIME  <- dat_segment$TIME -
-          utils::tail(dat[dat$AMS == segment_id[index_segment-1],]$TIME,1)
-      }
-
-      # solved_model for the current segment
-      solved_model <- RxODE::rxSolve(object$solved_ppk_model,
-                                     c(object$theta,
-                                       diag(object$omega)*0),
-                                     dat_segment)
-
-      y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
-
-      model_init   <- init_df[index_segment,]
-
-      r <- stats::optim(start_eta,errpred,
-                        run_model=run_model,
-                        y_obs=y_obs,
-                        theta=theta,
-                        ind_eta=ind_eta,
-                        sigma=sigma,
-                        solve_omega=solve_omega,
-                        omega=omega,
-                        omega_dim=omega_dim,
-                        iov_col=iov_col,
-                        pimat=pimat,
-                        dat=dat,
-                        eta_df=eta_df,
-                        model_init=model_init,
-                        solved_model=solved_model,
-                        error_model=error_model,
-                        estim_with_iov=estim_with_iov,
-                        adapt=adapt,
-                        index_segment=index_segment,
-                        method="L-BFGS-B")
-
-      eta_map[ind_eta]              <- r$par
-      eta_df[index_segment+1,]      <- eta_map + eta_df[index_segment,]
-
-      # get the ODE compartment states at the end of the segment
-      solved_model$params <- c(theta,unlist(eta_df[index_segment+1,]))
-      solved_model$inits  <- init_df[index_segment,]
-      init_df[index_segment+1,]       <- utils::tail(solved_model[,init_names],1)
-
-      if(return_AMS_models){
-        # get the RxODE model for the current segment
-        AMS_models[[index_segment]]   <- solved_model
-      }
-    }
+    eta_df     <- adaptive_output$eta_df
     eta_map <- unlist(utils::tail(eta_df,1))
 
-    covar            <- t(dat_segment[1,object$covariates])
+    covar            <- t(utils::tail(dat[,object$covariates]))
     names(covar)     <- object$covariates
   }
   else{ #standard MAP estimation
@@ -317,8 +260,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     covar            <- t(dat[1,object$covariates]) #results in a matrix
     names(covar)     <- object$covariates
   }
-
-
 
   if(return_model){
     model_map        <- solved_model
@@ -748,4 +689,130 @@ errpred <- function(eta_estim=NULL,
                                     eta=eta_estim,
                                     solve_omega=solve_omega)
   return(optimize_me)
+}
+
+# make a single matrix of omega and pi_matrix
+merge_covar_matrices <- function(omega_eta=NULL,
+                                 omega_dim=NULL,
+                                 pimat_dim=NULL,
+                                 pimat_kappa=NULL,
+                                 dat=NULL){
+  matrix_dim   <- omega_dim+pimat_dim*(length(unique(dat$OCC)))
+  all_the_mat  <- matrix(0,nrow=matrix_dim,ncol=matrix_dim)
+  all_the_mat[1:omega_dim,1:omega_dim] <- omega_eta
+  for (i in unique(dat$OCC)){
+    if (TRUE){
+      start_pi_mat <- omega_dim+pimat_dim*(i-1)+1
+      end_pi_mat   <- omega_dim+pimat_dim*(i)
+      all_the_mat[start_pi_mat:end_pi_mat,
+                  start_pi_mat:end_pi_mat] <- pimat_kappa
+    }
+  }
+  return(all_the_mat)
+}
+
+# create colums to store the estimations of KAPPA
+init_iov_col <- function(dat=NULL,
+                         pimat=NULL){
+  iov_col        <- matrix(0,nrow=nrow(dat),ncol=nrow(pimat))
+  iov_col        <- data.frame(iov_col,dat$OCC)
+  names(iov_col) <- c(attr(pimat,"dimnames")[[1]],"OCC")
+  return(iov_col)
+}
+
+# iterative adaptive MAP estimation
+adaptive_map <- function(return_AMS_models=NULL,
+                         dat=NULL,
+                         solved_model=NULL,
+                         theta=NULL,
+                         omega=NULL,
+                         start_eta=NULL,
+                         errpred=NULL,
+                         run_model=NULL,
+                         ind_eta=NULL,
+                         sigma=NULL,
+                         solve_omega=NULL,
+                         omega_dim=NULL,
+                         iov_col=NULL,
+                         pimat=NULL,
+                         eta_map=NULL,
+                         error_model=NULL,
+                         estim_with_iov=NULL,
+                         adapt=NULL){
+
+  segment_id     <- unique(dat$AMS)
+  n_segment      <- length(segment_id)
+  dat_segment    <- dat
+
+  eta_mat        <- matrix(0,nrow=n_segment+1,ncol=ncol(omega))
+  eta_df         <- data.frame(eta_mat)
+  names(eta_df)  <- attr(omega,"dimnames")[[1]]
+
+  init_mat       <- matrix(0,nrow=n_segment+1,
+                           ncol=length(solved_model$inits))
+  init_df        <- data.frame(init_mat)
+  init_names     <- names(solved_model$inits)
+  names(init_df) <- init_names
+
+  if(return_AMS_models){
+    AMS_models <- list()
+  }
+
+  for(index_segment in 1:n_segment){
+
+    dat_segment  <- dat[which(dat$AMS == segment_id[index_segment]),]
+
+    if(index_segment>1){ # set TIME == 0 when a segment starts
+      dat_segment$TIME  <- dat_segment$TIME -
+        utils::tail(dat[dat$AMS == segment_id[index_segment-1],]$TIME,1)
+    }
+
+    # solved_model for the current segment
+    solved_model <- RxODE::rxSolve(solved_model,c(theta,start_eta),
+                                   dat_segment)
+
+    y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
+
+    model_init   <- init_df[index_segment,]
+
+    r <- stats::optim(start_eta,errpred,
+                      run_model=run_model,
+                      y_obs=y_obs,
+                      theta=theta,
+                      ind_eta=ind_eta,
+                      sigma=sigma,
+                      solve_omega=solve_omega,
+                      omega=omega,
+                      omega_dim=omega_dim,
+                      iov_col=iov_col,
+                      pimat=pimat,
+                      dat=dat,
+                      eta_df=eta_df,
+                      model_init=model_init,
+                      solved_model=solved_model,
+                      error_model=error_model,
+                      estim_with_iov=estim_with_iov,
+                      adapt=adapt,
+                      index_segment=index_segment,
+                      method="L-BFGS-B")
+
+    eta_map[ind_eta]              <- r$par
+    eta_df[index_segment+1,]      <- eta_map + eta_df[index_segment,]
+
+    # get the ODE compartment states at the end of the segment
+    solved_model$params <- c(theta,unlist(eta_df[index_segment+1,]))
+    solved_model$inits  <- init_df[index_segment,]
+    init_df[index_segment+1,]       <- utils::tail(solved_model[,init_names],1)
+
+    if(return_AMS_models){
+      # get the RxODE model for the current segment
+      AMS_models[[index_segment]]   <- solved_model
+    }
+  }
+  adaptive_output <- list(eta_df=eta_df)
+
+  if(return_AMS_models){
+    adaptive_output$AMS_models <- AMS_models
+  }
+  return(adaptive_output)
 }
