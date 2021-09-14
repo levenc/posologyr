@@ -166,27 +166,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   # list of outputs
   estim_map    <- list(eta=eta_map)
 
-  if (estim_with_iov){
-    data_iov     <- dat
-    pimat        <- object$pi_matrix
-
-    ind_kappa    <- which(diag(pimat)>0)
-    pimat_kappa  <- pimat[ind_kappa,ind_kappa]
-
-    omega_dim    <- ncol(omega_eta)
-    pimat_dim    <- ncol(pimat_kappa)
-
-    iov_col      <- init_iov_col(dat=dat,pimat=pimat)
-    all_the_mat  <- merge_covar_matrices(omega_eta=omega_eta,
-                                         omega_dim=omega_dim,
-                                         pimat_dim=pimat_dim,
-                                         pimat_kappa=pimat_kappa,
-                                         dat=dat)
-
-    solve_omega   <- try(solve(all_the_mat))
-    start_eta     <- diag(all_the_mat)*0
-  }
-
   if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
     if (is.null(dat$AMS)){
       stop("The AMS column is required in the patient record to define the
@@ -221,6 +200,27 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     names(covar)     <- object$covariates
   }
   else{ #standard MAP estimation
+    if (estim_with_iov){
+      data_iov     <- dat
+      pimat        <- object$pi_matrix
+
+      ind_kappa    <- which(diag(pimat)>0)
+      pimat_kappa  <- pimat[ind_kappa,ind_kappa]
+
+      omega_dim    <- ncol(omega_eta)
+      pimat_dim    <- ncol(pimat_kappa)
+
+      iov_col      <- init_iov_col(dat=dat,pimat=pimat)
+      all_the_mat  <- merge_covar_matrices(omega_eta=omega_eta,
+                                           omega_dim=omega_dim,
+                                           pimat_dim=pimat_dim,
+                                           pimat_kappa=pimat_kappa,
+                                           dat=dat)
+
+      solve_omega   <- try(solve(all_the_mat))
+      start_eta     <- diag(all_the_mat)*0
+    }
+
     model_init       <- 0                             # to appease run_model()
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
