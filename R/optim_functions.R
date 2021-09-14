@@ -183,18 +183,7 @@ poso_time_cmin <- function(object,dose,target_cmin,
                                    params=indiv_param,
                                    event_table_cmin)
 
-  if (select_proposal_from_distribution == FALSE){
-    #compute time_to_target taking into account the multiple doses if needed
-    # time_to_target: time after the last dose for which Cc is lower than
-    # target_cmin
-    time_to_target <-
-      min(cmin_ppk_model$time[cmin_ppk_model$Cc < target_cmin]) - time_last_dose
-    #here cmin_distribution is a point estimate of Cc
-    cmin_distribution <<-
-      cmin_ppk_model$Cc[cmin_ppk_model$time == (time_to_target +
-                                                        time_last_dose)]
-  }
-  if (select_proposal_from_distribution == TRUE){
+  if (select_proposal_from_distribution){
     wide_cmin      <- tidyr::pivot_wider(cmin_ppk_model,
                                         id_cols = "time",
                                         names_from = "sim.id",
@@ -229,6 +218,16 @@ poso_time_cmin <- function(object,dose,target_cmin,
                                      time_last_dose),]
     cmin_distribution$time <- cmin_distribution$cmin_p <- NULL
     cmin_distribution      <- unlist(cmin_distribution,use.names=FALSE)
+  } else {
+    #compute time_to_target taking into account the multiple doses if needed
+    # time_to_target: time after the last dose for which Cc is lower than
+    # target_cmin
+    time_to_target <-
+      min(cmin_ppk_model$time[cmin_ppk_model$Cc < target_cmin]) - time_last_dose
+    #here cmin_distribution is a point estimate of Cc
+    cmin_distribution <<-
+      cmin_ppk_model$Cc[cmin_ppk_model$time == (time_to_target +
+                                                  time_last_dose)]
   }
 
   ifelse(select_proposal_from_distribution,
@@ -358,11 +357,7 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
                                     params=indiv_param,
                                     event_table_auc)
 
-    if (select_proposal_from_distribution == FALSE){
-      auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
-      auc_distribution <<- auc_proposal
-    }
-    if (select_proposal_from_distribution == TRUE){
+    if (select_proposal_from_distribution){
       wide_auc      <- tidyr::pivot_wider(auc_ppk_model,
                                           id_cols = "sim.id",
                                           names_from = "time",
@@ -386,6 +381,9 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
       } else {
         auc_proposal <- sorted_auc[auc_index]
       }
+    } else {
+      auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
+      auc_distribution <<- auc_proposal
     }
 
     #return the difference between the computed AUC and the target
@@ -528,11 +526,7 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
                                       params=indiv_param,
                                       event_table_ctime)
 
-    if (select_proposal_from_distribution == FALSE){
-      conc_proposal     <- ctime_ppk_model$Cc
-      conc_distribution <<- conc_proposal
-    }
-    if (select_proposal_from_distribution == TRUE){
+    if (select_proposal_from_distribution){
 
       sorted_conc     <- sort(ctime_ppk_model$Cc)
       n_conc          <- length(sorted_conc)
@@ -546,6 +540,9 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
       } else {
         conc_proposal <- sorted_conc[conc_index]
       }
+    } else {
+      conc_proposal     <- ctime_ppk_model$Cc
+      conc_distribution <<- conc_proposal
     }
 
     #return the difference between the computed ctime and the target
@@ -671,11 +668,7 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
                                      params=indiv_param,
                                      event_table_cmin)
 
-    if (select_proposal_from_distribution == FALSE){
-      cmin_proposal     <-  cmin_ppk_model$Cc
-      cmin_distribution <<- cmin_proposal
-    }
-    if (select_proposal_from_distribution == TRUE){
+    if (select_proposal_from_distribution){
 
       sorted_cmin     <- sort(cmin_ppk_model$Cc)
       n_cmin          <- length(sorted_cmin)
@@ -689,6 +682,9 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
       } else {
         cmin_proposal <- sorted_cmin[cmin_index]
       }
+    } else {
+      cmin_proposal     <-  cmin_ppk_model$Cc
+      cmin_distribution <<- cmin_proposal
     }
 
     #return the difference between the computed cmin and the target,
