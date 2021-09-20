@@ -25,14 +25,14 @@ Imports:
     stats,
     mvtnorm,
     tidyr,
-    lotri
+    lotri,
+    data.table
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
     ggplot2,
-    magrittr,
-    data.table
+    magrittr
 URL: https://levenc.github.io/posologyr/, https://github.com/levenc/posologyr
 BugReports: https://github.com/levenc/posologyr/issues
 VignetteBuilder: knitr
