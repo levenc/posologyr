@@ -164,7 +164,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
   eta_map      <- diag(omega)*0
 
-  # list of outputs
+  # initialize the list of outputs
   estim_map    <- list(eta=eta_map)
 
   if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
@@ -261,6 +261,9 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     covar            <- t(dat[1,object$covariates]) #results in a matrix
     names(covar)     <- object$covariates
   }
+
+  # list of all outputs
+  estim_map$eta      <- eta_map
 
   if(return_model){
     model_map        <- solved_model
