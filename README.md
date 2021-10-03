@@ -24,6 +24,8 @@ parameters:
     the results of therapeutic drug monitoring
 -   `poso_estim_mcmc()` for estimating the posterior distributions of
     individual PK parameters by Markov Chain Monte Carlo (MCMC)
+-   `poso_estim_sir()` for estimating the posterior distributions of
+    individual PK parameters by Sequential Importance Resampling (SIR)
 
 Functions for dosage optimisation are included in `posologyr`:
 
