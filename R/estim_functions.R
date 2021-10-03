@@ -567,10 +567,10 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
                                     sigma=omega_sim)
   eta_df        <- data.frame(eta_sim)
   names(eta_df) <- attr(omega_eta,"dimnames")[[1]]
-  eta_dt <- data.table::data.table(eta_df)
+  eta_dt        <- data.table::data.table(eta_df)
 
-  param_cols <- attr(omega_eta,"dimnames")[[1]]
-  params     <- cbind(ID=1,eta_dt[,param_cols,with=F],theta)
+  param_cols    <- attr(omega_eta,"dimnames")[[1]]
+  params        <- cbind(ID=1,eta_dt[,param_cols,with=F],theta)
 
   if (estim_with_iov){
     eta_dt[,ID:=(1:n_sample)]                           # 1:n_samples ID
@@ -653,13 +653,32 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
   estim_sir         <- list(eta=eta_df)
 
   if(return_model){
-    model_sir         <- solved_model
-    covar             <- as.data.frame(dat[1,object$covariates])
-    names(covar)      <- object$covariates
-    model_sir$params  <- cbind(params,covar,row.names=NULL)
-    estim_sir$model   <- model_sir
-  }
+    if(estim_with_iov){
+      params_resample   <- cbind(data.frame(ID=1:n_resample),eta_df,theta)
 
+      # return a list of data.tables of resampled IDs
+      loads_otables     <- lapply(indices,
+                                  data_iov,
+                                  FUN=function(indices,dat)
+                                    {dat[ID == indices,]})
+
+      # bind the data.tables nicely
+      dat_resample      <- do.call(rbind,loads_otables)
+
+      # overwrite IDs to avoid duplicates, and solve the model once again
+      dat_resample[,ID:=rep(1:n_resample,1,each=nrow(dat))]
+      estim_sir$model   <- RxODE::rxSolve(solved_model,
+                                        params_resample,
+                                        dat_resample)
+    } else {
+      params_resample   <- cbind(eta_df,theta)
+      model_sir         <- solved_model
+      covar             <- as.data.frame(dat[1,object$covariates])
+      names(covar)      <- object$covariates
+      model_sir$params  <- cbind(params_resample,covar,row.names=NULL)
+      estim_sir$model   <- model_sir
+    }
+  }
   return(estim_sir)
 }
 
