@@ -597,7 +597,8 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
                        pimat_names=pimat_names))
     iov_col_dt <- data.table::data.table(iov_col)
 
-    data_iov   <- cbind(dat_dt[,names_tdm_dt_full,with=F],iov_col_dt[,!c("ID","OCC")])
+    data_iov   <- cbind(dat_dt[,names_tdm_dt_full,with=F],
+                        iov_col_dt[,!c("ID","OCC")])
 
     param_cols <- c("ID",attr(omega,"dimnames")[[1]])
     params     <- cbind(eta_dt[,param_cols,with=F],theta)
@@ -605,7 +606,15 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
 
   #I-step
   if(estim_with_iov){
-    solved_model <- RxODE::rxSolve(solved_model,params,data_iov)
+    group_index   <- data.frame(cbind(c(1:10),10,n_sample,nrow(dat)))
+
+    loads_omodels <- apply(group_index,
+                          pkmodel=object$solved_ppk_model,
+                          params=params,
+                          dat=data_iov,
+                          MARGIN=1,FUN=solve_by_groups)
+    solved_model  <- do.call(rbind,loads_omodels)
+
     wide_cc  <- tidyr::pivot_wider(solved_model,
                                    id_cols = "id",
                                    names_from = "time",
@@ -667,7 +676,7 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
 
       # overwrite IDs to avoid duplicates, and solve the model once again
       dat_resample[,ID:=rep(1:n_resample,1,each=nrow(dat))]
-      estim_sir$model   <- RxODE::rxSolve(solved_model,
+      estim_sir$model   <- RxODE::rxSolve(object$solved_ppk_model,
                                         params_resample,
                                         dat_resample)
     } else {
@@ -925,4 +934,26 @@ link_kappa_to_occ <- function(input,pimat_dim,pimat_names){
   kappas        <- input[range_kappa]
   names(kappas) <- pimat_names
   return(c(current_id,current_occ,kappas))
+}
+
+# solve a large data set group by group, workaround for
+# https://github.com/nlmixrdevelopment/RxODE/issues/459
+solve_by_groups <- function(index,pkmodel,params,dat){
+  number_of_observ   <- index[4]
+  number_of_subjects <- index[3]
+  number_of_groups   <- index[2]
+  group_number       <- index[1]
+
+  group_size         <- number_of_subjects/number_of_groups
+
+  start_eta          <- group_size*(group_number-1)+1
+  stop_eta           <- start_eta+group_size-1
+
+  start_dat          <- group_size*number_of_observ*(group_number-1)+1
+  stop_dat           <- start_dat+(group_size)*number_of_observ-1
+
+  group_model <- RxODE::rxSolve(pkmodel,params[start_eta:stop_eta,],
+                                dat[start_dat:stop_dat,],
+                                returnType="data.table")
+  return(group_model)
 }
