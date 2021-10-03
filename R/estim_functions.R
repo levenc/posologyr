@@ -26,8 +26,8 @@
 #   - variable names changed to snake_case
 #   - square matrix taken as input, not diagonal
 #   - functions return values for both etas and theta
-#   - relative standard error of MAP estimates
 #   - adaptive MAP forecasting
+#   - inter-occasion variability (IOV)
 #-------------------------------------------------------------------------
 
 #' Estimate the prior distribution of population parameters
