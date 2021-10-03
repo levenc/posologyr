@@ -48,3 +48,14 @@ validate_priormod <- function(priormod){
     stop("The names of the theta vector do not match the parameters of ppk_model")
   }
 }
+
+check_for_iov <- function(object){
+  if (is.null(object$tdm_data$OCC) & !is.null(object$pi_matrix)){
+    stop("OCC is missing from the patient record")
+  } else if (is.null(object$tdm_data$OCC) | is.null(object$pi_matrix)){
+    estim_with_iov <- FALSE
+  } else {
+    estim_with_iov <- TRUE
+  }
+  return(estim_with_iov)
+}

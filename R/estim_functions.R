@@ -91,7 +91,16 @@ poso_simu_pop <- function(object,n_simul=1000,
     theta             <- rbind(object$theta)
     covar             <- as.data.frame(object$tdm_data[1,object$covariates])
     names(covar)      <- object$covariates
-    model_pop$params  <- cbind(theta,eta_df,covar,row.names=NULL)
+    params <- cbind(theta,eta_df,covar,row.names=NULL)
+
+    if (!is.null(object$pi_matrix)){
+      kappa_mat         <- matrix(0,nrow=1,ncol=ncol(omega))
+      kappa_df          <- data.frame(kappa_mat)
+      names(kappa_df)   <- attr(object$pi_matrix,"dimnames")[[1]]
+      params            <- cbind(params,kappa_df)
+    }
+
+    model_pop$params  <- params
     eta_pop$model     <- model_pop
   }
 
@@ -144,12 +153,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
                            return_AMS_models=FALSE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
-
-  if (is.null(object$tdm_data$OCC) | is.null(object$pi_matrix)){
-    estim_with_iov <- FALSE
-  } else {
-    estim_with_iov <- TRUE
-  }
+  estim_with_iov <- check_for_iov(object)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
@@ -516,12 +520,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
-
-  if (is.null(object$tdm_data$OCC) | is.null(object$pi_matrix)){
-    estim_with_iov <- FALSE
-  } else {
-    estim_with_iov <- TRUE
-  }
+  estim_with_iov <- check_for_iov(object)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
