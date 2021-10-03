@@ -517,7 +517,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #' poso_estim_sir(patient01_tobra,n_sample=1e4,n_resample=1e3)
 #'
 #' @export
-poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE){
+poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
   estim_with_iov <- check_for_iov(object)
