@@ -147,6 +147,9 @@
 <dt>Covariates</dt>
 <dd>Every covariate defined in the prior <code>posologyr</code> model. The column labels must match the <strong>covariate</strong> vector from the ppk model.
 </dd>
+<dt>OCC</dt>
+<dd>Occasions. Required for models with inter-occasion variability.
+</dd>
 </dl>
 </div>
 </div>
@@ -204,10 +207,27 @@
 <span class="co">#&gt; 2  1    1 25.0    0  NA    0      X      Y</span>
 <span class="co">#&gt; 3  1   14  5.5    0  NA    0      X      Y</span></code></pre></div>
 </div>
-<div id="steady-state" class="section level2">
+<div id="inter-occasion-variability" class="section level2">
 <h2 class="hasAnchor">
-<a href="#steady-state" class="anchor"></a>Steady state</h2>
-<p>TODO</p>
+<a href="#inter-occasion-variability" class="anchor"></a>Inter-occasion variability</h2>
+<p>For a given occasion, the value of <code>OCC</code> must be repeated for each row. <code>OCC</code> must be specified for all the rows in the table.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
+           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span>,<span class="fl">24.0</span>,<span class="fl">25.0</span>,<span class="fl">36.0</span><span class="op">)</span>,
+           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span>,<span class="cn">NA</span>,<span class="fl">30.0</span>,<span class="fl">6.0</span><span class="op">)</span>,
+           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           OCC<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,
+           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
+           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt;   ID TIME   DV  AMT DUR EVID OCC COVAR1 COVAR2</span>
+<span class="co">#&gt; 1  1    0   NA 1000 0.5    1   1      X      Y</span>
+<span class="co">#&gt; 2  1    1 25.0    0  NA    0   1      X      Y</span>
+<span class="co">#&gt; 3  1   14  5.5    0  NA    0   1      X      Y</span>
+<span class="co">#&gt; 4  1   24   NA 1000 0.5    1   2      X      Y</span>
+<span class="co">#&gt; 5  1   25 30.0    0  NA    0   2      X      Y</span>
+<span class="co">#&gt; 6  1   36  6.0    0  NA    0   2      X      Y</span></code></pre></div>
 </div>
 </div>
   </div>
