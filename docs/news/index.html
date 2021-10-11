@@ -148,12 +148,16 @@
 <a href="#posologyr-v0119000" class="anchor"></a>posologyr v0.1.1.9000</h1>
 <ul>
 <li>
+<code><a href="../reference/poso_estim_sir.html">poso_estim_sir()</a></code> estimates the posterior distribution of individual parameters by Sequential Importance Resampling (SIR). It is roughly 25 times faster than <code><a href="../reference/poso_estim_mcmc.html">poso_estim_mcmc()</a></code> for 1000 samples.</li>
+<li>
 <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> allows the estimation of the individual parameters by adaptive MAP forecasting (cf. doi: 10.1007/s11095-020-02908-7) with <code>adapt=TRUE</code>.</li>
 <li>
-<code><a href="../reference/poso_estim_sir.html">poso_estim_sir()</a></code> allows the estimation of the posterior distribution of individual parameters by Sequential Importance Resampling (SIR). It is roughly 25 times faster than <code><a href="../reference/poso_estim_mcmc.html">poso_estim_mcmc()</a></code> for 1000 samples.</li>
+<code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code>, <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code>, and <code><a href="../reference/poso_estim_sir.html">poso_estim_sir()</a></code> now support models with both inter-individual (IIV) and inter-occasion variability (IOV).</li>
 <li>
 <code>MASS:mvrnorm</code> is replaced by <code><a href="https://rdrr.io/pkg/mvtnorm/man/Mvnorm.html">mvtnorm::rmvnorm</a></code> for multivariate normal distributions.</li>
 <li>Input validation is added to all exported functions.</li>
+<li>
+<code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> now uses method=“L-BFGS-B” in optim for better convergence of the algorithm.</li>
 <li>
 <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> now uses method=“L-BFGS-B” in optim for better convergence of the algorithm.</li>
 <li>

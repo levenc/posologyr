@@ -28,6 +28,7 @@ knitr::opts_chunk$set(
 + `poso_simu_pop()` for estimating the a priori distributions of ppk parameters by Monte-Carlo simulations
 + `poso_estim_map()` for computing the Maximum A Posteriori (MAP), aka Empirical Bayes Estimates (EBE), of individual PK parameters from the results of therapeutic drug monitoring
 + `poso_estim_mcmc()` for estimating the posterior distributions of individual PK parameters by Markov Chain Monte Carlo (MCMC)
++ `poso_estim_sir()` for estimating the posterior distributions of individual PK parameters by Sequential Importance Resampling (SIR)
 
 Functions for dosage optimisation are included in `posologyr`:
 

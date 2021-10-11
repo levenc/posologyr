@@ -26,8 +26,8 @@
 #   - variable names changed to snake_case
 #   - square matrix taken as input, not diagonal
 #   - functions return values for both etas and theta
-#   - relative standard error of MAP estimates
 #   - adaptive MAP forecasting
+#   - inter-occasion variability (IOV)
 #-------------------------------------------------------------------------
 
 #' Estimate the prior distribution of population parameters
@@ -91,7 +91,16 @@ poso_simu_pop <- function(object,n_simul=1000,
     theta             <- rbind(object$theta)
     covar             <- as.data.frame(object$tdm_data[1,object$covariates])
     names(covar)      <- object$covariates
-    model_pop$params  <- cbind(theta,eta_df,covar,row.names=NULL)
+    params <- cbind(theta,eta_df,covar,row.names=NULL)
+
+    if (!is.null(object$pi_matrix)){
+      kappa_mat         <- matrix(0,nrow=1,ncol=ncol(omega))
+      kappa_df          <- data.frame(kappa_mat)
+      names(kappa_df)   <- attr(object$pi_matrix,"dimnames")[[1]]
+      params            <- cbind(params,kappa_df)
+    }
+
+    model_pop$params  <- params
     eta_pop$model     <- model_pop
   }
 
@@ -122,6 +131,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' model using the estimated ETAs, `AMS_models` a list of RxODE models, one for
 #' each Adaptive MAP Segment (AMS).
 #'
+#' @import data.table
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
@@ -143,43 +153,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
                            return_AMS_models=FALSE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
-
-  # Update model predictions with a new set of parameters, for all obs-----
-  run_model <- function(x,init=model_init,model=solved_model){
-    model$params <- x
-    if(adapt){
-      model$inits  <- init
-    }
-    return(model$Cc)
-    }
-
-  errpred <- function(eta_estim,run_model,y,theta,ind_eta,sigma,solve_omega,
-                      adapt=FALSE){
-    eta          <- diag(omega)*0
-    eta[ind_eta] <- eta_estim
-
-    if(adapt){
-      eta        <- eta + eta_df[i,]
-      eta_estim <- eta_estim + eta[ind_eta]
-      #simulated concentrations with the proposed eta estimates
-      f   <- do.call(run_model,list(c(theta,eta)))
-      g   <- error_model(f,sigma)
-    }
-    else {
-      #simulated concentrations with the proposed eta estimates
-      f   <- do.call(run_model,list(c(theta,eta)))
-      g   <- error_model(f,sigma)
-    }
-
-    #objective function for the Empirical Bayes Estimates
-    #doi: 10.4196/kjpp.2012.16.2.97
-    U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-    #the transpose of a diagonal matrix is itself
-    U_eta <- 0.5 * eta_estim %*% solve_omega %*% eta_estim
-
-    optimize_me <- U_y + U_eta
-    return(optimize_me)
-    }
+  estim_with_iov <- check_for_iov(object)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
@@ -194,84 +168,106 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
   eta_map      <- diag(omega)*0
 
+  # initialize the list of outputs
+  estim_map    <- list(eta=eta_map)
+
   if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
     if (is.null(dat$AMS)){
       stop("The AMS column is required in the patient record to define the
       segments for adaptive MAP forecasting")
     }
 
-    segment_id     <- unique(dat$AMS)
-    n_segment      <- length(segment_id)
-    dat_segment    <- dat
-
-    eta_mat        <- matrix(0,nrow=n_segment+1,ncol=ncol(omega))
-    eta_df         <- data.frame(eta_mat)
-    names(eta_df ) <- attr(omega,"dimnames")[[1]]
-
-    init_mat       <- matrix(0,nrow=n_segment+1,
-                             ncol=length(solved_model$inits))
-    init_df        <- data.frame(init_mat)
-    init_names     <- names(solved_model$inits)
-    names(init_df) <- init_names
-
+    adaptive_output <- adaptive_map(return_AMS_models=return_AMS_models,
+                                    dat=dat,
+                                    solved_model=solved_model,
+                                    theta=theta,
+                                    omega=omega,
+                                    start_eta=start_eta,
+                                    errpred=errpred,
+                                    run_model=run_model,
+                                    ind_eta=ind_eta,
+                                    sigma=sigma,
+                                    solve_omega=solve_omega,
+                                    omega_dim=omega_dim,
+                                    iov_col=iov_col,
+                                    pimat=pimat,
+                                    eta_map=eta_map,
+                                    error_model=error_model,
+                                    estim_with_iov=estim_with_iov,
+                                    adapt=adapt)
     if(return_AMS_models){
-      AMS_models <- list()
+    AMS_models <- adaptive_output$AMS_models
     }
-
-    for(i in 1:n_segment){
-
-      dat_segment  <- dat[which(dat$AMS == segment_id[i]),]
-
-      if(i>1){ # set TIME == 0 when a segment starts
-        dat_segment$TIME  <- dat_segment$TIME -
-          utils::tail(dat[dat$AMS == segment_id[i-1],]$TIME,1)
-      }
-
-      # solved_model for the current segment
-      solved_model <- RxODE::rxSolve(object$solved_ppk_model,
-                                     c(object$theta,
-                                       diag(object$omega)*0),
-                                     dat_segment)
-
-      y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
-
-      model_init   <- init_df[i,]
-
-      r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,
-                        theta=theta,ind_eta=ind_eta,sigma=sigma,
-                        solve_omega=solve_omega,hessian=TRUE)
-
-      eta_map[ind_eta]   <- r$par
-      eta_df[i+1,]       <- eta_map + eta_df[i,]
-
-      # get the ODE compartment states at the end of the segment
-      solved_model$params <- c(object$theta,unlist(eta_df[i+1,]))
-      solved_model$inits  <- init_df[i,]
-      init_df[i+1,]       <- utils::tail(solved_model[,init_names],1)
-
-      if(return_AMS_models){
-        # get the RxODE model for the current segment
-        AMS_models[[i]]      <- solved_model
-      }
-    }
+    eta_df     <- adaptive_output$eta_df
     eta_map <- unlist(utils::tail(eta_df,1))
 
-    covar            <- t(dat_segment[1,object$covariates])
+    covar            <- t(utils::tail(dat[,object$covariates]))
     names(covar)     <- object$covariates
   }
   else{ #standard MAP estimation
+    if (estim_with_iov){
+      data_iov     <- dat
+      pimat        <- object$pi_matrix
+
+      ind_kappa    <- which(diag(pimat)>0)
+      pimat_kappa  <- pimat[ind_kappa,ind_kappa]
+
+      omega_dim    <- ncol(omega_eta)
+      pimat_dim    <- ncol(pimat_kappa)
+
+      iov_col      <- init_iov_col(dat=dat,pimat=pimat)
+      all_the_mat  <- merge_covar_matrices(omega_eta=omega_eta,
+                                           omega_dim=omega_dim,
+                                           pimat_dim=pimat_dim,
+                                           pimat_kappa=pimat_kappa,
+                                           dat=dat)
+
+      solve_omega   <- try(solve(all_the_mat))
+      start_eta     <- diag(all_the_mat)*0
+    }
+
+    model_init       <- 0                             # to appease run_model()
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
-    r <- stats::optim(start_eta,errpred,run_model=run_model,y=y_obs,theta=theta,
-                      ind_eta=ind_eta,sigma=sigma,solve_omega=solve_omega,hessian=TRUE)
+    r <- stats::optim(start_eta,errpred,
+                      run_model=run_model,
+                      y_obs=y_obs,
+                      theta=theta,
+                      ind_eta=ind_eta,
+                      sigma=sigma,
+                      solve_omega=solve_omega,
+                      omega=omega,
+                      omega_dim=omega_dim,
+                      iov_col=iov_col,
+                      pimat=pimat,
+                      dat=dat,
+                      eta_df=eta_df,
+                      model_init=model_init,
+                      solved_model=solved_model,
+                      error_model=error_model,
+                      estim_with_iov=estim_with_iov,
+                      adapt=adapt,
+                      method="L-BFGS-B")
 
-    eta_map[ind_eta] <- r$par
+    if (estim_with_iov){
+      eta_map[ind_eta] <- r$par[1:omega_dim]
+      iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
+                                         omega_dim=omega_dim,
+                                         eta_estim=r$par)
+      data_iov     <- data.frame(dat,iov_col)
+      solved_model <- RxODE::rxSolve(solved_model,c(theta,eta_map),data_iov)
+
+      estim_map$data   <- data_iov
+    } else {
+      eta_map[ind_eta] <- r$par
+    }
 
     covar            <- t(dat[1,object$covariates]) #results in a matrix
     names(covar)     <- object$covariates
   }
 
-  estim_map          <- list(eta=eta_map)
+  # list of all outputs
+  estim_map$eta      <- eta_map
 
   if(return_model){
     model_map        <- solved_model
@@ -503,6 +499,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
 #' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
 #'
+#' @import data.table
 #' @examples
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion of tobramycin
@@ -520,9 +517,10 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
 #' poso_estim_sir(patient01_tobra,n_sample=1e4,n_resample=1e3)
 #'
 #' @export
-poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE){
+poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
+  estim_with_iov <- check_for_iov(object)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
@@ -534,40 +532,113 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
   ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
   nb_etas      <- length(ind_eta)
   omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
+  omega_sim    <- omega_eta
+  omega_dim    <- ncol(omega_eta)
   solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
 
   theta        <- rbind(object$theta)
+
+  if (estim_with_iov){
+    pimat        <- object$pi_matrix
+
+    ind_kappa    <- which(diag(pimat)>0)
+    pimat_kappa  <- pimat[ind_kappa,ind_kappa]
+
+    pimat_names  <- attr(pimat_kappa,"dimnames")[[1]]
+
+    pimat_dim    <- ncol(pimat_kappa)
+    n_occ        <- length(unique(dat$OCC))
+
+    all_the_mat  <- merge_covar_matrices(omega_eta=omega_eta,
+                                         omega_dim=omega_dim,
+                                         pimat_dim=pimat_dim,
+                                         pimat_kappa=pimat_kappa,
+                                         dat=dat)
+    omega_sim   <- all_the_mat
+    solve_omega <- solve(all_the_mat)
+  }
 
   #SIR algorithm
   # doi: 10.1002/psp4.12492; doi: 10.1007/s10928-016-9487-8
 
   #S-step
-  eta_sim       <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_eta)),
-                                    sigma=omega_eta)
+  eta_sim       <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_sim)),
+                                    sigma=omega_sim)
   eta_df        <- data.frame(eta_sim)
   names(eta_df) <- attr(omega_eta,"dimnames")[[1]]
+  eta_dt        <- data.table::data.table(eta_df)
+
+  param_cols    <- attr(omega_eta,"dimnames")[[1]]
+  params        <- cbind(ID=1,eta_dt[,param_cols,with=F],theta)
+
+  if (estim_with_iov){
+    eta_dt[,ID:=(1:n_sample)]                           # 1:n_samples ID
+
+    dat_dt <- data.table::data.table(dat)
+    dat_dt <- dat_dt[rep(dat_dt[,.I],n_sample)]         # one table per sample
+    dat_dt[,ID:=rep(1:n_sample,1,each=nrow(dat))]       # 1:n_samples IDs
+
+    # bind random effects to patient data.table
+    ID     <- NULL    # avoid undefined global variables
+    dat_dt <- dat_dt[eta_dt,on = list(ID = ID), roll = TRUE]
+
+    # everything but ID, OCC and kappas
+    tdm_dt            <- data.table::data.table(dat)
+    names_tdm_dt_drop <- names(tdm_dt[,!c("ID","OCC")])
+    names_tdm_dt_full <- names(tdm_dt)
+    drop_cols         <- c(names_tdm_dt_drop,attr(omega_eta,"dimnames")[[1]])
+
+    # reshape IOV to colums
+    iov_col <- t(apply(dat_dt[,!drop_cols,with=F],
+                       MARGIN=1,
+                       FUN=link_kappa_to_occ,
+                       pimat_dim=pimat_dim,
+                       pimat_names=pimat_names))
+    iov_col_dt <- data.table::data.table(iov_col)
+
+    data_iov   <- cbind(dat_dt[,names_tdm_dt_full,with=F],
+                        iov_col_dt[,!c("ID","OCC")])
+
+    param_cols <- c("ID",attr(omega,"dimnames")[[1]])
+    params     <- cbind(eta_dt[,param_cols,with=F],theta)
+  }
 
   #I-step
-  solved_model$params  <- cbind(theta,eta_df,row.names=NULL)
-  wide_cc  <- tidyr::pivot_wider(solved_model,
-                                id_cols = "sim.id",
-                                names_from = "time",
-                                values_from = "Cc")
+  if(estim_with_iov){
+    group_index   <- data.frame(cbind(c(1:10),10,n_sample,nrow(dat)))
+
+    loads_omodels <- apply(group_index,
+                          pkmodel=object$solved_ppk_model,
+                          params=params,
+                          dat=data_iov,
+                          MARGIN=1,FUN=solve_by_groups)
+    solved_model  <- do.call(rbind,loads_omodels)
+
+    wide_cc  <- tidyr::pivot_wider(solved_model,
+                                   id_cols = "id",
+                                   names_from = "time",
+                                   values_from = "Cc")
+  } else {
+    solved_model$params  <- cbind(theta,eta_dt,row.names=NULL)
+    wide_cc  <- tidyr::pivot_wider(solved_model,
+                                   id_cols = "sim.id",
+                                   names_from = "time",
+                                   values_from = "Cc")
+  }
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
     g        <- error_model(f,sigma)
-    U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-    U_eta    <- 0.5 * eta %*% solve_omega %*% eta
-    minus_LL <- U_y + U_eta
+    minus_LL <- objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+                                   solve_omega=solve_omega)
     return(-minus_LL)
   }
 
   lf        <- apply(wide_cc,MARGIN=1,FUN=LL_func)
-  lp        <- mvtnorm::dmvnorm(eta_sim,mean=rep(0,ncol(omega_eta)),
-                                sigma=omega_eta,log=TRUE)
+  lp        <- mvtnorm::dmvnorm(eta_sim,mean=rep(0,ncol(omega_sim)),
+                                sigma=omega_sim,log=TRUE)
   md        <- max(lf - lp)
   wt        <- exp(lf - lp - md)
   probs     <- wt/sum(wt)
@@ -582,21 +653,306 @@ poso_estim_sir <- function(object,n_sample=1e5,n_resample=1e3,return_model=TRUE)
     eta_sim <- eta_sim[indices]
   }
 
-  eta_mat           <- matrix(0,nrow=n_resample,ncol=ncol(omega))
-  eta_mat[,ind_eta] <- eta_sim
+  eta_mat           <- matrix(0,nrow=n_resample,ncol=ncol(omega_eta))
+  eta_mat[,ind_eta] <- eta_sim[,1:omega_dim]
   eta_df            <- data.frame(eta_mat)
-  names(eta_df)     <- attr(omega,"dimnames")[[1]]
+  names(eta_df)     <- attr(omega_eta,"dimnames")[[1]]
 
   estim_sir         <- list(eta=eta_df)
 
   if(return_model){
-    model_sir         <- solved_model
-    theta_return      <- rbind(theta)
-    covar             <- as.data.frame(dat[1,object$covariates])
-    names(covar)      <- object$covariates
-    model_sir$params  <- cbind(theta_return,eta_df,covar,row.names=NULL)
-    estim_sir$model   <- model_sir
+    if(estim_with_iov){
+      params_resample   <- cbind(data.frame(ID=1:n_resample),eta_df,theta)
+
+      # return a list of data.tables of resampled IDs
+      loads_otables     <- lapply(indices,
+                                  data_iov,
+                                  FUN=function(indices,dat)
+                                    {dat[ID == indices,]})
+
+      # bind the data.tables nicely
+      dat_resample      <- do.call(rbind,loads_otables)
+
+      # overwrite IDs to avoid duplicates, and solve the model once again
+      dat_resample[,ID:=rep(1:n_resample,1,each=nrow(dat))]
+      estim_sir$model   <- RxODE::rxSolve(object$solved_ppk_model,
+                                        params_resample,
+                                        dat_resample)
+    } else {
+      params_resample   <- cbind(eta_df,theta)
+      model_sir         <- solved_model
+      covar             <- as.data.frame(dat[1,object$covariates])
+      names(covar)      <- object$covariates
+      model_sir$params  <- cbind(params_resample,covar,row.names=NULL)
+      estim_sir$model   <- model_sir
+    }
+  }
+  return(estim_sir)
+}
+
+#-------------------------------------------------------------------------
+#
+# Internal functions for parameter estimation
+#
+#-------------------------------------------------------------------------
+
+# Update model predictions with a new set of parameters, for all obs
+run_model <- function(x,model_init=NULL,solved_model=NULL,
+                      estim_with_iov=NULL,adapt=NULL){
+  if (!estim_with_iov){ #RxODE already updated in errpred() if estim_with_iov
+    solved_model$params <- x
+    if(adapt){
+      solved_model$inits <- model_init
+    }
+  }
+  return(solved_model$Cc)
+}
+
+# Get propositions for values of kappa and put them in colums to be added
+#  to the dataset for RxODE
+iov_proposition_as_cols <- function(iov_col=NULL,
+                                    dat=NULL,
+                                    pimat=NULL,
+                                    omega_dim=NULL,
+                                    eta_estim=NULL){
+  n_iov        <- ncol(iov_col)-1   #minus one because of $OCC
+
+  for (i in seq_along(unique(dat$OCC))){
+      start_estim_iov <- omega_dim+1+n_iov*(i-1)
+      end_estim_iov   <- start_estim_iov+n_iov-1
+      iov_vector_i    <- eta_estim[start_estim_iov:end_estim_iov]
+
+      occ_size   <- length(iov_col[iov_col$OCC == i,1])
+      iov_mat_i  <- matrix(iov_vector_i,
+                           nrow=occ_size,
+                           ncol=n_iov,
+                           byrow=TRUE)
+
+      iov_col[iov_col$OCC == i,attr(pimat,"dimnames")[[1]]] <- iov_mat_i
+  }
+  return(iov_col)
+}
+
+
+# Objective function for the Empirical Bayes Estimates
+# doi: 10.4196/kjpp.2012.16.2.97
+objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
+                               eta=NULL,solve_omega=NULL){
+  U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+  #the transpose of a diagonal matrix is itself
+  U_eta <- 0.5 * eta %*% solve_omega %*% eta
+
+  OFV <- U_y + U_eta
+  return(OFV)
+}
+
+# Prediction error to optimize for MAP-EBE
+errpred <- function(eta_estim=NULL,
+                    run_model=NULL,
+                    y_obs=NULL,
+                    theta=NULL,
+                    ind_eta=NULL,
+                    sigma=NULL,
+                    solve_omega=NULL,
+                    omega=NULL,
+                    omega_dim=NULL,
+                    iov_col=NULL,
+                    pimat=NULL,
+                    dat=NULL,
+                    eta_df=NULL,
+                    model_init=NULL,
+                    solved_model=NULL,
+                    error_model=NULL,
+                    estim_with_iov=NULL,
+                    adapt=NULL,
+                    index_segment=NULL){
+
+  eta          <- diag(omega)*0
+
+  if (estim_with_iov){
+    eta[ind_eta] <- eta_estim[1:omega_dim]
+    iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
+                                       omega_dim=omega_dim,
+                                       eta_estim=eta_estim)
+    dat <- data.frame(dat,iov_col)
+    solved_model <- RxODE::rxSolve(solved_model,c(theta,eta),dat)
+  } else {
+    eta[ind_eta] <- eta_estim
+  }
+  if(adapt){     # unlist avoids conversion to data.frame
+    eta       <- unlist(eta + eta_df[index_segment,])
+    eta_estim <- unlist(eta_estim + eta_df[index_segment,ind_eta])
+  }
+  #simulated concentrations with the proposed eta estimates
+  f   <- do.call(run_model,list(c(theta,eta),
+                                model_init=model_init,
+                                solved_model=solved_model,
+                                estim_with_iov=estim_with_iov,
+                                adapt=adapt))
+  g   <- error_model(f,sigma)
+
+  optimize_me <- objective_function(y_obs=y_obs,f=f,g=g,
+                                    eta=eta_estim,
+                                    solve_omega=solve_omega)
+  return(optimize_me)
+}
+
+# make a single matrix of omega and pi_matrix
+merge_covar_matrices <- function(omega_eta=NULL,
+                                 omega_dim=NULL,
+                                 pimat_dim=NULL,
+                                 pimat_kappa=NULL,
+                                 dat=NULL){
+  matrix_dim   <- omega_dim+pimat_dim*(length(unique(dat$OCC)))
+  all_the_mat  <- matrix(0,nrow=matrix_dim,ncol=matrix_dim)
+  all_the_mat[1:omega_dim,1:omega_dim] <- omega_eta
+  for (i in unique(dat$OCC)){
+    if (TRUE){
+      start_pi_mat <- omega_dim+pimat_dim*(i-1)+1
+      end_pi_mat   <- omega_dim+pimat_dim*(i)
+      all_the_mat[start_pi_mat:end_pi_mat,
+                  start_pi_mat:end_pi_mat] <- pimat_kappa
+    }
+  }
+  return(all_the_mat)
+}
+
+# create colums to store the estimations of KAPPA
+init_iov_col <- function(dat=NULL,
+                         pimat=NULL){
+  iov_col        <- matrix(0,nrow=nrow(dat),ncol=nrow(pimat))
+  iov_col        <- data.frame(iov_col,dat$OCC)
+  names(iov_col) <- c(attr(pimat,"dimnames")[[1]],"OCC")
+  return(iov_col)
+}
+
+# iterative adaptive MAP estimation
+adaptive_map <- function(return_AMS_models=NULL,
+                         dat=NULL,
+                         solved_model=NULL,
+                         theta=NULL,
+                         omega=NULL,
+                         start_eta=NULL,
+                         errpred=NULL,
+                         run_model=NULL,
+                         ind_eta=NULL,
+                         sigma=NULL,
+                         solve_omega=NULL,
+                         omega_dim=NULL,
+                         iov_col=NULL,
+                         pimat=NULL,
+                         eta_map=NULL,
+                         error_model=NULL,
+                         estim_with_iov=NULL,
+                         adapt=NULL){
+
+  segment_id     <- unique(dat$AMS)
+  n_segment      <- length(segment_id)
+  dat_segment    <- dat
+
+  eta_mat        <- matrix(0,nrow=n_segment+1,ncol=ncol(omega))
+  eta_df         <- data.frame(eta_mat)
+  names(eta_df)  <- attr(omega,"dimnames")[[1]]
+
+  init_mat       <- matrix(0,nrow=n_segment+1,
+                           ncol=length(solved_model$inits))
+  init_df        <- data.frame(init_mat)
+  init_names     <- names(solved_model$inits)
+  names(init_df) <- init_names
+
+  if(return_AMS_models){
+    AMS_models <- list()
   }
 
-  return(estim_sir)
+  for(index_segment in 1:n_segment){
+
+    dat_segment  <- dat[which(dat$AMS == segment_id[index_segment]),]
+
+    if(index_segment>1){ # set TIME == 0 when a segment starts
+      dat_segment$TIME  <- dat_segment$TIME -
+        utils::tail(dat[dat$AMS == segment_id[index_segment-1],]$TIME,1)
+    }
+
+    # solved_model for the current segment
+    solved_model <- RxODE::rxSolve(solved_model,c(theta,start_eta),
+                                   dat_segment)
+
+    y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
+
+    model_init   <- init_df[index_segment,]
+
+    r <- stats::optim(start_eta,errpred,
+                      run_model=run_model,
+                      y_obs=y_obs,
+                      theta=theta,
+                      ind_eta=ind_eta,
+                      sigma=sigma,
+                      solve_omega=solve_omega,
+                      omega=omega,
+                      omega_dim=omega_dim,
+                      iov_col=iov_col,
+                      pimat=pimat,
+                      dat=dat,
+                      eta_df=eta_df,
+                      model_init=model_init,
+                      solved_model=solved_model,
+                      error_model=error_model,
+                      estim_with_iov=estim_with_iov,
+                      adapt=adapt,
+                      index_segment=index_segment,
+                      method="L-BFGS-B")
+
+    eta_map[ind_eta]              <- r$par
+    eta_df[index_segment+1,]      <- eta_map + eta_df[index_segment,]
+
+    # get the ODE compartment states at the end of the segment
+    solved_model$params <- c(theta,unlist(eta_df[index_segment+1,]))
+    solved_model$inits  <- init_df[index_segment,]
+    init_df[index_segment+1,]       <- utils::tail(solved_model[,init_names],1)
+
+    if(return_AMS_models){
+      # get the RxODE model for the current segment
+      AMS_models[[index_segment]]   <- solved_model
+    }
+  }
+  adaptive_output <- list(eta_df=eta_df)
+
+  if(return_AMS_models){
+    adaptive_output$AMS_models <- AMS_models
+  }
+  return(adaptive_output)
+}
+
+# reshape kappa from wide to long
+link_kappa_to_occ <- function(input,pimat_dim,pimat_names){
+  current_id    <- input[1]
+  current_occ   <- input[2]
+  start_kappa   <- (current_occ*pimat_dim)+1 #+2: after ID and OCC, then -1
+  end_kappa     <- start_kappa+pimat_dim-1
+  range_kappa   <- start_kappa:end_kappa
+  kappas        <- input[range_kappa]
+  names(kappas) <- pimat_names
+  return(c(current_id,current_occ,kappas))
+}
+
+# solve a large data set group by group, workaround for
+# https://github.com/nlmixrdevelopment/RxODE/issues/459
+solve_by_groups <- function(index,pkmodel,params,dat){
+  number_of_observ   <- index[4]
+  number_of_subjects <- index[3]
+  number_of_groups   <- index[2]
+  group_number       <- index[1]
+
+  group_size         <- number_of_subjects/number_of_groups
+
+  start_eta          <- group_size*(group_number-1)+1
+  stop_eta           <- start_eta+group_size-1
+
+  start_dat          <- group_size*number_of_observ*(group_number-1)+1
+  stop_dat           <- start_dat+(group_size)*number_of_observ-1
+
+  group_model <- RxODE::rxSolve(pkmodel,params[start_eta:stop_eta,],
+                                dat[start_dat:stop_dat,],
+                                returnType="data.table")
+  return(group_model)
 }

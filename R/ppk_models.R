@@ -94,7 +94,8 @@ posologyr <- function(prior_model=NULL,dat=NULL){
 
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
                                      c(prior_model$theta,
-                                       diag(prior_model$omega)*0),
+                                       diag(prior_model$omega)*0,
+                                       diag(prior_model$pi_matrix)*0),
                                      dat)
 
   # assign the objects to a single list
