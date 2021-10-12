@@ -16,67 +16,6 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
-# get the parameters for distribution-based optimal dosing
-read_optim_distribution_input <- function(object,
-                                          p,
-                                          estim_method,
-                                          adapt,
-                                          indiv_param){
-  if (is.null(indiv_param)){ #theta_pop + estimates of eta + covariates
-    if (estim_method=="map"){
-      model_map   <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
-      indiv_param <- model_map[[2]]$params
-      select_proposal_from_distribution <- FALSE
-      if (!is.null(p)){
-        warning('p is not needed with estim_method="map", p is ignored')
-      }
-    } else  if (estim_method=="prior"){
-      if (!is.null(p)){
-        if (p < 0 || p >= 1){
-          stop('p must be between 0 and 1')
-        }
-        model_pop   <- poso_simu_pop(object,return_model=TRUE)
-        indiv_param <- model_pop[[2]]$params
-        select_proposal_from_distribution <- TRUE
-      } else {
-        model_pop   <- poso_simu_pop(object,n_simul=0,return_model=TRUE)
-        indiv_param <- model_pop[[2]]$params
-        select_proposal_from_distribution <- FALSE
-      }
-    } else if (estim_method=="sir"){
-      if (p < 0 || p >= 1){
-        stop('p must be between 0 and 1')
-      }
-      model_sir   <- poso_estim_sir(object,return_model=TRUE)
-      indiv_param <- model_sir[[2]]$params
-      select_proposal_from_distribution <- TRUE
-    } else {
-      print(estim_method)
-      stop("'estim_method' not recognized")
-    }
-  } else {
-    if (FALSE %in% (c(names(object$solved_ppk_model$params),
-                      object$covariates) %in% names(indiv_param))){
-      stop("The names of indiv_param do not match the parameters of the object")
-    }
-    if (!is.null(p) && (length(rbind(indiv_param[,1])) < 1000)){
-      warn_1000 <-
-        sprintf("In order to perform the optimization using a parameter distribution, you
-need at least 1000 parameter samples. Only the first set of parameters will
-be used.")
-      warning(warn_1000)
-      indiv_param <- rbind(indiv_param)[1,]
-      select_proposal_from_distribution <- FALSE
-    } else if (!is.null(p) && (length(rbind(indiv_param)[,1]) >= 1000)){
-      select_proposal_from_distribution <- TRUE
-    } else { # p==NULL, using one set of parameters
-      indiv_param <- rbind(indiv_param)[1,]
-      select_proposal_from_distribution <- FALSE
-    }
-  }
-  return(list(indiv_param,select_proposal_from_distribution))
-}
-
 #' Predict time to a selected trough concentration
 #'
 #' Predicts the time needed to reach a selected trough concentration
@@ -715,4 +654,71 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
                     indiv_param=indiv_param)
 
   return(inter_cmin)
+}
+
+#-------------------------------------------------------------------------
+#
+# Internal functions for optimal dosing
+#
+#-------------------------------------------------------------------------
+
+# get the parameters for distribution-based optimal dosing
+read_optim_distribution_input <- function(object,
+                                          p,
+                                          estim_method,
+                                          adapt,
+                                          indiv_param){
+  if (is.null(indiv_param)){ #theta_pop + estimates of eta + covariates
+    if (estim_method=="map"){
+      model_map   <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
+      indiv_param <- model_map[[2]]$params
+      select_proposal_from_distribution <- FALSE
+      if (!is.null(p)){
+        warning('p is not needed with estim_method="map", p is ignored')
+      }
+    } else  if (estim_method=="prior"){
+      if (!is.null(p)){
+        if (p < 0 || p >= 1){
+          stop('p must be between 0 and 1')
+        }
+        model_pop   <- poso_simu_pop(object,return_model=TRUE)
+        indiv_param <- model_pop[[2]]$params
+        select_proposal_from_distribution <- TRUE
+      } else {
+        model_pop   <- poso_simu_pop(object,n_simul=0,return_model=TRUE)
+        indiv_param <- model_pop[[2]]$params
+        select_proposal_from_distribution <- FALSE
+      }
+    } else if (estim_method=="sir"){
+      if (p < 0 || p >= 1){
+        stop('p must be between 0 and 1')
+      }
+      model_sir   <- poso_estim_sir(object,return_model=TRUE)
+      indiv_param <- model_sir[[2]]$params
+      select_proposal_from_distribution <- TRUE
+    } else {
+      print(estim_method)
+      stop("'estim_method' not recognized")
+    }
+  } else {
+    if (FALSE %in% (c(names(object$solved_ppk_model$params),
+                      object$covariates) %in% names(indiv_param))){
+      stop("The names of indiv_param do not match the parameters of the object")
+    }
+    if (!is.null(p) && (length(rbind(indiv_param[,1])) < 1000)){
+      warn_1000 <-
+        sprintf("In order to perform the optimization using a parameter distribution, you
+need at least 1000 parameter samples. Only the first set of parameters will
+be used.")
+      warning(warn_1000)
+      indiv_param <- rbind(indiv_param)[1,]
+      select_proposal_from_distribution <- FALSE
+    } else if (!is.null(p) && (length(rbind(indiv_param)[,1]) >= 1000)){
+      select_proposal_from_distribution <- TRUE
+    } else { # p==NULL, using one set of parameters
+      indiv_param <- rbind(indiv_param)[1,]
+      select_proposal_from_distribution <- FALSE
+    }
+  }
+  return(list(indiv_param,select_proposal_from_distribution))
 }
