@@ -257,7 +257,9 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
                       error_model=error_model,
                       estim_with_iov=estim_with_iov,
                       adapt=adapt,
-                      method="L-BFGS-B")
+                      method="L-BFGS-B",
+                      control = list(factr = 1e-10,
+                                     maxit = 50*length(start_eta)))
 
     if (estim_with_iov){
       eta_map[ind_eta] <- r$par[1:omega_dim]
