@@ -99,7 +99,7 @@ posologyr <- function(prior_model=NULL,dat=NULL){
                                      dat)
 
   # assign the objects to a single list
-  prior_model$tdm_data         <- dat
+  prior_model$tdm_data         <- as.data.frame(dat)
   prior_model$solved_ppk_model <- solved_ppk_model
 
   return(prior_model)

@@ -68,6 +68,7 @@ poso_simu_pop <- function(object,n_simul=1000,
                           return_model=TRUE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
+  no_covariates <- is.null(object$covariates)
 
   omega      <- object$omega
   ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
@@ -86,12 +87,18 @@ poso_simu_pop <- function(object,n_simul=1000,
 
   eta_pop            <- list(eta=eta_df)
 
+  # outputs
   if(return_model){
     model_pop         <- object$solved_ppk_model
     theta             <- rbind(object$theta)
-    covar             <- as.data.frame(object$tdm_data[1,object$covariates])
-    names(covar)      <- object$covariates
-    params <- cbind(theta,eta_df,covar,row.names=NULL)
+
+    if(no_covariates){
+      params <- cbind(theta,eta_df,row.names=NULL)
+    } else {
+      covar             <- as.data.frame(object$tdm_data[1,object$covariates])
+      names(covar)      <- object$covariates
+      params <- cbind(theta,eta_df,covar,row.names=NULL)
+    }
 
     if (!is.null(object$pi_matrix)){
       kappa_mat         <- matrix(0,nrow=1,ncol=ncol(omega))
@@ -154,6 +161,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   validate_priormod(object)
   validate_dat(object$tdm_data)
   estim_with_iov <- check_for_iov(object)
+  no_covariates  <- is.null(object$covariates)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
@@ -201,8 +209,10 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     eta_df     <- adaptive_output$eta_df
     eta_map <- unlist(utils::tail(eta_df,1))
 
-    covar            <- t(utils::tail(dat[,object$covariates]))
-    names(covar)     <- object$covariates
+    if(!no_covariates){
+      covar            <- t(utils::tail(dat[,object$covariates]))
+      names(covar)     <- object$covariates
+    }
   }
   else{ #standard MAP estimation
     if (estim_with_iov){
@@ -262,8 +272,10 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
       eta_map[ind_eta] <- r$par
     }
 
-    covar            <- t(dat[1,object$covariates]) #results in a matrix
-    names(covar)     <- object$covariates
+    if(!no_covariates){
+      covar            <- t(dat[1,object$covariates]) #results in a matrix
+      names(covar)     <- object$covariates
+    }
   }
 
   # list of all outputs
@@ -271,9 +283,14 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
   if(return_model){
     model_map        <- solved_model
-    model_map$params <- c(theta,eta_map,covar)
+    if(no_covariates){
+      model_map$params <- c(theta,eta_map)
+    } else {
+      model_map$params <- c(theta,eta_map,covar)
+    }
     estim_map$model  <- model_map
   }
+
   if(adapt & return_AMS_models){
     estim_map$AMS_models <- AMS_models
   }
@@ -343,6 +360,7 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
   validate_priormod(object)
   validate_dat(object$tdm_data)
+  no_covariates <- is.null(object$covariates)
 
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
@@ -472,9 +490,13 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
   if(return_model){
     model_mcmc        <- solved_model
     theta_return      <- rbind(theta)
-    covar             <- as.data.frame(dat[1,object$covariates])
-    names(covar)      <- object$covariates
-    model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names=NULL)
+    if(no_covariates){
+      model_mcmc$params <- cbind(theta_return,eta_df_mcmc,row.names=NULL)
+    } else {
+      covar             <- as.data.frame(dat[1,object$covariates])
+      names(covar)      <- object$covariates
+      model_mcmc$params <- cbind(theta_return,eta_df_mcmc,covar,row.names=NULL)
+    }
     estim_mcmc$model  <- model_mcmc
   }
 
@@ -521,6 +543,7 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
   validate_priormod(object)
   validate_dat(object$tdm_data)
   estim_with_iov <- check_for_iov(object)
+  no_covariates  <- is.null(object$covariates)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
@@ -681,9 +704,13 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
     } else {
       params_resample   <- cbind(eta_df,theta)
       model_sir         <- solved_model
-      covar             <- as.data.frame(dat[1,object$covariates])
-      names(covar)      <- object$covariates
-      model_sir$params  <- cbind(params_resample,covar,row.names=NULL)
+      if(no_covariates){
+        model_sir$params  <- cbind(params_resample,row.names=NULL)
+      } else {
+        covar             <- as.data.frame(dat[1,object$covariates])
+        names(covar)      <- object$covariates
+        model_sir$params  <- cbind(params_resample,covar,row.names=NULL)
+      }
       estim_sir$model   <- model_sir
     }
   }

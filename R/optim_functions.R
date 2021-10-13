@@ -701,8 +701,8 @@ read_optim_distribution_input <- function(object,
       stop("'estim_method' not recognized")
     }
   } else {
-    if (FALSE %in% (c(names(object$solved_ppk_model$params),
-                      object$covariates) %in% names(indiv_param))){
+    if (FALSE %in% (c(names(object$solved_ppk_model$params))
+                    %in% names(indiv_param))){
       stop("The names of indiv_param do not match the parameters of the object")
     }
     if (!is.null(p) && (length(rbind(indiv_param[,1])) < 1000)){
