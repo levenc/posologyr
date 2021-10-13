@@ -767,9 +767,9 @@ iov_proposition_as_cols <- function(iov_col=NULL,
 # doi: 10.4196/kjpp.2012.16.2.97
 objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
                                eta=NULL,solve_omega=NULL){
-  U_y   <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+  U_y   <-  sum(((y_obs - f)/g)^2 + log(g^2))
   #the transpose of a diagonal matrix is itself
-  U_eta <- 0.5 * eta %*% solve_omega %*% eta
+  U_eta <- eta %*% solve_omega %*% eta
 
   OFV <- U_y + U_eta
   return(OFV)
