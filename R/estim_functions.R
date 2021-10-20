@@ -176,6 +176,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
   eta_map      <- diag(omega)*0
 
+  diag_varcovar_matrix <- diag(omega_eta)
+
   # initialize the list of outputs
   estim_map    <- list(eta=eta_map)
 
@@ -234,32 +236,57 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
       solve_omega   <- try(solve(all_the_mat))
       start_eta     <- diag(all_the_mat)*0
+
+      diag_varcovar_matrix <- diag(all_the_mat)
     }
 
     model_init       <- 0                             # to appease run_model()
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
-    r <- stats::optim(start_eta,errpred,
-                      run_model=run_model,
-                      y_obs=y_obs,
-                      theta=theta,
-                      ind_eta=ind_eta,
-                      sigma=sigma,
-                      solve_omega=solve_omega,
-                      omega=omega,
-                      omega_dim=omega_dim,
-                      iov_col=iov_col,
-                      pimat=pimat,
-                      dat=dat,
-                      eta_df=eta_df,
-                      model_init=model_init,
-                      solved_model=solved_model,
-                      error_model=error_model,
-                      estim_with_iov=estim_with_iov,
-                      adapt=adapt,
-                      method="L-BFGS-B",
-                      control = list(factr = 1e-10,
-                                     maxit = 50*length(start_eta)))
+    # initial bounds for the optimization
+    bfgs_bounds       <- qnorm(1e-5,0,sqrt(diag_varcovar_matrix),lower.tail = F)
+
+    optim_attempt     <- 1
+    expand_boundaries <- TRUE
+
+    while(expand_boundaries & optim_attempt <= 20){
+      r <- stats::optim(start_eta,errpred,
+                        gr=optim_gradient,
+                        run_model=run_model,
+                        y_obs=y_obs,
+                        theta=theta,
+                        ind_eta=ind_eta,
+                        sigma=sigma,
+                        solve_omega=solve_omega,
+                        omega=omega,
+                        omega_dim=omega_dim,
+                        iov_col=iov_col,
+                        pimat=pimat,
+                        dat=dat,
+                        eta_df=eta_df,
+                        model_init=model_init,
+                        solved_model=solved_model,
+                        error_model=error_model,
+                        estim_with_iov=estim_with_iov,
+                        adapt=adapt,
+                        method="L-BFGS-B",
+                        upper=bfgs_bounds,
+                        lower=-bfgs_bounds)
+
+      all_eta_are_zero  <- !(FALSE %in% (r$par == 0))
+
+      stuck_on_bound    <- TRUE %in% (abs(r$par) == bfgs_bounds)
+
+      identical_abs_eta <- isTRUE(length(unique(abs(r$par))) < length(r$par))
+
+      expand_boundaries <- isTRUE(all_eta_are_zero|stuck_on_bound|identical_abs_eta)
+
+      if(expand_boundaries){
+        bfgs_bounds <- bfgs_bounds + 1
+      }
+
+      optim_attempt     <- optim_attempt + 1
+    }
 
     if (estim_with_iov){
       eta_map[ind_eta] <- r$par[1:omega_dim]
@@ -984,4 +1011,43 @@ solve_by_groups <- function(index,pkmodel,params,dat){
                                 dat[start_dat:stop_dat,],
                                 returnType="data.table")
   return(group_model)
+}
+
+# pracma gradient of errpred for L-BFGS-B in optim
+optim_gradient <- function(x,
+                           run_model=run_model,
+                           y_obs=y_obs,
+                           theta=theta,
+                           ind_eta=ind_eta,
+                           sigma=sigma,
+                           solve_omega=solve_omega,
+                           omega=omega,
+                           omega_dim=omega_dim,
+                           iov_col=iov_col,
+                           pimat=pimat,
+                           dat=dat,
+                           eta_df=eta_df,
+                           model_init=model_init,
+                           solved_model=solved_model,
+                           error_model=error_model,
+                           estim_with_iov=estim_with_iov,
+                           adapt=adapt){
+  pracma::grad(errpred,x,
+               run_model=run_model,
+               y_obs=y_obs,
+               theta=theta,
+               ind_eta=ind_eta,
+               sigma=sigma,
+               solve_omega=solve_omega,
+               omega=omega,
+               omega_dim=omega_dim,
+               iov_col=iov_col,
+               pimat=pimat,
+               dat=dat,
+               eta_df=eta_df,
+               model_init=model_init,
+               solved_model=solved_model,
+               error_model=error_model,
+               estim_with_iov=estim_with_iov,
+               adapt=adapt)
 }
