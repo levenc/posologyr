@@ -51,9 +51,11 @@ In the absence of measured concentrations, the optimal dose in mg to achieve a s
 
 ```{r prior_Cmax_optim_patientA}
 prior_dose <- poso_dose_conc(patA_prior_amik,
-                              time_c = 1,
-                              duration = 0.5,
-                              target_conc = 80)$dose
+                             time_c = 1,
+                             duration = 0.5,
+                             estim_method = "prior",
+                             p = 0.5,
+                             target_conc = 80)$dose
 prior_dose
 ```
 
@@ -65,6 +67,8 @@ With this dose, the time in hours required to reach a target Cmin concentration 
 prior_timecmin <- poso_time_cmin(patA_prior_amik,
                                  dose = prior_dose,
                                  duration = 0.5,
+                                 estim_method = "prior",
+                                 p = 0.5,
                                  target_cmin = 2.5)$time
 prior_timecmin
 ```
