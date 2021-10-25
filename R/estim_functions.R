@@ -237,6 +237,9 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
       solve_omega   <- try(solve(all_the_mat))
       start_eta     <- diag(all_the_mat)*0
 
+      names(start_eta) <- c(colnames(omega),
+                               seq(1,ncol(all_the_mat)-omega_dim))
+
       diag_varcovar_matrix <- diag(all_the_mat)
     }
 
@@ -244,12 +247,24 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
     # initial bounds for the optimization
-    bfgs_bounds       <- qnorm(1e-5,0,sqrt(diag_varcovar_matrix),lower.tail = F)
+    bfgs_bounds       <- stats::qnorm(1e-2,0,sqrt(diag_varcovar_matrix),
+                                      lower.tail = F)
 
     optim_attempt     <- 1
     expand_boundaries <- TRUE
+    OFV_previous      <- Inf
 
-    while(expand_boundaries & optim_attempt <= 20){
+    # create a table to log the estimates after each attempt
+    optim_attempt_log        <- matrix(0,nrow=20,ncol=(2+length(start_eta)))
+    optim_attempt_log        <- data.table(optim_attempt_log)
+
+    data.table::setnames(optim_attempt_log,
+                         1:(length(start_eta)+2),
+                         c("expand_boundaries","OFV",names(start_eta)),
+                         skip_absent=TRUE)
+
+
+    while((expand_boundaries & optim_attempt <= 20) | optim_attempt < 2){
       r <- stats::optim(start_eta,errpred,
                         gr=optim_gradient,
                         run_model=run_model,
@@ -273,20 +288,52 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
                         upper=bfgs_bounds,
                         lower=-bfgs_bounds)
 
+      # Objection Function Value: OFV
+      OFV_current       <- r$value
+
+      # detection of anomalous estimates calling for a change of bounds
       all_eta_are_zero  <- !(FALSE %in% (r$par == 0))
 
-      stuck_on_bound    <- TRUE %in% (abs(r$par) == bfgs_bounds)
+      stuck_on_bound    <- TRUE %in% (abs(r$par) >= bfgs_bounds)
 
       identical_abs_eta <- isTRUE(length(unique(abs(r$par))) < length(r$par))
 
       expand_boundaries <- isTRUE(all_eta_are_zero|stuck_on_bound|identical_abs_eta)
 
-      if(expand_boundaries){
-        bfgs_bounds <- bfgs_bounds + 1
+      # log the detection of the anomalous estimates, OFV, and ETA estimates
+      optim_attempt_log[optim_attempt,] <- data.table(expand_boundaries,
+                                                      "OFV"=OFV_current,
+                                                      rbind(r$par))
+
+      if(optim_attempt < 20){
+
+        # check conditions calling for a new attempt at minimizing the OFV
+
+        if(expand_boundaries){
+          bfgs_bounds <- bfgs_bounds + 1
+
+        } else if(optim_attempt >= 2 & round(OFV_current,5) != OFV_previous){
+          expand_boundaries <- TRUE
+          bfgs_bounds <- bfgs_bounds + 1
+        }
+
+        OFV_previous      <- round(OFV_current,5)
+
+      } else if(optim_attempt == 20){
+
+        # if all fails, the "less bad" solution is probably
+        # the estimation with the lowest OFV and no anomaly
+
+        OFV   <- NULL    # avoid undefined global variables
+
+        r$par <- unlist(optim_attempt_log[expand_boundaries==0 & OFV==min(OFV),
+                                   3:(length(start_eta)+2)])
       }
 
       optim_attempt     <- optim_attempt + 1
+
     }
+
 
     if (estim_with_iov){
       eta_map[ind_eta] <- r$par[1:omega_dim]
