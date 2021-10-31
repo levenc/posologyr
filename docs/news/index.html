@@ -163,6 +163,7 @@
 <li>
 <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code> is the new name of <code>poso_dose_ctime()</code>.</li>
 <li>Issues <a href='https://github.com/levenc/posologyr/issues/5'>#5</a> and <a href='https://github.com/levenc/posologyr/issues/6'>#6</a> are fixed: <code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>, <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, and <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> now work with prior and posterior distributions of ETA, and not only with point estimates (such as the MAP).</li>
+<li>A new <code>nocb</code> parameter is added to <code><a href="../reference/posologyr.html">posologyr()</a></code>. The interpolation method for time-varying covariates can be either last observation carried forward (locf, the RxODE default), or next observation carried backward (nocb, the NONMEM default)</li>
 <li>
 <code>vignette("uncertainty_estimates")</code> is removed.</li>
 </ul>

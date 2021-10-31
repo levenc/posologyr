@@ -163,12 +163,13 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 
-  dat          <- object$tdm_data
-  solved_model <- object$solved_ppk_model
-  omega        <- object$omega
-  theta        <- object$theta
-  sigma        <- object$sigma
-  error_model  <- object$error_model
+  dat           <- object$tdm_data
+  solved_model  <- object$solved_ppk_model
+  omega         <- object$omega
+  theta         <- object$theta
+  sigma         <- object$sigma
+  error_model   <- object$error_model
+  interpolation <- object$interpolation
 
   ind_eta      <- which(diag(omega)>0)          # only parameters with IIV
   omega_eta    <- omega[ind_eta,ind_eta]        # only variances > 0
@@ -204,6 +205,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
                                     eta_map=eta_map,
                                     error_model=error_model,
                                     estim_with_iov=estim_with_iov,
+                                    interpolation=interpolation,
                                     adapt=adapt)
     if(return_AMS_models){
     AMS_models <- adaptive_output$AMS_models
@@ -283,6 +285,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
                         solved_model=solved_model,
                         error_model=error_model,
                         estim_with_iov=estim_with_iov,
+                        interpolation=interpolation,
                         adapt=adapt,
                         method="L-BFGS-B",
                         upper=bfgs_bounds,
@@ -341,7 +344,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
                                          omega_dim=omega_dim,
                                          eta_estim=r$par)
       data_iov     <- data.frame(dat,iov_col)
-      solved_model <- RxODE::rxSolve(solved_model,c(theta,eta_map),data_iov)
+      solved_model <- RxODE::rxSolve(solved_model,c(theta,eta_map),data_iov,
+                                     covs_interpolation=interpolation)
 
       estim_map$data   <- data_iov
     } else {
@@ -621,11 +625,12 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 
-  dat          <- object$tdm_data
-  solved_model <- object$solved_ppk_model
-  omega        <- object$omega
-  sigma        <- object$sigma
-  error_model  <- object$error_model
+  dat           <- object$tdm_data
+  solved_model  <- object$solved_ppk_model
+  omega         <- object$omega
+  sigma         <- object$sigma
+  error_model   <- object$error_model
+  interpolation <- object$interpolation
 
   y_obs        <- dat$DV[dat$EVID == 0]     # only observations
   ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
@@ -710,6 +715,7 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
                           pkmodel=object$solved_ppk_model,
                           params=params,
                           dat=data_iov,
+                          interpolation=interpolation,
                           MARGIN=1,FUN=solve_by_groups)
     solved_model  <- do.call(rbind,loads_omodels)
 
@@ -776,7 +782,8 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
       dat_resample[,ID:=rep(1:n_resample,1,each=nrow(dat))]
       estim_sir$model   <- RxODE::rxSolve(object$solved_ppk_model,
                                         params_resample,
-                                        dat_resample)
+                                        dat_resample,
+                                        covs_interpolation=interpolation)
     } else {
       params_resample   <- cbind(eta_df,theta)
       model_sir         <- solved_model
@@ -867,6 +874,7 @@ errpred <- function(eta_estim=NULL,
                     solved_model=NULL,
                     error_model=NULL,
                     estim_with_iov=NULL,
+                    interpolation=NULL,
                     adapt=NULL,
                     index_segment=NULL){
 
@@ -878,7 +886,8 @@ errpred <- function(eta_estim=NULL,
                                        omega_dim=omega_dim,
                                        eta_estim=eta_estim)
     dat <- data.frame(dat,iov_col)
-    solved_model <- RxODE::rxSolve(solved_model,c(theta,eta),dat)
+    solved_model <- RxODE::rxSolve(solved_model,c(theta,eta),dat,
+                                   covs_interpolation=interpolation)
   } else {
     eta[ind_eta] <- eta_estim
   }
@@ -947,6 +956,7 @@ adaptive_map <- function(return_AMS_models=NULL,
                          eta_map=NULL,
                          error_model=NULL,
                          estim_with_iov=NULL,
+                         interpolation=NULL,
                          adapt=NULL){
 
   segment_id     <- unique(dat$AMS)
@@ -978,7 +988,8 @@ adaptive_map <- function(return_AMS_models=NULL,
 
     # solved_model for the current segment
     solved_model <- RxODE::rxSolve(solved_model,c(theta,start_eta),
-                                   dat_segment)
+                                   dat_segment,
+                                   covs_interpolation=interpolation)
 
     y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
 
@@ -1001,6 +1012,7 @@ adaptive_map <- function(return_AMS_models=NULL,
                       solved_model=solved_model,
                       error_model=error_model,
                       estim_with_iov=estim_with_iov,
+                      interpolation=interpolation,
                       adapt=adapt,
                       index_segment=index_segment,
                       method="L-BFGS-B")
@@ -1040,7 +1052,7 @@ link_kappa_to_occ <- function(input,pimat_dim,pimat_names){
 
 # solve a large data set group by group, workaround for
 # https://github.com/nlmixrdevelopment/RxODE/issues/459
-solve_by_groups <- function(index,pkmodel,params,dat){
+solve_by_groups <- function(index,pkmodel,params,dat,interpolation){
   number_of_observ   <- index[4]
   number_of_subjects <- index[3]
   number_of_groups   <- index[2]
@@ -1056,6 +1068,7 @@ solve_by_groups <- function(index,pkmodel,params,dat){
 
   group_model <- RxODE::rxSolve(pkmodel,params[start_eta:stop_eta,],
                                 dat[start_dat:stop_dat,],
+                                covs_interpolation=interpolation,
                                 returnType="data.table")
   return(group_model)
 }
@@ -1078,6 +1091,7 @@ optim_gradient <- function(x,
                            solved_model=solved_model,
                            error_model=error_model,
                            estim_with_iov=estim_with_iov,
+                           interpolation=interpolation,
                            adapt=adapt){
   pracma::grad(errpred,x,
                run_model=run_model,
@@ -1096,5 +1110,6 @@ optim_gradient <- function(x,
                solved_model=solved_model,
                error_model=error_model,
                estim_with_iov=estim_with_iov,
+               interpolation=interpolation,
                adapt=adapt)
 }

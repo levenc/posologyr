@@ -27,6 +27,10 @@
 #'    model, a list of six objects.
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records.
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM. Defaults
+#'     to `TRUE`. If `FALSE`, the last observation carried forward (locf) style
+#'     will be used.
 #'
 #' \code{posologyr} will check the validity of the compiled RxODE
 #' model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
@@ -73,7 +77,7 @@
 #'                                 dat=df_patient01)
 #'
 #' @export
-posologyr <- function(prior_model=NULL,dat=NULL){
+posologyr <- function(prior_model=NULL,dat=NULL,nocb=TRUE){
 
   validate_priormod(prior_model)
   validate_dat(dat)
@@ -90,17 +94,21 @@ posologyr <- function(prior_model=NULL,dat=NULL){
          stop("Failed. The RxODE model is still invalid. Aborting",
               call. = FALSE)
        }
-      }
+    }
+
+  # interpolation method for time-varying covariates, nocb or locf
+  interpolation <- ifelse(nocb,"nocb","locf")
 
   solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
                                      c(prior_model$theta,
                                        diag(prior_model$omega)*0,
                                        diag(prior_model$pi_matrix)*0),
-                                     dat)
+                                     dat,covs_interpolation=interpolation)
 
   # assign the objects to a single list
   prior_model$tdm_data         <- as.data.frame(dat)
   prior_model$solved_ppk_model <- solved_ppk_model
+  prior_model$interpolation    <- interpolation
 
   return(prior_model)
 }

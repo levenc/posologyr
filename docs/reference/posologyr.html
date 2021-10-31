@@ -156,7 +156,7 @@ record, and an <code><a href='https://nlmixrdevelopment.github.io/RxODE/referenc
 created from the prior ppk model and the individual event record.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>posologyr</span><span class='op'>(</span>prior_model <span class='op'>=</span> <span class='cn'>NULL</span>, dat <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>posologyr</span><span class='op'>(</span>prior_model <span class='op'>=</span> <span class='cn'>NULL</span>, dat <span class='op'>=</span> <span class='cn'>NULL</span>, nocb <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,7 +169,14 @@ model, a list of six objects.</p></td>
     <tr>
       <th>dat</th>
       <td><p>Dataframe. An individual subject dataset following the
-structure of NONMEM/RxODE event records.</p>
+structure of NONMEM/RxODE event records.</p></td>
+    </tr>
+    <tr>
+      <th>nocb</th>
+      <td><p>A boolean. for time-varying covariates: the next observation
+carried backward (nocb) interpolation style, similar to NONMEM. Defaults
+to <code>TRUE</code>. If <code>FALSE</code>, the last observation carried forward (locf) style
+will be used.</p>
 <p><code>posologyr</code> will check the validity of the compiled RxODE
 model. If <code>prior_model$ppk_model$isValid()</code> returns <code>FALSE</code>,
 <code>posologyr</code> will call <code><a href='https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html'>RxODE</a></code>
@@ -230,7 +237,7 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 #&gt;     g &lt;- sigma[1] + sigma[2] * f
 #&gt;     return(g)
 #&gt; }
-#&gt; &lt;bytecode: 0x55c8ada20cf0&gt;
+#&gt; &lt;bytecode: 0x558eae236750&gt;
 #&gt; 
 #&gt; $theta
 #&gt;  THETA_ke   THETA_V THETA_k12 THETA_k21 
@@ -272,6 +279,9 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 #&gt; <span style='color: #BCBCBC;'>2</span>    14 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.249  19.5 0.041  0.12  4.38   85.3   96.2
 #&gt; <span style='color: #949494;'># … with 1 more variable: AUC &lt;dbl&gt;</span>
 #&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+#&gt; 
+#&gt; $interpolation
+#&gt; [1] "nocb"
 #&gt; </div><div class='input'>
 </div></pre>
   </div>
