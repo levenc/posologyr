@@ -254,19 +254,18 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
     optim_attempt     <- 1
     expand_boundaries <- TRUE
-    OFV_previous      <- Inf
 
     # create a table to log the estimates after each attempt
-    optim_attempt_log        <- matrix(0,nrow=20,ncol=(2+length(start_eta)))
+    optim_attempt_log        <- matrix(Inf,nrow=20,ncol=(2+length(start_eta)))
     optim_attempt_log        <- data.table(optim_attempt_log)
 
     data.table::setnames(optim_attempt_log,
                          1:(length(start_eta)+2),
-                         c("expand_boundaries","OFV",names(start_eta)),
+                         c("estimation_error","OFV",names(start_eta)),
                          skip_absent=TRUE)
 
 
-    while((expand_boundaries & optim_attempt <= 20) | optim_attempt < 2){
+    while(expand_boundaries & optim_attempt <= 20){
       r <- stats::optim(start_eta,errpred,
                         gr=optim_gradient,
                         run_model=run_model,
@@ -293,6 +292,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
       # Objection Function Value: OFV
       OFV_current       <- r$value
+      best_attempt_ofv  <- min(optim_attempt_log$OFV)
 
       # detection of anomalous estimates calling for a change of bounds
       all_eta_are_zero  <- !(FALSE %in% (r$par == 0))
@@ -301,26 +301,30 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
       identical_abs_eta <- isTRUE(length(unique(abs(r$par))) < length(r$par))
 
-      expand_boundaries <- isTRUE(all_eta_are_zero|stuck_on_bound|identical_abs_eta)
+      estimation_error  <- isTRUE(all_eta_are_zero|stuck_on_bound|identical_abs_eta)
 
       # log the detection of the anomalous estimates, OFV, and ETA estimates
-      optim_attempt_log[optim_attempt,] <- data.table(expand_boundaries,
+      optim_attempt_log[optim_attempt,] <- data.table(estimation_error,
                                                       "OFV"=OFV_current,
                                                       rbind(r$par))
-
       if(optim_attempt < 20){
+
+        expand_boundaries <- FALSE
 
         # check conditions calling for a new attempt at minimizing the OFV
 
-        if(expand_boundaries){
-          bfgs_bounds <- bfgs_bounds + 1
-
-        } else if(optim_attempt >= 2 & round(OFV_current,5) != OFV_previous){
+        if(estimation_error){
           expand_boundaries <- TRUE
           bfgs_bounds <- bfgs_bounds + 1
-        }
 
-        OFV_previous      <- round(OFV_current,5)
+        } else if(optim_attempt > 1 & (OFV_current - best_attempt_ofv) > 1e-7){
+          expand_boundaries <- TRUE
+          bfgs_bounds <- bfgs_bounds + 1
+
+        } else if(optim_attempt == 1){
+          expand_boundaries <- TRUE
+          bfgs_bounds <- bfgs_bounds + 0.5
+        }
 
       } else if(optim_attempt == 20){
 
@@ -329,12 +333,11 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
         OFV   <- NULL    # avoid undefined global variables
 
-        r$par <- unlist(optim_attempt_log[expand_boundaries==0 & OFV==min(OFV),
+        r$par <- unlist(optim_attempt_log[estimation_error==0 & OFV==min(OFV),
                                    3:(length(start_eta)+2)])
       }
 
       optim_attempt     <- optim_attempt + 1
-
     }
 
 
