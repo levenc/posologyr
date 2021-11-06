@@ -350,7 +350,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
           if(length(attempt_without_error) == 0){
             r$par <- unlist(optim_attempt_log[OFV==min(OFV),
-                                              3:(length(start_eta)+2)])
+                                              3:(length(start_eta)+2)][1,])
           } else {
             r$par <- unlist(optim_attempt_log[estimation_error==0 & OFV==min(OFV),
                                               3:(length(start_eta)+2)])
