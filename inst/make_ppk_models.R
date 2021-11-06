@@ -158,4 +158,4 @@ save(mod_tobramycin_2cpt_fictional,
      mod_vancomycin_2cpt_Goti2018,
      mod_amikacin_2cpt_Burdet2015,
      mod_piperacillin_2cpt_Roberts2010,
-     file="data/lib_ppk_model.rda")
+     file="data/lib_ppk_model.rda",compress='xz')
