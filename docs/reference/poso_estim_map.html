@@ -196,44 +196,45 @@ model using the estimated ETAs, <code>AMS_models</code> a list of RxODE models, 
 each Adaptive MAP Segment (AMS).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span>
-<span class='co'># infusion of tobramycin</span>
-<span class='va'>df_patient01</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>ID<span class='op'>=</span><span class='fl'>1</span>,
-                        TIME<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>,<span class='fl'>1.0</span>,<span class='fl'>14.0</span><span class='op'>)</span>,
-                        DV<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>,<span class='fl'>25.0</span>,<span class='fl'>5.5</span><span class='op'>)</span>,
-                        AMT<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2000</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,
-                        EVID<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,
-                        DUR<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='cn'>NA</span>,<span class='cn'>NA</span><span class='op'>)</span>,
-                        CLCREAT<span class='op'>=</span><span class='fl'>80</span>,WT<span class='op'>=</span><span class='fl'>65</span><span class='op'>)</span>
-<span class='co'># loading a tobramycin model and Patient01's event record</span>
-<span class='va'>patient01_tobra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='posologyr.html'>posologyr</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,
-                             dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span>
-<span class='co'># estimate the Maximum A Posteriori individual parameters</span>
-<span class='fu'>poso_estim_map</span><span class='op'>(</span><span class='va'>patient01_tobra</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $eta
-#&gt;      ETA_ke       ETA_V     ETA_k12     ETA_k21 
-#&gt; -0.09253262  0.06705126  0.00000000  0.00000000 
-#&gt; 
-#&gt; $model
-#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style='font-weight: bold;'>Solved RxODE object</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#&gt; ── <span style='font-weight: bold;'>Parameters</span> (<span style='color: #0000BB; font-weight: bold;'>$params</span>): ───────────────────────────────────────────────────────
-#&gt;    THETA_ke     CLCREAT          WT     THETA_V   THETA_k12   THETA_k21 
-#&gt;  0.21000000 80.00000000 65.00000000 19.80000000  0.04100000  0.12000000 
-#&gt;      ETA_ke       ETA_V 
-#&gt; -0.09253262  0.06705126 
-#&gt; ── <span style='font-weight: bold;'>Initial Conditions</span> (<span style='color: #0000BB; font-weight: bold;'>$inits</span>): ────────────────────────────────────────────────
-#&gt;  centr periph    AUC 
-#&gt;      0      0      0 
-#&gt; ── <span style='font-weight: bold;'>First part of data (object):</span> ────────────────────────────────────────────────
-#&gt; <span style='color: #949494;'># A tibble: 2 × 13</span>
-#&gt;    time tTVke  tTVV tTVk12 tTVk21    ke     V   k12   k21    Cc centr periph
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>1</span>     1 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.227  20.8 0.041  0.12 78.8  <span style='text-decoration: underline;'>1</span>639.   53.0
-#&gt; <span style='color: #BCBCBC;'>2</span>    14 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.227  20.8 0.041  0.12  5.13  107.  107. 
-#&gt; <span style='color: #949494;'># … with 1 more variable: AUC &lt;dbl&gt;</span>
-#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#&gt; </div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># df_patient01: event table for Patient01, following a 30 minutes intravenous</span></span>
+<span class='r-in'><span class='co'># infusion of tobramycin</span></span>
+<span class='r-in'><span class='va'>df_patient01</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>ID<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>                        TIME<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>,<span class='fl'>1.0</span>,<span class='fl'>14.0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        DV<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>,<span class='fl'>25.0</span>,<span class='fl'>5.5</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        AMT<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2000</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        EVID<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        DUR<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='cn'>NA</span>,<span class='cn'>NA</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        CLCREAT<span class='op'>=</span><span class='fl'>80</span>,WT<span class='op'>=</span><span class='fl'>65</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># loading a tobramycin model and Patient01's event record</span></span>
+<span class='r-in'><span class='va'>patient01_tobra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='posologyr.html'>posologyr</a></span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,</span>
+<span class='r-in'>                             dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># estimate the Maximum A Posteriori individual parameters</span></span>
+<span class='r-in'><span class='fu'>poso_estim_map</span><span class='op'>(</span><span class='va'>patient01_tobra</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $eta</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      ETA_ke       ETA_V     ETA_k12     ETA_k21 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -0.09253262  0.06705126  0.00000000  0.00000000 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $model</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style='font-weight: bold;'>Solved RxODE object</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ── <span style='font-weight: bold;'>Parameters</span> (<span style='color: #0000BB; font-weight: bold;'>$params</span>): ───────────────────────────────────────────────────────</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    THETA_ke     CLCREAT          WT     THETA_V   THETA_k12   THETA_k21 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  0.21000000 80.00000000 65.00000000 19.80000000  0.04100000  0.12000000 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      ETA_ke       ETA_V </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -0.09253262  0.06705126 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ── <span style='font-weight: bold;'>Initial Conditions</span> (<span style='color: #0000BB; font-weight: bold;'>$inits</span>): ────────────────────────────────────────────────</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  centr periph    AUC </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      0      0      0 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ── <span style='font-weight: bold;'>First part of data (object):</span> ────────────────────────────────────────────────</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 2 × 13</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    time tTVke  tTVV tTVk12 tTVk21    ke     V   k12   k21    Cc centr periph</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span>     1 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.227  20.8 0.041  0.12 78.8  <span style='text-decoration: underline;'>1</span>639.   53.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span>    14 -<span style='color: #BB0000;'>1.39</span>  2.97  -<span style='color: #BB0000;'>3.19</span>  -<span style='color: #BB0000;'>2.12</span> 0.227  20.8 0.041  0.12  5.13  107.  107. </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 1 more variable: AUC &lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

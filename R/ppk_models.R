@@ -151,3 +151,19 @@ error_model_comb2 <- function(f,sigma){
   g <- sqrt(sigma[1]^2 + sigma[2]^2*f^2)
   return(g)
 }
+
+#' Residual error model mixed (idem NONMEM)
+#'
+#' Mixed residual error model, similar to NONMEM implementation.
+#'
+#' @param f Numeric vector, output of a pharmacokinetic model
+#' @param sigma Matrix of the coefficients for the
+#' residual error model
+#'
+#' @return Numeric vector, residual error
+#' @export
+error_model_mixednm <- function(f,sigma){
+  dv <- cbind(f,1)
+  g  <- diag(dv%*%sigma%*%t(dv))
+  return(sqrt(g))
+}

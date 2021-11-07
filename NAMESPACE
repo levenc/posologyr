@@ -2,6 +2,7 @@
 
 export(error_model_comb1)
 export(error_model_comb2)
+export(error_model_mixednm)
 export(poso_dose_auc)
 export(poso_dose_conc)
 export(poso_estim_map)

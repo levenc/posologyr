@@ -82,6 +82,16 @@ error_model <- function(f,sigma){     #additive model if sigma[2] == 0
 }
 ```
 
+Alternatively, the function can take the simulated concentrations, and a matrix **sigma** of the estimates of the parameters for the residual error model, as in the following example:
+
+```{r error_model_nonmem}
+error_model_mixednm <- function(f,sigma){
+  dv <- cbind(f,1)
+  g  <- diag(dv%*%sigma%*%t(dv))     #sigma is the square matrix of the residual
+  return(sqrt(g))                    #errors
+}
+```
+
 ## theta
 The estimations of the parameters for the fixed effects of the model (THETA), in a named vector. The names must match the names used in **ppk_model**.
 
@@ -140,11 +150,19 @@ covariates  = c("CLCREAT","WT","DIAL")
 ```
 
 ## sigma
-The estimates of the parameters for the residual error model, in a vector.
+The estimates of the parameters for the residual error model, either in a vector:
 
 ```{r sigma}
 sigma       = c(additive_a = 3.4, proportional_b = 0.227)
 ```
+
+or in a matrix:
+
+```{r matrix}
+sigma       = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)})
+```
+
+depending on the residual error model.
 
 ## Full model
 The `posologyr` model is the list of all these objects. 
