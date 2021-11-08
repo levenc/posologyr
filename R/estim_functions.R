@@ -773,8 +773,8 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
     g        <- error_model(f,sigma)
-    minus_LL <- objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
-                                   solve_omega=solve_omega)
+    minus_LL <- 0.5*objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+                                       solve_omega=solve_omega)
     return(-minus_LL)
   }
 
