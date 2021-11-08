@@ -8,6 +8,7 @@ poso_estim_map(
   object,
   adapt = FALSE,
   return_model = TRUE,
+  return_ofv = FALSE,
   return_AMS_models = FALSE
 )
 }
@@ -23,6 +24,9 @@ the adaptive MAP approach.}
 \item{return_model}{A boolean. Returns a RxODE model using the estimated
 ETAs if set to \code{TRUE}. If \code{adapt=TRUE}, the model is solved using the
 parameters estimated on the last segment.}
+
+\item{return_ofv}{A boolean. Returns a the Objective Function Value (OFV)
+if set to \code{TRUE}. Always considered \code{FALSE} if \code{adapt=TRUE}.}
 
 \item{return_AMS_models}{A boolean. Returns a RxODE model using the estimated
 ETAs for each Adaptive MAP Segment (AMS) if set to \code{TRUE}. Ignored if

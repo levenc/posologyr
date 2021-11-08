@@ -128,6 +128,8 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' @param return_model A boolean. Returns a RxODE model using the estimated
 #'    ETAs if set to `TRUE`. If `adapt=TRUE`, the model is solved using the
 #'    parameters estimated on the last segment.
+#' @param return_ofv A boolean. Returns a the Objective Function Value (OFV)
+#'    if set to `TRUE`. Always considered `FALSE` if `adapt=TRUE`.
 #' @param return_AMS_models A boolean. Returns a RxODE model using the estimated
 #'    ETAs for each Adaptive MAP Segment (AMS) if set to `TRUE`. Ignored if
 #'    `adapt=FALSE`.
@@ -156,7 +158,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' poso_estim_map(patient01_tobra)
 #'
 #' @export
-poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
+poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE,
                            return_AMS_models=FALSE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
@@ -351,9 +353,13 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
           if(length(attempt_without_error) == 0){
             r$par <- unlist(optim_attempt_log[OFV==min(OFV),
                                               3:(length(start_eta)+2)][1,])
+            r$value <- min(optim_attempt_log[,OFV])
+
           } else {
             r$par <- unlist(optim_attempt_log[estimation_error==0 & OFV==min(OFV),
                                               3:(length(start_eta)+2)])
+            r$value <- optim_attempt_log[estimation_error==0 & OFV==min(OFV),
+                                              OFV]
           }
         }
       } else{ # class(r) == 'try-error'
@@ -365,6 +371,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
 
         r$par <- unlist(optim_attempt_log[OFV==min(OFV),
                                           3:(length(start_eta)+2)])
+        r$value <- min(optim_attempt_log[,OFV])
 
         warning("non-finite value supplied by optim, the last estimate with the lowest OFV was selected")
 
@@ -406,6 +413,10 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,
       model_map$params <- c(theta,eta_map,covar)
     }
     estim_map$model  <- model_map
+  }
+
+  if(return_ofv & !adapt){
+    estim_map$ofv <- r$value
   }
 
   if(adapt & return_AMS_models){
@@ -773,8 +784,8 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
     g        <- error_model(f,sigma)
-    minus_LL <- objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
-                                   solve_omega=solve_omega)
+    minus_LL <- 0.5*objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+                                       solve_omega=solve_omega)
     return(-minus_LL)
   }
 
