@@ -5,7 +5,7 @@
 \title{Creates a posologyr list from a prior model and an individual event
 record}
 \usage{
-posologyr(prior_model = NULL, dat = NULL, nocb = TRUE)
+posologyr(prior_model = NULL, dat = NULL, nocb = FALSE)
 }
 \arguments{
 \item{prior_model}{A \code{posologyr} prior population pharmacokinetics
@@ -15,9 +15,9 @@ model, a list of six objects.}
 structure of NONMEM/RxODE event records.}
 
 \item{nocb}{A boolean. for time-varying covariates: the next observation
-carried backward (nocb) interpolation style, similar to NONMEM. Defaults
-to \code{TRUE}. If \code{FALSE}, the last observation carried forward (locf) style
-will be used.
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+\code{FALSE}, the last observation carried forward (locf) style will be used.
+Defaults to \code{FALSE}.
 
 \code{posologyr} will check the validity of the compiled RxODE
 model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},

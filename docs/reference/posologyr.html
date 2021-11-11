@@ -156,7 +156,7 @@ record, and an <code><a href='https://nlmixrdevelopment.github.io/RxODE/referenc
 created from the prior ppk model and the individual event record.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>posologyr</span><span class='op'>(</span>prior_model <span class='op'>=</span> <span class='cn'>NULL</span>, dat <span class='op'>=</span> <span class='cn'>NULL</span>, nocb <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>posologyr</span><span class='op'>(</span>prior_model <span class='op'>=</span> <span class='cn'>NULL</span>, dat <span class='op'>=</span> <span class='cn'>NULL</span>, nocb <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -174,9 +174,9 @@ structure of NONMEM/RxODE event records.</p></td>
     <tr>
       <th>nocb</th>
       <td><p>A boolean. for time-varying covariates: the next observation
-carried backward (nocb) interpolation style, similar to NONMEM. Defaults
-to <code>TRUE</code>. If <code>FALSE</code>, the last observation carried forward (locf) style
-will be used.</p>
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+<code>FALSE</code>, the last observation carried forward (locf) style will be used.
+Defaults to <code>FALSE</code>.</p>
 <p><code>posologyr</code> will check the validity of the compiled RxODE
 model. If <code>prior_model$ppk_model$isValid()</code> returns <code>FALSE</code>,
 <code>posologyr</code> will call <code><a href='https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html'>RxODE</a></code>
@@ -226,7 +226,7 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 <span class='r-in'><span class='fu'>posologyr</span><span class='op'>(</span>prior_model<span class='op'>=</span><span class='va'>mod_tobramycin_2cpt_fictional</span>,</span>
 <span class='r-in'>                                dat<span class='op'>=</span><span class='va'>df_patient01</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $ppk_model</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>RxODE </span>NA model named <span style='color: #BBBB00; font-weight: bold;'>rx_4f27b389abe92def4bd1e9e79b672768</span> model (<span style='color: #00BB00;'>✓</span> <span style='color: #00BB00; font-weight: bold;'>ready</span>). </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>RxODE </span>NA model named <span style='color: #BBBB00; font-weight: bold;'>rx_891ae6a8767a71b473620bdac1b24981</span> model (<span style='color: #00BB00;'>✓</span> <span style='color: #00BB00; font-weight: bold;'>ready</span>). </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB; font-weight: bold;'>$state</span>: centr, periph, AUC</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB; font-weight: bold;'>$params</span>: THETA_ke, CLCREAT, WT, THETA_V, THETA_k12, THETA_k21, ETA_ke, ETA_V</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB; font-weight: bold;'>$lhs</span>: tTVke, tTVV, tTVk12, tTVk21, ke, V, k12, k21, Cc</span>
@@ -237,7 +237,7 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 <span class='r-out co'><span class='r-pr'>#&gt;</span>     g &lt;- sigma[1] + sigma[2] * f</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>     return(g)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;bytecode: 0x557a5a0fe5e0&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;bytecode: 0x5597cdc78950&gt;</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $theta</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  THETA_ke   THETA_V THETA_k12 THETA_k21 </span>
@@ -281,7 +281,7 @@ created with <code>prior_ppk_model</code> and using <code>dat</code> as the even
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $interpolation</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "nocb"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "locf"</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'></span>
 </pre>

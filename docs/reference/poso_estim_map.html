@@ -155,6 +155,7 @@ also known as Empirical Bayes Estimates (EBE).</p>
   <span class='va'>object</span>,
   adapt <span class='op'>=</span> <span class='cn'>FALSE</span>,
   return_model <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  return_ofv <span class='op'>=</span> <span class='cn'>FALSE</span>,
   return_AMS_models <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -178,6 +179,11 @@ the adaptive MAP approach.</p></td>
       <td><p>A boolean. Returns a RxODE model using the estimated
 ETAs if set to <code>TRUE</code>. If <code>adapt=TRUE</code>, the model is solved using the
 parameters estimated on the last segment.</p></td>
+    </tr>
+    <tr>
+      <th>return_ofv</th>
+      <td><p>A boolean. Returns a the Objective Function Value (OFV)
+if set to <code>TRUE</code>. Always considered <code>FALSE</code> if <code>adapt=TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>return_AMS_models</th>

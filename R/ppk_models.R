@@ -28,9 +28,9 @@
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/RxODE event records.
 #' @param nocb A boolean. for time-varying covariates: the next observation
-#'     carried backward (nocb) interpolation style, similar to NONMEM. Defaults
-#'     to `TRUE`. If `FALSE`, the last observation carried forward (locf) style
-#'     will be used.
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #'
 #' \code{posologyr} will check the validity of the compiled RxODE
 #' model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
@@ -77,7 +77,7 @@
 #'                                 dat=df_patient01)
 #'
 #' @export
-posologyr <- function(prior_model=NULL,dat=NULL,nocb=TRUE){
+posologyr <- function(prior_model=NULL,dat=NULL,nocb=FALSE){
 
   validate_priormod(prior_model)
   validate_dat(dat)
