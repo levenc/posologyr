@@ -221,6 +221,13 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
     }
   }
   else{ #standard MAP estimation
+
+    # avoid empty (NULL) arguments for stats::optim()
+    omega_dim <- 0
+    iov_col   <- 0
+    pimat     <- 0
+    eta_df    <- 0
+
     if (estim_with_iov){
       data_iov     <- dat
       pimat        <- object$pi_matrix
