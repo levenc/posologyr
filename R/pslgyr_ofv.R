@@ -1,0 +1,102 @@
+#-------------------------------------------------------------------------
+# posologyr: individual dose optimisation using population PK
+# Copyright (C) 2021  Cyril Leven
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+#-------------------------------------------------------------------------
+
+# Update model predictions with a new set of parameters, for all obs
+run_model <- function(x,model_init=NULL,solved_model=NULL,
+                      estim_with_iov=NULL,adapt=NULL){
+  if (!estim_with_iov){ #RxODE already updated in errpred() if estim_with_iov
+    solved_model$params <- x
+    if(adapt){
+      solved_model$inits <- model_init
+    }
+  }
+  return(solved_model$Cc)
+}
+
+# Objective function for the Empirical Bayes Estimates
+# doi: 10.4196/kjpp.2012.16.2.97
+objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
+                               eta=NULL,solve_omega=NULL){
+
+  U_y   <-  sum(((y_obs - f)/g)^2 + log(g^2))
+  #the transpose of a diagonal matrix is itself
+  U_eta <- eta %*% solve_omega %*% eta
+
+  if (TRUE %in% is.na(f)){
+    # if RxODE fails to solve the model, the proposed ETA is not optimal, assign
+    # a large value to OFV to divert the algorithm from this area
+    OFV <- 10^10
+  } else {
+    OFV <- U_y + U_eta
+  }
+
+  return(OFV)
+}
+
+# Prediction error to optimize for MAP-EBE
+errpred <- function(eta_estim=NULL,
+                    run_model=NULL,
+                    y_obs=NULL,
+                    theta=NULL,
+                    ind_eta=NULL,
+                    sigma=NULL,
+                    solve_omega=NULL,
+                    omega=NULL,
+                    omega_dim=NULL,
+                    iov_col=NULL,
+                    pimat=NULL,
+                    dat=NULL,
+                    eta_df=NULL,
+                    model_init=NULL,
+                    solved_model=NULL,
+                    error_model=NULL,
+                    estim_with_iov=NULL,
+                    interpolation=NULL,
+                    adapt=NULL,
+                    index_segment=NULL){
+
+  eta          <- diag(omega)*0
+
+  if (estim_with_iov){
+    eta[ind_eta] <- eta_estim[1:omega_dim]
+    iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
+                                       omega_dim=omega_dim,
+                                       eta_estim=eta_estim)
+    dat <- data.frame(dat,iov_col)
+    solved_model <- RxODE::rxSolve(solved_model,c(theta,eta),dat,
+                                   covs_interpolation=interpolation)
+  } else {
+    eta[ind_eta] <- eta_estim
+  }
+  if(adapt){     # unlist avoids conversion to data.frame
+    eta       <- unlist(eta + eta_df[index_segment,])
+    eta_estim <- unlist(eta_estim + eta_df[index_segment,ind_eta])
+  }
+  #simulated concentrations with the proposed eta estimates
+  f   <- do.call(run_model,list(c(theta,eta),
+                                model_init=model_init,
+                                solved_model=solved_model,
+                                estim_with_iov=estim_with_iov,
+                                adapt=adapt))
+  g   <- error_model(f,sigma)
+
+  optimize_me <- objective_function(y_obs=y_obs,f=f,g=g,
+                                    eta=eta_estim,
+                                    solve_omega=solve_omega)
+  return(optimize_me)
+}
