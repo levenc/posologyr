@@ -176,7 +176,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
   ind_eta      <- which(diag(omega)>0)          # only parameters with IIV
   omega_eta    <- omega[ind_eta,ind_eta]        # only variances > 0
   solve_omega  <- try(solve(omega_eta))         # inverse of omega_eta
-  start_eta    <- diag(omega_eta)*0             # get a named vector of zeroes
+
   eta_map      <- diag(omega)*0
 
   diag_varcovar_matrix <- diag(omega_eta)
@@ -189,6 +189,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
       stop("The AMS column is required in the patient record to define the
       segments for adaptive MAP forecasting")
     }
+
+    start_eta       <- diag(omega_eta)*0    # get a named vector of zeroes
 
     adaptive_output <- adaptive_map(return_AMS_models=return_AMS_models,
                                     dat=dat,
@@ -246,14 +248,10 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
                                            dat=dat)
 
       solve_omega   <- try(solve(all_the_mat))
-      start_eta     <- diag(all_the_mat)*0
-
-      names(start_eta) <- c(colnames(omega),
-                               seq(1,ncol(all_the_mat)-omega_dim))
-
       diag_varcovar_matrix <- diag(all_the_mat)
     }
 
+    start_eta        <- init_eta(object,estim_with_iov,omega_iov=all_the_mat)
     model_init       <- 0                             # to appease run_model()
     y_obs            <- dat$DV[dat$EVID == 0]         # only observations
 
@@ -272,7 +270,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
                          1:(length(start_eta)+2),
                          c("estimation_error","OFV",names(start_eta)),
                          skip_absent=TRUE)
-
 
     while(expand_boundaries & optim_attempt <= 20){
       r <- try(stats::optim(start_eta,errpred,
