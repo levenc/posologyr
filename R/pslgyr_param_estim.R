@@ -303,6 +303,10 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 
         # Objection Function Value: OFV
         OFV_current       <- r$value
+
+        # log the detection of the anomalous estimates, OFV, and ETA estimates
+        optim_attempt_log[optim_attempt,] <- data.table("OFV"=OFV_current,
+                                                        rbind(r$par))
         best_attempt_ofv  <- min(optim_attempt_log$OFV)
         second_best_ofv   <- min(sort(optim_attempt_log$OFV)[-1])
 
@@ -312,18 +316,14 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
         identical_abs_eta <- isTRUE(length(unique(abs(r$par))) < length(r$par))
         sky_high_ofv      <- OFV_current >= 1e10
         not_the_best      <- isTRUE(OFV_current - best_attempt_ofv > 1e-7)
-        no_better_than_2nd_best <- isTRUE(second_best_ofv - best_attempt_ofv > 1e-5)
+        far_from_2nd_best <- isTRUE(abs(second_best_ofv - best_attempt_ofv) > 1e-5)
 
         need_a_new_start  <- isTRUE(optim_attempt == 1|
                                       all_eta_are_zero|
                                       identical_abs_eta|
                                       sky_high_ofv|
                                       not_the_best|
-                                      no_better_than_2nd_best)
-
-        # log the detection of the anomalous estimates, OFV, and ETA estimates
-        optim_attempt_log[optim_attempt,] <- data.table("OFV"=OFV_current,
-                                                        rbind(r$par))
+                                      far_from_2nd_best)
 
         if(optim_attempt < max_attempt){
 
