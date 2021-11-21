@@ -197,8 +197,16 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
   }
 
   log_likelihood  <- unlist(apply(wide_cc,MARGIN=1,FUN=LL_func))
+
   start_eta       <- eta_sim[which(log_likelihood == max(log_likelihood)),
                              1:ncol(omega_eta)]
+
+  if(!is.null(dim(start_eta))){ # if all proposals are equally bad, start_eta
+                                # is not a vector, but an array, and the output
+                                # of dim() exists, in that case return the first
+                                # row
+    start_eta <- start_eta[1,]
+  }
 
   if(estim_with_iov){
     names(start_eta) <- c(colnames(omega[ind_eta,ind_eta]),
