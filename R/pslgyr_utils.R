@@ -168,7 +168,7 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
       wide_cc <- dcast(long_cc, formula = id ~ time, value.var = "Cc")
     }
 
-    wide_cc <- wide_cc[complete.cases(wide_cc[,2])]
+    wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
   } else {
     long_cc <- RxODE::rxSolve(solved_model,
                               cbind(theta,eta_dt,row.names=NULL),
@@ -183,7 +183,7 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
       wide_cc <- dcast(long_cc, formula = sim.id ~ time, value.var = "Cc")
     }
 
-    wide_cc <- wide_cc[complete.cases(wide_cc[,2])]
+    wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
   }
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
