@@ -108,7 +108,7 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
   y_obs         <- dat$DV[dat$EVID == 0]     # only observations
   error_model   <- object$error_model
 
-  n_sample      <- 1e2
+  n_sample      <- 10
 
   #simulate n ETAs
   eta_sim       <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_eta)),
