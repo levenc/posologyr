@@ -144,7 +144,7 @@ concentration." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate the optimal dose for a selected target concentration</h1>
-    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/optim_functions.R'><code>R/optim_functions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/levenc/posologyr/blob/master/R/pslgyr_dosing_optim.R'><code>R/pslgyr_dosing_optim.R</code></a></small>
     <div class="hidden name"><code>poso_dose_conc.Rd</code></div>
     </div>
 
@@ -273,7 +273,7 @@ covariates</p></dd>
 <span class='r-in'><span class='co'># one hour after starting the 30-minutes infusion</span></span>
 <span class='r-in'><span class='fu'>poso_dose_conc</span><span class='op'>(</span><span class='va'>patient01_tobra</span>,time_c<span class='op'>=</span><span class='fl'>1</span>,duration<span class='op'>=</span><span class='fl'>0.5</span>,target_conc<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $dose</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2031.465</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2031.464</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $type_of_estimate</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "point estimate"</span>
@@ -282,8 +282,8 @@ covariates</p></dd>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 80</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $indiv_param</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   THETA_ke CLCREAT WT THETA_V THETA_k12 THETA_k21      ETA_ke      ETA_V</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1     0.21      80 65    19.8     0.041      0.12 -0.09253262 0.06705126</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   THETA_ke CLCREAT WT THETA_V THETA_k12 THETA_k21     ETA_ke      ETA_V</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1     0.21      80 65    19.8     0.041      0.12 -0.0925327 0.06705106</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'></span>
 </pre>
