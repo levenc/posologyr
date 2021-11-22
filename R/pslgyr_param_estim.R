@@ -748,16 +748,28 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
                           MARGIN=1,FUN=solve_by_groups)
     solved_model  <- do.call(rbind,loads_omodels)
 
-    wide_cc  <- tidyr::pivot_wider(solved_model,
-                                   id_cols = "id",
-                                   names_from = "time",
-                                   values_from = "Cc")
+    if(length(unique(dat$TIME))!=(length(dat$TIME))){
+      wide_cc <- dcast(solved_model, formula = id ~ time, value.var = "Cc",
+                       fun.aggregate = list(parent=function(x){x[1]},
+                                            metabolite=function(x){x[2]}))
+    } else {
+      wide_cc <- dcast(solved_model, formula = id ~ time, value.var = "Cc")
+    }
+
   } else {
-    solved_model$params  <- cbind(theta,eta_dt,row.names=NULL)
-    wide_cc  <- tidyr::pivot_wider(solved_model,
-                                   id_cols = "sim.id",
-                                   names_from = "time",
-                                   values_from = "Cc")
+    solved_model <- RxODE::rxSolve(solved_model,
+                                   cbind(theta,eta_dt,row.names=NULL),
+                                   dat,covs_interpolation=interpolation,
+                                   returnType="data.table")
+
+    if(length(unique(dat$TIME))!=(length(dat$TIME))){
+      wide_cc <- dcast(solved_model, formula = sim.id ~ time, value.var = "Cc",
+                       fun.aggregate = list(parent=function(x){x[1]},
+                                            metabolite=function(x){x[2]}))
+    } else {
+      wide_cc <- dcast(solved_model, formula = sim.id ~ time, value.var = "Cc")
+    }
+
   }
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
@@ -814,14 +826,19 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
                                         dat_resample,
                                         covs_interpolation=interpolation)
     } else {
-      params_resample   <- cbind(eta_df,theta)
-      model_sir         <- solved_model
+      params_resample <- cbind(eta_df,theta,row.names=NULL)
+
       if(no_covariates){
-        model_sir$params  <- cbind(params_resample,row.names=NULL)
+        model_sir     <- RxODE::rxSolve(object$solved_ppk_model,
+                                        params_resample,
+                                        dat,covs_interpolation=interpolation)
       } else {
-        covar             <- as.data.frame(dat[1,object$covariates])
-        names(covar)      <- object$covariates
-        model_sir$params  <- cbind(params_resample,covar,row.names=NULL)
+        covar         <- as.data.frame(dat[1,object$covariates])
+        names(covar)  <- object$covariates
+        model_sir     <- RxODE::rxSolve(object$solved_ppk_model,
+                                        cbind(params_resample,covar,
+                                              row.names=NULL),
+                                        dat,covs_interpolation=interpolation)
       }
       estim_sir$model   <- model_sir
     }

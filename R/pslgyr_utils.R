@@ -80,7 +80,6 @@ optim_gradient <- function(x,
                adapt=adapt)
 }
 
-
 # select a suitable vector of ETA to start the optimization
 init_eta <- function(object,estim_with_iov,omega_iov=NULL){
 
@@ -152,8 +151,6 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
 
     param_cols <- c("ID",attr(omega,"dimnames")[[1]])
     params     <- cbind(eta_dt[,param_cols,with=F],theta)
-
-    #group_index   <- data.frame(cbind(c(1:10),10,n_sample,nrow(dat)))
 
     long_cc <- RxODE::rxSolve(solved_model,
                               cbind(theta,eta_dt,row.names=NULL),

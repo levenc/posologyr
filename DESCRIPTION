@@ -25,7 +25,6 @@ Imports:
     stats,
     pracma,
     mvtnorm,
-    tidyr,
     lotri,
     data.table
 Suggests: 
@@ -33,7 +32,8 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     ggplot2,
-    magrittr
+    magrittr,
+    tidyr
 URL: https://levenc.github.io/posologyr/, https://github.com/levenc/posologyr
 BugReports: https://github.com/levenc/posologyr/issues
 VignetteBuilder: knitr
