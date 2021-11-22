@@ -51,12 +51,10 @@ merge_covar_matrices <- function(omega_eta=NULL,
   all_the_mat  <- matrix(0,nrow=matrix_dim,ncol=matrix_dim)
   all_the_mat[1:omega_dim,1:omega_dim] <- omega_eta
   for (i in unique(dat$OCC)){
-    if (TRUE){
-      start_pi_mat <- omega_dim+pimat_dim*(i-1)+1
-      end_pi_mat   <- omega_dim+pimat_dim*(i)
-      all_the_mat[start_pi_mat:end_pi_mat,
-                  start_pi_mat:end_pi_mat] <- pimat_kappa
-    }
+    start_pi_mat <- omega_dim+pimat_dim*(i-1)+1
+    end_pi_mat   <- omega_dim+pimat_dim*(i)
+    all_the_mat[start_pi_mat:end_pi_mat,
+                start_pi_mat:end_pi_mat] <- pimat_kappa
   }
   return(all_the_mat)
 }
