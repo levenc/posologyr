@@ -275,7 +275,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 
     while(one_more_time & optim_attempt <= max_attempt){
       r <- try(stats::optim(start_eta,errpred,
-                        gr=optim_gradient,
                         run_model=run_model,
                         y_obs=y_obs,
                         theta=theta,

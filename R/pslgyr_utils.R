@@ -39,47 +39,6 @@ solve_by_groups <- function(index,pkmodel,params,dat,interpolation){
   return(group_model)
 }
 
-# pracma gradient of errpred for L-BFGS-B in optim
-optim_gradient <- function(x,
-                           run_model=run_model,
-                           y_obs=y_obs,
-                           theta=theta,
-                           ind_eta=ind_eta,
-                           sigma=sigma,
-                           solve_omega=solve_omega,
-                           omega=omega,
-                           omega_dim=omega_dim,
-                           iov_col=iov_col,
-                           pimat=pimat,
-                           dat=dat,
-                           eta_df=eta_df,
-                           model_init=model_init,
-                           solved_model=solved_model,
-                           error_model=error_model,
-                           estim_with_iov=estim_with_iov,
-                           interpolation=interpolation,
-                           adapt=adapt){
-  pracma::grad(errpred,x,
-               run_model=run_model,
-               y_obs=y_obs,
-               theta=theta,
-               ind_eta=ind_eta,
-               sigma=sigma,
-               solve_omega=solve_omega,
-               omega=omega,
-               omega_dim=omega_dim,
-               iov_col=iov_col,
-               pimat=pimat,
-               dat=dat,
-               eta_df=eta_df,
-               model_init=model_init,
-               solved_model=solved_model,
-               error_model=error_model,
-               estim_with_iov=estim_with_iov,
-               interpolation=interpolation,
-               adapt=adapt)
-}
-
 # select a suitable vector of ETA to start the optimization
 init_eta <- function(object,estim_with_iov,omega_iov=NULL){
 
