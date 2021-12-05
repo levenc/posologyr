@@ -747,28 +747,24 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
                           MARGIN=1,FUN=solve_by_groups)
     solved_model  <- do.call(rbind,loads_omodels)
 
-    if(length(unique(dat$TIME))!=(length(dat$TIME))){
-      wide_cc <- dcast(solved_model, formula = id ~ time, value.var = "Cc",
-                       fun.aggregate = list(parent=function(x){x[1]},
-                                            metabolite=function(x){x[2]}))
-    } else {
-      wide_cc <- dcast(solved_model, formula = id ~ time, value.var = "Cc")
-    }
+    data.table::setnames(solved_model,"id","sim.id")
 
+    wide_cc <- dcast_up_to_five(solved_model)
+
+    wide_cc <- drop_empty_cols(wide_cc)
+
+    wide_cc <- order_columns(wide_cc)
   } else {
     solved_model <- RxODE::rxSolve(solved_model,
                                    cbind(theta,eta_dt,row.names=NULL),
                                    dat,covs_interpolation=interpolation,
                                    returnType="data.table")
 
-    if(length(unique(dat$TIME))!=(length(dat$TIME))){
-      wide_cc <- dcast(solved_model, formula = sim.id ~ time, value.var = "Cc",
-                       fun.aggregate = list(parent=function(x){x[1]},
-                                            metabolite=function(x){x[2]}))
-    } else {
-      wide_cc <- dcast(solved_model, formula = sim.id ~ time, value.var = "Cc")
-    }
+    wide_cc <- dcast_up_to_five(solved_model)
 
+    wide_cc <- drop_empty_cols(wide_cc)
+
+    wide_cc <- order_columns(wide_cc)
   }
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97

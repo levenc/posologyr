@@ -116,13 +116,13 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
                               data_iov,covs_interpolation=interpolation,
                               returnType="data.table")
 
-    if(length(unique(dat$TIME))!=(length(dat$TIME))){
-      wide_cc <- dcast(long_cc, formula = id ~ time, value.var = "Cc",
-                       fun.aggregate = list(parent=function(x){x[1]},
-                                            metabolite=function(x){x[2]}))
-    } else {
-      wide_cc <- dcast(long_cc, formula = id ~ time, value.var = "Cc")
-    }
+    data.table::setnames(long_cc,"id","sim.id")
+
+    wide_cc <- dcast_up_to_five(long_cc)
+
+    wide_cc <- drop_empty_cols(wide_cc)
+
+    wide_cc <- order_columns(wide_cc)
 
     wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
   } else {
@@ -131,13 +131,11 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
                               dat,covs_interpolation=interpolation,
                               returnType="data.table")
 
-    if(length(unique(dat$TIME))!=(length(dat$TIME))){
-      wide_cc <- dcast(long_cc, formula = sim.id ~ time, value.var = "Cc",
-                       fun.aggregate = list(parent=function(x){x[1]},
-                                            metabolite=function(x){x[2]}))
-    } else {
-      wide_cc <- dcast(long_cc, formula = sim.id ~ time, value.var = "Cc")
-    }
+    wide_cc <- dcast_up_to_five(long_cc)
+
+    wide_cc <- drop_empty_cols(wide_cc)
+
+    wide_cc <- order_columns(wide_cc)
 
     wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
   }
@@ -173,3 +171,50 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
 
   return(start_eta)
 }
+
+# dcast up to five simultaneous observations for parent-metabolite data
+dcast_up_to_five <- function(long_data){
+  dcast(long_data, formula = sim.id ~ time, value.var = "Cc",
+        fun.aggregate = list(obs1_=function(x){x[1]},
+                             obs2_=function(x){x[2]},
+                             obs3_=function(x){x[3]},
+                             obs4_=function(x){x[4]},
+                             obs5_=function(x){x[5]}
+                             ))
+}
+
+# drop empty columns
+drop_empty_cols <- function(df) {
+  for (nm in names(df)){
+    if(all(is.na(df[[nm]]))){
+      df[[nm]] <- NULL
+    }
+  }
+  return(df)
+}
+
+# order columns to preserve the initial sequence of observations after dcast
+order_columns <- function(DT){
+  dt_names <- names(DT[,-1]) # column names, minus the first one
+
+  split_colnames_list <- strsplit(dt_names,"__")
+
+  #type of observations in X1, time in X2
+  colnames_table <- data.frame(matrix(unlist(split_colnames_list),
+                        nrow=length(dt_names),
+                        byrow=T))
+
+  # Order colnames_table, first time, then type of observation
+  colnames_table <- colnames_table[order(as.numeric(colnames_table$X2),
+                                        colnames_table$X1,
+                                        decreasing = F),]
+
+  # Reformat names
+  df_names <- paste0(colnames_table$X1,"__",colnames_table$X2)
+
+  # Rearrange columns, bind the first col and the rearranged cols
+  DT <- cbind(DT[,1],DT[,..dt_names]) # .. for colnames in a data.table
+
+  return(DT)
+}
+
