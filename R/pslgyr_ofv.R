@@ -33,7 +33,14 @@ run_model <- function(x,model_init=NULL,solved_model=NULL,
 objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
                                eta=NULL,solve_omega=NULL){
 
+  # 1) When the prediction f is zero, g can be zero (depending on the residual
+  # error model).
+  # 2) log(0) is NaN, the limit of log(x) when x approaches zero is -Inf,
+  # c(-Inf)^2 == Inf, and the limit of log(x) when x approaches Inf is Inf.
+  g[which(g <= 0)] <- Inf
+
   U_y   <-  sum(((y_obs - f)/g)^2 + log(g^2))
+
   #the transpose of a diagonal matrix is itself
   U_eta <- eta %*% solve_omega %*% eta
 

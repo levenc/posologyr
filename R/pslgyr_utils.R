@@ -213,7 +213,7 @@ order_columns <- function(DT){
   df_names <- paste0(colnames_table$X1,"__",colnames_table$X2)
 
   # Rearrange columns, bind the first col and the rearranged cols
-  DT <- cbind(DT[,1],DT[,..dt_names]) # .. for colnames in a data.table
+  DT <- cbind(DT[,1],DT[,dt_names,with=F])
 
   return(DT)
 }
