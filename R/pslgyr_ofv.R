@@ -36,8 +36,8 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
   # 1) When the prediction f is zero, g can be zero (depending on the residual
   # error model).
   # 2) log(0) is NaN, the limit of log(x) when x approaches zero is -Inf,
-  # c(-Inf)^2 == Inf, and the limit of log(x) when x approaches Inf is Inf.
-  g[which(g <= 0)] <- Inf
+  # 3) log(1) is zero, and 1^2 is zero
+  g[which(g == 0)] <- 1
 
   U_y   <-  sum(((y_obs - f)/g)^2 + log(g^2))
 
