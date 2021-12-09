@@ -72,11 +72,33 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
   eta_sim       <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_eta)),
                                     sigma=omega_eta)
 
-  eta_df        <- data.frame(eta_sim)
-  names(eta_df) <- attr(omega[ind_eta,ind_eta],"dimnames")[[1]]
+  if (estim_with_iov){
+    # matrix large enough for omega + pi
+    eta_mat           <- matrix(0,nrow=n_sample,
+                                ncol=ncol(omega_iov)-
+                                ncol(omega[ind_eta,ind_eta])+
+                                ncol(omega))
+
+    # IIV
+    eta_mat[,ind_eta] <-
+      eta_sim[,1:length(ind_eta)]
+
+    # IOV
+    eta_mat[,(ncol(omega)+1):ncol(eta_mat)] <-
+      eta_sim[,(length(ind_eta)+1):ncol(eta_sim)]
+
+  } else{
+    eta_mat           <- matrix(0,nrow=n_sample,ncol=ncol(omega))
+    eta_mat[,ind_eta] <- eta_sim
+
+  }
+
+  eta_df            <- data.frame(eta_mat)
+
+  names(eta_df) <- attr(omega,"dimnames")[[1]]
   eta_dt        <- data.table::data.table(eta_df)
 
-  param_cols    <- attr(omega[ind_eta,ind_eta],"dimnames")[[1]]
+  param_cols    <- attr(omega,"dimnames")[[1]]
   params        <- cbind(ID=1,eta_dt[,param_cols,with=F],theta)
 
   if (estim_with_iov){
@@ -95,7 +117,7 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
     names_tdm_dt_drop <- names(tdm_dt[,!c("ID","OCC")])
     names_tdm_dt_full <- names(tdm_dt)
     drop_cols         <- c(names_tdm_dt_drop,
-                           attr(omega[ind_eta,ind_eta],"dimnames")[[1]])
+                           attr(omega,"dimnames")[[1]])
 
     # reshape IOV to colums
     iov_col <- t(apply(dat_dt[,!drop_cols,with=F],
