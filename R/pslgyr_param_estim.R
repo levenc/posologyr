@@ -498,7 +498,10 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
   eta      <- diag(omega_eta)*0
   f        <- do.call(run_model,list(c(theta,eta)))
   g        <- error_model(f,sigma)
-  U_y      <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+
+  g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
+
+  U_y      <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
   U_eta    <- 0.5 * eta %*% solve_omega %*% eta
 
   eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(omega))
@@ -514,7 +517,10 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
         names(etac)   <- attr(omega_eta,"dimnames")[[1]]
         f             <- do.call(run_model,list(c(theta,etac)))
         g             <- error_model(f,sigma)
-        Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+
+        g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
+
+        Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
         deltu         <- Uc_y - U_y
         if(deltu < (-1) * log(stats::runif(1)))
         {
@@ -541,7 +547,10 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
             etac[vk2]     <- eta[vk2] + stats::rnorm(nrs2)*d_omega[vk2]
             f             <- do.call(run_model,list(c(theta,etac)))
             g             <- error_model(f,sigma)
-            Uc_y          <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+
+            g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
+
+            Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
             Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
             deltu         <- Uc_y - U_y + Uc_eta - U_eta
             if(deltu < (-1) * log(stats::runif(1)))
@@ -575,7 +584,10 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
                                              ncol=nrs2)%*%diag(d_omega[vk2])
           f               <- do.call(run_model,list(c(theta,etac)))
           g               <- error_model(f,sigma)
-          Uc_y            <- sum(0.5 * ((y_obs - f)/g)^2 + log(g))
+
+          g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
+
+          Uc_y            <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
           Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
           deltu           <- Uc_y-U_y+Uc_eta-U_eta
           ind             <- which(deltu<(-log(stats::runif(1))))
@@ -686,8 +698,8 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
                                          pimat_dim=pimat_dim,
                                          pimat_kappa=pimat_kappa,
                                          dat=dat)
-    omega_sim   <- all_the_mat
-    solve_omega <- solve(all_the_mat)
+    omega_sim   <- all_the_mat        # needed for I-Step
+    solve_omega <- solve(all_the_mat) # needed for LL_func in I-Step
   }
 
   #SIR algorithm
@@ -696,11 +708,34 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
   #S-step
   eta_sim       <- mvtnorm::rmvnorm(n_sample,mean=rep(0,ncol(omega_sim)),
                                     sigma=omega_sim)
-  eta_df        <- data.frame(eta_sim)
-  names(eta_df) <- attr(omega_eta,"dimnames")[[1]]
+
+  if (estim_with_iov){
+    # matrix large enough for omega + pi
+    eta_mat           <- matrix(0,nrow=n_sample,
+                                ncol=ncol(all_the_mat)-
+                                  ncol(omega[ind_eta,ind_eta])+
+                                  ncol(omega))
+
+    # IIV
+    eta_mat[,ind_eta] <-
+      eta_sim[,1:length(ind_eta)]
+
+    # IOV
+    eta_mat[,(ncol(omega)+1):ncol(eta_mat)] <-
+      eta_sim[,(length(ind_eta)+1):ncol(eta_sim)]
+
+  } else{
+    eta_mat           <- matrix(0,nrow=n_sample,ncol=ncol(omega))
+    eta_mat[,ind_eta] <- eta_sim
+
+  }
+
+  eta_df            <- data.frame(eta_mat)
+
+  names(eta_df) <- attr(omega,"dimnames")[[1]]
   eta_dt        <- data.table::data.table(eta_df)
 
-  param_cols    <- attr(omega_eta,"dimnames")[[1]]
+  param_cols    <- attr(omega,"dimnames")[[1]]
   params        <- cbind(ID=1,eta_dt[,param_cols,with=F],theta)
 
   if (estim_with_iov){
@@ -718,7 +753,7 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
     tdm_dt            <- data.table::data.table(dat)
     names_tdm_dt_drop <- names(tdm_dt[,!c("ID","OCC")])
     names_tdm_dt_full <- names(tdm_dt)
-    drop_cols         <- c(names_tdm_dt_drop,attr(omega_eta,"dimnames")[[1]])
+    drop_cols         <- c(names_tdm_dt_drop,attr(omega,"dimnames")[[1]])
 
     # reshape IOV to colums
     iov_col <- t(apply(dat_dt[,!drop_cols,with=F],
@@ -794,10 +829,10 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
     eta_sim <- eta_sim[indices]
   }
 
-  eta_mat           <- matrix(0,nrow=n_resample,ncol=ncol(omega_eta))
+  eta_mat           <- matrix(0,nrow=n_resample,ncol=ncol(omega))
   eta_mat[,ind_eta] <- eta_sim[,1:omega_dim]
   eta_df            <- data.frame(eta_mat)
-  names(eta_df)     <- attr(omega_eta,"dimnames")[[1]]
+  names(eta_df)     <- attr(omega,"dimnames")[[1]]
 
   estim_sir         <- list(eta=eta_df)
 
