@@ -235,10 +235,16 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
       pimat        <- object$pi_matrix
 
       ind_kappa    <- which(diag(pimat)>0)
-      pimat_kappa  <- pimat[ind_kappa,ind_kappa]
 
       omega_dim    <- ncol(omega_eta)
-      pimat_dim    <- ncol(pimat_kappa)
+
+      if(length(ind_kappa)==1){
+        pimat_kappa  <- pimat
+        pimat_dim    <- 1
+      } else{
+        pimat_kappa  <- pimat[ind_kappa,ind_kappa]
+        pimat_dim    <- ncol(pimat_kappa)
+      }
 
       iov_col      <- init_iov_col(dat=dat,pimat=pimat)
       all_the_mat  <- merge_covar_matrices(omega_eta=omega_eta,
@@ -686,11 +692,17 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
     pimat        <- object$pi_matrix
 
     ind_kappa    <- which(diag(pimat)>0)
-    pimat_kappa  <- pimat[ind_kappa,ind_kappa]
 
-    pimat_names  <- attr(pimat_kappa,"dimnames")[[1]]
+    if(length(ind_kappa)==1){
+      pimat_kappa  <- pimat
+      pimat_names  <- attr(pimat_kappa,"dimnames")[[1]]
+      pimat_dim    <- 1
+    } else{
+      pimat_kappa  <- pimat[ind_kappa,ind_kappa]
+      pimat_names  <- attr(pimat_kappa,"dimnames")[[1]]
+      pimat_dim    <- ncol(pimat_kappa)
+    }
 
-    pimat_dim    <- ncol(pimat_kappa)
     n_occ        <- length(unique(dat$OCC))
 
     all_the_mat  <- merge_covar_matrices(omega_eta=omega_eta,

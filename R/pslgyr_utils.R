@@ -56,9 +56,16 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
 
   pimat        <- object$pi_matrix
   ind_kappa    <- which(diag(pimat)>0)
-  pimat_kappa  <- pimat[ind_kappa,ind_kappa]
-  pimat_names  <- attr(pimat_kappa,"dimnames")[[1]]
-  pimat_dim    <- ncol(pimat_kappa)
+
+  if(length(ind_kappa)==1){
+    pimat_kappa  <- pimat
+    pimat_names  <- attr(pimat_kappa,"dimnames")[[1]]
+    pimat_dim    <- 1
+  } else{
+    pimat_kappa  <- pimat[ind_kappa,ind_kappa]
+    pimat_names  <- attr(pimat_kappa,"dimnames")[[1]]
+    pimat_dim    <- ncol(pimat_kappa)
+  }
 
   sigma         <- object$sigma
   interpolation <- object$interpolation
