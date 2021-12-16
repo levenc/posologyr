@@ -19,8 +19,9 @@ mod_MTXHD_joerger2011 <- list(
     d/dt(AUC)    =   Cc;
   }),
   error_model = function(f,sigma){
-    g <- sigma[1] + sigma[2]*f
-    return(g)
+    dv <- cbind(f,1)
+    g  <- diag(dv%*%sigma%*%t(dv))
+    return(sqrt(g))
   },
   theta = c(THETA_Cl=10.8, THETA_Vc=34, THETA_Vp=6.3,THETA_Q=0.35),
   omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
@@ -31,7 +32,7 @@ mod_MTXHD_joerger2011 <- list(
   pi_matrix = lotri::lotri({KAPPA_Cl ~
       c(0.017)}),
   covariates  = c("CLCREAT","BSA"),
-  sigma       = c(additive_a = 0, proportional_b = 0.318))
+  sigma       = lotri::lotri({prop + add ~ c(0.318,0.0,0.00)}))
 
 # patient record
 df_patientA_tdm <-data.frame(ID=1,
@@ -49,8 +50,8 @@ df_patientA_tdm <-data.frame(ID=1,
 patAmap <- poso_estim_map(posologyr(mod_MTXHD_joerger2011,df_patientA_tdm))
 
 
-test_that("poso_estim_map provides estimates even when the IIV is zero", {
+test_that("poso_estim_map provides estimates for models with a single IOV", {
   expect_equal(patAmap$eta,
-            c(ETA_Cl=-0.8660709,ETA_Vc=0.0,
-              ETA_Vp=0.1264620,ETA_Q=0.0),tolerance=1e-3)
+            c(ETA_Cl=-0.81668461,ETA_Vc=0.0,
+              ETA_Vp=0.08900547,ETA_Q=0.0),tolerance=1e-3)
 })
