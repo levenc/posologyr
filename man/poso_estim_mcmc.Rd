@@ -9,6 +9,7 @@ poso_estim_mcmc(
   return_model = TRUE,
   burn_in = 50,
   n_iter = 1000,
+  n_chains = 4,
   control = list(n_kernel = c(2, 2, 2), stepsize_rw = 0.4, proba_mcmc = 0.3, nb_max =
     3)
 )
@@ -24,7 +25,9 @@ ETAs if set to \code{TRUE}.}
 algorithm.}
 
 \item{n_iter}{Total number of iterations (following the burn-in iterations)
-for the Metropolis-Hastings algorithm.}
+for each Markov chain of the Metropolis-Hastings algorithm.}
+
+\item{n_chains}{Number of Markov chains}
 
 \item{control}{A list of parameters controlling the Metropolis-Hastings
 algorithm.}

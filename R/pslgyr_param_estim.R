@@ -436,7 +436,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #' @param burn_in Number of burn-in iterations for the Metropolis-Hastings
 #'    algorithm.
 #' @param n_iter Total number of iterations (following the burn-in iterations)
-#'  for the Metropolis-Hastings algorithm.
+#'  for each Markov chain of the Metropolis-Hastings algorithm.
+#' @param n_chains Number of Markov chains
 #' @param control A list of parameters controlling the Metropolis-Hastings
 #' algorithm.
 #'
@@ -469,12 +470,17 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #' \donttest{poso_estim_mcmc(patient01_tobra,n_iter=100)}
 #'
 #' @export
-poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
-                            n_iter=1000,control=list(n_kernel=c(2,2,2),
+poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,n_iter=1000,
+                            n_chains=4,control=list(n_kernel=c(2,2,2),
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
   validate_priormod(object)
   validate_dat(object$tdm_data)
   no_covariates <- is.null(object$covariates)
+
+  dat          <- object$tdm_data
+  solved_model <- object$solved_ppk_model
+  omega        <- object$omega
+  theta        <- object$theta
 
   # Update model predictions with a new set of parameters, for all obs-----
   run_model <- function(x,model=solved_model){
@@ -482,133 +488,150 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,
     return(model$Cc)
   }
 
-  dat          <- object$tdm_data
-  solved_model <- object$solved_ppk_model
-  omega        <- object$omega
-  sigma        <- object$sigma
-  error_model  <- object$error_model
+  one_mcmc_please <- function(chains,object,burn_in,n_iter,control){
 
-  y_obs        <- dat$DV[dat$EVID == 0]     # only observations
-  ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
-  nb_etas      <- length(ind_eta)
-  omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
-  solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
-  chol_omega   <- chol(omega_eta)
-  rw_init      <- 0.5                       #initial variance parameter for kernels
-  d_omega      <- diag(omega_eta)*rw_init
-  VK           <- rep(c(1:nb_etas),2)
-  n_iter       <- n_iter + burn_in
+    dat          <- object$tdm_data
+    solved_model <- object$solved_ppk_model
+    omega        <- object$omega
+    sigma        <- object$sigma
+    error_model  <- object$error_model
 
-  # Metropolis-Hastings algorithm------------------------------------------
-  theta    <- object$theta
-  eta      <- diag(omega_eta)*0
-  f        <- do.call(run_model,list(c(theta,eta)))
-  g        <- error_model(f,sigma)
+    y_obs        <- dat$DV[dat$EVID == 0]     # only observations
+    ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
+    nb_etas      <- length(ind_eta)
+    omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
+    solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
+    chol_omega   <- chol(omega_eta)
+    rw_init      <- 0.5                       #initial variance parameter for kernels
+    d_omega      <- diag(omega_eta)*rw_init
+    VK           <- rep(c(1:nb_etas),2)
+    n_iter       <- n_iter + burn_in
 
-  g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
+    # Metropolis-Hastings algorithm------------------------------------------
+    theta    <- object$theta
+    eta      <- diag(omega_eta)*0
+    f        <- do.call(run_model,list(c(theta,eta),model=solved_model))
+    g        <- error_model(f,sigma)
 
-  U_y      <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-  U_eta    <- 0.5 * eta %*% solve_omega %*% eta
+    g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
 
-  eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(omega))
-  eta_mat[1,] <- diag(omega)*0
+    U_y      <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+    U_eta    <- 0.5 * eta %*% solve_omega %*% eta
 
-  for (k_iter in 1:n_iter)
-  {
-    if (control$n_kernel[1] > 0)
+    eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(omega))
+    eta_mat[1,] <- diag(omega)*0
+
+    for (k_iter in 1:n_iter)
     {
-      for (u in 1:control$n_kernel[1])
+      if (control$n_kernel[1] > 0)
       {
-        etac          <- as.vector(chol_omega%*%stats::rnorm(nb_etas))
-        names(etac)   <- attr(omega_eta,"dimnames")[[1]]
-        f             <- do.call(run_model,list(c(theta,etac)))
-        g             <- error_model(f,sigma)
-
-        g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
-
-        Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-        deltu         <- Uc_y - U_y
-        if(deltu < (-1) * log(stats::runif(1)))
+        for (u in 1:control$n_kernel[1])
         {
-          eta        <- etac
-          U_y        <- Uc_y
-        }
-      }
-    }
-    if (control$n_kernel[2] > 0)
-    {
-      nb_max        <- min(nb_etas,control$nb_max)
-      nbc2          <- nt2     <- replicate(nb_etas,0)
-      U_eta         <- 0.5 * eta %*% solve_omega %*% eta
-      for (u in 1:control$n_kernel[2])
-      {
-        for (nrs2 in 1:nb_max)
-        {
-          for (j in 1:nb_etas)
-          {
-            jr            <- sample(c(1:nb_etas), nrs2)
-            jr            <- jr -jr[1] + j
-            vk2           <- jr%%nb_etas + 1
-            etac          <- eta
-            etac[vk2]     <- eta[vk2] + stats::rnorm(nrs2)*d_omega[vk2]
-            f             <- do.call(run_model,list(c(theta,etac)))
-            g             <- error_model(f,sigma)
-
-            g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
-
-            Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-            Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
-            deltu         <- Uc_y - U_y + Uc_eta - U_eta
-            if(deltu < (-1) * log(stats::runif(1)))
-            {
-              eta         <- etac
-              U_y         <- Uc_y
-              U_eta       <- Uc_eta
-              nbc2[vk2]   <- nbc2[vk2]+1
-            }
-            nt2[vk2]      <- nt2[vk2] + 1
-          }
-        }
-      }
-      d_omega <- d_omega*(1 + control$stepsize_rw*(nbc2/nt2 - control$proba_mcmc))
-    }
-    if(control$n_kernel[3]>0) {
-      nt2          <- nbc2     <- matrix(data=0,nrow=nb_etas,ncol=1)
-      nrs2         <- k_iter%%(nb_etas-1)+2
-      for (u in 1:control$n_kernel[3]) {
-        if(nrs2<nb_etas) {
-          vk        <- c(0,sample(c(1:(nb_etas-1)),nrs2-1))
-          nb_iter2  <- nb_etas
-        } else {
-          vk        <- 0:(nb_etas-1)
-          nb_iter2  <- 1
-        }
-        for(k2 in 1:nb_iter2) {
-          vk2             <- VK[k2+vk]
-          etac            <- eta
-          etac[vk2]       <- eta[vk2]+matrix(stats::rnorm(nrs2),
-                                             ncol=nrs2)%*%diag(d_omega[vk2])
-          f               <- do.call(run_model,list(c(theta,etac)))
-          g               <- error_model(f,sigma)
+          etac          <- as.vector(chol_omega%*%stats::rnorm(nb_etas))
+          names(etac)   <- attr(omega_eta,"dimnames")[[1]]
+          f             <- do.call(run_model,list(c(theta,etac),model=solved_model))
+          g             <- error_model(f,sigma)
 
           g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
 
-          Uc_y            <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2)) #sum(0.5 * ((y_obs - f)/g)^2 + log(g))
-          Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
-          deltu           <- Uc_y-U_y+Uc_eta-U_eta
-          ind             <- which(deltu<(-log(stats::runif(1))))
-          eta[ind]        <- etac[ind]
-          U_y[ind]        <- Uc_y[ind]
-          U_eta[ind]      <- Uc_eta[ind]
-          nbc2[vk2]       <- nbc2[vk2]+length(ind)
-          nt2[vk2]        <- nt2[vk2]+1
+          Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+          deltu         <- Uc_y - U_y
+          if(deltu < (-1) * log(stats::runif(1)))
+          {
+            eta        <- etac
+            U_y        <- Uc_y
+          }
         }
       }
-      d_omega <- d_omega*(1+control$stepsize_rw * (nbc2/nt2-control$proba_mcmc))
+      if (control$n_kernel[2] > 0)
+      {
+        nb_max        <- min(nb_etas,control$nb_max)
+        nbc2          <- nt2     <- replicate(nb_etas,0)
+        U_eta         <- 0.5 * eta %*% solve_omega %*% eta
+        for (u in 1:control$n_kernel[2])
+        {
+          for (nrs2 in 1:nb_max)
+          {
+            for (j in 1:nb_etas)
+            {
+              jr            <- sample(c(1:nb_etas), nrs2)
+              jr            <- jr -jr[1] + j
+              vk2           <- jr%%nb_etas + 1
+              etac          <- eta
+              etac[vk2]     <- eta[vk2] + stats::rnorm(nrs2)*d_omega[vk2]
+              f             <- do.call(run_model,list(c(theta,etac),model=solved_model))
+              g             <- error_model(f,sigma)
+
+              g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
+
+              Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+              Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
+              deltu         <- Uc_y - U_y + Uc_eta - U_eta
+              if(deltu < (-1) * log(stats::runif(1)))
+              {
+                eta         <- etac
+                U_y         <- Uc_y
+                U_eta       <- Uc_eta
+                nbc2[vk2]   <- nbc2[vk2]+1
+              }
+              nt2[vk2]      <- nt2[vk2] + 1
+            }
+          }
+        }
+        d_omega <- d_omega*(1 + control$stepsize_rw*(nbc2/nt2 - control$proba_mcmc))
+      }
+      if(control$n_kernel[3]>0) {
+        nt2          <- nbc2     <- matrix(data=0,nrow=nb_etas,ncol=1)
+        nrs2         <- k_iter%%(nb_etas-1)+2
+        for (u in 1:control$n_kernel[3]) {
+          if(nrs2<nb_etas) {
+            vk        <- c(0,sample(c(1:(nb_etas-1)),nrs2-1))
+            nb_iter2  <- nb_etas
+          } else {
+            vk        <- 0:(nb_etas-1)
+            nb_iter2  <- 1
+          }
+          for(k2 in 1:nb_iter2) {
+            vk2             <- VK[k2+vk]
+            etac            <- eta
+            etac[vk2]       <- eta[vk2]+matrix(stats::rnorm(nrs2),
+                                               ncol=nrs2)%*%diag(d_omega[vk2])
+            f               <- do.call(run_model,list(c(theta,etac),model=solved_model))
+            g               <- error_model(f,sigma)
+
+            g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
+
+            Uc_y            <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+            Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
+            deltu           <- Uc_y-U_y+Uc_eta-U_eta
+            ind             <- which(deltu<(-log(stats::runif(1))))
+            eta[ind]        <- etac[ind]
+            U_y[ind]        <- Uc_y[ind]
+            U_eta[ind]      <- Uc_eta[ind]
+            nbc2[vk2]       <- nbc2[vk2]+length(ind)
+            nt2[vk2]        <- nt2[vk2]+1
+          }
+        }
+        d_omega <- d_omega*(1+control$stepsize_rw * (nbc2/nt2-control$proba_mcmc))
+      }
+      eta_mat[k_iter+1,ind_eta]   <- eta
     }
-    eta_mat[k_iter+1,ind_eta]   <- eta
+    return(eta_mat)
   }
-  eta_df_mcmc            <- data.frame(eta_mat[(burn_in+1):n_iter,])
+
+  split_iter_id_burn_in <- function(chain,n_iter,burn_in){
+    iter_to_keep <- chain*((burn_in+1):(n_iter+burn_in))
+    return(iter_to_keep)
+  }
+
+  eta_mat_list <- lapply((1:n_chains),one_mcmc_please,object=object,
+                         burn_in=burn_in,n_iter=n_iter,control=control)
+
+  iter_to_keep <- sapply((1:n_chains),FUN=split_iter_id_burn_in,
+                         n_iter=n_iter,burn_in=burn_in)
+
+  eta_mat                <- do.call(rbind,eta_mat_list)
+  eta_df_mcmc            <- data.frame(eta_mat[iter_to_keep,])
   names(eta_df_mcmc)     <- attr(omega,"dimnames")[[1]]
 
   estim_mcmc             <- list(eta=eta_df_mcmc)
