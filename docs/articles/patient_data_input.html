@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,23 +40,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -80,7 +76,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/levenc/posologyr/">
+  <a href="https://github.com/levenc/posologyr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,42 +91,42 @@
 
       
 
-      </header><script src="patient_data_input_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Patient data input</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/master/vignettes/patient_data_input.Rmd"><code>vignettes/patient_data_input.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/vignettes/patient_data_input.Rmd" class="external-link"><code>vignettes/patient_data_input.Rmd</code></a></small>
       <div class="hidden name"><code>patient_data_input.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>This describes the structure of patient records usable by <code>posologyr</code>.</p>
 </div>
-<div id="structure" class="section level1">
-<h1 class="hasAnchor">
-<a href="#structure" class="anchor"></a>Structure</h1>
-<p>Data for input into <code>posologyr</code> is the same type of data input for RxODE. As stated in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html">RxODE documentation (RxODE datasets)</a>, it is also similar to <a href="https://doi.org/10.1002/psp4.12404">data for NONMEM</a>.</p>
-<p>The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-event-types.html">RxODE documentation (RxODE Event Types)</a>.</p>
+<div class="section level2">
+<h2 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
+</h2>
+<p>Data for input into <code>posologyr</code> is the same type of data input for RxODE. As stated in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html" class="external-link">RxODE documentation (RxODE datasets)</a>, it is also similar to <a href="https://doi.org/10.1002/psp4.12404" class="external-link">data for NONMEM</a>.</p>
+<p>The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-event-types.html" class="external-link">RxODE documentation (RxODE Event Types)</a>.</p>
 <p>Below is a minimal working example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
-           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
-           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">60.0</span><span class="op">)</span>,
-           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span><span class="op">)</span>,
-           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">101</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
+           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
+           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">60.0</span><span class="op">)</span>,
+           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">101</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   ID TIME DV  AMT EVID</span>
 <span class="co">#&gt; 1  1    0 NA 1000  101</span>
 <span class="co">#&gt; 2  1    3 60    0    0</span></code></pre></div>
-<div id="required-fields-and-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#required-fields-and-data" class="anchor"></a>Required fields and data</h2>
+<div class="section level3">
+<h3 id="required-fields-and-data">Required fields and data<a class="anchor" aria-label="anchor" href="#required-fields-and-data"></a>
+</h3>
 <dl>
 <dt>TIME</dt>
 <dd>Dosing times, and sampling times of therapeutic drug monitoring (TDM). The units depend on the specification of the population pharmacokinetics (ppk) model.
@@ -153,74 +149,74 @@
 </dl>
 </div>
 </div>
-<div id="common-use-cases" class="section level1">
-<h1 class="hasAnchor">
-<a href="#common-use-cases" class="anchor"></a>Common use cases</h1>
-<div id="a-priori-dose-adjustment" class="section level2">
-<h2 class="hasAnchor">
-<a href="#a-priori-dose-adjustment" class="anchor"></a>A priori dose adjustment</h2>
+<div class="section level2">
+<h2 id="common-use-cases">Common use cases<a class="anchor" aria-label="anchor" href="#common-use-cases"></a>
+</h2>
+<div class="section level3">
+<h3 id="a-priori-dose-adjustment">A priori dose adjustment<a class="anchor" aria-label="anchor" href="#a-priori-dose-adjustment"></a>
+</h3>
 <p>Before dosing: the simplest patient record is a single line dataframe, with individual patient covariates, and all other columns (TIME, DV, AMT, EVID) set to zero.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fl">0</span>,
            DV<span class="op">=</span><span class="fl">0</span>,
            AMT<span class="op">=</span><span class="fl">0</span>,
            EVID<span class="op">=</span><span class="fl">0</span>,
-           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
-           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
+           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
+           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   ID TIME DV AMT EVID COVAR1 COVAR2</span>
 <span class="co">#&gt; 1  1    0  0   0    0      X      Y</span></code></pre></div>
 </div>
-<div id="oral-administration-or-iv-bolus" class="section level2">
-<h2 class="hasAnchor">
-<a href="#oral-administration-or-iv-bolus" class="anchor"></a>Oral administration or IV bolus</h2>
+<div class="section level3">
+<h3 id="oral-administration-or-iv-bolus">Oral administration or IV bolus<a class="anchor" aria-label="anchor" href="#oral-administration-or-iv-bolus"></a>
+</h3>
 <p><code>EVID = 1</code> for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
-           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
-           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">60.0</span><span class="op">)</span>,
-           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span><span class="op">)</span>,
-           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,
-           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
-           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
+           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
+           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">60.0</span><span class="op">)</span>,
+           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,
+           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
+           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   ID TIME DV  AMT EVID COVAR1 COVAR2</span>
 <span class="co">#&gt; 1  1    0 NA 1000    1      X      Y</span>
 <span class="co">#&gt; 2  1    3 60    0    0      X      Y</span></code></pre></div>
 </div>
-<div id="intermittent-infusion" class="section level2">
-<h2 class="hasAnchor">
-<a href="#intermittent-infusion" class="anchor"></a>Intermittent infusion</h2>
+<div class="section level3">
+<h3 id="intermittent-infusion">Intermittent infusion<a class="anchor" aria-label="anchor" href="#intermittent-infusion"></a>
+</h3>
 <p><code>EVID = 1</code> for a bolus infusion, administered in the first compartment defined in the ppk model.</p>
 <p><code>DUR</code> defines its duration.</p>
 <p><code>AMT</code> is the amount administered over the duration <code>DUR</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
-           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,
-           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,
-           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-           DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
-           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
-           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
+           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,
+           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,
+           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
+           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   ID TIME   DV  AMT DUR EVID COVAR1 COVAR2</span>
 <span class="co">#&gt; 1  1    0   NA 1000 0.5    1      X      Y</span>
 <span class="co">#&gt; 2  1    1 25.0    0  NA    0      X      Y</span>
 <span class="co">#&gt; 3  1   14  5.5    0  NA    0      X      Y</span></code></pre></div>
 </div>
-<div id="inter-occasion-variability" class="section level2">
-<h2 class="hasAnchor">
-<a href="#inter-occasion-variability" class="anchor"></a>Inter-occasion variability</h2>
+<div class="section level3">
+<h3 id="inter-occasion-variability">Inter-occasion variability<a class="anchor" aria-label="anchor" href="#inter-occasion-variability"></a>
+</h3>
 <p>For a given occasion, the value of <code>OCC</code> must be repeated for each row. <code>OCC</code> must be specified for all the rows in the table.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
-           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span>,<span class="fl">24.0</span>,<span class="fl">25.0</span>,<span class="fl">36.0</span><span class="op">)</span>,
-           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span>,<span class="cn">NA</span>,<span class="fl">30.0</span>,<span class="fl">6.0</span><span class="op">)</span>,
-           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-           DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
-           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
-           OCC<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,
-           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
-           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
+           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span>,<span class="fl">24.0</span>,<span class="fl">25.0</span>,<span class="fl">36.0</span><span class="op">)</span>,
+           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span>,<span class="cn">NA</span>,<span class="fl">30.0</span>,<span class="fl">6.0</span><span class="op">)</span>,
+           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span>,<span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,
+           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+           OCC<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,
+           COVAR1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span>,
+           COVAR2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   ID TIME   DV  AMT DUR EVID OCC COVAR1 COVAR2</span>
 <span class="co">#&gt; 1  1    0   NA 1000 0.5    1   1      X      Y</span>
 <span class="co">#&gt; 2  1    1 25.0    0  NA    0   1      X      Y</span>
@@ -243,11 +239,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Cyril Leven.</p>
+  <p></p>
+<p>Developed by Cyril Leven.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -255,6 +253,8 @@
 
   
 
+
+  
 
   </body>
 </html>

@@ -60,22 +60,53 @@
 #'     time of administration.
 #'
 #' @examples
+#' # model
+#' mod_run001 <- list(
+#' ppk_model = RxODE::RxODE({
+#'   centr(0) = 0;
+#'   depot(0) = 0;
+#'
+#'   TVCl = THETA_Cl;
+#'   TVVc = THETA_Vc;
+#'   TVKa = THETA_Ka;
+#'
+#'   Cl = TVCl*exp(ETA_Cl);
+#'   Vc = TVVc*exp(ETA_Vc);
+#'   Ka = TVKa*exp(ETA_Ka);
+#'
+#'   K20 = Cl/Vc;
+#'   Cc = centr/Vc;
+#'
+#'   d/dt(depot) = -Ka*depot;
+#'   d/dt(centr) = Ka*depot - K20*centr;
+#'   d/dt(AUC) = Cc;
+#' }),
+#' error_model = function(f,sigma) {
+#'   dv <- cbind(f,1)
+#'   g <- diag(dv%*%sigma%*%t(dv))
+#'   return(sqrt(g))
+#' },
+#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
+#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
+#'     c(0.2,
+#'       0, 0.2,
+#'       0, 0, 0.2)}),
+#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion of tobramycin
+#' # infusion
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA),
-#'                         CLCREAT=80,WT=65)
-#' # loading a tobramycin model and Patient01's event record
-#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                              dat=df_patient01)
+#'                         DUR=c(0.5,NA,NA))
+#' # loading the model and Patient01's event record
+#' patient01 <- posologyr(prior_model=mod_run001,
+#'                        dat=df_patient01)
 #' # predict the time needed to reach a concentration of 2.5 mg/l
 #' # after the administration of a 2500 mg dose over a 30 minutes
 #' # infusion
-#' poso_time_cmin(patient01_tobra,dose=2500,duration=0.5,target_cmin=2.5)
+#' poso_time_cmin(patient01,dose=2500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
 poso_time_cmin <- function(object,dose,target_cmin,
@@ -120,7 +151,8 @@ poso_time_cmin <- function(object,dose,target_cmin,
 
   cmin_ppk_model <- RxODE::rxSolve(object=object$ppk_model,
                                    params=indiv_param,
-                                   event_table_cmin)
+                                   event_table_cmin,
+                                   nDisplayProgress=1e5)
 
   if (select_proposal_from_distribution){
     wide_cmin      <- tidyr::pivot_wider(cmin_ppk_model,
@@ -232,19 +264,51 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #' }
 #'
 #' @examples
+#' # model
+#' mod_run001 <- list(
+#' ppk_model = RxODE::RxODE({
+#'   centr(0) = 0;
+#'   depot(0) = 0;
+#'
+#'   TVCl = THETA_Cl;
+#'   TVVc = THETA_Vc;
+#'   TVKa = THETA_Ka;
+#'
+#'   Cl = TVCl*exp(ETA_Cl);
+#'   Vc = TVVc*exp(ETA_Vc);
+#'   Ka = TVKa*exp(ETA_Ka);
+#'
+#'   K20 = Cl/Vc;
+#'   Cc = centr/Vc;
+#'
+#'   d/dt(depot) = -Ka*depot;
+#'   d/dt(centr) = Ka*depot - K20*centr;
+#'   d/dt(AUC) = Cc;
+#' }),
+#' error_model = function(f,sigma) {
+#'   dv <- cbind(f,1)
+#'   g <- diag(dv%*%sigma%*%t(dv))
+#'   return(sqrt(g))
+#' },
+#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
+#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
+#'     c(0.2,
+#'       0, 0.2,
+#'       0, 0, 0.2)}),
+#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion of tobramycin
+#' # infusion
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA),
-#'                         CLCREAT=80,WT=65)
-#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                              dat=df_patient01)
+#'                         DUR=c(0.5,NA,NA))
+#' # loading the model and Patient01's event record
+#' patient01 <- posologyr(prior_model=mod_run001,
+#'                        dat=df_patient01)
 #' # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
-#' poso_dose_auc(patient01_tobra,time_auc=12,target_auc=45)
+#' poso_dose_auc(patient01,time_auc=12,target_auc=45)
 #'
 #' @export
 poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
@@ -294,7 +358,8 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 
     auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
                                     params=indiv_param,
-                                    event_table_auc)
+                                    event_table_auc,
+                                    nDisplayProgress=1e5)
 
     if (select_proposal_from_distribution){
       wide_auc      <- tidyr::pivot_wider(auc_ppk_model,
@@ -402,21 +467,52 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 #' }
 #'
 #' @examples
+#' # model
+#' mod_run001 <- list(
+#' ppk_model = RxODE::RxODE({
+#'   centr(0) = 0;
+#'   depot(0) = 0;
+#'
+#'   TVCl = THETA_Cl;
+#'   TVVc = THETA_Vc;
+#'   TVKa = THETA_Ka;
+#'
+#'   Cl = TVCl*exp(ETA_Cl);
+#'   Vc = TVVc*exp(ETA_Vc);
+#'   Ka = TVKa*exp(ETA_Ka);
+#'
+#'   K20 = Cl/Vc;
+#'   Cc = centr/Vc;
+#'
+#'   d/dt(depot) = -Ka*depot;
+#'   d/dt(centr) = Ka*depot - K20*centr;
+#'   d/dt(AUC) = Cc;
+#' }),
+#' error_model = function(f,sigma) {
+#'   dv <- cbind(f,1)
+#'   g <- diag(dv%*%sigma%*%t(dv))
+#'   return(sqrt(g))
+#' },
+#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
+#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
+#'     c(0.2,
+#'       0, 0.2,
+#'       0, 0, 0.2)}),
+#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion of tobramycin
+#' # infusion
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA),
-#'                         CLCREAT=80,WT=65)
-#' # loading a tobramycin model and Patient01's event record
-#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                              dat=df_patient01)
+#'                         DUR=c(0.5,NA,NA))
+#' # loading the model and Patient01's event record
+#' patient01 <- posologyr(prior_model=mod_run001,
+#'                        dat=df_patient01)
 #' # estimate the optimal dose to reach a concentration of 80 mg/l
 #' # one hour after starting the 30-minutes infusion
-#' poso_dose_conc(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
+#' poso_dose_conc(patient01,time_c=1,duration=0.5,target_conc=80)
 #'
 #' @export
 poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
@@ -463,7 +559,8 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 
     ctime_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
                                       params=indiv_param,
-                                      event_table_ctime)
+                                      event_table_ctime,
+                                      nDisplayProgress=1e5)
 
     if (select_proposal_from_distribution){
 
@@ -562,21 +659,52 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 #' }
 #'
 #' @examples
+#' # model
+#' mod_run001 <- list(
+#' ppk_model = RxODE::RxODE({
+#'   centr(0) = 0;
+#'   depot(0) = 0;
+#'
+#'   TVCl = THETA_Cl;
+#'   TVVc = THETA_Vc;
+#'   TVKa = THETA_Ka;
+#'
+#'   Cl = TVCl*exp(ETA_Cl);
+#'   Vc = TVVc*exp(ETA_Vc);
+#'   Ka = TVKa*exp(ETA_Ka);
+#'
+#'   K20 = Cl/Vc;
+#'   Cc = centr/Vc;
+#'
+#'   d/dt(depot) = -Ka*depot;
+#'   d/dt(centr) = Ka*depot - K20*centr;
+#'   d/dt(AUC) = Cc;
+#' }),
+#' error_model = function(f,sigma) {
+#'   dv <- cbind(f,1)
+#'   g <- diag(dv%*%sigma%*%t(dv))
+#'   return(sqrt(g))
+#' },
+#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
+#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
+#'     c(0.2,
+#'       0, 0.2,
+#'       0, 0, 0.2)}),
+#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion of tobramycin
+#' # infusion
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA),
-#'                         CLCREAT=80,WT=65)
-#' # loading a tobramycin model and Patient01's event record
-#' patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-#'                              dat=df_patient01)
+#'                         DUR=c(0.5,NA,NA))
+#' # loading the model and Patient01's event record
+#' patient01 <- posologyr(prior_model=mod_run001,
+#'                        dat=df_patient01)
 #' # estimate the optimal interval to reach a cmin of of 2.5 mg/l
 #' # before each administration
-#' poso_inter_cmin(patient01_tobra,dose=1500,duration=0.5,target_cmin=2.5)
+#' poso_inter_cmin(patient01,dose=1500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
 poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
@@ -605,7 +733,8 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
 
     cmin_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
                                      params=indiv_param,
-                                     event_table_cmin)
+                                     event_table_cmin,
+                                     nDisplayProgress=1e5)
 
     if (select_proposal_from_distribution){
 

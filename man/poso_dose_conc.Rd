@@ -82,20 +82,51 @@ of individual parameters, a selected point in time, and a target
 concentration.
 }
 \examples{
+# model
+mod_run001 <- list(
+ppk_model = RxODE::RxODE({
+  centr(0) = 0;
+  depot(0) = 0;
+
+  TVCl = THETA_Cl;
+  TVVc = THETA_Vc;
+  TVKa = THETA_Ka;
+
+  Cl = TVCl*exp(ETA_Cl);
+  Vc = TVVc*exp(ETA_Vc);
+  Ka = TVKa*exp(ETA_Ka);
+
+  K20 = Cl/Vc;
+  Cc = centr/Vc;
+
+  d/dt(depot) = -Ka*depot;
+  d/dt(centr) = Ka*depot - K20*centr;
+  d/dt(AUC) = Cc;
+}),
+error_model = function(f,sigma) {
+  dv <- cbind(f,1)
+  g <- diag(dv\%*\%sigma\%*\%t(dv))
+  return(sqrt(g))
+},
+theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
+omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
+    c(0.2,
+      0, 0.2,
+      0, 0, 0.2)}),
+sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
 # df_patient01: event table for Patient01, following a 30 minutes intravenous
-# infusion of tobramycin
+# infusion
 df_patient01 <- data.frame(ID=1,
                         TIME=c(0.0,1.0,14.0),
                         DV=c(NA,25.0,5.5),
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
-                        DUR=c(0.5,NA,NA),
-                        CLCREAT=80,WT=65)
-# loading a tobramycin model and Patient01's event record
-patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                             dat=df_patient01)
+                        DUR=c(0.5,NA,NA))
+# loading the model and Patient01's event record
+patient01 <- posologyr(prior_model=mod_run001,
+                       dat=df_patient01)
 # estimate the optimal dose to reach a concentration of 80 mg/l
 # one hour after starting the 30-minutes infusion
-poso_dose_conc(patient01_tobra,time_c=1,duration=0.5,target_conc=80)
+poso_dose_conc(patient01,time_c=1,duration=0.5,target_conc=80)
 
 }
