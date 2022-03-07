@@ -44,13 +44,12 @@ pat_302_1 <- data.frame(ID=1,
                         DV=c(NA,107.26700,100.99500,54.05460,5.97081,NA,NA,NA,NA,NA,NA,NA),
                         BW=c(77,113,92,132,126,128,41,56,68,45,93,126),
                         SEX=c(0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1))
-
+set.seed(0)
 pat302_nm  <- posologyr(mod_run302,dat=pat_302_1,nocb=TRUE)
-
 pat302_nm_map  <- poso_estim_map(pat302_nm,return_model=TRUE)
 
 test_that("MAP estimates match NONMEM posthoc estimates (time varying covariates)", {
-  expect_equal(pat302_nm_map$eta[1], c(ETA_Cl=0.398845969), tolerance=1e-4)
-  expect_equal(pat302_nm_map$eta[2], c(ETA_Vc=0.0762201167), tolerance=1e-4)
-  expect_equal(pat302_nm_map$eta[3], c(ETA_Ka=0), tolerance=1e-4)
+  expect_equal(pat302_nm_map$eta[1], c(ETA_Cl=0.398845969), tolerance=1e-3)
+  expect_equal(pat302_nm_map$eta[2], c(ETA_Vc=0.0762201167), tolerance=1e-3)
+  expect_equal(pat302_nm_map$eta[3], c(ETA_Ka=0), tolerance=1e-3)
 })
