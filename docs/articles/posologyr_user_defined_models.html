@@ -273,7 +273,7 @@
 </h3>
 <p>The <code>posologyr</code> model is the list of all these objects. Note: This model does not include inter-occasion variability, so the pi_matrix is omitted.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mymod_vancomyin_Goti2018</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">mod_vancomyin_Goti2018</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
   ppk_model   <span class="op">=</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html" class="external-link">RxODE</a></span><span class="op">(</span><span class="op">{</span>
      <span class="fu">centr</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;
     <span class="va">TVCl</span>  <span class="op">=</span> <span class="va">THETA_Cl</span><span class="op">*</span><span class="op">(</span><span class="va">CLCREAT</span><span class="op">/</span><span class="fl">120</span><span class="op">)</span><span class="op">^</span><span class="fl">0.8</span><span class="op">*</span><span class="op">(</span><span class="fl">0.7</span><span class="op">^</span><span class="va">DIAL</span><span class="op">)</span>;
@@ -308,7 +308,7 @@
 <h4 id="resulting-r-object">Resulting R object<a class="anchor" aria-label="anchor" href="#resulting-r-object"></a>
 </h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mymod_vancomyin_Goti2018</span>
+<code class="sourceCode R"><span class="va">mod_vancomyin_Goti2018</span>
 <span class="co">#&gt; $ppk_model</span>
 <span class="co">#&gt; <span style="font-weight: bold;">RxODE </span>NA model named <span style="color: #BBBB00; font-weight: bold;">rx_51494050badb7da33baf6043e5c6086c</span> model (<span style="color: #00BB00;">✓</span> <span style="color: #00BB00; font-weight: bold;">ready</span>). </span>
 <span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">$state</span>: centr, periph, AUC</span>

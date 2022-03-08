@@ -19,10 +19,3 @@ reference:
   desc: "Functions for user-defined posologyr models"
 - contents:
   - starts_with("error_model")
-- title: "Built-in models"
-  desc: "ppk models built-in for tests and examples"
-- contents:
-  - mod_tobramycin_2cpt_fictional
-  - mod_vancomycin_2cpt_Goti2018
-  - mod_amikacin_2cpt_Burdet2015
-  - mod_piperacillin_2cpt_Roberts2010

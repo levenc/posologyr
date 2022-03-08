@@ -169,7 +169,7 @@ The `posologyr` model is the list of all these objects.
 Note: This model does not include inter-occasion variability, so the pi_matrix is omitted.
 
 ```{r vancomycin_pososlogyr_model_list}
-mymod_vancomyin_Goti2018 <- list(
+mod_vancomyin_Goti2018 <- list(
   ppk_model   = RxODE::RxODE({
      centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT/120)^0.8*(0.7^DIAL);
@@ -205,5 +205,5 @@ mymod_vancomyin_Goti2018 <- list(
 ### Resulting R object
 
 ```{r vancomycin_pososlogyr_model}
-mymod_vancomyin_Goti2018
+mod_vancomyin_Goti2018
 ```

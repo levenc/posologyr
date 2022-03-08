@@ -88,7 +88,7 @@ df_patient01 <- data.frame(ID=1,
 patient01 <- posologyr(prior_model=mod_run001,
                        dat=df_patient01)
 # estimate the posterior distribution of population parameters
-\donttest{poso_estim_mcmc(patient01,n_iter=100)}
+\donttest{poso_estim_mcmc(patient01,n_iter=50,n_chains=2)}
 
 }
 \references{

@@ -110,6 +110,38 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>This case study presents the dosage adjustment for a critical care patient treated with amikacin for suspected ventilator-associated pneumonia, using the population pharmacokinetic (ppk) model of Burdet et al. <code>mod_amikacin_2cpt_Burdet2015</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod_amikacin_2cpt_Burdet2015</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+  ppk_model   <span class="op">=</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html" class="external-link">RxODE</a></span><span class="op">(</span><span class="op">{</span>
+    <span class="fu">centr</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;
+    <span class="va">TVCl</span>  <span class="op">=</span> <span class="va">THETA_Cl</span><span class="op">*</span><span class="op">(</span><span class="va">CLCREAT4H</span><span class="op">/</span><span class="fl">82</span><span class="op">)</span><span class="op">^</span><span class="fl">0.7</span>;
+    <span class="va">TVVc</span>  <span class="op">=</span> <span class="va">THETA_Vc</span><span class="op">*</span><span class="op">(</span><span class="va">TBW</span><span class="op">/</span><span class="fl">78</span><span class="op">)</span><span class="op">^</span><span class="fl">0.9</span><span class="op">*</span><span class="op">(</span><span class="va">PoverF</span><span class="op">/</span><span class="fl">169</span><span class="op">)</span><span class="op">^</span><span class="fl">0.4</span>;
+    <span class="va">TVVp</span>  <span class="op">=</span> <span class="va">THETA_Vp</span>;
+    <span class="va">TVQ</span>   <span class="op">=</span> <span class="va">THETA_Q</span>;
+    <span class="va">Cl</span>    <span class="op">=</span> <span class="va">TVCl</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Cl</span><span class="op">)</span>;
+    <span class="va">Vc</span>    <span class="op">=</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span>;
+    <span class="va">Vp</span>    <span class="op">=</span> <span class="va">TVVp</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Vp</span><span class="op">)</span>;
+    <span class="va">Q</span>     <span class="op">=</span> <span class="va">TVQ</span> <span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Q</span><span class="op">)</span>;
+    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k12</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">k21</span>   <span class="op">=</span> <span class="va">Q</span><span class="op">/</span><span class="va">Vp</span>;
+    <span class="va">Cc</span>    <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span>;
+    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
+    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;
+    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span>    <span class="op">=</span>   <span class="va">Cc</span>;
+  <span class="op">}</span><span class="op">)</span>,
+  error_model <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>,<span class="va">sigma</span><span class="op">)</span><span class="op">{</span>
+    <span class="va">g</span> <span class="op">&lt;-</span> <span class="va">sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">sigma</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">f</span>
+    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>
+  <span class="op">}</span>,
+  theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.3</span>, THETA_Vc<span class="op">=</span><span class="fl">15.9</span>, THETA_Vp<span class="op">=</span><span class="fl">21.4</span>,THETA_Q<span class="op">=</span><span class="fl">12.1</span><span class="op">)</span>,
+  omega <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Vp</span> <span class="op">+</span> <span class="va">ETA_Q</span> <span class="op">~</span>
+      <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,
+        <span class="fl">0.01</span>     ,   <span class="fl">0.05</span> ,
+        <span class="fl">0.01</span>     ,   <span class="fl">0.02</span> ,   <span class="fl">0.2</span>  ,
+        <span class="op">-</span><span class="fl">0.06</span>    ,   <span class="fl">0.004</span>,   <span class="fl">0.003</span>,    <span class="fl">0.08</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,
+  covariates  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLCREAT4H"</span>,<span class="st">"TBW"</span>,<span class="st">"PoverF"</span><span class="op">)</span>,
+  sigma       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">0.2</span>, proportional_b <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="a-priori-drug-dosing">A priori drug dosing<a class="anchor" aria-label="anchor" href="#a-priori-drug-dosing"></a>
@@ -117,8 +149,13 @@
 <div class="section level3">
 <h3 id="patient-record">Patient record<a class="anchor" aria-label="anchor" href="#patient-record"></a>
 </h3>
-<p>Before the first administration, no concentration information is available. The patient record contains only the information required to fill in the covariates of the model, see <code><a href="../reference/mod_amikacin_2cpt_Burdet2015.html">help("mod_amikacin_2cpt_Burdet2015")</a></code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Before the first administration, no concentration information is available. The patient record contains only the information required to fill in the covariates of the model:</p>
+<ul>
+<li>CLCREAT4H: 4-h creatinine clearance in ml/min</li>
+<li>TBW: Total body weight in kg</li>
+<li>PoverF: PaO2/FIO2 ratio in mmHg</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df_patientA_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fl">0</span>,
                                 DV<span class="op">=</span><span class="fl">0</span>,
                                 EVID<span class="op">=</span><span class="fl">0</span>,
@@ -132,7 +169,7 @@
 <h3 id="apply-the-selected-prior-ppk-model-to-patient-data">Apply the selected prior ppk model to patient data<a class="anchor" aria-label="anchor" href="#apply-the-selected-prior-ppk-model-to-patient-data"></a>
 </h3>
 <p>The <code><a href="../reference/posologyr.html">posologyr()</a></code> function combines the patient record and the ppk model into a single object.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">patA_prior_amik</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_amikacin_2cpt_Burdet2015</span>,
                              <span class="va">df_patientA_prior</span><span class="op">)</span></code></pre></div>
 </div>
@@ -140,7 +177,7 @@
 <h3 id="optimal-dose-selection">Optimal dose selection<a class="anchor" aria-label="anchor" href="#optimal-dose-selection"></a>
 </h3>
 <p>In the absence of measured concentrations, the optimal dose in mg to achieve a so-called peak concentration of 80 mg/l (one hour after the start of the 30-minute infusion) is determined from the typical profile of the ppk model.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prior_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,
                              time_c <span class="op">=</span> <span class="fl">1</span>,
                              duration <span class="op">=</span> <span class="fl">0.5</span>,
@@ -152,7 +189,7 @@
 <h3 id="time-required-to-reach-the-target-cmin">Time required to reach the target Cmin<a class="anchor" aria-label="anchor" href="#time-required-to-reach-the-target-cmin"></a>
 </h3>
 <p>With this dose, the time in hours required to reach a target Cmin concentration of 2.5 mg/l can be estimated.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prior_timecmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,
                                  dose <span class="op">=</span> <span class="va">prior_dose</span>,
                                  duration <span class="op">=</span> <span class="fl">0.5</span>,
@@ -164,19 +201,19 @@
 <h3 id="simulate-and-plot-the-a-priori-dosage">Simulate and plot the a priori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-a-priori-dosage"></a>
 </h3>
 <p>An event table is created to simulate the selected dosage with RxODE.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># infusion of prior_dose mg over 0.5 hours at time 0</span>
 <span class="va">event_table_priordose</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html" class="external-link">et</a></span><span class="op">(</span>time<span class="op">=</span><span class="fl">0</span>,amt<span class="op">=</span><span class="va">prior_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
 <span class="va">event_table_priordose</span><span class="op">$</span><span class="fu">add.sampling</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>By setting <code>n_simul = 0</code>, the <code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code> function produces an RxODE model that incorporates typical population parameter values and individual covariates from the patient record.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prior_param_patA</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_simu_pop.html">poso_simu_pop</a></span><span class="op">(</span><span class="va">patA_prior_amik</span>,n_simul <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>
 
 <span class="va">prior_dose_model_patA</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">patA_prior_amik</span><span class="op">$</span><span class="va">ppk_model</span>,
                                   params<span class="op">=</span><span class="va">prior_param_patA</span>,
                                   events<span class="op">=</span><span class="va">event_table_priordose</span><span class="op">)</span></code></pre></div>
 <p>The resulting model is plotted with an horizontal ribbon showing the 60-80 mg/l target interval of 1 h peak concentration, and a vertical dashed line marking 1 hour.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prior_dose_model_patA</span>,<span class="va">Cc</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Central concentration"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept<span class="op">=</span><span class="fl">1</span>, linetype<span class="op">=</span><span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span>
@@ -193,7 +230,7 @@
 <h3 id="patient-record-with-tdm-data">Patient record with TDM data<a class="anchor" aria-label="anchor" href="#patient-record-with-tdm-data"></a>
 </h3>
 <p>After the first administration, the dosage selection can be refined using the results of therapeutic drug monitoring (TDM). The new data are added to the patient file, see <code><a href="../articles/patient_data_input.html">vignette("patient_data_input")</a></code> for more details.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df_patientA_tdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span>,
                               DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">58</span>,<span class="fl">14</span><span class="op">)</span>,
                               EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
@@ -210,7 +247,7 @@
 <h3 id="apply-the-selected-prior-ppk-model-to-patient-data-1">Apply the selected prior ppk model to patient data<a class="anchor" aria-label="anchor" href="#apply-the-selected-prior-ppk-model-to-patient-data-1"></a>
 </h3>
 <p>The updated patient record and the ppk model are combined into a single object by <code><a href="../reference/posologyr.html">posologyr()</a></code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">patA_tdm_amik</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/posologyr.html">posologyr</a></span><span class="op">(</span><span class="va">mod_amikacin_2cpt_Burdet2015</span>,
                            <span class="va">df_patientA_tdm</span><span class="op">)</span></code></pre></div>
 </div>
@@ -218,7 +255,7 @@
 <h3 id="plot-the-observations-from-tdm-over-the-simulated-a-priori-dosage">Plot the observations from TDM over the simulated a priori dosage<a class="anchor" aria-label="anchor" href="#plot-the-observations-from-tdm-over-the-simulated-a-priori-dosage"></a>
 </h3>
 <p>The observation from TDM are taken from the patient record, and renamed to match the plot of the prior dose model.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">indiv_obs</span>           <span class="op">&lt;-</span> <span class="va">patA_tdm_amik</span><span class="op">$</span><span class="va">tdm_data</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DV"</span>,<span class="st">"TIME"</span><span class="op">)</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">indiv_obs</span><span class="op">)</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"value"</span>,<span class="st">"time"</span><span class="op">)</span>
 
@@ -235,12 +272,12 @@
 <h3 id="estimate-the-map-individual-parameters">Estimate the MAP individual parameters<a class="anchor" aria-label="anchor" href="#estimate-the-map-individual-parameters"></a>
 </h3>
 <p>The maximum a posteriori (MAP) individual parameters are estimated.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">patA_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span><span class="op">)</span>
 <span class="va">patA_map</span>
 <span class="co">#&gt; $eta</span>
 <span class="co">#&gt;     ETA_Cl     ETA_Vc     ETA_Vp      ETA_Q </span>
-<span class="co">#&gt;  0.4692098  0.3065396  0.7507601 -0.1293760 </span>
+<span class="co">#&gt;  0.4692036  0.3065392  0.7507662 -0.1293750 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $model</span>
 <span class="co">#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style="font-weight: bold;">Solved RxODE object</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</span>
@@ -248,7 +285,7 @@
 <span class="co">#&gt;    THETA_Cl   CLCREAT4H    THETA_Vc         TBW      PoverF    THETA_Vp </span>
 <span class="co">#&gt;   4.3000000  50.0000000  15.9000000  62.0000000 169.0000000  21.4000000 </span>
 <span class="co">#&gt;     THETA_Q      ETA_Cl      ETA_Vc      ETA_Vp       ETA_Q </span>
-<span class="co">#&gt;  12.1000000   0.4692098   0.3065396   0.7507601  -0.1293760 </span>
+<span class="co">#&gt;  12.1000000   0.4692036   0.3065392   0.7507662  -0.1293750 </span>
 <span class="co">#&gt; ── <span style="font-weight: bold;">Initial Conditions</span> (<span style="color: #0000BB; font-weight: bold;">$inits</span>): ────────────────────────────────────────────────</span>
 <span class="co">#&gt;  centr periph    AUC </span>
 <span class="co">#&gt;      0      0      0 </span>
@@ -265,7 +302,7 @@
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
 </h3>
 <p>The individual pharmacokinetic profile is plotted using the RxODE model provided by the <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> function.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map_model_patA</span>      <span class="op">&lt;-</span> <span class="va">patA_map</span><span class="op">$</span><span class="va">model</span>
 <span class="va">map_model_patA</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span> 
 
@@ -282,7 +319,7 @@
 <h3 id="time-required-to-reach-the-target-cmin-following-the-first-administration">Time required to reach the target Cmin following the first administration<a class="anchor" aria-label="anchor" href="#time-required-to-reach-the-target-cmin-following-the-first-administration"></a>
 </h3>
 <p>With the MAP estimates of the individual parameters, the prediction of the time in hours needed before reaching the target Cmin can be updated.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map_timecmin_priordose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
                                          dose <span class="op">=</span> <span class="va">prior_dose</span>,
                                          duration <span class="op">=</span> <span class="fl">0.5</span>,
@@ -294,25 +331,25 @@
 <h3 id="optimal-dose-selection-a-posteriori">Optimal dose selection a posteriori<a class="anchor" aria-label="anchor" href="#optimal-dose-selection-a-posteriori"></a>
 </h3>
 <p>An optimal a posteriori dose to achieve a peak concentration of 80 mg/l is determined using the MAP estimates.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
                             time_c <span class="op">=</span> <span class="fl">1</span>,
                             duration <span class="op">=</span> <span class="fl">0.5</span>,
                             target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">map_dose</span>
-<span class="co">#&gt; [1] 2578.93</span></code></pre></div>
+<span class="co">#&gt; [1] 2578.927</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="interdose-interval-selection-a-posteriori">Interdose interval selection a posteriori<a class="anchor" aria-label="anchor" href="#interdose-interval-selection-a-posteriori"></a>
 </h3>
 <p>The optimal inter-dose interval to reach a Cmin of 2.5 mg/L before each dosing is determined using the MAP estimates.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map_interval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_inter_cmin.html">poso_inter_cmin</a></span><span class="op">(</span><span class="va">patA_tdm_amik</span>,
                                dose <span class="op">=</span> <span class="va">map_dose</span>,
                                duration <span class="op">=</span> <span class="fl">0.5</span>,
                                target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">$</span><span class="va">interval</span>
 <span class="va">map_interval</span>
-<span class="co">#&gt; [1] 39.62346</span></code></pre></div>
+<span class="co">#&gt; [1] 39.62343</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="simulate-and-plot-the-optimal-a-posteriori-dosage">Simulate and plot the optimal a posteriori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-optimal-a-posteriori-dosage"></a>
@@ -320,7 +357,7 @@
 <div class="section level4">
 <h4 id="single-administration">Single administration<a class="anchor" aria-label="anchor" href="#single-administration"></a>
 </h4>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#event table: optimal loading dose over 30 minutes</span>
 <span class="va">event_table_mapdose</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html" class="external-link">et</a></span><span class="op">(</span>time<span class="op">=</span><span class="fl">0</span>,amt<span class="op">=</span><span class="va">map_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
 <span class="va">event_table_mapdose</span><span class="op">$</span><span class="fu">add.sampling</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span>,by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>
@@ -344,7 +381,7 @@
 <div class="section level4">
 <h4 id="multiple-administrations">Multiple administrations<a class="anchor" aria-label="anchor" href="#multiple-administrations"></a>
 </h4>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#event table: optimal loading dose over 30 minutes</span>
 <span class="co"># 3 administrations with the optimal inter-dose interval</span>
 <span class="va">event_table_mapdose_ss</span> <span class="op">&lt;-</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt<span class="op">=</span><span class="va">map_dose</span>,dur<span class="op">=</span><span class="fl">0.5</span>,ii<span class="op">=</span><span class="va">map_interval</span>,addl<span class="op">=</span><span class="fl">2</span><span class="op">)</span>

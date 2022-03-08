@@ -106,7 +106,7 @@
 #' # predict the time needed to reach a concentration of 2.5 mg/l
 #' # after the administration of a 2500 mg dose over a 30 minutes
 #' # infusion
-#' poso_time_cmin(patient01,dose=2500,duration=0.5,target_cmin=2.5)
+#' poso_time_cmin(patient01,dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
 #'
 #' @export
 poso_time_cmin <- function(object,dose,target_cmin,

@@ -1,2 +1,0 @@
-#!/bin/sh
-${R_HOME}/bin/Rscript inst/make_ppk_models.R
