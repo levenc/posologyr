@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -181,7 +181,7 @@
 <span class="va">patB_map</span>
 <span class="co">#&gt; $eta</span>
 <span class="co">#&gt;     ETA_Cl     ETA_Vc     ETA_Vp      ETA_Q </span>
-<span class="co">#&gt; 0.10796031 0.04652930 0.06865803 0.00000000 </span>
+<span class="co">#&gt; 0.10796025 0.04652888 0.06865720 0.00000000 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $model</span>
 <span class="co">#&gt; ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style="font-weight: bold;">Solved RxODE object</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</span>
@@ -189,7 +189,7 @@
 <span class="co">#&gt;    THETA_Cl     CLCREAT        DIAL    THETA_Vc          WT    THETA_Vp </span>
 <span class="co">#&gt;  4.50000000 65.00000000  0.00000000 58.40000000 70.00000000 38.40000000 </span>
 <span class="co">#&gt;     THETA_Q      ETA_Cl      ETA_Vc      ETA_Vp </span>
-<span class="co">#&gt;  6.50000000  0.10796031  0.04652930  0.06865803 </span>
+<span class="co">#&gt;  6.50000000  0.10796025  0.04652888  0.06865720 </span>
 <span class="co">#&gt; ── <span style="font-weight: bold;">Initial Conditions</span> (<span style="color: #0000BB; font-weight: bold;">$inits</span>): ────────────────────────────────────────────────</span>
 <span class="co">#&gt;  centr periph    AUC </span>
 <span class="co">#&gt;      0      0      0 </span>
@@ -229,12 +229,12 @@
 <code class="sourceCode R"><span class="co">#AUC 0_24</span>
 <span class="va">AUC_map_first_dose</span> <span class="op">&lt;-</span> <span class="va">map_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">)</span><span class="op">]</span>
 <span class="va">AUC_map_first_dose</span>
-<span class="co">#&gt; [1] 336.4355</span>
+<span class="co">#&gt; [1] 336.4356</span>
 
 <span class="co">#AUC 24_48</span>
 <span class="va">AUC_map_second_dose</span> <span class="op">&lt;-</span> <span class="va">map_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span> <span class="va">AUC_map_first_dose</span>
 <span class="va">AUC_map_second_dose</span>
-<span class="co">#&gt; [1] 387.1362</span></code></pre></div>
+<span class="co">#&gt; [1] 387.1363</span></code></pre></div>
 <p>The current dosage does not meet the target AUC.</p>
 </div>
 <div class="section level3">
@@ -250,7 +250,7 @@
                                       duration<span class="op">=</span><span class="fl">2</span>,
                                       target_auc<span class="op">=</span><span class="fl">400</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">maintenance_dose_map</span>
-<span class="co">#&gt; [1] 1229.36</span></code></pre></div>
+<span class="co">#&gt; [1] 1229.364</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="optimal-loading-dose-selection-a-posteriori">Optimal loading dose selection a posteriori<a class="anchor" aria-label="anchor" href="#optimal-loading-dose-selection-a-posteriori"></a>
@@ -269,7 +269,7 @@
 <span class="co">#Cmin at steady-state</span>
 <span class="va">target_cmin_ss</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">*</span><span class="fl">9</span><span class="op">)</span><span class="op">]</span>
 <span class="va">target_cmin_ss</span>
-<span class="co">#&gt; [1] 11.02484</span></code></pre></div>
+<span class="co">#&gt; [1] 11.02488</span></code></pre></div>
 <p>The dose needed to achieve the steady-state Cmin following the first administration can now be identified.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">loading_dose_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patB_tdm_vanco</span>,
@@ -277,7 +277,7 @@
                                     duration<span class="op">=</span><span class="fl">2</span>,
                                     target_conc<span class="op">=</span><span class="va">target_cmin_ss</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">loading_dose_map</span>
-<span class="co">#&gt; [1] 2525.151</span></code></pre></div>
+<span class="co">#&gt; [1] 2525.159</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="simulate-and-plot-the-optimal-a-posteriori-dosage">Simulate and plot the optimal a posteriori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-optimal-a-posteriori-dosage"></a>
@@ -305,13 +305,13 @@
 <code class="sourceCode R"><span class="co">#AUC 0_24</span>
 <span class="va">AUC_loading_dose</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">)</span><span class="op">]</span>
 <span class="va">AUC_loading_dose</span>
-<span class="co">#&gt; [1] 424.7752</span>
+<span class="co">#&gt; [1] 424.7767</span>
 
 <span class="co">#AUC 24_48</span>
 <span class="va">AUC_maintenance_dose</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span>
   <span class="va">AUC_loading_dose</span>
 <span class="va">AUC_maintenance_dose</span>
-<span class="co">#&gt; [1] 399.794</span></code></pre></div>
+<span class="co">#&gt; [1] 399.7954</span></code></pre></div>
 <p>The target AUC24 are now met.</p>
 </div>
 </div>
@@ -330,7 +330,7 @@
                                            duration<span class="op">=</span><span class="fl">24</span>,
                                            target_conc<span class="op">=</span><span class="va">target_css</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">maintenance_dose_map_ci</span>
-<span class="co">#&gt; [1] 1229.425</span></code></pre></div>
+<span class="co">#&gt; [1] 1229.426</span></code></pre></div>
 <div class="section level3">
 <h3 id="simulate-and-plot-the-optimal-a-posteriori-dosage-1">Simulate and plot the optimal a posteriori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-optimal-a-posteriori-dosage-1"></a>
 </h3>

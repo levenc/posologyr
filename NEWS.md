@@ -1,4 +1,4 @@
-# posologyr v0.1.1.9000
+# posologyr v0.2.0
 
 * `poso_estim_sir()` estimates the posterior distribution of individual 
 parameters by Sequential Importance Resampling (SIR). It is roughly 25 times 
