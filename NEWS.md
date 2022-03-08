@@ -22,8 +22,9 @@ distributions of ETA, and not only with point estimates (such as the MAP).
 * A new `nocb` parameter is added to `posologyr()`. The interpolation method for
 time-varying covariates can be either last observation carried forward (locf, 
 the RxODE default), or next observation carried backward (nocb, the NONMEM 
-default)
+default).
 * `vignette("uncertainty_estimates")` is removed.
+* The built-in models are removed.
 
 # posologyr v0.1.1
 
