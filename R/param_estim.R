@@ -317,7 +317,7 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
                         lower=-bfgs_bounds),
                silent=TRUE)
 
-      if(class(r) != 'try-error'){
+      if(!inherits(r,'try-error')){
 
         # Objection Function Value: OFV
         OFV_current       <- r$value
