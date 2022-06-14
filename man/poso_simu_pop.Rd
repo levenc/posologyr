@@ -12,14 +12,14 @@ function.}
 
 \item{n_simul}{An integer, the number of simulations to be run. For \code{n_simul =0}, all ETAs are set to 0.}
 
-\item{return_model}{A boolean. Returns a RxODE model using the simulated
+\item{return_model}{A boolean. Returns a rxode2 model using the simulated
 ETAs if set to \code{TRUE}.}
 }
 \value{
 If \code{return_model} is set to \code{FALSE}, a list of one element: a
 dataframe \verb{$eta} of the individual values of ETA.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the
-individual values of ETA, and a RxODE model using the simulated ETAs.
+individual values of ETA, and a rxode2 model using the simulated ETAs.
 }
 \description{
 Estimates the prior distribution of population parameters by Monte Carlo
@@ -28,7 +28,7 @@ simulations
 \examples{
 # model
 mod_run001 <- list(
-ppk_model = RxODE::RxODE({
+ppk_model = rxode2::rxode({
   centr(0) = 0;
   depot(0) = 0;
 

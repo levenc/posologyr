@@ -107,13 +107,19 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This describes the structure of patient records usable by <code>posologyr</code>.</p>
+<p>This describes the structure of patient records usable by
+<code>posologyr</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
 </h2>
-<p>Data for input into <code>posologyr</code> is the same type of data input for RxODE. As stated in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html" class="external-link">RxODE documentation (RxODE datasets)</a>, it is also similar to <a href="https://doi.org/10.1002/psp4.12404" class="external-link">data for NONMEM</a>.</p>
-<p>The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the <a href="https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-event-types.html" class="external-link">RxODE documentation (RxODE Event Types)</a>.</p>
+<p>Data for input into <code>posologyr</code> is the same type of data
+input for rxode2. As stated in the <a href="https://nlmixr2.github.io/rxode2/articles/rxode2-datasets.html" class="external-link">rxode2
+documentation (rxode2 datasets)</a>, it is also similar to <a href="https://doi.org/10.1002/psp4.12404" class="external-link">data for NONMEM</a>.</p>
+<p>The patient dataset is a table of sequential event records, in which
+each line is an event. A description of the different event types is
+available in the <a href="https://nlmixr2.github.io/rxode2/articles/rxode2-event-types.html" class="external-link">rxode2
+documentation (rxode2 Event Types)</a>.</p>
 <p>Below is a minimal working example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
@@ -129,22 +135,33 @@
 </h3>
 <dl>
 <dt>TIME</dt>
-<dd>Dosing times, and sampling times of therapeutic drug monitoring (TDM). The units depend on the specification of the population pharmacokinetics (ppk) model.
+<dd>
+Dosing times, and sampling times of therapeutic drug monitoring (TDM).
+The units depend on the specification of the population pharmacokinetics
+(ppk) model.
 </dd>
 <dt>AMT</dt>
-<dd>Amount of drug administered. The units depend on the specification of the ppk model.
+<dd>
+Amount of drug administered. The units depend on the specification of
+the ppk model.
 </dd>
 <dt>EVID</dt>
-<dd>Event type. Must be 0 for all observations (concentrations from TDM).
+<dd>
+Event type. Must be 0 for all observations (concentrations from TDM).
 </dd>
 <dt>DV</dt>
-<dd>For concentrations. Must be NA when EVID is not 0.
+<dd>
+For concentrations. Must be NA when EVID is not 0.
 </dd>
 <dt>Covariates</dt>
-<dd>Every covariate defined in the prior <code>posologyr</code> model. The column labels must match the <strong>covariate</strong> vector from the ppk model.
+<dd>
+Every covariate defined in the prior <code>posologyr</code> model. The
+column labels must match the <strong>covariate</strong> vector from the
+ppk model.
 </dd>
 <dt>OCC</dt>
-<dd>Occasions. Required for models with inter-occasion variability.
+<dd>
+Occasions. Required for models with inter-occasion variability.
 </dd>
 </dl>
 </div>
@@ -155,7 +172,9 @@
 <div class="section level3">
 <h3 id="a-priori-dose-adjustment">A priori dose adjustment<a class="anchor" aria-label="anchor" href="#a-priori-dose-adjustment"></a>
 </h3>
-<p>Before dosing: the simplest patient record is a single line dataframe, with individual patient covariates, and all other columns (TIME, DV, AMT, EVID) set to zero.</p>
+<p>Before dosing: the simplest patient record is a single line
+dataframe, with individual patient covariates, and all other columns
+(TIME, DV, AMT, EVID) set to zero.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fl">0</span>,
@@ -170,7 +189,10 @@
 <div class="section level3">
 <h3 id="oral-administration-or-iv-bolus">Oral administration or IV bolus<a class="anchor" aria-label="anchor" href="#oral-administration-or-iv-bolus"></a>
 </h3>
-<p><code>EVID = 1</code> for an instantaneous administration in the first compartment defined in the ppk model: either the central compartment for an IV bolus, or a depot compartment for an oral administration.</p>
+<p><code>EVID = 1</code> for an instantaneous administration in the
+first compartment defined in the ppk model: either the central
+compartment for an IV bolus, or a depot compartment for an oral
+administration.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">3</span><span class="op">)</span>,
@@ -186,9 +208,11 @@
 <div class="section level3">
 <h3 id="intermittent-infusion">Intermittent infusion<a class="anchor" aria-label="anchor" href="#intermittent-infusion"></a>
 </h3>
-<p><code>EVID = 1</code> for a bolus infusion, administered in the first compartment defined in the ppk model.</p>
+<p><code>EVID = 1</code> for a bolus infusion, administered in the first
+compartment defined in the ppk model.</p>
 <p><code>DUR</code> defines its duration.</p>
-<p><code>AMT</code> is the amount administered over the duration <code>DUR</code>.</p>
+<p><code>AMT</code> is the amount administered over the duration
+<code>DUR</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,
@@ -206,7 +230,9 @@
 <div class="section level3">
 <h3 id="inter-occasion-variability">Inter-occasion variability<a class="anchor" aria-label="anchor" href="#inter-occasion-variability"></a>
 </h3>
-<p>For a given occasion, the value of <code>OCC</code> must be repeated for each row. <code>OCC</code> must be specified for all the rows in the table.</p>
+<p>For a given occasion, the value of <code>OCC</code> must be repeated
+for each row. <code>OCC</code> must be specified for all the rows in the
+table.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,
            TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span>,<span class="fl">24.0</span>,<span class="fl">25.0</span>,<span class="fl">36.0</span><span class="op">)</span>,
@@ -245,7 +271,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer>

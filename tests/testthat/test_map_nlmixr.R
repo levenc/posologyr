@@ -1,5 +1,5 @@
 mod_amikacin_2cpt_Burdet2015 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT4H/82)^0.7;
     TVVc  = THETA_Vc*(TBW/78)^0.9*(PoverF/169)^0.4;

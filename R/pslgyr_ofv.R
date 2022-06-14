@@ -19,7 +19,7 @@
 # Update model predictions with a new set of parameters, for all obs
 run_model <- function(x,model_init=NULL,solved_model=NULL,
                       estim_with_iov=NULL,adapt=NULL){
-  if (!estim_with_iov){ #RxODE already updated in errpred() if estim_with_iov
+  if (!estim_with_iov){ #rxode2 already updated in errpred() if estim_with_iov
     solved_model$params <- x
     if(adapt){
       solved_model$inits <- model_init
@@ -45,7 +45,7 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
   U_eta <- eta %*% solve_omega %*% eta
 
   if (TRUE %in% is.na(f)){
-    # if RxODE fails to solve the model, the proposed ETA is not optimal, assign
+    # if rxode2 fails to solve the model, the proposed ETA is not optimal, assign
     # a large value to OFV to divert the algorithm from this area
     OFV <- 10^10
   } else {
@@ -85,8 +85,8 @@ errpred <- function(eta_estim=NULL,
                                        omega_dim=omega_dim,
                                        eta_estim=eta_estim)
     dat <- data.frame(dat,iov_col)
-    solved_model <- RxODE::rxSolve(solved_model,c(theta,eta),dat,
-                                   covs_interpolation=interpolation)
+    solved_model <- rxode2::rxSolve(solved_model,c(theta,eta),dat,
+                                   covsInterpolation=interpolation)
   } else {
     eta[ind_eta] <- eta_estim
   }

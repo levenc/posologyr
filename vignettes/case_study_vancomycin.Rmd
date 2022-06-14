@@ -24,7 +24,7 @@ This case study presents the dosage adjustment for a patient treated with vancom
 
 ```{r model}
 mod_vancomycin_2cpt_Goti2018 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT/120)^0.8*(0.7^DIAL);
     TVVc  = THETA_Vc*(WT/70)          *(0.5^DIAL);
@@ -90,7 +90,7 @@ patB_map
 
 ## Plot the individual pharmacokinetic profile
 
-The individual pharmacokinetic profile is plotted using the RxODE model provided by the `poso_estim_map()` function.
+The individual pharmacokinetic profile is plotted using the rxode model provided by the `poso_estim_map()` function.
 
 ```{r map_plot_tdm}
 #Get the observations from the patient record
@@ -145,11 +145,11 @@ The ideal loading dose achieves the target steady-state concentration on the fir
 
 ```{r cmin_ss}
 #event table: multiple dose regimen until steady state
-et_ss <- RxODE::et(amt=maintenance_dose_map,dur=2,ii=24,until=240)
-et_ss %<>% RxODE::et(seq(0,240,by=0.1))
+et_ss <- rxode2::et(amt=maintenance_dose_map,dur=2,ii=24,until=240)
+et_ss %<>% rxode2::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_optim_model_patB <- RxODE::rxSolve(object=patB_tdm_vanco$ppk_model,
+map_optim_model_patB <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
                                       params=patB_map$model$params,
                                       events=et_ss)
 
@@ -172,12 +172,12 @@ loading_dose_map
 
 ```{r plot_optim_dosage}
 #event table: loading dose followed by maintenance dose once daily
-et_load         <- RxODE::et(amt=loading_dose_map,dur=2)
-et_maint        <- RxODE::et(amt=maintenance_dose_map,dur=2,ii=24,until=240)
-et_optim_dosage <- seq(et_load,et_maint) %>% RxODE::et(seq(0,240,by=0.1))
+et_load         <- rxode2::et(amt=loading_dose_map,dur=2)
+et_maint        <- rxode2::et(amt=maintenance_dose_map,dur=2,ii=24,until=240)
+et_optim_dosage <- seq(et_load,et_maint) %>% rxode2::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_optim_model_patB <- RxODE::rxSolve(object=patB_tdm_vanco$ppk_model,
+map_optim_model_patB <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
                                       params=patB_map$model$params,
                                       events=et_optim_dosage)
 
@@ -222,16 +222,16 @@ maintenance_dose_map_ci
 
 ```{r ci_plots}
 #event table: loading dose followed by continuous infusion
-et_maint_ci <- RxODE::et(time=2,
+et_maint_ci <- rxode2::et(time=2,
                          amt=maintenance_dose_map_ci,
                          dur=24,
                          ii=24,
                          until=240)
-et_ci       <- et_maint_ci %>% RxODE::add.dosing(dose=loading_dose_map,dur=2)
-et_ci       %<>% RxODE::et(seq(0,240,by=0.1))
+et_ci       <- et_maint_ci %>% rxode2::add.dosing(dose=loading_dose_map,dur=2)
+et_ci       %<>% rxode2::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_optim_model_patB_ci  <- RxODE::rxSolve(object=patB_tdm_vanco$ppk_model,
+map_optim_model_patB_ci  <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
                                           params=patB_map$model$params,
                                           events=et_ci)
 

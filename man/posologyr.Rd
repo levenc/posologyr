@@ -12,16 +12,16 @@ posologyr(prior_model = NULL, dat = NULL, nocb = FALSE)
 model, a list of six objects.}
 
 \item{dat}{Dataframe. An individual subject dataset following the
-structure of NONMEM/RxODE event records.}
+structure of NONMEM/rxode2 event records.}
 
 \item{nocb}{A boolean. for time-varying covariates: the next observation
 carried backward (nocb) interpolation style, similar to NONMEM.  If
 \code{FALSE}, the last observation carried forward (locf) style will be used.
 Defaults to \code{FALSE}.
 
-\code{posologyr} will check the validity of the compiled RxODE
+\code{posologyr} will check the validity of the compiled rxode2
 model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
-\code{posologyr} will call \code{\link[RxODE]{RxODE}}
+\code{posologyr} will call \code{\link[rxode2]{rxode2}}
 to recompile the model before solving it using \code{prior_model}
 and \code{dat}.}
 }
@@ -31,7 +31,7 @@ pharmacokinetics model given as \code{prior_model} parameter (6 objects),
 the individual event record (\code{tdm_data}) given as \code{dat} parameter,
 and the solved model (\code{solved_ppk_model}).
 \describe{
-\item{ppk_model}{A RxODE model implementing the structural
+\item{ppk_model}{A rxode2 model implementing the structural
 population pharmacokinetics model with the individual model
 (i.e. the model of inter-individual variability) and the
 covariates}
@@ -46,19 +46,19 @@ the model}
 \item{sigma}{The estimates of the parameters of the residual error model}
 \item{tdm_data}{A dataframe. The individual subject dataset
 given as \code{dat} parameter}
-\item{solved_ppk_model}{An \code{\link[RxODE]{rxSolve}} solve object,
+\item{solved_ppk_model}{An \code{\link[rxode2]{rxSolve}} solve object,
 created with \code{prior_ppk_model} and using \code{dat} as the event record.}
 }
 }
 \description{
 Creates a list for a \code{posologyr} prior model, an individual event
-record, and an \code{\link[RxODE]{rxSolve}} solve object,
+record, and an \code{\link[rxode2]{rxSolve}} solve object,
 created from the prior ppk model and the individual event record.
 }
 \examples{
 # model
 mod_run001 <- list(
-ppk_model = RxODE::RxODE({
+ppk_model = rxode2::rxode({
   centr(0) = 0;
   depot(0) = 0;
 

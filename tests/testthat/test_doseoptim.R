@@ -1,5 +1,5 @@
 mod_tobramycin_2cpt_fictional <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     tTVke  = log(THETA_ke)+log(CLCREAT/67.8)*0.89+log(WT/66.4)*(-1.09);
     tTVV   = log(THETA_V)+log(WT/66.4)*0.80;
@@ -28,7 +28,7 @@ mod_tobramycin_2cpt_fictional <- list(
   sigma       = c(additive_a = 0, proportional_b = 0.198))
 
 mod_vancomycin_2cpt_Goti2018 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT/120)^0.8*(0.7^DIAL);
     TVVc  = THETA_Vc*(WT/70)          *(0.5^DIAL);

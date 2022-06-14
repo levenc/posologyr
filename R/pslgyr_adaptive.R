@@ -55,6 +55,9 @@ adaptive_map <- function(return_AMS_models=NULL,
     AMS_models <- list()
   }
 
+  # For each segment, split the data set, run the estimation, and log the
+  # the ODE compartment states at the end, to be used as init for the
+  # next segment
   for(index_segment in 1:n_segment){
 
     dat_segment  <- dat[which(dat$AMS == segment_id[index_segment]),]
@@ -65,9 +68,9 @@ adaptive_map <- function(return_AMS_models=NULL,
     }
 
     # solved_model for the current segment
-    solved_model <- RxODE::rxSolve(solved_model,c(theta,start_eta),
+    solved_model <- rxode2::rxSolve(solved_model,c(theta,start_eta),
                                    dat_segment,
-                                   covs_interpolation=interpolation)
+                                   covsInterpolation=interpolation)
 
     y_obs        <- dat_segment$DV[dat_segment$EVID == 0]
 
@@ -104,7 +107,7 @@ adaptive_map <- function(return_AMS_models=NULL,
     init_df[index_segment+1,]       <- utils::tail(solved_model[,init_names],1)
 
     if(return_AMS_models){
-      # get the RxODE model for the current segment
+      # get the rxode2 model for the current segment
       AMS_models[[index_segment]]   <- solved_model
     }
   }

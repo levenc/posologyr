@@ -18,7 +18,7 @@ poso_estim_mcmc(
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
 
-\item{return_model}{A boolean. Returns a RxODE model using the estimated
+\item{return_model}{A boolean. Returns a rxode2 model using the estimated
 ETAs if set to \code{TRUE}.}
 
 \item{burn_in}{Number of burn-in iterations for the Metropolis-Hastings
@@ -37,7 +37,7 @@ If \code{return_model} is set to \code{FALSE}, a list of one element: a
 dataframe \verb{$eta} of ETAs from the posterior distribution, estimated by
 Markov Chain Monte Carlo.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the posterior
-distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
 }
 \description{
 Estimates the posterior distribution of individual parameters by Markov
@@ -46,7 +46,7 @@ Chain Monte Carlo (using a Metropolis-Hastings algorithm)
 \examples{
 # model
 mod_run001 <- list(
-ppk_model = RxODE::RxODE({
+ppk_model = rxode2::rxode({
   centr(0) = 0;
   depot(0) = 0;
 

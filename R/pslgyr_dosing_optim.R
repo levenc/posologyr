@@ -62,7 +62,7 @@
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -134,7 +134,7 @@ poso_time_cmin <- function(object,dose,target_cmin,
 
   #compute the individual time-concentration profile
   if (!is.null(add_dose)){
-    event_table_cmin <- RxODE::et(amt=dose,dur=duration,
+    event_table_cmin <- rxode2::et(amt=dose,dur=duration,
                                   ii=interdose_interval,
                                   addl=add_dose)
     time_last_dose   <- add_dose*interdose_interval
@@ -144,12 +144,12 @@ poso_time_cmin <- function(object,dose,target_cmin,
                                       by=0.1))
   }
   else {
-    event_table_cmin <- RxODE::et(amt=dose,dur=duration)
+    event_table_cmin <- rxode2::et(amt=dose,dur=duration)
     event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
     time_last_dose   <- 0
   }
 
-  cmin_ppk_model <- RxODE::rxSolve(object=object$ppk_model,
+  cmin_ppk_model <- rxode2::rxSolve(object=object$ppk_model,
                                    params=indiv_param,
                                    event_table_cmin,
                                    nDisplayProgress=1e5)
@@ -266,7 +266,7 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -346,17 +346,17 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 
     #compute the individual time-concentration profile
     if (!is.null(add_dose)){
-      event_table_auc <- RxODE::et(amt=dose,dur=duration,
+      event_table_auc <- rxode2::et(amt=dose,dur=duration,
                                    ii=interdose_interval,
                                    addl=add_dose)
     } else {
-      event_table_auc <- RxODE::et(amt=dose,dur=duration)
+      event_table_auc <- rxode2::et(amt=dose,dur=duration)
     }
 
     event_table_auc$add.sampling(starting_time)
     event_table_auc$add.sampling(starting_time+time_auc)
 
-    auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
+    auc_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
                                     params=indiv_param,
                                     event_table_auc,
                                     nDisplayProgress=1e5)
@@ -469,7 +469,7 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -548,16 +548,16 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 
     #compute the individual time-concentration profile
     if (!is.null(add_dose)){
-      event_table_ctime <- RxODE::et(amt=dose,dur=duration,
+      event_table_ctime <- rxode2::et(amt=dose,dur=duration,
                                      ii=interdose_interval,
                                      addl=add_dose)
     }
     else {
-      event_table_ctime <- RxODE::et(amt=dose,dur=duration)
+      event_table_ctime <- rxode2::et(amt=dose,dur=duration)
     }
     event_table_ctime$add.sampling(time_c)
 
-    ctime_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
+    ctime_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
                                       params=indiv_param,
                                       event_table_ctime,
                                       nDisplayProgress=1e5)
@@ -661,7 +661,7 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -726,12 +726,12 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
                         prior_model,add_dose,duration=duration,
                         indiv_param){
     #compute the individual time-concentration profile
-    event_table_cmin <- RxODE::et(amt=dose,dur=duration,
+    event_table_cmin <- rxode2::et(amt=dose,dur=duration,
                                   ii=interdose_interval,
                                   addl=add_dose)
     event_table_cmin$add.sampling(interdose_interval*add_dose-0.1)
 
-    cmin_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
+    cmin_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
                                      params=indiv_param,
                                      event_table_cmin,
                                      nDisplayProgress=1e5)

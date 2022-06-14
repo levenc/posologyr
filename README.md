@@ -38,7 +38,7 @@ Functions for dosage optimisation are included in `posologyr`:
     reliably achieve a target Cmin between each administration
 
 `posologyr` takes advantage of the simulation framework provided by the
-[RxODE](https://github.com/nlmixrdevelopment/RxODE) package.
+[rxode2](https://github.com/nlmixr2/rxode2) package.
 
 ## Installation
 

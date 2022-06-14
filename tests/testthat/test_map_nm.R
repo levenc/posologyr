@@ -1,5 +1,5 @@
 mod_run302 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
 
     TVCl  = THETA_Cl*((BW/75)^1.5)*(0.75^SEX);
     TVVc  = THETA_Vc;

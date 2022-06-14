@@ -21,7 +21,7 @@
 #  Copyright (C) 2015 Marc Lavielle, Inria Saclay, CeCILL-B
 #
 #  Modifications:
-#   - interfacing with RxODE
+#   - interfacing with rxode2
 #   - deletion of shiny-specific parts
 #   - variable names changed to snake_case
 #   - square matrix taken as input, not diagonal
@@ -39,18 +39,18 @@
 #'    function.
 #' @param n_simul An integer, the number of simulations to be run. For `n_simul
 #'   =0`, all ETAs are set to 0.
-#' @param return_model A boolean. Returns a RxODE model using the simulated
+#' @param return_model A boolean. Returns a rxode2 model using the simulated
 #'    ETAs if set to `TRUE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of the individual values of ETA.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the
-#' individual values of ETA, and a RxODE model using the simulated ETAs.
+#' individual values of ETA, and a rxode2 model using the simulated ETAs.
 #'
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -156,19 +156,19 @@ poso_simu_pop <- function(object,n_simul=1000,
 #'    adaptive MAP method (as opposed to the standard MAP)? A column
 #'    `AMS` is required in the patient record to define the segments for
 #'    the adaptive MAP approach.
-#' @param return_model A boolean. Returns a RxODE model using the estimated
+#' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`. If `adapt=TRUE`, the model is solved using the
 #'    parameters estimated on the last segment.
 #' @param return_ofv A boolean. Returns a the Objective Function Value (OFV)
 #'    if set to `TRUE`. Always considered `FALSE` if `adapt=TRUE`.
-#' @param return_AMS_models A boolean. Returns a RxODE model using the estimated
+#' @param return_AMS_models A boolean. Returns a rxode2 model using the estimated
 #'    ETAs for each Adaptive MAP Segment (AMS) if set to `TRUE`. Ignored if
 #'    `adapt=FALSE`.
 #'
 #' @return A named list consisting of one or more of the following elements
 #' depending on the input parameters of the function: `$eta` a named vector
-#' of the MAP estimates of the individual values of ETA, `$model` an RxODE
-#' model using the estimated ETAs, `AMS_models` a list of RxODE models, one for
+#' of the MAP estimates of the individual values of ETA, `$model` an rxode2
+#' model using the estimated ETAs, `AMS_models` a list of rxode2 models, one for
 #' each Adaptive MAP Segment (AMS).
 #'
 #' @import data.table
@@ -176,7 +176,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -437,8 +437,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
                                          omega_dim=omega_dim,
                                          eta_estim=r$par)
       data_iov     <- data.frame(dat,iov_col)
-      solved_model <- RxODE::rxSolve(solved_model,c(theta,eta_map),data_iov,
-                                     covs_interpolation=interpolation)
+      solved_model <- rxode2::rxSolve(solved_model,c(theta,eta_map),data_iov,
+                                     covsInterpolation=interpolation)
 
       estim_map$data   <- data_iov
     } else {
@@ -494,7 +494,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #' function.
-#' @param return_model A boolean. Returns a RxODE model using the estimated
+#' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`.
 #' @param burn_in Number of burn-in iterations for the Metropolis-Hastings
 #'    algorithm.
@@ -508,7 +508,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
-#' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+#' distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
 #'
 #' @author Emmanuelle Comets, Audrey Lavenu, Marc Lavielle, Cyril Leven
 #'
@@ -519,7 +519,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -755,20 +755,20 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,n_iter=1000,
 #' function.
 #' @param n_sample Number of samples from the S-step
 #' @param n_resample Number of samples from the R-step
-#' @param return_model A boolean. Returns a RxODE model using the estimated
+#' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Sequential Importance Resampling.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
-#' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+#' distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
 #'
 #' @import data.table
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -950,9 +950,9 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
 
     wide_cc <- order_columns(wide_cc)
   } else {
-    solved_model <- RxODE::rxSolve(solved_model,
+    solved_model <- rxode2::rxSolve(solved_model,
                                    cbind(theta,eta_dt,row.names=NULL),
-                                   dat,covs_interpolation=interpolation,
+                                   dat,covsInterpolation=interpolation,
                                    returnType="data.table")
 
     wide_cc <- dcast_up_to_five(solved_model)
@@ -1011,24 +1011,24 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
 
       # overwrite IDs to avoid duplicates, and solve the model once again
       dat_resample[,ID:=rep(1:n_resample,1,each=nrow(dat))]
-      estim_sir$model   <- RxODE::rxSolve(object$solved_ppk_model,
+      estim_sir$model   <- rxode2::rxSolve(object$solved_ppk_model,
                                         params_resample,
                                         dat_resample,
-                                        covs_interpolation=interpolation)
+                                        covsInterpolation=interpolation)
     } else {
       params_resample <- cbind(eta_df,theta,row.names=NULL)
 
       if(no_covariates){
-        model_sir     <- RxODE::rxSolve(object$solved_ppk_model,
+        model_sir     <- rxode2::rxSolve(object$solved_ppk_model,
                                         params_resample,
-                                        dat,covs_interpolation=interpolation)
+                                        dat,covsInterpolation=interpolation)
       } else {
         covar         <- as.data.frame(dat[1,object$covariates])
         names(covar)  <- object$covariates
-        model_sir     <- RxODE::rxSolve(object$solved_ppk_model,
+        model_sir     <- rxode2::rxSolve(object$solved_ppk_model,
                                         cbind(params_resample,covar,
                                               row.names=NULL),
-                                        dat,covs_interpolation=interpolation)
+                                        dat,covsInterpolation=interpolation)
       }
       estim_sir$model   <- model_sir
     }

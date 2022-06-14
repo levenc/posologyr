@@ -98,10 +98,16 @@ parameters, a dose, and a target Cmin.</p>
     <dl><dt>object</dt>
 <dd><p>A posologyr list, created by the <code><a href="posologyr.html">posologyr</a></code>
 function.</p></dd>
+
+
 <dt>dose</dt>
 <dd><p>Numeric. Dose administered.</p></dd>
+
+
 <dt>target_cmin</dt>
 <dd><p>Numeric. Target trough concentration (Cmin).</p></dd>
+
+
 <dt>estim_method</dt>
 <dd><p>A character string. An estimation method to be used for
 the individual parameters. The default method "map" is the Maximum A
@@ -109,42 +115,63 @@ Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
 parameters. This argument is ignored if <code>indiv_param</code> is provided.</p></dd>
+
+
 <dt>p</dt>
 <dd><p>Numeric. The proportion of the distribution of cmin to consider for
 the estimation. Mandatory for <code>estim_method=sir</code>.</p></dd>
+
+
 <dt>greater_than</dt>
 <dd><p>A boolean. If <code>TRUE</code>: targets a time leading to a
 proportion <code>p</code> of the cmins to be greater than <code>target_cmin</code>.
 Respectively, lower if <code>FALSE</code>.</p></dd>
+
+
 <dt>adapt</dt>
 <dd><p>A boolean. If <code>param_map</code> is omitted, should the estimation
 be performed with the adaptive MAP method (as opposed to the
 standard MAP)? A column <code>AMS</code> is required in the patient record
 to define the segments for the adaptive MAP approach.</p></dd>
+
+
 <dt>from</dt>
 <dd><p>Numeric. Starting time for the simulation of the
 individual time-concentration profile. The default value is
 0.2</p></dd>
+
+
 <dt>last_time</dt>
 <dd><p>Numeric. Ending time for the simulation of the
 individual time-concentration profile. The default value is
 72.</p></dd>
+
+
 <dt>add_dose</dt>
 <dd><p>Numeric. Additional doses administered at
 inter-dose interval after the first dose. Optional.</p></dd>
+
+
 <dt>interdose_interval</dt>
 <dd><p>Numeric. Time for the inter-dose interval
 for multiple dose regimen. Must be provided when add_dose is used.</p></dd>
+
+
 <dt>duration</dt>
 <dd><p>Numeric. Duration of infusion, for zero-order
 administrations.</p></dd>
+
+
 <dt>indiv_param</dt>
 <dd><p>Optional. A set of individual parameters : THETA,
 estimates of ETA, and covariates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A numeric time to the selected trough concentration, from the
+    
+
+<p>A numeric time to the selected trough concentration, from the
 time of administration.</p>
     </div>
 
@@ -152,7 +179,7 @@ time of administration.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># model</span></span>
 <span class="r-in"><span class="va">mod_run001</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">ppk_model <span class="op">=</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html" class="external-link">RxODE</a></span><span class="op">(</span><span class="op">{</span></span>
+<span class="r-in">ppk_model <span class="op">=</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in">  <span class="fu">centr</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;</span>
 <span class="r-in">  <span class="fu">depot</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;</span>
 <span class="r-in"></span>
@@ -205,11 +232,11 @@ time of administration.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cmin_estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489933</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc   ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291735 0.127848</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019034 -0.4291737 0.1278471</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>
@@ -226,7 +253,7 @@ time of administration.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -1,5 +1,5 @@
 mod_piperacillin_2cpt_Roberts2010 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0)   = 0;
     # Time lag from dose infuser to patient
     TVLAGTIME  = THETA_LAGTIME

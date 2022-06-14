@@ -1,5 +1,5 @@
 mod_tobramycin_2cpt_fictional <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     tTVke  = log(THETA_ke)+log(CLCREAT/67.8)*0.89+log(WT/66.4)*(-1.09);
     tTVV   = log(THETA_V)+log(WT/66.4)*0.80;
@@ -28,7 +28,7 @@ mod_tobramycin_2cpt_fictional <- list(
   sigma       = c(additive_a = 0, proportional_b = 0.198))
 
 mod_piperacillin_2cpt_Roberts2010 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0)   = 0;
     # Time lag from dose infuser to patient
     TVLAGTIME  = THETA_LAGTIME

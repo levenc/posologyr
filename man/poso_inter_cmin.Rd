@@ -83,7 +83,7 @@ target concentration.
 \examples{
 # model
 mod_run001 <- list(
-ppk_model = RxODE::RxODE({
+ppk_model = rxode2::rxode({
   centr(0) = 0;
   depot(0) = 0;
 

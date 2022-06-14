@@ -18,9 +18,9 @@ knitr::opts_chunk$set(
 This describes the structure of patient records usable by `posologyr`.
 
 # Structure
-Data for input into `posologyr` is the same type of data input for RxODE. As stated in the [RxODE documentation (RxODE datasets)](https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-datasets.html), it is also similar to [data for NONMEM](https://doi.org/10.1002/psp4.12404).
+Data for input into `posologyr` is the same type of data input for rxode2. As stated in the [rxode2 documentation (rxode2 datasets)](https://nlmixr2.github.io/rxode2/articles/rxode2-datasets.html), it is also similar to [data for NONMEM](https://doi.org/10.1002/psp4.12404).
 
-The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the [RxODE documentation (RxODE Event Types)](https://nlmixrdevelopment.github.io/RxODE/articles/RxODE-event-types.html).
+The patient dataset is a table of sequential event records, in which each line is an event. A description of the different event types is available in the [rxode2 documentation (rxode2 Event Types)](https://nlmixr2.github.io/rxode2/articles/rxode2-event-types.html).
 
 Below is a minimal working example:
 

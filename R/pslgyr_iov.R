@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------
 
 # Get propositions for values of kappa and put them in colums to be added
-#  to the dataset for RxODE
+#  to the dataset for rxode2
 iov_proposition_as_cols <- function(iov_col=NULL,
                                     dat=NULL,
                                     pimat=NULL,
