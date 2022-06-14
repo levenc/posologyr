@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # posologyr: individual dose optimisation using population PK
-# Copyright (C) 2021  Cyril Leven
+# Copyright (C) 2022  Cyril Leven
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as

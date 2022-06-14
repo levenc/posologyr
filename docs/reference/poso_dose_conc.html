@@ -66,7 +66,7 @@ concentration."><meta property="og:image" content="/logo.png"><!-- mathjax --><s
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate the optimal dose for a selected target concentration</h1>
-    <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/R/pslgyr_dosing_optim.R" class="external-link"><code>R/pslgyr_dosing_optim.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/R/dosing_optim.R" class="external-link"><code>R/dosing_optim.R</code></a></small>
     <div class="hidden name"><code>poso_dose_conc.Rd</code></div>
     </div>
 
@@ -227,7 +227,7 @@ covariates</p></dd>
 <span class="r-in"><span class="co"># one hour after starting the 30-minutes infusion</span></span>
 <span class="r-in"><span class="fu">poso_dose_conc</span><span class="op">(</span><span class="va">patient01</span>,time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.017</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -237,7 +237,7 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019045 -0.4291722 0.1278488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019029 -0.4291743 0.1278468</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>

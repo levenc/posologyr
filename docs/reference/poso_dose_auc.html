@@ -68,7 +68,7 @@ model, a set of individual parameters, and a target AUC."><meta property="og:ima
     <div class="page-header">
     <h1>Estimate the optimal dose for a selected target area under the
 time-concentration curve (AUC)</h1>
-    <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/R/pslgyr_dosing_optim.R" class="external-link"><code>R/pslgyr_dosing_optim.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/R/dosing_optim.R" class="external-link"><code>R/dosing_optim.R</code></a></small>
     <div class="hidden name"><code>poso_dose_auc.Rd</code></div>
     </div>
 
@@ -232,7 +232,7 @@ covariates</p></dd>
 <span class="r-in"><span class="co"># estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l</span></span>
 <span class="r-in"><span class="fu">poso_dose_auc</span><span class="op">(</span><span class="va">patient01</span>,time_auc<span class="op">=</span><span class="fl">12</span>,target_auc<span class="op">=</span><span class="fl">45</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 396.0042</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 396.0043</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -241,8 +241,8 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291733 0.1278477</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl    ETA_Vc    ETA_Ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019038 -0.429173 0.1278484</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>

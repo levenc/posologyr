@@ -1,4 +1,4 @@
-# posologyr v0.2.9000
+# posologyr v0.2.0.9000
 * RxODE import has been updated to rxode2
 * The adaptive MAP forecasting option is removed
 
