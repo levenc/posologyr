@@ -83,7 +83,6 @@ model, a set of individual parameters, and a target AUC.</p>
   <span class="va">object</span>,
   <span class="va">time_auc</span>,
   <span class="va">target_auc</span>,
-  adapt <span class="op">=</span> <span class="cn">FALSE</span>,
   estim_method <span class="op">=</span> <span class="st">"map"</span>,
   p <span class="op">=</span> <span class="cn">NULL</span>,
   greater_than <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -109,13 +108,6 @@ function.</p></dd>
 
 <dt>target_auc</dt>
 <dd><p>Numeric. The target AUC.</p></dd>
-
-
-<dt>adapt</dt>
-<dd><p>A boolean. If <code>estim_method="map"</code>, should the estimation
-be performed with the adaptive MAP method (as opposed to the
-standard MAP)? A column named <code>AMS</code> is required in the patient record
-to define the segments for the adaptive MAP approach.</p></dd>
 
 
 <dt>estim_method</dt>
@@ -240,7 +232,7 @@ covariates</p></dd>
 <span class="r-in"><span class="co"># estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l</span></span>
 <span class="r-in"><span class="fu">poso_dose_auc</span><span class="op">(</span><span class="va">patient01</span>,time_auc<span class="op">=</span><span class="fl">12</span>,target_auc<span class="op">=</span><span class="fl">45</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 396.0044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 396.0042</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -249,8 +241,8 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka   ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.601904 -0.4291723 0.1278492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291733 0.1278477</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>

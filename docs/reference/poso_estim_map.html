@@ -74,13 +74,7 @@ also known as Empirical Bayes Estimates (EBE).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">poso_estim_map</span><span class="op">(</span>
-  <span class="va">object</span>,
-  adapt <span class="op">=</span> <span class="cn">FALSE</span>,
-  return_model <span class="op">=</span> <span class="cn">TRUE</span>,
-  return_ofv <span class="op">=</span> <span class="cn">FALSE</span>,
-  return_AMS_models <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">poso_estim_map</span><span class="op">(</span><span class="va">object</span>, return_model <span class="op">=</span> <span class="cn">TRUE</span>, return_ofv <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,28 +84,14 @@ also known as Empirical Bayes Estimates (EBE).</p>
 function.</p></dd>
 
 
-<dt>adapt</dt>
-<dd><p>A boolean. Should the estimation be performed with the
-adaptive MAP method (as opposed to the standard MAP)? A column
-<code>AMS</code> is required in the patient record to define the segments for
-the adaptive MAP approach.</p></dd>
-
-
 <dt>return_model</dt>
 <dd><p>A boolean. Returns a rxode2 model using the estimated
-ETAs if set to <code>TRUE</code>. If <code>adapt=TRUE</code>, the model is solved using the
-parameters estimated on the last segment.</p></dd>
+ETAs if set to <code>TRUE</code>.</p></dd>
 
 
 <dt>return_ofv</dt>
 <dd><p>A boolean. Returns a the Objective Function Value (OFV)
-if set to <code>TRUE</code>. Always considered <code>FALSE</code> if <code>adapt=TRUE</code>.</p></dd>
-
-
-<dt>return_AMS_models</dt>
-<dd><p>A boolean. Returns a rxode2 model using the estimated
-ETAs for each Adaptive MAP Segment (AMS) if set to <code>TRUE</code>. Ignored if
-<code>adapt=FALSE</code>.</p></dd>
+if set to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -121,8 +101,7 @@ ETAs for each Adaptive MAP Segment (AMS) if set to <code>TRUE</code>. Ignored if
 <p>A named list consisting of one or more of the following elements
 depending on the input parameters of the function: <code>$eta</code> a named vector
 of the MAP estimates of the individual values of ETA, <code>$model</code> an rxode2
-model using the estimated ETAs, <code>AMS_models</code> a list of rxode2 models, one for
-each Adaptive MAP Segment (AMS).</p>
+model using the estimated ETAs.</p>
     </div>
 
     <div id="ref-examples">
@@ -175,13 +154,13 @@ each Adaptive MAP Segment (AMS).</p>
 <span class="r-in"><span class="fu">poso_estim_map</span><span class="op">(</span><span class="va">patient01</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $eta</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ETA_Cl     ETA_Vc     ETA_Ka </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.6019036 -0.4291733  0.1278484 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.6019034 -0.4291745  0.1278475 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">── Solved rxode2 object ──</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl   THETA_Vc   THETA_Ka     ETA_Cl     ETA_Vc     ETA_Ka </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4.0000000 70.0000000  1.0000000  0.6019036 -0.4291733  0.1278484 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4.0000000 70.0000000  1.0000000  0.6019034 -0.4291745  0.1278475 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> depot centr   AUC </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0     0     0 </span>

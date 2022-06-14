@@ -11,7 +11,6 @@ poso_time_cmin(
   estim_method = "map",
   p = NULL,
   greater_than = TRUE,
-  adapt = FALSE,
   from = 0.2,
   last_time = 72,
   add_dose = NULL,
@@ -41,11 +40,6 @@ the estimation. Mandatory for \code{estim_method=sir}.}
 \item{greater_than}{A boolean. If \code{TRUE}: targets a time leading to a
 proportion \code{p} of the cmins to be greater than \code{target_cmin}.
 Respectively, lower if \code{FALSE}.}
-
-\item{adapt}{A boolean. If \code{param_map} is omitted, should the estimation
-be performed with the adaptive MAP method (as opposed to the
-standard MAP)? A column \code{AMS} is required in the patient record
-to define the segments for the adaptive MAP approach.}
 
 \item{from}{Numeric. Starting time for the simulation of the
 individual time-concentration profile. The default value is

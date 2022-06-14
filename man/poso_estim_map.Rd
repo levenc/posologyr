@@ -4,40 +4,23 @@
 \alias{poso_estim_map}
 \title{Estimate the Maximum A Posteriori individual parameters}
 \usage{
-poso_estim_map(
-  object,
-  adapt = FALSE,
-  return_model = TRUE,
-  return_ofv = FALSE,
-  return_AMS_models = FALSE
-)
+poso_estim_map(object, return_model = TRUE, return_ofv = FALSE)
 }
 \arguments{
 \item{object}{A posologyr list, created by the \code{\link{posologyr}}
 function.}
 
-\item{adapt}{A boolean. Should the estimation be performed with the
-adaptive MAP method (as opposed to the standard MAP)? A column
-\code{AMS} is required in the patient record to define the segments for
-the adaptive MAP approach.}
-
 \item{return_model}{A boolean. Returns a rxode2 model using the estimated
-ETAs if set to \code{TRUE}. If \code{adapt=TRUE}, the model is solved using the
-parameters estimated on the last segment.}
+ETAs if set to \code{TRUE}.}
 
 \item{return_ofv}{A boolean. Returns a the Objective Function Value (OFV)
-if set to \code{TRUE}. Always considered \code{FALSE} if \code{adapt=TRUE}.}
-
-\item{return_AMS_models}{A boolean. Returns a rxode2 model using the estimated
-ETAs for each Adaptive MAP Segment (AMS) if set to \code{TRUE}. Ignored if
-\code{adapt=FALSE}.}
+if set to \code{TRUE}.}
 }
 \value{
 A named list consisting of one or more of the following elements
 depending on the input parameters of the function: \verb{$eta} a named vector
 of the MAP estimates of the individual values of ETA, \verb{$model} an rxode2
-model using the estimated ETAs, \code{AMS_models} a list of rxode2 models, one for
-each Adaptive MAP Segment (AMS).
+model using the estimated ETAs.
 }
 \description{
 Estimates the Maximum A Posteriori (MAP) individual parameters,

@@ -9,7 +9,6 @@ poso_inter_cmin(
   object,
   dose,
   target_cmin,
-  adapt = FALSE,
   estim_method = "map",
   p = NULL,
   greater_than = TRUE,
@@ -26,11 +25,6 @@ function.}
 \item{dose}{Numeric. The dose given.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
-
-\item{adapt}{A boolean. If \code{param_map} is omitted, should the estimation
-be performed with the adaptive MAP method (as opposed to the
-standard MAP)? A column \code{AMS} is required in the patient record
-to define the segments for the adaptive MAP approach.}
 
 \item{estim_method}{A character string. An estimation method to be used for
 the individual parameters. The default method "map" is the Maximum A

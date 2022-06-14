@@ -1,3 +1,7 @@
+# posologyr v0.2.9000
+* RxODE import has been updated to rxode2
+* The adaptive MAP forecasting option is removed
+
 # posologyr v0.2.0
 
 * `poso_estim_sir()` estimates the posterior distribution of individual 

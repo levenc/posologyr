@@ -82,7 +82,6 @@ concentration.</p>
   <span class="va">object</span>,
   <span class="va">time_c</span>,
   <span class="va">target_conc</span>,
-  adapt <span class="op">=</span> <span class="cn">FALSE</span>,
   estim_method <span class="op">=</span> <span class="st">"map"</span>,
   p <span class="op">=</span> <span class="cn">NULL</span>,
   greater_than <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -108,13 +107,6 @@ optimized.</p></dd>
 
 <dt>target_conc</dt>
 <dd><p>Numeric. Target concentration.</p></dd>
-
-
-<dt>adapt</dt>
-<dd><p>A boolean. If <code>estim_method="map"</code>, should the estimation
-be performed with the adaptive MAP method (as opposed to the
-standard MAP)? A column named <code>AMS</code> is required in the patient record
-to define the segments for the adaptive MAP approach.</p></dd>
 
 
 <dt>estim_method</dt>
@@ -235,7 +227,7 @@ covariates</p></dd>
 <span class="r-in"><span class="co"># one hour after starting the 30-minutes infusion</span></span>
 <span class="r-in"><span class="fu">poso_dose_conc</span><span class="op">(</span><span class="va">patient01</span>,time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.048</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -245,7 +237,7 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019042 -0.4291731 0.1278417</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019045 -0.4291722 0.1278488</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>

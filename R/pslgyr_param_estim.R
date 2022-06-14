@@ -26,7 +26,6 @@
 #   - variable names changed to snake_case
 #   - square matrix taken as input, not diagonal
 #   - functions return values for both etas and theta
-#   - adaptive MAP forecasting
 #   - inter-occasion variability (IOV)
 #-------------------------------------------------------------------------
 
@@ -152,24 +151,15 @@ poso_simu_pop <- function(object,n_simul=1000,
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'    function.
-#' @param adapt A boolean. Should the estimation be performed with the
-#'    adaptive MAP method (as opposed to the standard MAP)? A column
-#'    `AMS` is required in the patient record to define the segments for
-#'    the adaptive MAP approach.
 #' @param return_model A boolean. Returns a rxode2 model using the estimated
-#'    ETAs if set to `TRUE`. If `adapt=TRUE`, the model is solved using the
-#'    parameters estimated on the last segment.
+#'    ETAs if set to `TRUE`.
 #' @param return_ofv A boolean. Returns a the Objective Function Value (OFV)
-#'    if set to `TRUE`. Always considered `FALSE` if `adapt=TRUE`.
-#' @param return_AMS_models A boolean. Returns a rxode2 model using the estimated
-#'    ETAs for each Adaptive MAP Segment (AMS) if set to `TRUE`. Ignored if
-#'    `adapt=FALSE`.
+#'    if set to `TRUE`.
 #'
 #' @return A named list consisting of one or more of the following elements
 #' depending on the input parameters of the function: `$eta` a named vector
 #' of the MAP estimates of the individual values of ETA, `$model` an rxode2
-#' model using the estimated ETAs, `AMS_models` a list of rxode2 models, one for
-#' each Adaptive MAP Segment (AMS).
+#' model using the estimated ETAs.
 #'
 #' @import data.table
 #'
@@ -221,8 +211,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' poso_estim_map(patient01)
 #'
 #' @export
-poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE,
-                           return_AMS_models=FALSE){
+poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
   estim_with_iov <- check_for_iov(object)
@@ -247,45 +236,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
   # initialize the list of outputs
   estim_map    <- list(eta=eta_map)
 
-  if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
-    if (is.null(dat$AMS)){
-      stop("The AMS column is required in the patient record to define the
-      segments for adaptive MAP forecasting")
-    }
-
-    start_eta       <- diag(omega_eta)*0    # get a named vector of zeroes
-
-    adaptive_output <- adaptive_map(return_AMS_models=return_AMS_models,
-                                    dat=dat,
-                                    solved_model=solved_model,
-                                    theta=theta,
-                                    omega=omega,
-                                    start_eta=start_eta,
-                                    errpred=errpred,
-                                    run_model=run_model,
-                                    ind_eta=ind_eta,
-                                    sigma=sigma,
-                                    solve_omega=solve_omega,
-                                    omega_dim=omega_dim,
-                                    iov_col=iov_col,
-                                    pimat=pimat,
-                                    eta_map=eta_map,
-                                    error_model=error_model,
-                                    estim_with_iov=estim_with_iov,
-                                    interpolation=interpolation,
-                                    adapt=adapt)
-    if(return_AMS_models){
-    AMS_models <- adaptive_output$AMS_models
-    }
-    eta_df     <- adaptive_output$eta_df
-    eta_map <- unlist(utils::tail(eta_df,1))
-
-    if(!no_covariates){
-      covar            <- t(utils::tail(dat[,object$covariates]))
-      names(covar)     <- object$covariates
-    }
-  }
-  else{ #standard MAP estimation
+  #standard MAP estimation
 
     # avoid empty (NULL) arguments for stats::optim()
     omega_dim <- 0
@@ -361,7 +312,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
                         error_model=error_model,
                         estim_with_iov=estim_with_iov,
                         interpolation=interpolation,
-                        adapt=adapt,
                         method="L-BFGS-B",
                         upper=bfgs_bounds,
                         lower=-bfgs_bounds),
@@ -449,7 +399,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
       covar            <- t(dat[1,object$covariates]) #results in a matrix
       names(covar)     <- object$covariates
     }
-  }
 
   # list of all outputs
   estim_map$eta      <- eta_map
@@ -464,12 +413,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
     estim_map$model  <- model_map
   }
 
-  if(return_ofv & !adapt){
+  if(return_ofv){
     estim_map$ofv <- r$value
-  }
-
-  if(adapt & return_AMS_models){
-    estim_map$AMS_models <- AMS_models
   }
 
   return(estim_map)

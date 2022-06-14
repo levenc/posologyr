@@ -9,7 +9,6 @@ poso_dose_auc(
   object,
   time_auc,
   target_auc,
-  adapt = FALSE,
   estim_method = "map",
   p = NULL,
   greater_than = TRUE,
@@ -28,11 +27,6 @@ function.}
 \item{time_auc}{Numeric. The target AUC is computed from 0 to \code{time_auc}.}
 
 \item{target_auc}{Numeric. The target AUC.}
-
-\item{adapt}{A boolean. If \code{estim_method="map"}, should the estimation
-be performed with the adaptive MAP method (as opposed to the
-standard MAP)? A column named \code{AMS} is required in the patient record
-to define the segments for the adaptive MAP approach.}
 
 \item{estim_method}{A character string. An estimation method to be used for
 the individual parameters. The default method "map" is the Maximum A

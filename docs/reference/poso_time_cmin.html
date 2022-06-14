@@ -83,7 +83,6 @@ parameters, a dose, and a target Cmin.</p>
   estim_method <span class="op">=</span> <span class="st">"map"</span>,
   p <span class="op">=</span> <span class="cn">NULL</span>,
   greater_than <span class="op">=</span> <span class="cn">TRUE</span>,
-  adapt <span class="op">=</span> <span class="cn">FALSE</span>,
   from <span class="op">=</span> <span class="fl">0.2</span>,
   last_time <span class="op">=</span> <span class="fl">72</span>,
   add_dose <span class="op">=</span> <span class="cn">NULL</span>,
@@ -126,13 +125,6 @@ the estimation. Mandatory for <code>estim_method=sir</code>.</p></dd>
 <dd><p>A boolean. If <code>TRUE</code>: targets a time leading to a
 proportion <code>p</code> of the cmins to be greater than <code>target_cmin</code>.
 Respectively, lower if <code>FALSE</code>.</p></dd>
-
-
-<dt>adapt</dt>
-<dd><p>A boolean. If <code>param_map</code> is omitted, should the estimation
-be performed with the adaptive MAP method (as opposed to the
-standard MAP)? A column <code>AMS</code> is required in the patient record
-to define the segments for the adaptive MAP approach.</p></dd>
 
 
 <dt>from</dt>
@@ -232,11 +224,11 @@ time of administration.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cmin_estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489927</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019034 -0.4291737 0.1278471</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019056 -0.4291715 0.1278484</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>

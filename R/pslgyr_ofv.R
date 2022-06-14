@@ -18,12 +18,9 @@
 
 # Update model predictions with a new set of parameters, for all obs
 run_model <- function(x,model_init=NULL,solved_model=NULL,
-                      estim_with_iov=NULL,adapt=NULL){
+                      estim_with_iov=NULL){
   if (!estim_with_iov){ #rxode2 already updated in errpred() if estim_with_iov
     solved_model$params <- x
-    if(adapt){
-      solved_model$inits <- model_init
-    }
   }
   return(solved_model$Cc)
 }
@@ -74,7 +71,6 @@ errpred <- function(eta_estim=NULL,
                     error_model=NULL,
                     estim_with_iov=NULL,
                     interpolation=NULL,
-                    adapt=NULL,
                     index_segment=NULL){
 
   eta          <- diag(omega)*0
@@ -90,16 +86,11 @@ errpred <- function(eta_estim=NULL,
   } else {
     eta[ind_eta] <- eta_estim
   }
-  if(adapt){     # unlist avoids conversion to data.frame
-    eta       <- unlist(eta + eta_df[index_segment,])
-    eta_estim <- unlist(eta_estim + eta_df[index_segment,ind_eta])
-  }
   #simulated concentrations with the proposed eta estimates
   f   <- do.call(run_model,list(c(theta,eta),
                                 model_init=model_init,
                                 solved_model=solved_model,
-                                estim_with_iov=estim_with_iov,
-                                adapt=adapt))
+                                estim_with_iov=estim_with_iov))
   g   <- error_model(f,sigma)
 
   optimize_me <- objective_function(y_obs=y_obs,f=f,g=g,
