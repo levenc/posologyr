@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # posologyr: individual dose optimisation using population PK
-# Copyright (C) 2021  Cyril Leven
+# Copyright (C) 2022  Cyril Leven
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------
 
 # Get propositions for values of kappa and put them in colums to be added
-#  to the dataset for RxODE
+#  to the dataset for rxode2
 iov_proposition_as_cols <- function(iov_col=NULL,
                                     dat=NULL,
                                     pimat=NULL,

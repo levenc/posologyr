@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # posologyr: individual dose optimisation using population PK
-# Copyright (C) 2021  Cyril Leven
+# Copyright (C) 2022  Cyril Leven
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,11 @@
 #  Copyright (C) 2015 Marc Lavielle, Inria Saclay, CeCILL-B
 #
 #  Modifications:
-#   - interfacing with RxODE
+#   - interfacing with rxode2
 #   - deletion of shiny-specific parts
 #   - variable names changed to snake_case
 #   - square matrix taken as input, not diagonal
 #   - functions return values for both etas and theta
-#   - adaptive MAP forecasting
 #   - inter-occasion variability (IOV)
 #-------------------------------------------------------------------------
 
@@ -39,18 +38,18 @@
 #'    function.
 #' @param n_simul An integer, the number of simulations to be run. For `n_simul
 #'   =0`, all ETAs are set to 0.
-#' @param return_model A boolean. Returns a RxODE model using the simulated
+#' @param return_model A boolean. Returns a rxode2 model using the simulated
 #'    ETAs if set to `TRUE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of the individual values of ETA.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the
-#' individual values of ETA, and a RxODE model using the simulated ETAs.
+#' individual values of ETA, and a rxode2 model using the simulated ETAs.
 #'
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -152,31 +151,22 @@ poso_simu_pop <- function(object,n_simul=1000,
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #'    function.
-#' @param adapt A boolean. Should the estimation be performed with the
-#'    adaptive MAP method (as opposed to the standard MAP)? A column
-#'    `AMS` is required in the patient record to define the segments for
-#'    the adaptive MAP approach.
-#' @param return_model A boolean. Returns a RxODE model using the estimated
-#'    ETAs if set to `TRUE`. If `adapt=TRUE`, the model is solved using the
-#'    parameters estimated on the last segment.
+#' @param return_model A boolean. Returns a rxode2 model using the estimated
+#'    ETAs if set to `TRUE`.
 #' @param return_ofv A boolean. Returns a the Objective Function Value (OFV)
-#'    if set to `TRUE`. Always considered `FALSE` if `adapt=TRUE`.
-#' @param return_AMS_models A boolean. Returns a RxODE model using the estimated
-#'    ETAs for each Adaptive MAP Segment (AMS) if set to `TRUE`. Ignored if
-#'    `adapt=FALSE`.
+#'    if set to `TRUE`.
 #'
 #' @return A named list consisting of one or more of the following elements
 #' depending on the input parameters of the function: `$eta` a named vector
-#' of the MAP estimates of the individual values of ETA, `$model` an RxODE
-#' model using the estimated ETAs, `AMS_models` a list of RxODE models, one for
-#' each Adaptive MAP Segment (AMS).
+#' of the MAP estimates of the individual values of ETA, `$model` an rxode2
+#' model using the estimated ETAs.
 #'
 #' @import data.table
 #'
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -221,8 +211,7 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' poso_estim_map(patient01)
 #'
 #' @export
-poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE,
-                           return_AMS_models=FALSE){
+poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
   validate_priormod(object)
   validate_dat(object$tdm_data)
   estim_with_iov <- check_for_iov(object)
@@ -247,45 +236,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
   # initialize the list of outputs
   estim_map    <- list(eta=eta_map)
 
-  if(adapt){ #adaptive MAP estimation  doi: 10.1007/s11095-020-02908-7
-    if (is.null(dat$AMS)){
-      stop("The AMS column is required in the patient record to define the
-      segments for adaptive MAP forecasting")
-    }
-
-    start_eta       <- diag(omega_eta)*0    # get a named vector of zeroes
-
-    adaptive_output <- adaptive_map(return_AMS_models=return_AMS_models,
-                                    dat=dat,
-                                    solved_model=solved_model,
-                                    theta=theta,
-                                    omega=omega,
-                                    start_eta=start_eta,
-                                    errpred=errpred,
-                                    run_model=run_model,
-                                    ind_eta=ind_eta,
-                                    sigma=sigma,
-                                    solve_omega=solve_omega,
-                                    omega_dim=omega_dim,
-                                    iov_col=iov_col,
-                                    pimat=pimat,
-                                    eta_map=eta_map,
-                                    error_model=error_model,
-                                    estim_with_iov=estim_with_iov,
-                                    interpolation=interpolation,
-                                    adapt=adapt)
-    if(return_AMS_models){
-    AMS_models <- adaptive_output$AMS_models
-    }
-    eta_df     <- adaptive_output$eta_df
-    eta_map <- unlist(utils::tail(eta_df,1))
-
-    if(!no_covariates){
-      covar            <- t(utils::tail(dat[,object$covariates]))
-      names(covar)     <- object$covariates
-    }
-  }
-  else{ #standard MAP estimation
+  #standard MAP estimation
 
     # avoid empty (NULL) arguments for stats::optim()
     omega_dim <- 0
@@ -361,13 +312,12 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
                         error_model=error_model,
                         estim_with_iov=estim_with_iov,
                         interpolation=interpolation,
-                        adapt=adapt,
                         method="L-BFGS-B",
                         upper=bfgs_bounds,
                         lower=-bfgs_bounds),
                silent=TRUE)
 
-      if(class(r) != 'try-error'){
+      if(!inherits(r,'try-error')){
 
         # Objection Function Value: OFV
         OFV_current       <- r$value
@@ -437,8 +387,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
                                          omega_dim=omega_dim,
                                          eta_estim=r$par)
       data_iov     <- data.frame(dat,iov_col)
-      solved_model <- RxODE::rxSolve(solved_model,c(theta,eta_map),data_iov,
-                                     covs_interpolation=interpolation)
+      solved_model <- rxode2::rxSolve(solved_model,c(theta,eta_map),data_iov,
+                                     covsInterpolation=interpolation)
 
       estim_map$data   <- data_iov
     } else {
@@ -449,7 +399,6 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
       covar            <- t(dat[1,object$covariates]) #results in a matrix
       names(covar)     <- object$covariates
     }
-  }
 
   # list of all outputs
   estim_map$eta      <- eta_map
@@ -464,12 +413,8 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
     estim_map$model  <- model_map
   }
 
-  if(return_ofv & !adapt){
+  if(return_ofv){
     estim_map$ofv <- r$value
-  }
-
-  if(adapt & return_AMS_models){
-    estim_map$AMS_models <- AMS_models
   }
 
   return(estim_map)
@@ -494,7 +439,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #'
 #' @param object A posologyr list, created by the \code{\link{posologyr}}
 #' function.
-#' @param return_model A boolean. Returns a RxODE model using the estimated
+#' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`.
 #' @param burn_in Number of burn-in iterations for the Metropolis-Hastings
 #'    algorithm.
@@ -508,7 +453,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
-#' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+#' distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
 #'
 #' @author Emmanuelle Comets, Audrey Lavenu, Marc Lavielle, Cyril Leven
 #'
@@ -519,7 +464,7 @@ poso_estim_map <- function(object,adapt=FALSE,return_model=TRUE,return_ofv=FALSE
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -755,20 +700,20 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,n_iter=1000,
 #' function.
 #' @param n_sample Number of samples from the S-step
 #' @param n_resample Number of samples from the R-step
-#' @param return_model A boolean. Returns a RxODE model using the estimated
+#' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Sequential Importance Resampling.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
-#' distribution of ETA, and a RxODE model using the estimated distributions of ETAs.
+#' distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
 #'
 #' @import data.table
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -950,9 +895,9 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
 
     wide_cc <- order_columns(wide_cc)
   } else {
-    solved_model <- RxODE::rxSolve(solved_model,
+    solved_model <- rxode2::rxSolve(solved_model,
                                    cbind(theta,eta_dt,row.names=NULL),
-                                   dat,covs_interpolation=interpolation,
+                                   dat,covsInterpolation=interpolation,
                                    returnType="data.table")
 
     wide_cc <- dcast_up_to_five(solved_model)
@@ -1011,24 +956,24 @@ poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE)
 
       # overwrite IDs to avoid duplicates, and solve the model once again
       dat_resample[,ID:=rep(1:n_resample,1,each=nrow(dat))]
-      estim_sir$model   <- RxODE::rxSolve(object$solved_ppk_model,
+      estim_sir$model   <- rxode2::rxSolve(object$solved_ppk_model,
                                         params_resample,
                                         dat_resample,
-                                        covs_interpolation=interpolation)
+                                        covsInterpolation=interpolation)
     } else {
       params_resample <- cbind(eta_df,theta,row.names=NULL)
 
       if(no_covariates){
-        model_sir     <- RxODE::rxSolve(object$solved_ppk_model,
+        model_sir     <- rxode2::rxSolve(object$solved_ppk_model,
                                         params_resample,
-                                        dat,covs_interpolation=interpolation)
+                                        dat,covsInterpolation=interpolation)
       } else {
         covar         <- as.data.frame(dat[1,object$covariates])
         names(covar)  <- object$covariates
-        model_sir     <- RxODE::rxSolve(object$solved_ppk_model,
+        model_sir     <- rxode2::rxSolve(object$solved_ppk_model,
                                         cbind(params_resample,covar,
                                               row.names=NULL),
-                                        dat,covs_interpolation=interpolation)
+                                        dat,covsInterpolation=interpolation)
       }
       estim_sir$model   <- model_sir
     }

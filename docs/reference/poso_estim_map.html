@@ -64,7 +64,7 @@ also known as Empirical Bayes Estimates (EBE)."><meta property="og:image" conten
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate the Maximum A Posteriori individual parameters</h1>
-    <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/R/pslgyr_param_estim.R" class="external-link"><code>R/pslgyr_param_estim.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/R/param_estim.R" class="external-link"><code>R/param_estim.R</code></a></small>
     <div class="hidden name"><code>poso_estim_map.Rd</code></div>
     </div>
 
@@ -74,13 +74,7 @@ also known as Empirical Bayes Estimates (EBE).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">poso_estim_map</span><span class="op">(</span>
-  <span class="va">object</span>,
-  adapt <span class="op">=</span> <span class="cn">FALSE</span>,
-  return_model <span class="op">=</span> <span class="cn">TRUE</span>,
-  return_ofv <span class="op">=</span> <span class="cn">FALSE</span>,
-  return_AMS_models <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">poso_estim_map</span><span class="op">(</span><span class="va">object</span>, return_model <span class="op">=</span> <span class="cn">TRUE</span>, return_ofv <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,37 +82,33 @@ also known as Empirical Bayes Estimates (EBE).</p>
     <dl><dt>object</dt>
 <dd><p>A posologyr list, created by the <code><a href="posologyr.html">posologyr</a></code>
 function.</p></dd>
-<dt>adapt</dt>
-<dd><p>A boolean. Should the estimation be performed with the
-adaptive MAP method (as opposed to the standard MAP)? A column
-<code>AMS</code> is required in the patient record to define the segments for
-the adaptive MAP approach.</p></dd>
+
+
 <dt>return_model</dt>
-<dd><p>A boolean. Returns a RxODE model using the estimated
-ETAs if set to <code>TRUE</code>. If <code>adapt=TRUE</code>, the model is solved using the
-parameters estimated on the last segment.</p></dd>
+<dd><p>A boolean. Returns a rxode2 model using the estimated
+ETAs if set to <code>TRUE</code>.</p></dd>
+
+
 <dt>return_ofv</dt>
 <dd><p>A boolean. Returns a the Objective Function Value (OFV)
-if set to <code>TRUE</code>. Always considered <code>FALSE</code> if <code>adapt=TRUE</code>.</p></dd>
-<dt>return_AMS_models</dt>
-<dd><p>A boolean. Returns a RxODE model using the estimated
-ETAs for each Adaptive MAP Segment (AMS) if set to <code>TRUE</code>. Ignored if
-<code>adapt=FALSE</code>.</p></dd>
+if set to <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A named list consisting of one or more of the following elements
+    
+
+<p>A named list consisting of one or more of the following elements
 depending on the input parameters of the function: <code>$eta</code> a named vector
-of the MAP estimates of the individual values of ETA, <code>$model</code> an RxODE
-model using the estimated ETAs, <code>AMS_models</code> a list of RxODE models, one for
-each Adaptive MAP Segment (AMS).</p>
+of the MAP estimates of the individual values of ETA, <code>$model</code> an rxode2
+model using the estimated ETAs.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># model</span></span>
 <span class="r-in"><span class="va">mod_run001</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">ppk_model <span class="op">=</span> <span class="fu">RxODE</span><span class="fu">::</span><span class="fu"><a href="https://nlmixrdevelopment.github.io/RxODE/reference/RxODE.html" class="external-link">RxODE</a></span><span class="op">(</span><span class="op">{</span></span>
+<span class="r-in">ppk_model <span class="op">=</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in">  <span class="fu">centr</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;</span>
 <span class="r-in">  <span class="fu">depot</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;</span>
 <span class="r-in"></span>
@@ -164,23 +154,22 @@ each Adaptive MAP Segment (AMS).</p>
 <span class="r-in"><span class="fu">poso_estim_map</span><span class="op">(</span><span class="va">patient01</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $eta</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ETA_Cl     ETA_Vc     ETA_Ka </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.6019034 -0.4291719  0.1278508 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.6019025 -0.4291758  0.1278455 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ <span style="font-weight: bold;">Solved RxODE object</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Parameters</span> (<span style="color: #0000BB; font-weight: bold;">$params</span>): ───────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">── Solved rxode2 object ──</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl   THETA_Vc   THETA_Ka     ETA_Cl     ETA_Vc     ETA_Ka </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4.0000000 70.0000000  1.0000000  0.6019034 -0.4291719  0.1278508 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Initial Conditions</span> (<span style="color: #0000BB; font-weight: bold;">$inits</span>): ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4.0000000 70.0000000  1.0000000  0.6019025 -0.4291758  0.1278455 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> depot centr   AUC </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0     0     0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">First part of data (object):</span> ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">── First part of data (object): ──</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 12</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    time  TVCl  TVVc  TVKa    Cl    Vc    Ka   K20    Cc      depot centr   AUC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1     4    70     1  7.30  45.6  1.14 0.160 23.2  864.       <span style="text-decoration: underline;">1</span>059.  10.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    14     4    70     1  7.30  45.6  1.14 0.160  5.64   0.000<span style="text-decoration: underline;">332</span>  257. 239. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>
@@ -197,7 +186,7 @@ each Adaptive MAP Segment (AMS).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

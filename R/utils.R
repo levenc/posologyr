@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # posologyr: individual dose optimisation using population PK
-# Copyright (C) 2021  Cyril Leven
+# Copyright (C) 2022  Cyril Leven
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -32,9 +32,9 @@ solve_by_groups <- function(index,pkmodel,params,dat,interpolation){
   start_dat          <- group_size*number_of_observ*(group_number-1)+1
   stop_dat           <- start_dat+(group_size)*number_of_observ-1
 
-  group_model <- RxODE::rxSolve(pkmodel,params[start_eta:stop_eta,],
+  group_model <- rxode2::rxSolve(pkmodel,params[start_eta:stop_eta,],
                                 dat[start_dat:stop_dat,],
-                                covs_interpolation=interpolation,
+                                covsInterpolation=interpolation,
                                 returnType="data.table")
   return(group_model)
 }
@@ -140,9 +140,9 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
     param_cols <- c("ID",attr(omega,"dimnames")[[1]])
     params     <- cbind(eta_dt[,param_cols,with=F],theta)
 
-    long_cc <- RxODE::rxSolve(solved_model,
+    long_cc <- rxode2::rxSolve(solved_model,
                               cbind(theta,eta_dt,row.names=NULL),
-                              data_iov,covs_interpolation=interpolation,
+                              data_iov,covsInterpolation=interpolation,
                               returnType="data.table")
 
     data.table::setnames(long_cc,"id","sim.id")
@@ -155,9 +155,9 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
 
     wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
   } else {
-    long_cc <- RxODE::rxSolve(solved_model,
+    long_cc <- rxode2::rxSolve(solved_model,
                               cbind(theta,eta_dt,row.names=NULL),
-                              dat,covs_interpolation=interpolation,
+                              dat,covsInterpolation=interpolation,
                               returnType="data.table")
 
     wide_cc <- dcast_up_to_five(long_cc)

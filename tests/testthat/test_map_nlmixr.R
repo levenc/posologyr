@@ -1,5 +1,5 @@
 mod_amikacin_2cpt_Burdet2015 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT4H/82)^0.7;
     TVVc  = THETA_Vc*(TBW/78)^0.9*(PoverF/169)^0.4;
@@ -43,29 +43,9 @@ patient03_amik  <- posologyr(mod_amikacin_2cpt_Burdet2015,
 patient03_amik_map  <- poso_estim_map(patient03_amik,
                                       return_model=TRUE)
 
-patient03_amik_map_ad <- poso_estim_map(patient03_amik,
-                                        adapt=TRUE,
-                                        return_model=TRUE)
-
 test_that("MAP estimates match nlmixr posthoc estimates", {
   expect_equal(patient03_amik_map$model$Cl[1], 2.62, tolerance=1e-2)
   expect_equal(patient03_amik_map$model$Vc[1], 11.01, tolerance=1e-2)
   expect_equal(patient03_amik_map$model$Vp[1], 14.57, tolerance=1e-2)
   expect_equal(patient03_amik_map$model$Q[1], 11.96, tolerance=1e-2)
-})
-
-test_that("adaptive MAP estimates match standard MAP estimates for
-          a single segment", {
-  expect_equal(patient03_amik_map$model$Cl[1],
-               patient03_amik_map_ad$model$Cl[1],
-               tolerance=1e-3)
-  expect_equal(patient03_amik_map$model$Vc[1],
-               patient03_amik_map_ad$model$Vc[1],
-               tolerance=1e-3)
-  expect_equal(patient03_amik_map$model$Vp[1],
-               patient03_amik_map_ad$model$Vp[1],
-               tolerance=1e-3)
-  expect_equal(patient03_amik_map$model$Q[1],
-               patient03_amik_map_ad$model$Q[1],
-               tolerance=1e-3)
 })

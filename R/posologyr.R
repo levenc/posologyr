@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # posologyr: individual dose optimisation using population PK
-# Copyright (C) 2021  Cyril Leven
+# Copyright (C) 2022  Cyril Leven
 #
 #    This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -20,21 +20,21 @@
 #' record
 #'
 #' Creates a list for a \code{posologyr} prior model, an individual event
-#' record, and an \code{\link[RxODE]{rxSolve}} solve object,
+#' record, and an \code{\link[rxode2]{rxSolve}} solve object,
 #' created from the prior ppk model and the individual event record.
 #'
 #' @param prior_model A \code{posologyr} prior population pharmacokinetics
 #'    model, a list of six objects.
 #' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/RxODE event records.
+#'     structure of NONMEM/rxode2 event records.
 #' @param nocb A boolean. for time-varying covariates: the next observation
 #'     carried backward (nocb) interpolation style, similar to NONMEM.  If
 #'     `FALSE`, the last observation carried forward (locf) style will be used.
 #'     Defaults to `FALSE`.
 #'
-#' \code{posologyr} will check the validity of the compiled RxODE
+#' \code{posologyr} will check the validity of the compiled rxode2
 #' model. If \code{prior_model$ppk_model$isValid()} returns \code{FALSE},
-#' \code{posologyr} will call \code{\link[RxODE]{RxODE}}
+#' \code{posologyr} will call \code{\link[rxode2]{rxode2}}
 #' to recompile the model before solving it using \code{prior_model}
 #' and \code{dat}.
 #'
@@ -43,7 +43,7 @@
 #' the individual event record (\code{tdm_data}) given as `dat` parameter,
 #' and the solved model (\code{solved_ppk_model}).
 #' \describe{
-#'  \item{ppk_model}{A RxODE model implementing the structural
+#'  \item{ppk_model}{A rxode2 model implementing the structural
 #'      population pharmacokinetics model with the individual model
 #'      (i.e. the model of inter-individual variability) and the
 #'      covariates}
@@ -58,14 +58,14 @@
 #'  \item{sigma}{The estimates of the parameters of the residual error model}
 #'  \item{tdm_data}{A dataframe. The individual subject dataset
 #'   given as `dat` parameter}
-#'  \item{solved_ppk_model}{An \code{\link[RxODE]{rxSolve}} solve object,
+#'  \item{solved_ppk_model}{An \code{\link[rxode2]{rxSolve}} solve object,
 #'   created with `prior_ppk_model` and using `dat` as the event record.}
 #' }
 #'
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -113,16 +113,16 @@ posologyr <- function(prior_model=NULL,dat=NULL,nocb=FALSE){
   validate_priormod(prior_model)
   validate_dat(dat)
 
-  # check the validity of the compiled model and call RxODE::RxODE
+  # check the validity of the compiled model and call rxode2::rxode
   # on invalid models
     if (!prior_model$ppk_model$isValid()){
-      cat("Invalid RxODE model, trying to recompile...")
-      prior_model$ppk_model <- try(RxODE::RxODE(prior_model$ppk_model),
+      cat("Invalid rxode2 model, trying to recompile...")
+      prior_model$ppk_model <- try(rxode2::rxode(prior_model$ppk_model),
                                    silent=TRUE)
       if (prior_model$ppk_model$isValid()){
         cat("Success","\n")
        } else {
-         stop("Failed. The RxODE model is still invalid. Aborting",
+         stop("Failed. The rxode2 model is still invalid. Aborting",
               call. = FALSE)
        }
     }
@@ -130,11 +130,11 @@ posologyr <- function(prior_model=NULL,dat=NULL,nocb=FALSE){
   # interpolation method for time-varying covariates, nocb or locf
   interpolation <- ifelse(nocb,"nocb","locf")
 
-  solved_ppk_model <- RxODE::rxSolve(prior_model$ppk_model,
+  solved_ppk_model <- rxode2::rxSolve(prior_model$ppk_model,
                                      c(prior_model$theta,
                                        diag(prior_model$omega)*0,
                                        diag(prior_model$pi_matrix)*0),
-                                     dat,covs_interpolation=interpolation)
+                                     dat,covsInterpolation=interpolation)
 
   # assign the objects to a single list
   prior_model$tdm_data         <- as.data.frame(dat)

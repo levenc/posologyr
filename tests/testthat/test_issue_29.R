@@ -1,6 +1,6 @@
 # prior model
 mod_run202 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     depot(0) = 0;
     centr(0) = 0;
 

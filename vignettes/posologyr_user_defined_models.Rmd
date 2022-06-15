@@ -20,7 +20,7 @@ This describes the structure of prior models usable by `posologyr` and illustrat
 A `posologyr` prior ppk model is a list of six objects:
 
 ppk_model 
-: A RxODE model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
+: A rxode2 model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
 
 error_model 
 : A function of the residual error model
@@ -45,14 +45,14 @@ sigma
 The model to implement is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
 
 ## ppk_model
-A model defined in the `RxODE::RxODE()` mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an individual model.
+A model defined in the `rxode2::rxode()` mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an individual model.
 
 The concentration in the central compartment *must* be named Cc.
 
 The differential function `d/dt(AUC) =  Cc;` is needed for the optimisation function `poso_dose_auc()`.
 
 ```{r ppk_model}
-ppk_model   = RxODE::RxODE({
+ppk_model   = rxode2::rxode({
     centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT/120)^0.8*(0.7^DIAL);
     TVVc  = THETA_Vc*(WT/70)          *(0.5^DIAL);
@@ -170,7 +170,7 @@ Note: This model does not include inter-occasion variability, so the pi_matrix i
 
 ```{r vancomycin_pososlogyr_model_list}
 mod_vancomyin_Goti2018 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
      centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT/120)^0.8*(0.7^DIAL);
     TVVc  = THETA_Vc*(WT/70)          *(0.5^DIAL);

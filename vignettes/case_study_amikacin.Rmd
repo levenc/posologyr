@@ -23,7 +23,7 @@ This case study presents the dosage adjustment for a critical care patient treat
 
 ```{r model}
 mod_amikacin_2cpt_Burdet2015 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT4H/82)^0.7;
     TVVc  = THETA_Vc*(TBW/78)^0.9*(PoverF/169)^0.4;
@@ -109,20 +109,20 @@ prior_timecmin
 
 ## Simulate and plot the a priori dosage
 
-An event table is created to simulate the selected dosage with RxODE.
+An event table is created to simulate the selected dosage with rxode2.
 
 ```{r prior_plot_et}
 # infusion of prior_dose mg over 0.5 hours at time 0
-event_table_priordose <- RxODE::et(time=0,amt=prior_dose,dur=0.5)
+event_table_priordose <- rxode2::et(time=0,amt=prior_dose,dur=0.5)
 event_table_priordose$add.sampling(seq(0,24,by=0.2))
 ```
 
-By setting `n_simul = 0`, the `poso_simu_pop()` function produces an RxODE model that incorporates typical population parameter values and individual covariates from the patient record.
+By setting `n_simul = 0`, the `poso_simu_pop()` function produces an rxode2 model that incorporates typical population parameter values and individual covariates from the patient record.
 
 ```{r prior_plot_model}
 prior_param_patA      <- poso_simu_pop(patA_prior_amik,n_simul = 0)$model$params
 
-prior_dose_model_patA <- RxODE::rxSolve(object=patA_prior_amik$ppk_model,
+prior_dose_model_patA <- rxode2::rxSolve(object=patA_prior_amik$ppk_model,
                                   params=prior_param_patA,
                                   events=event_table_priordose)
 ```
@@ -193,7 +193,7 @@ patA_map
 
 ## Plot the individual pharmacokinetic profile
 
-The individual pharmacokinetic profile is plotted using the RxODE model provided by the `poso_estim_map()` function.
+The individual pharmacokinetic profile is plotted using the rxode2 model provided by the `poso_estim_map()` function.
 
 ```{r map_plot_tdm}
 map_model_patA      <- patA_map$model
@@ -251,14 +251,14 @@ map_interval
 
 ```{r map_dose_plot}
 #event table: optimal loading dose over 30 minutes
-event_table_mapdose <- RxODE::et(time=0,amt=map_dose,dur=0.5)
+event_table_mapdose <- rxode2::et(time=0,amt=map_dose,dur=0.5)
 event_table_mapdose$add.sampling(seq(0,24,by=0.1))
 
 #MAP parameters
 map_param_patA      <- patA_map$model$params
 
 #Simulate with the event table and the individual MAP parameters
-map_dose_model_patA <- RxODE::rxSolve(object=patA_tdm_amik$ppk_model,
+map_dose_model_patA <- rxode2::rxSolve(object=patA_tdm_amik$ppk_model,
                                   params=map_param_patA,
                                   events=event_table_mapdose)
 
@@ -275,11 +275,11 @@ plot(map_dose_model_patA,Cc) +
 ```{r map_dose_ss_plot}
 #event table: optimal loading dose over 30 minutes
 # 3 administrations with the optimal inter-dose interval
-event_table_mapdose_ss <- RxODE::et(amt=map_dose,dur=0.5,ii=map_interval,addl=2)
+event_table_mapdose_ss <- rxode2::et(amt=map_dose,dur=0.5,ii=map_interval,addl=2)
 event_table_mapdose_ss$add.sampling(seq(0,3.5*map_interval,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_dose_model_patA_ss <- RxODE::rxSolve(object=patA_tdm_amik$ppk_model,
+map_dose_model_patA_ss <- rxode2::rxSolve(object=patA_tdm_amik$ppk_model,
                                   params=map_param_patA,
                                   events=event_table_mapdose_ss)
 

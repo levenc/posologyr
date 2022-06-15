@@ -1,6 +1,6 @@
 # model with a single IOV
 mod_MTXHD_joerger2011 <- list(
-  ppk_model   = RxODE::RxODE({
+  ppk_model   = rxode2::rxode({
     centr(0) = 0;
     TVCl  = THETA_Cl*(CLCREAT/95)^0.28*(BSA/1.75)^0.15;
     TVVc  = THETA_Vc;

@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # posologyr: individual dose optimisation using population PK
-# Copyright (C) 2021  Cyril Leven
+# Copyright (C) 2022  Cyril Leven
 #
 #    This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,6 @@
 #'     function.
 #' @param dose Numeric. Dose administered.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
-#' @param adapt A boolean. If `param_map` is omitted, should the estimation
-#'    be performed with the adaptive MAP method (as opposed to the
-#'    standard MAP)? A column `AMS` is required in the patient record
-#'    to define the segments for the adaptive MAP approach.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -62,7 +58,7 @@
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -111,7 +107,7 @@
 #' @export
 poso_time_cmin <- function(object,dose,target_cmin,
                            estim_method="map",p=NULL,greater_than=TRUE,
-                           adapt=FALSE,from=0.2,last_time=72,
+                           from=0.2,last_time=72,
                            add_dose=NULL,interdose_interval=NULL,
                            duration=NULL,indiv_param=NULL){
   validate_priormod(object)
@@ -120,7 +116,6 @@ poso_time_cmin <- function(object,dose,target_cmin,
   read_input  <- read_optim_distribution_input(object=object,
                                                p=p,
                                                estim_method=estim_method,
-                                               adapt=adapt,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
   select_proposal_from_distribution <- read_input[[2]]
@@ -134,7 +129,7 @@ poso_time_cmin <- function(object,dose,target_cmin,
 
   #compute the individual time-concentration profile
   if (!is.null(add_dose)){
-    event_table_cmin <- RxODE::et(amt=dose,dur=duration,
+    event_table_cmin <- rxode2::et(amt=dose,dur=duration,
                                   ii=interdose_interval,
                                   addl=add_dose)
     time_last_dose   <- add_dose*interdose_interval
@@ -144,12 +139,12 @@ poso_time_cmin <- function(object,dose,target_cmin,
                                       by=0.1))
   }
   else {
-    event_table_cmin <- RxODE::et(amt=dose,dur=duration)
+    event_table_cmin <- rxode2::et(amt=dose,dur=duration)
     event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
     time_last_dose   <- 0
   }
 
-  cmin_ppk_model <- RxODE::rxSolve(object=object$ppk_model,
+  cmin_ppk_model <- rxode2::rxSolve(object=object$ppk_model,
                                    params=indiv_param,
                                    event_table_cmin,
                                    nDisplayProgress=1e5)
@@ -223,10 +218,6 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #'     function.
 #' @param time_auc Numeric. The target AUC is computed from 0 to `time_auc`.
 #' @param target_auc Numeric. The target AUC.
-#' @param adapt A boolean. If `estim_method="map"`, should the estimation
-#'    be performed with the adaptive MAP method (as opposed to the
-#'    standard MAP)? A column named `AMS` is required in the patient record
-#'    to define the segments for the adaptive MAP approach.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -266,7 +257,7 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -311,7 +302,7 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #' poso_dose_auc(patient01,time_auc=12,target_auc=45)
 #'
 #' @export
-poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
+poso_dose_auc <- function(object,time_auc,target_auc,
                           estim_method="map",p=NULL,greater_than=TRUE,
                           starting_time=0,interdose_interval=NULL,add_dose=NULL,
                           duration=NULL,starting_dose=100,indiv_param=NULL){
@@ -323,7 +314,6 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
   read_input  <- read_optim_distribution_input(object=object,
                                                p=p,
                                                estim_method=estim_method,
-                                               adapt=adapt,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
   select_proposal_from_distribution <- read_input[[2]]
@@ -346,17 +336,17 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 
     #compute the individual time-concentration profile
     if (!is.null(add_dose)){
-      event_table_auc <- RxODE::et(amt=dose,dur=duration,
+      event_table_auc <- rxode2::et(amt=dose,dur=duration,
                                    ii=interdose_interval,
                                    addl=add_dose)
     } else {
-      event_table_auc <- RxODE::et(amt=dose,dur=duration)
+      event_table_auc <- rxode2::et(amt=dose,dur=duration)
     }
 
     event_table_auc$add.sampling(starting_time)
     event_table_auc$add.sampling(starting_time+time_auc)
 
-    auc_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
+    auc_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
                                     params=indiv_param,
                                     event_table_auc,
                                     nDisplayProgress=1e5)
@@ -428,10 +418,6 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 #' @param time_c Numeric. Point in time for which the dose is to be
 #'     optimized.
 #' @param target_conc Numeric. Target concentration.
-#' @param adapt A boolean. If `estim_method="map"`, should the estimation
-#'    be performed with the adaptive MAP method (as opposed to the
-#'    standard MAP)? A column named `AMS` is required in the patient record
-#'    to define the segments for the adaptive MAP approach.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -469,7 +455,7 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -515,7 +501,7 @@ poso_dose_auc <- function(object,time_auc,target_auc,adapt=FALSE,
 #' poso_dose_conc(patient01,time_c=1,duration=0.5,target_conc=80)
 #'
 #' @export
-poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
+poso_dose_conc <- function(object,time_c,target_conc,
                            estim_method="map",p=NULL,greater_than=TRUE,
                            starting_dose=100,interdose_interval=NULL,
                            add_dose=NULL,duration=NULL,indiv_param=NULL){
@@ -525,7 +511,6 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
   read_input  <- read_optim_distribution_input(object=object,
                                                p=p,
                                                estim_method=estim_method,
-                                               adapt=adapt,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
   select_proposal_from_distribution <- read_input[[2]]
@@ -548,16 +533,16 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 
     #compute the individual time-concentration profile
     if (!is.null(add_dose)){
-      event_table_ctime <- RxODE::et(amt=dose,dur=duration,
+      event_table_ctime <- rxode2::et(amt=dose,dur=duration,
                                      ii=interdose_interval,
                                      addl=add_dose)
     }
     else {
-      event_table_ctime <- RxODE::et(amt=dose,dur=duration)
+      event_table_ctime <- rxode2::et(amt=dose,dur=duration)
     }
     event_table_ctime$add.sampling(time_c)
 
-    ctime_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
+    ctime_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
                                       params=indiv_param,
                                       event_table_ctime,
                                       nDisplayProgress=1e5)
@@ -619,10 +604,6 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 #'     function.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. The dose given.
-#' @param adapt A boolean. If `param_map` is omitted, should the estimation
-#'    be performed with the adaptive MAP method (as opposed to the
-#'    standard MAP)? A column `AMS` is required in the patient record
-#'    to define the segments for the adaptive MAP approach.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -661,7 +642,7 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 #' @examples
 #' # model
 #' mod_run001 <- list(
-#' ppk_model = RxODE::RxODE({
+#' ppk_model = rxode2::rxode({
 #'   centr(0) = 0;
 #'   depot(0) = 0;
 #'
@@ -707,7 +688,7 @@ poso_dose_conc <- function(object,time_c,target_conc,adapt=FALSE,
 #' poso_inter_cmin(patient01,dose=1500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
+poso_inter_cmin <- function(object,dose,target_cmin,
                             estim_method="map",p=NULL,greater_than=TRUE,
                             starting_interval=12,add_dose=10,
                             duration=NULL,indiv_param=NULL){
@@ -717,7 +698,6 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
   read_input  <- read_optim_distribution_input(object=object,
                                                p=p,
                                                estim_method=estim_method,
-                                               adapt=adapt,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
   select_proposal_from_distribution <- read_input[[2]]
@@ -726,12 +706,12 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
                         prior_model,add_dose,duration=duration,
                         indiv_param){
     #compute the individual time-concentration profile
-    event_table_cmin <- RxODE::et(amt=dose,dur=duration,
+    event_table_cmin <- rxode2::et(amt=dose,dur=duration,
                                   ii=interdose_interval,
                                   addl=add_dose)
     event_table_cmin$add.sampling(interdose_interval*add_dose-0.1)
 
-    cmin_ppk_model <- RxODE::rxSolve(object=prior_model$ppk_model,
+    cmin_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
                                      params=indiv_param,
                                      event_table_cmin,
                                      nDisplayProgress=1e5)
@@ -795,11 +775,10 @@ poso_inter_cmin <- function(object,dose,target_cmin,adapt=FALSE,
 read_optim_distribution_input <- function(object,
                                           p,
                                           estim_method,
-                                          adapt,
                                           indiv_param){
   if (is.null(indiv_param)){ #theta_pop + estimates of eta + covariates
     if (estim_method=="map"){
-      model_map   <- poso_estim_map(object,adapt=adapt,return_model=TRUE)
+      model_map   <- poso_estim_map(object,return_model=TRUE)
       indiv_param <- model_map[[2]]$params
       select_proposal_from_distribution <- FALSE
       if (!is.null(p)){
