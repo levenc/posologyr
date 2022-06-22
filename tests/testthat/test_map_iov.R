@@ -67,14 +67,11 @@ patient06_pipera_map_iov <- poso_estim_map(patient06_pipera,
 
 test_that("MAP estimates match Monolix MAP estimates", {
   expect_equal(patient06_pipera_map_iov$model$LAGTIME[1], 0.07, tolerance=1e-3)
-  expect_equal(patient06_pipera_map_iov$model$Cl[1], 10.58, tolerance=1e-3)
-  expect_equal(patient06_pipera_map_iov$model$Cl[2], 24.0, tolerance=1e-3)
-  expect_equal(patient06_pipera_map_iov$model$Cl[3], 18.4, tolerance=1e-3)
-  expect_equal(patient06_pipera_map_iov$model$Cl[4], 26.3, tolerance=1e-3)
+  expect_equal(unique(patient06_pipera_map_iov$model$Cl)[1], 10.58, tolerance=1e-3)
+  expect_equal(unique(patient06_pipera_map_iov$model$Cl)[2], 24.0, tolerance=1e-3)
+  expect_equal(unique(patient06_pipera_map_iov$model$Cl)[3], 18.4, tolerance=1e-3)
+  expect_equal(unique(patient06_pipera_map_iov$model$Cl)[4], 26.3, tolerance=1e-3)
   expect_equal(patient06_pipera_map_iov$model$V1[1], 7.2, tolerance=1e-3)
-  expect_equal(patient06_pipera_map_iov$model$V1[2], 7.2, tolerance=1e-3)
-  expect_equal(patient06_pipera_map_iov$model$V1[3], 7.2, tolerance=1e-3)
-  expect_equal(patient06_pipera_map_iov$model$V1[4], 7.2, tolerance=1e-3)
   expect_equal(patient06_pipera_map_iov$model$Q[1], 52, tolerance=1e-3)
   expect_equal(patient06_pipera_map_iov$model$V2[1], 17.8, tolerance=1e-3)
 })

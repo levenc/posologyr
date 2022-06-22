@@ -114,7 +114,7 @@ An event table is created to simulate the selected dosage with rxode2.
 ```{r prior_plot_et}
 # infusion of prior_dose mg over 0.5 hours at time 0
 event_table_priordose <- rxode2::et(time=0,amt=prior_dose,dur=0.5)
-event_table_priordose$add.sampling(seq(0,24,by=0.2))
+event_table_priordose$add.sampling(seq(0,7,by=0.1))
 ```
 
 By setting `n_simul = 0`, the `poso_simu_pop()` function produces an rxode2 model that incorporates typical population parameter values and individual covariates from the patient record.
@@ -196,10 +196,7 @@ patA_map
 The individual pharmacokinetic profile is plotted using the rxode2 model provided by the `poso_estim_map()` function.
 
 ```{r map_plot_tdm}
-map_model_patA      <- patA_map$model
-map_model_patA$time <- seq(0,24,by=0.2) 
-
-plot(map_model_patA,Cc) + 
+plot(patA_map$model,Cc) + 
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_point(data=indiv_obs, size= 3, na.rm=TRUE) +
   ggplot2::geom_vline(xintercept=1, linetype="dashed") +
@@ -259,7 +256,10 @@ map_param_patA      <- patA_map$model$params
 
 #Simulate with the event table and the individual MAP parameters
 map_dose_model_patA <- rxode2::rxSolve(object=patA_tdm_amik$ppk_model,
-                                  params=map_param_patA,
+                                   params=cbind(map_param_patA,
+                                            CLCREAT4H=50,
+                                            TBW=62,
+                                            PoverF=169),
                                   events=event_table_mapdose)
 
 #Plot the results of the simulation
@@ -280,7 +280,10 @@ event_table_mapdose_ss$add.sampling(seq(0,3.5*map_interval,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
 map_dose_model_patA_ss <- rxode2::rxSolve(object=patA_tdm_amik$ppk_model,
-                                  params=map_param_patA,
+                                  params=cbind(map_param_patA,
+                                            CLCREAT4H=50,
+                                            TBW=62,
+                                            PoverF=169),
                                   events=event_table_mapdose_ss)
 
 #Plot the results of the simulation

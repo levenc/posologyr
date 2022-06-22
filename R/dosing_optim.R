@@ -779,7 +779,14 @@ read_optim_distribution_input <- function(object,
   if (is.null(indiv_param)){ #theta_pop + estimates of eta + covariates
     if (estim_method=="map"){
       model_map   <- poso_estim_map(object,return_model=TRUE)
-      indiv_param <- model_map[[2]]$params
+      if(is.null(object$covariates)){
+        indiv_param <- model_map[[2]]$params
+      } else {
+        covar <- as.data.frame(object$tdm_data[length(object$tdm_data[,1]),
+                                                     object$covariates])
+        names(covar) <- object$covariates
+        indiv_param <- cbind(model_map[[2]]$params,covar,row.names=NULL)
+      }
       select_proposal_from_distribution <- FALSE
       if (!is.null(p)){
         warning('p is not needed with estim_method="map", p is ignored')
@@ -789,20 +796,34 @@ read_optim_distribution_input <- function(object,
         if (p < 0 || p >= 1){
           stop('p must be between 0 and 1')
         }
-        model_pop   <- poso_simu_pop(object,return_model=TRUE)
-        indiv_param <- model_pop[[2]]$params
+        model_pop   <- poso_simu_pop(object,n_simul=1e5,return_model=TRUE)
         select_proposal_from_distribution <- TRUE
       } else {
         model_pop   <- poso_simu_pop(object,n_simul=0,return_model=TRUE)
-        indiv_param <- model_pop[[2]]$params
         select_proposal_from_distribution <- FALSE
+      }
+      if(is.null(object$covariates)){
+        indiv_param <- model_pop[[2]]$params
+      } else {
+        covar <- as.data.frame(object$tdm_data[length(object$tdm_data[,1]),
+                                               object$covariates])
+        names(covar) <- object$covariates
+        indiv_param <- cbind(model_pop[[2]]$params,covar,row.names=NULL)
       }
     } else if (estim_method=="sir"){
       if (p < 0 || p >= 1){
         stop('p must be between 0 and 1')
       }
-      model_sir   <- poso_estim_sir(object,return_model=TRUE)
-      indiv_param <- model_sir[[2]]$params
+      model_sir   <- poso_estim_sir(object,n_sample=1e5,n_resample=1e4,
+                                    return_model=TRUE)
+      if(is.null(object$covariates)){
+        indiv_param <- model_sir[[2]]$params
+      } else {
+        covar <- as.data.frame(object$tdm_data[length(object$tdm_data[,1]),
+                                               object$covariates])
+        names(covar) <- object$covariates
+        indiv_param <- cbind(model_sir[[2]]$params,covar,row.names=NULL)
+      }
       select_proposal_from_distribution <- TRUE
     } else {
       print(estim_method)

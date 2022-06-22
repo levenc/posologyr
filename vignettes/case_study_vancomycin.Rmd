@@ -97,12 +97,8 @@ The individual pharmacokinetic profile is plotted using the rxode model provided
 indiv_obs             <- patB_tdm_vanco$tdm_data[,c("DV","TIME")]
 names(indiv_obs)      <- c("value","time")
 
-#MAP profile
-map_model_patB        <- patB_map$model
-map_model_patB$time   <- seq(0,48,by=0.1)
-
 #Overlay the MAP profile and the observations
-plot(map_model_patB,Cc) +
+plot(patB_map$model,Cc) +
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_point(data=indiv_obs, size= 3, na.rm=TRUE)
 
@@ -113,6 +109,7 @@ plot(map_model_patB,Cc) +
 Considering a MIC of 1 mg/L, the target AUC over 24 hours (AUC24) is 400 mg.h/L.
 
 ```{r AUC_map_dose}
+map_model_patB <- patB_map$model
 #AUC 0_24
 AUC_map_first_dose <- map_model_patB$AUC[which(map_model_patB$time == 24)]
 AUC_map_first_dose
@@ -150,7 +147,8 @@ et_ss %<>% rxode2::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
 map_optim_model_patB <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
-                                      params=patB_map$model$params,
+                                      params=cbind(patB_map$model$params,
+                                      CLCREAT=65,WT=70,DIAL=0),
                                       events=et_ss)
 
 #Cmin at steady-state
@@ -178,7 +176,8 @@ et_optim_dosage <- seq(et_load,et_maint) %>% rxode2::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
 map_optim_model_patB <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
-                                      params=patB_map$model$params,
+                                      params=cbind(patB_map$model$params,
+                                                   CLCREAT=65,WT=70,DIAL=0),
                                       events=et_optim_dosage)
 
 #Plot the results of the simulation
@@ -232,7 +231,8 @@ et_ci       %<>% rxode2::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
 map_optim_model_patB_ci  <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
-                                          params=patB_map$model$params,
+                                          params=cbind(patB_map$model$params,
+                                                       CLCREAT=65,WT=70,DIAL=0),
                                           events=et_ci)
 
 #Plot the results of the simulation

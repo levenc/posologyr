@@ -125,7 +125,7 @@ test_that("Same optimal dose with or without providing MAP estimates", {
                              dose=620,
                              duration=0.5,
                              target_cmin=0.5,
-                             indiv_param=params_patient01_tobra_map,)$time,
+                             indiv_param=params_patient01_tobra_map)$time,
                poso_time_cmin(patient01_tobra,
                              dose=620,
                              duration=0.5,
@@ -156,6 +156,19 @@ test_that("Optimization results do not deviate from known values
                               indiv_param=params_patient04_vanco_map)$dose,
                2530.699,
                tolerance=1e-3)
+  expect_equal(poso_time_cmin(patient04_tdm_vanco,
+                              from=2,
+                              dose=1500,
+                              duration=2,
+                              target_cmin=10)$time,11.2)
+  expect_equal(poso_dose_auc(patient04_tdm_vanco,
+                             time_auc=24,
+                             duration=2,
+                             target_auc=400)$dose,2377.758,tolerance=1e-3)
+  expect_equal(poso_dose_conc(patient04_tdm_vanco,
+                              time_c=24,
+                              duration=2,
+                              target_conc=11.04931)$dose,2530.699,tolerance=1e-3)
 })
 
 test_that("Optimization results do not deviate from known values
@@ -196,4 +209,29 @@ test_that("Optimization results do not deviate from known values
                                target_cmin=10)$interval,
                35.9,
                tolerance=1e-3)
+  expect_equal(poso_time_cmin(patient04_tdm_vanco,
+                              from=2,
+                              dose=1500,
+                              interdose_interval=24,
+                              add_dose=10,
+                              duration=2,
+                              target_cmin=10)$time,34.8)
+  expect_equal(poso_dose_auc(patient04_tdm_vanco,
+                             time_auc=24,
+                             starting_time=24*9,
+                             interdose_interval=24,
+                             add_dose=10,
+                             duration=2,
+                             target_auc=400)$dose,1229.366,tolerance=1e-3)
+  expect_equal(poso_dose_conc(patient04_tdm_vanco,
+                              time_c=24*9.9,
+                              interdose_interval=24,
+                              add_dose=10,
+                              duration=24,
+                              target_conc=400/24)$dose,1229.426,tolerance=1e-3)
+  expect_equal(poso_inter_cmin(patient04_tdm_vanco,
+                               dose=2000,
+                               add_dose=10,
+                               duration=2,
+                               target_cmin=10)$interval,35.9,tolerance=1e-3)
 })

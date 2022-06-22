@@ -247,3 +247,27 @@ order_columns <- function(DT){
   return(DT)
 }
 
+#extrapolate covariates to allow more sampling times in rxode2 solved models
+extrapol_cov <- function(x=NULL,dat=NULL,covar=NULL,interpol_approx=NULL,
+                         f=NULL,event_table=NULL){
+  x <- which(covar == x) #input char, return position in the covar vector
+  approx_cov <- stats::approxfun(x = dat$TIME,
+                          y = dat[[covar[x]]],
+                          yleft = dat[[covar[x]]][x],
+                          yright = dat[[covar[x]]][length(dat[[covar[x]]])],
+                          method = interpol_approx,
+                          f = f)
+  approx_cov(event_table$time)
+}
+
+#extrapolate kappas to allow more sampling times in rxode2 solved models
+extrapol_iov <- function(x=NULL,dat=NULL,iov_kappa=NULL,event_table=NULL){
+  x <- which(iov_kappa == x) #input char, return position in the kappa vector
+  approx_iov <- stats::approxfun(x = dat$TIME,
+                          y = dat[[iov_kappa[x]]],
+                          yleft = dat[[iov_kappa[x]]][x],
+                          yright = dat[[iov_kappa[x]]][length(dat[[iov_kappa[x]]])],
+                          method = "constant")
+  approx_iov(event_table$time)
+}
+

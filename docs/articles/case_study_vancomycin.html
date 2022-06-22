@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9000</span>
       </span>
     </div>
 
@@ -187,26 +187,30 @@ by <code><a href="../reference/posologyr.html">posologyr()</a></code>.</p>
 <span class="va">patB_map</span>
 <span class="co">#&gt; $eta</span>
 <span class="co">#&gt;     ETA_Cl     ETA_Vc     ETA_Vp      ETA_Q </span>
-<span class="co">#&gt; 0.10796283 0.04652507 0.06864705 0.00000000 </span>
+<span class="co">#&gt; 0.10796053 0.04652873 0.06865759 0.00000000 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $model</span>
 <span class="co">#&gt; <span style="font-weight: bold;">── Solved rxode2 object ──</span></span>
 <span class="co">#&gt; <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span>
-<span class="co">#&gt;    THETA_Cl     CLCREAT        DIAL    THETA_Vc          WT    THETA_Vp </span>
-<span class="co">#&gt;  4.50000000 65.00000000  0.00000000 58.40000000 70.00000000 38.40000000 </span>
-<span class="co">#&gt;     THETA_Q      ETA_Cl      ETA_Vc      ETA_Vp </span>
-<span class="co">#&gt;  6.50000000  0.10796283  0.04652507  0.06864705 </span>
+<span class="co">#&gt;    THETA_Cl    THETA_Vc    THETA_Vp     THETA_Q      ETA_Cl      ETA_Vc </span>
+<span class="co">#&gt;  4.50000000 58.40000000 38.40000000  6.50000000  0.10796053  0.04652873 </span>
+<span class="co">#&gt;      ETA_Vp </span>
+<span class="co">#&gt;  0.06865759 </span>
 <span class="co">#&gt; <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span>
 <span class="co">#&gt;  centr periph    AUC </span>
 <span class="co">#&gt;      0      0      0 </span>
 <span class="co">#&gt; <span style="font-weight: bold;">── First part of data (object): ──</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 19</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 491 × 19</span></span>
 <span class="co">#&gt;    time  TVCl  TVVc  TVVp   TVQ    Cl    Vc    Vp     Q     ke   k12   k21    Cc</span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span>    13  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  12.3</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span>    48  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  10.6</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 6 more variables: centr &lt;dbl&gt;, periph &lt;dbl&gt;, AUC &lt;dbl&gt;, CLCREAT &lt;dbl&gt;,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   WT &lt;dbl&gt;, DIAL &lt;dbl&gt;</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0    2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  0   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.1  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  1.62</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.2  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  3.22</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.3  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  4.79</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  6.34</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  7.87</span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 485 more rows, and 6 more variables: centr &lt;dbl&gt;, periph &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   AUC &lt;dbl&gt;, CLCREAT &lt;dbl&gt;, WT &lt;dbl&gt;, DIAL &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
@@ -218,13 +222,8 @@ model provided by the <code><a href="../reference/poso_estim_map.html">poso_esti
 <span class="va">indiv_obs</span>             <span class="op">&lt;-</span> <span class="va">patB_tdm_vanco</span><span class="op">$</span><span class="va">tdm_data</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DV"</span>,<span class="st">"TIME"</span><span class="op">)</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">indiv_obs</span><span class="op">)</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"value"</span>,<span class="st">"time"</span><span class="op">)</span>
 
-<span class="co">#MAP profile</span>
-<span class="va">map_model_patB</span>        <span class="op">&lt;-</span> <span class="va">patB_map</span><span class="op">$</span><span class="va">model</span>
-<span class="va">map_model_patB</span><span class="op">$</span><span class="va">time</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">48</span>,by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>
-<span class="co">#&gt; Warning: can not update object</span>
-
 <span class="co">#Overlay the MAP profile and the observations</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_model_patB</span>,<span class="va">Cc</span><span class="op">)</span> <span class="op">+</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Central concentration"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">indiv_obs</span>, size<span class="op">=</span> <span class="fl">3</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="case_study_vancomycin_files/figure-html/map_plot_tdm-1.png" width="700"></p>
@@ -235,15 +234,16 @@ model provided by the <code><a href="../reference/poso_estim_map.html">poso_esti
 <p>Considering a MIC of 1 mg/L, the target AUC over 24 hours (AUC24) is
 400 mg.h/L.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#AUC 0_24</span>
+<code class="sourceCode R"><span class="va">map_model_patB</span> <span class="op">&lt;-</span> <span class="va">patB_map</span><span class="op">$</span><span class="va">model</span>
+<span class="co">#AUC 0_24</span>
 <span class="va">AUC_map_first_dose</span> <span class="op">&lt;-</span> <span class="va">map_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">)</span><span class="op">]</span>
 <span class="va">AUC_map_first_dose</span>
-<span class="co">#&gt; [1] 336.4365</span>
+<span class="co">#&gt; [1] 336.4356</span>
 
 <span class="co">#AUC 24_48</span>
 <span class="va">AUC_map_second_dose</span> <span class="op">&lt;-</span> <span class="va">map_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span> <span class="va">AUC_map_first_dose</span>
 <span class="va">AUC_map_second_dose</span>
-<span class="co">#&gt; [1] 387.1367</span></code></pre></div>
+<span class="co">#&gt; [1] 387.1362</span></code></pre></div>
 <p>The current dosage does not meet the target AUC.</p>
 </div>
 <div class="section level3">
@@ -278,13 +278,14 @@ determined.</p>
 
 <span class="co">#Simulate with the event table and the individual MAP parameters</span>
 <span class="va">map_optim_model_patB</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">patB_tdm_vanco</span><span class="op">$</span><span class="va">ppk_model</span>,
-                                      params<span class="op">=</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>,
+                                      params<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>,
+                                      CLCREAT<span class="op">=</span><span class="fl">65</span>,WT<span class="op">=</span><span class="fl">70</span>,DIAL<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,
                                       events<span class="op">=</span><span class="va">et_ss</span><span class="op">)</span>
 
 <span class="co">#Cmin at steady-state</span>
 <span class="va">target_cmin_ss</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">*</span><span class="fl">9</span><span class="op">)</span><span class="op">]</span>
 <span class="va">target_cmin_ss</span>
-<span class="co">#&gt; [1] 11.02481</span></code></pre></div>
+<span class="co">#&gt; [1] 11.02487</span></code></pre></div>
 <p>The dose needed to achieve the steady-state Cmin following the first
 administration can now be identified.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -293,7 +294,7 @@ administration can now be identified.</p>
                                     duration<span class="op">=</span><span class="fl">2</span>,
                                     target_conc<span class="op">=</span><span class="va">target_cmin_ss</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span>
 <span class="va">loading_dose_map</span>
-<span class="co">#&gt; [1] 2525.144</span></code></pre></div>
+<span class="co">#&gt; [1] 2525.156</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="simulate-and-plot-the-optimal-a-posteriori-dosage">Simulate and plot the optimal a posteriori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-optimal-a-posteriori-dosage"></a>
@@ -306,7 +307,8 @@ administration can now be identified.</p>
 
 <span class="co">#Simulate with the event table and the individual MAP parameters</span>
 <span class="va">map_optim_model_patB</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">patB_tdm_vanco</span><span class="op">$</span><span class="va">ppk_model</span>,
-                                      params<span class="op">=</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>,
+                                      params<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>,
+                                                   CLCREAT<span class="op">=</span><span class="fl">65</span>,WT<span class="op">=</span><span class="fl">70</span>,DIAL<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,
                                       events<span class="op">=</span><span class="va">et_optim_dosage</span><span class="op">)</span>
 
 <span class="co">#Plot the results of the simulation</span>
@@ -321,13 +323,13 @@ administration can now be identified.</p>
 <code class="sourceCode R"><span class="co">#AUC 0_24</span>
 <span class="va">AUC_loading_dose</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">)</span><span class="op">]</span>
 <span class="va">AUC_loading_dose</span>
-<span class="co">#&gt; [1] 424.7753</span>
+<span class="co">#&gt; [1] 424.7762</span>
 
 <span class="co">#AUC 24_48</span>
 <span class="va">AUC_maintenance_dose</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span>
   <span class="va">AUC_loading_dose</span>
 <span class="va">AUC_maintenance_dose</span>
-<span class="co">#&gt; [1] 399.7944</span></code></pre></div>
+<span class="co">#&gt; [1] 399.795</span></code></pre></div>
 <p>The target AUC24 are now met.</p>
 </div>
 </div>
@@ -364,7 +366,8 @@ the <code>interdose_interval</code>.</p>
 
 <span class="co">#Simulate with the event table and the individual MAP parameters</span>
 <span class="va">map_optim_model_patB_ci</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span>object<span class="op">=</span><span class="va">patB_tdm_vanco</span><span class="op">$</span><span class="va">ppk_model</span>,
-                                          params<span class="op">=</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>,
+                                          params<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">params</span>,
+                                                       CLCREAT<span class="op">=</span><span class="fl">65</span>,WT<span class="op">=</span><span class="fl">70</span>,DIAL<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,
                                           events<span class="op">=</span><span class="va">et_ci</span><span class="op">)</span>
 
 <span class="co">#Plot the results of the simulation</span>

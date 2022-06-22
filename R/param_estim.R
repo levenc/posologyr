@@ -380,17 +380,8 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
       optim_attempt     <- optim_attempt + 1
     }
 
-
     if (estim_with_iov){
       eta_map[ind_eta] <- r$par[1:omega_dim]
-      iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
-                                         omega_dim=omega_dim,
-                                         eta_estim=r$par)
-      data_iov     <- data.frame(dat,iov_col)
-      solved_model <- rxode2::rxSolve(solved_model,c(theta,eta_map),data_iov,
-                                     covsInterpolation=interpolation)
-
-      estim_map$data   <- data_iov
     } else {
       eta_map[ind_eta] <- r$par
     }
@@ -404,13 +395,36 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
   estim_map$eta      <- eta_map
 
   if(return_model){
-    model_map        <- solved_model
-    if(no_covariates){
-      model_map$params <- c(theta,eta_map)
-    } else {
-      model_map$params <- c(theta,eta_map,covar)
+    et_poso <- rxode2::as.et(object$tdm_data)
+    et_poso$clearSampling()
+    et_poso$add.sampling(seq(dat$TIME[1],
+                             dat$TIME[length(dat$TIME)]+1,
+                             by=.1))
+
+    #model_map        <- solved_model
+    if(!no_covariates){
+      if(estim_with_iov){
+        iov_kappa <- attr(pimat,"dimnames")[[1]]
+        iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
+                                           omega_dim=omega_dim,
+                                           eta_estim=r$par)
+        data_iov <- data.frame(dat,iov_col)
+        iov_kappa_mat <- sapply(iov_kappa,FUN=extrapol_iov,dat=data_iov,
+                                iov_kappa=iov_kappa,
+                                event_table=et_poso)
+
+        et_poso <- cbind(et_poso,iov_kappa_mat)
+      }
+      covar_mat <- sapply(object$covariates,FUN=extrapol_cov,dat=dat,
+                          covar=object$covariates,
+                          interpol_approx="constant",
+                          f=ifelse(object$interpolation == "nocb",1,0),
+                          event_table=et_poso)
+
+      et_poso <- cbind(et_poso,covar_mat)
     }
-    estim_map$model  <- model_map
+    estim_map$model <- rxode2::rxSolve(object$ppk_model,et_poso,
+                                       c(object$theta,estim_map$eta))
   }
 
   if(return_ofv){
