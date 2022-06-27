@@ -402,19 +402,19 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
                              by=.1))
 
     #model_map        <- solved_model
-    if(!no_covariates){
-      if(estim_with_iov){
-        iov_kappa <- attr(pimat,"dimnames")[[1]]
-        iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
-                                           omega_dim=omega_dim,
-                                           eta_estim=r$par)
-        data_iov <- data.frame(dat,iov_col)
-        iov_kappa_mat <- sapply(iov_kappa,FUN=extrapol_iov,dat=data_iov,
-                                iov_kappa=iov_kappa,
-                                event_table=et_poso)
+    if(estim_with_iov){
+      iov_kappa <- attr(pimat,"dimnames")[[1]]
+      iov_col <- iov_proposition_as_cols(iov_col=iov_col,dat=dat,pimat=pimat,
+                                         omega_dim=omega_dim,
+                                         eta_estim=r$par)
+      data_iov <- data.frame(dat,iov_col)
+      iov_kappa_mat <- sapply(iov_kappa,FUN=extrapol_iov,dat=data_iov,
+                              iov_kappa=iov_kappa,
+                              event_table=et_poso)
 
-        et_poso <- cbind(et_poso,iov_kappa_mat)
-      }
+      et_poso <- cbind(et_poso,iov_kappa_mat)
+    }
+    if(!no_covariates){
       covar_mat <- sapply(object$covariates,FUN=extrapol_cov,dat=dat,
                           covar=object$covariates,
                           interpol_approx="constant",
@@ -424,7 +424,8 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
       et_poso <- cbind(et_poso,covar_mat)
     }
     estim_map$model <- rxode2::rxSolve(object$ppk_model,et_poso,
-                                       c(object$theta,estim_map$eta))
+                                       c(object$theta,estim_map$eta),
+                                       covsInterpolation = interpolation)
   }
 
   if(return_ofv){
