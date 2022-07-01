@@ -787,6 +787,12 @@ read_optim_distribution_input <- function(object,
         names(covar) <- object$covariates
         indiv_param <- cbind(model_map[[2]]$params,covar,row.names=NULL)
       }
+      if (!is.null(object$pi_matrix)){
+        kappa_mat         <- matrix(0,nrow=1,ncol=ncol(object$pi_matrix))
+        kappa_df          <- data.frame(kappa_mat)
+        names(kappa_df)   <- attr(object$pi_matrix,"dimnames")[[1]]
+        indiv_param       <- cbind(indiv_param,kappa_df)
+      }
       select_proposal_from_distribution <- FALSE
       if (!is.null(p)){
         warning('p is not needed with estim_method="map", p is ignored')
@@ -823,6 +829,12 @@ read_optim_distribution_input <- function(object,
                                                object$covariates])
         names(covar) <- object$covariates
         indiv_param <- cbind(model_sir[[2]]$params,covar,row.names=NULL)
+      }
+      if (!is.null(object$pi_matrix)){
+        kappa_mat         <- matrix(0,nrow=1,ncol=ncol(object$pi_matrix))
+        kappa_df          <- data.frame(kappa_mat)
+        names(kappa_df)   <- attr(object$pi_matrix,"dimnames")[[1]]
+        indiv_param       <- cbind(indiv_param,kappa_df)
       }
       select_proposal_from_distribution <- TRUE
     } else {
