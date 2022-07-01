@@ -6,13 +6,13 @@ patient data and a prior model as input parameters
 * The adaptive MAP forecasting option is removed
 
 ## Additional features
-* `poso_estim_map` provides an rxode2 model using MAP-EBE and the input dataset, 
+* `poso_estim_map()` provides an rxode2 model using MAP-EBE and the input dataset, 
 with interpolation of covariates, to make plotting easier
 
 ## Internal changes
 * RxODE import is updated to rxode2
 * All tests are updated to take into account the internalization of the 
-`posologyr` function
+`posologyr()` function
 
 ## Bug fixes
 * `poso_time_cmin()`, `poso_dose_auc()`, `poso_dose_conc()`, and 
