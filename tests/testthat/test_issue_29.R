@@ -46,7 +46,7 @@ kmpat <- data.frame(ID=1,
 set.seed(42)
 
 test_that("poso_estim_map provides estimates even when the IIV is zero", {
-  expect_equal(poso_estim_map(posologyr(mod_run202,kmpat,nocb=TRUE),
+  expect_equal(poso_estim_map(kmpat,mod_run202,nocb=TRUE,
                               return_ofv=TRUE,
                               return_model=F)$eta,
             c(ETA_Vmax=0.3799632360,ETA_Vc=8.405155e-02,

@@ -5,15 +5,20 @@
 \title{Estimate the posterior distribution of individual parameters by SIR}
 \usage{
 poso_estim_sir(
-  object,
+  dat = NULL,
+  prior_model = NULL,
   n_sample = 10000,
   n_resample = 1000,
-  return_model = TRUE
+  return_model = TRUE,
+  nocb = FALSE
 )
 }
 \arguments{
-\item{object}{A posologyr list, created by the \code{\link{posologyr}}
-function.}
+\item{dat}{Dataframe. An individual subject dataset following the
+structure of NONMEM/rxode2 event records.}
+
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{n_sample}{Number of samples from the S-step}
 
@@ -21,6 +26,11 @@ function.}
 
 \item{return_model}{A boolean. Returns a rxode2 model using the estimated
 ETAs if set to \code{TRUE}.}
+
+\item{nocb}{A boolean. for time-varying covariates: the next observation
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+\code{FALSE}, the last observation carried forward (locf) style will be used.
+Defaults to \code{FALSE}.}
 }
 \value{
 If \code{return_model} is set to \code{FALSE}, a list of one element: a
@@ -74,10 +84,8 @@ df_patient01 <- data.frame(ID=1,
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
                         DUR=c(0.5,NA,NA))
-# loading the model and Patient01's event record
-patient01 <- posologyr(prior_model=mod_run001,
-                       dat=df_patient01)
 # estimate the posterior distribution of population parameters
-poso_estim_sir(patient01,n_sample=1e4,n_resample=1e3)
+poso_estim_sir(dat=df_patient01,prior_model=mod_run001,
+n_sample=1e4,n_resample=1e3)
 
 }

@@ -4,17 +4,31 @@
 \alias{poso_estim_map}
 \title{Estimate the Maximum A Posteriori individual parameters}
 \usage{
-poso_estim_map(object, return_model = TRUE, return_ofv = FALSE)
+poso_estim_map(
+  dat = NULL,
+  prior_model = NULL,
+  return_model = TRUE,
+  return_ofv = FALSE,
+  nocb = FALSE
+)
 }
 \arguments{
-\item{object}{A posologyr list, created by the \code{\link{posologyr}}
-function.}
+\item{dat}{Dataframe. An individual subject dataset following the
+structure of NONMEM/rxode2 event records.}
+
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{return_model}{A boolean. Returns a rxode2 model using the estimated
 ETAs if set to \code{TRUE}.}
 
 \item{return_ofv}{A boolean. Returns a the Objective Function Value (OFV)
 if set to \code{TRUE}.}
+
+\item{nocb}{A boolean. for time-varying covariates: the next observation
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+\code{FALSE}, the last observation carried forward (locf) style will be used.
+Defaults to \code{FALSE}.}
 }
 \value{
 A named list consisting of one or more of the following elements
@@ -67,10 +81,7 @@ df_patient01 <- data.frame(ID=1,
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
                         DUR=c(0.5,NA,NA))
-# loading the model and Patient01's event record
-patient01 <- posologyr(prior_model=mod_run001,
-                       dat=df_patient01)
 # estimate the Maximum A Posteriori individual parameters
-poso_estim_map(patient01)
+poso_estim_map(dat=df_patient01,prior_model=mod_run001)
 
 }

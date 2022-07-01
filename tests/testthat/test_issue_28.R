@@ -53,7 +53,7 @@ set.seed(42)
 
 test_that("poso_estim_map provides estimates even when predicted concentrations
           are zero", {
-  expect_equal(poso_estim_map(posologyr(mod_run003,lagpat,nocb=TRUE),
+  expect_equal(poso_estim_map(lagpat,mod_run003,nocb=TRUE,
                               return_ofv=TRUE,
                               return_model=F)$eta,
             c(ETA_Cl=0.396185952,ETA_Vc=0.0370173441,

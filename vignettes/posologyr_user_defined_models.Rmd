@@ -140,8 +140,6 @@ pi_matrix = lotri::lotri({KAPPA_Cl + KAPPA_Vc ~
 
 ```
 
-See `mod_piperacillin_2cpt_Roberts2010` for an example of model with IOV.
-
 ## covariates
 The names of every covariate defined in **ppk_model**, in a character vector.
 

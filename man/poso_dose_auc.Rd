@@ -6,10 +6,12 @@
 time-concentration curve (AUC)}
 \usage{
 poso_dose_auc(
-  object,
+  dat = NULL,
+  prior_model = NULL,
   time_auc,
   target_auc,
   estim_method = "map",
+  nocb = FALSE,
   p = NULL,
   greater_than = TRUE,
   starting_time = 0,
@@ -21,8 +23,11 @@ poso_dose_auc(
 )
 }
 \arguments{
-\item{object}{A posologyr list, created by the \code{\link{posologyr}}
-function.}
+\item{dat}{Dataframe. An individual subject dataset following the
+structure of NONMEM/rxode2 event records.}
+
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{time_auc}{Numeric. The target AUC is computed from 0 to \code{time_auc}.}
 
@@ -34,6 +39,11 @@ Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
 parameters. This argument is ignored if \code{indiv_param} is provided.}
+
+\item{nocb}{A boolean. for time-varying covariates: the next observation
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+\code{FALSE}, the last observation carried forward (locf) style will be used.
+Defaults to \code{FALSE}.}
 
 \item{p}{Numeric. The proportion of the distribution of AUC to consider for
 the optimization. Mandatory for \code{estim_method=sir}.}
@@ -119,10 +129,8 @@ df_patient01 <- data.frame(ID=1,
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
                         DUR=c(0.5,NA,NA))
-# loading the model and Patient01's event record
-patient01 <- posologyr(prior_model=mod_run001,
-                       dat=df_patient01)
 # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
-poso_dose_auc(patient01,time_auc=12,target_auc=45)
+poso_dose_auc(dat=df_patient01,prior_model=mod_run001,
+time_auc=12,target_auc=45)
 
 }

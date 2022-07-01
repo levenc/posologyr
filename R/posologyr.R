@@ -62,52 +62,7 @@
 #'   created with `prior_ppk_model` and using `dat` as the event record.}
 #' }
 #'
-#' @examples
-#' # model
-#' mod_run001 <- list(
-#' ppk_model = rxode2::rxode({
-#'   centr(0) = 0;
-#'   depot(0) = 0;
-#'
-#'   TVCl = THETA_Cl;
-#'   TVVc = THETA_Vc;
-#'   TVKa = THETA_Ka;
-#'
-#'   Cl = TVCl*exp(ETA_Cl);
-#'   Vc = TVVc*exp(ETA_Vc);
-#'   Ka = TVKa*exp(ETA_Ka);
-#'
-#'   K20 = Cl/Vc;
-#'   Cc = centr/Vc;
-#'
-#'   d/dt(depot) = -Ka*depot;
-#'   d/dt(centr) = Ka*depot - K20*centr;
-#'   d/dt(AUC) = Cc;
-#' }),
-#' error_model = function(f,sigma) {
-#'   dv <- cbind(f,1)
-#'   g <- diag(dv%*%sigma%*%t(dv))
-#'   return(sqrt(g))
-#' },
-#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
-#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
-#'     c(0.2,
-#'       0, 0.2,
-#'       0, 0, 0.2)}),
-#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
-#' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,1.0,14.0),
-#'                         DV=c(NA,25.0,5.5),
-#'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' posologyr(prior_model=mod_run001,
-#'           dat=df_patient01)
-#'
-#' @export
+#' @keywords internal
 posologyr <- function(prior_model=NULL,dat=NULL,nocb=FALSE){
 
   validate_priormod(prior_model)

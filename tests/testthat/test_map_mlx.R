@@ -73,16 +73,12 @@ df_patient02_vanco <- data.frame(ID=1,TIME=c(0.0,12.0,22.2,37.5),
                                  EVID=c(1,0,1,0),
                                  CLCREAT=34,WT=62,DIAL=0)
 
-patient01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                             dat=df_patient01_tobra)
-
-patient02_vanco <- posologyr(mod_vancomycin_2cpt_Goti2018,
-                             dat=df_patient02_vanco)
-
-patient01_tobra_map <- poso_estim_map(patient01_tobra,
+patient01_tobra_map <- poso_estim_map(dat=df_patient01_tobra,
+                                      prior_model=mod_tobramycin_2cpt_fictional,
                                       return_model=TRUE)
 
-patient02_vanco_map <- poso_estim_map(patient02_vanco,
+patient02_vanco_map <- poso_estim_map(dat=df_patient02_vanco,
+                                      prior_model=mod_vancomycin_2cpt_Goti2018,
                                       return_model=TRUE)
 
 test_that("MAP estimates match Monolix MAP estimates", {

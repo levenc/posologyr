@@ -72,19 +72,11 @@ df_patientB_tdm <- data.frame(ID=1,TIME=c(0.0,13.0,24.2,48),
 df_patientB_tdm
 ```
 
-## Apply the selected prior ppk model to patient data
-
-The patient data and the ppk model are combined into a single object by `posologyr()`.
-
-```{r posologyr_tdm_patientB}
-patB_tdm_vanco <- posologyr(mod_vancomycin_2cpt_Goti2018,
-                           df_patientB_tdm)
-```
-
 ## Estimate the MAP individual parameters
 
 ```{r estim_map}
-patB_map <- poso_estim_map(patB_tdm_vanco)
+patB_map <- poso_estim_map(dat=df_patientB_tdm,
+                           prior_model=mod_vancomycin_2cpt_Goti2018)
 patB_map
 ```
 
@@ -94,7 +86,7 @@ The individual pharmacokinetic profile is plotted using the rxode model provided
 
 ```{r map_plot_tdm}
 #Get the observations from the patient record
-indiv_obs             <- patB_tdm_vanco$tdm_data[,c("DV","TIME")]
+indiv_obs             <- df_patientB_tdm[,c("DV","TIME")]
 names(indiv_obs)      <- c("value","time")
 
 #Overlay the MAP profile and the observations
@@ -126,7 +118,8 @@ The current dosage does not meet the target AUC.
 The maintenance dose needed to achieve an AUC24 of 400 mg.h/L is estimated by simulating a multiple dose regimen over enough administrations (11 consecutive administrations, with `add_dose=10`) to approximate the steady-state.
 
 ```{r optim_maintenance_dose}
-maintenance_dose_map <- poso_dose_auc(patB_tdm_vanco,
+maintenance_dose_map <- poso_dose_auc(dat=df_patientB_tdm,
+                                      prior_model=mod_vancomycin_2cpt_Goti2018,
                                       time_auc=24,
                                       starting_time=24*9,
                                       interdose_interval=24,
@@ -143,13 +136,15 @@ The ideal loading dose achieves the target steady-state concentration on the fir
 ```{r cmin_ss}
 #event table: multiple dose regimen until steady state
 et_ss <- rxode2::et(amt=maintenance_dose_map,dur=2,ii=24,until=240)
-et_ss %<>% rxode2::et(seq(0,240,by=0.1))
+et_ss$add.sampling(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_optim_model_patB <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
-                                      params=cbind(patB_map$model$params,
-                                      CLCREAT=65,WT=70,DIAL=0),
-                                      events=et_ss)
+map_optim_model_patB <- rxode2::rxSolve(object=mod_vancomycin_2cpt_Goti2018$ppk_model,
+                                        params=cbind(patB_map$model$params,
+                                                     CLCREAT=65,
+                                                     WT=70,
+                                                     DIAL=0),
+                                        events=et_ss)
 
 #Cmin at steady-state
 target_cmin_ss <- map_optim_model_patB$Cc[which(map_optim_model_patB$time == 24*9)]
@@ -159,10 +154,11 @@ target_cmin_ss
 The dose needed to achieve the steady-state Cmin following the first administration can now be identified.
 
 ```{r loading_dose}
-loading_dose_map <- poso_dose_conc(patB_tdm_vanco,
-                                    time_c=24,
-                                    duration=2,
-                                    target_conc=target_cmin_ss)$dose
+loading_dose_map <- poso_dose_conc(dat=df_patientB_tdm,
+                                   prior_model=mod_vancomycin_2cpt_Goti2018,
+                                   time_c=24,
+                                   duration=2,
+                                   target_conc=target_cmin_ss)$dose
 loading_dose_map
 ```
 
@@ -175,10 +171,12 @@ et_maint        <- rxode2::et(amt=maintenance_dose_map,dur=2,ii=24,until=240)
 et_optim_dosage <- seq(et_load,et_maint) %>% rxode2::et(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_optim_model_patB <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
-                                      params=cbind(patB_map$model$params,
-                                                   CLCREAT=65,WT=70,DIAL=0),
-                                      events=et_optim_dosage)
+map_optim_model_patB <- rxode2::rxSolve(object=mod_vancomycin_2cpt_Goti2018$ppk_model,
+                                        params=cbind(patB_map$model$params,
+                                                     CLCREAT=65,
+                                                     WT=70,
+                                                     DIAL=0),
+                                        events=et_optim_dosage)
 
 #Plot the results of the simulation
 plot(map_optim_model_patB,Cc) + 
@@ -208,12 +206,13 @@ The maintenance dose for a continuous intravenous infusion can be determined by 
 #Target Css for a continuous infusion
 target_css <- 400/24
 
-maintenance_dose_map_ci <- poso_dose_conc(patB_tdm_vanco,
-                                           time_c=24*9.9,
-                                           interdose_interval=24,
-                                           add_dose=10,
-                                           duration=24,
-                                           target_conc=target_css)$dose
+maintenance_dose_map_ci <- poso_dose_conc(dat=df_patientB_tdm,
+                                          prior_model=mod_vancomycin_2cpt_Goti2018,
+                                          time_c=24*9.9,
+                                          interdose_interval=24,
+                                          add_dose=10,
+                                          duration=24,
+                                          target_conc=target_css)$dose
 maintenance_dose_map_ci
 ```
 
@@ -221,19 +220,21 @@ maintenance_dose_map_ci
 
 ```{r ci_plots}
 #event table: loading dose followed by continuous infusion
-et_maint_ci <- rxode2::et(time=2,
-                         amt=maintenance_dose_map_ci,
-                         dur=24,
-                         ii=24,
-                         until=240)
-et_ci       <- et_maint_ci %>% rxode2::add.dosing(dose=loading_dose_map,dur=2)
-et_ci       %<>% rxode2::et(seq(0,240,by=0.1))
+et_ci <- rxode2::et(time=2,
+                    amt=maintenance_dose_map_ci,
+                    dur=24,
+                    ii=24,
+                    until=240)
+et_ci$add.dosing(dose=loading_dose_map,dur=2)
+et_ci$add.sampling(seq(0,240,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_optim_model_patB_ci  <- rxode2::rxSolve(object=patB_tdm_vanco$ppk_model,
-                                          params=cbind(patB_map$model$params,
-                                                       CLCREAT=65,WT=70,DIAL=0),
-                                          events=et_ci)
+map_optim_model_patB_ci  <- rxode2::rxSolve(object=mod_vancomycin_2cpt_Goti2018$ppk_model,
+                                            params=cbind(patB_map$model$params,
+                                                         CLCREAT=65,
+                                                         WT=70,
+                                                         DIAL=0),
+                                            events=et_ci)
 
 #Plot the results of the simulation
 plot(map_optim_model_patB_ci,Cc) + 

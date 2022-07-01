@@ -22,8 +22,10 @@
 #' (Cmin) given a population pharmacokinetic model, a set of individual
 #' parameters, a dose, and a target Cmin.
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#'     function.
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param dose Numeric. Dose administered.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param estim_method A character string. An estimation method to be used for
@@ -32,6 +34,10 @@
 #'    population model, and "sir" uses the Sequential Importance Resampling
 #'    algorithm to estimate the a posteriori distribution of the individual
 #'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #' @param p Numeric. The proportion of the distribution of cmin to consider for
 #'    the estimation. Mandatory for `estim_method=sir`.
 #' @param greater_than A boolean. If `TRUE`: targets a time leading to a
@@ -96,25 +102,23 @@
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # predict the time needed to reach a concentration of 2.5 mg/l
 #' # after the administration of a 2500 mg dose over a 30 minutes
 #' # infusion
-#' poso_time_cmin(patient01,dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
+#' poso_time_cmin(dat=df_patient01,prior_model=mod_run001,
+#' dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_time_cmin <- function(object,dose,target_cmin,
-                           estim_method="map",p=NULL,greater_than=TRUE,
-                           from=0.2,last_time=72,
+poso_time_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
+                           estim_method="map",nocb=FALSE,
+                           p=NULL,greater_than=TRUE,from=0.2,last_time=72,
                            add_dose=NULL,interdose_interval=NULL,
                            duration=NULL,indiv_param=NULL){
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+  object <- posologyr(prior_model,dat,nocb)
 
-  read_input  <- read_optim_distribution_input(object=object,
-                                               p=p,
+  read_input  <- read_optim_distribution_input(dat=dat,
+                                               prior_model=prior_model,
+                                               nocb=nocb,object=object,p=p,
                                                estim_method=estim_method,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
@@ -214,8 +218,10 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #' time-concentration curve (AUC) given a population pharmacokinetic
 #' model, a set of individual parameters, and a target AUC.
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#'     function.
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param time_auc Numeric. The target AUC is computed from 0 to `time_auc`.
 #' @param target_auc Numeric. The target AUC.
 #' @param estim_method A character string. An estimation method to be used for
@@ -224,6 +230,10 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #'    population model, and "sir" uses the Sequential Importance Resampling
 #'    algorithm to estimate the a posteriori distribution of the individual
 #'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #' @param p Numeric. The proportion of the distribution of AUC to consider for
 #'    the optimization. Mandatory for `estim_method=sir`.
 #' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
@@ -295,24 +305,23 @@ poso_time_cmin <- function(object,dose,target_cmin,
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
-#' poso_dose_auc(patient01,time_auc=12,target_auc=45)
+#' poso_dose_auc(dat=df_patient01,prior_model=mod_run001,
+#' time_auc=12,target_auc=45)
 #'
 #' @export
-poso_dose_auc <- function(object,time_auc,target_auc,
-                          estim_method="map",p=NULL,greater_than=TRUE,
-                          starting_time=0,interdose_interval=NULL,add_dose=NULL,
+poso_dose_auc <- function(dat=NULL,prior_model=NULL,time_auc,target_auc,
+                          estim_method="map",nocb=FALSE,p=NULL,
+                          greater_than=TRUE,starting_time=0,
+                          interdose_interval=NULL,add_dose=NULL,
                           duration=NULL,starting_dose=100,indiv_param=NULL){
 
   # Input validation -----------------------------------------------------------
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+  object <- posologyr(prior_model,dat,nocb)
 
-  read_input  <- read_optim_distribution_input(object=object,
-                                               p=p,
+  read_input  <- read_optim_distribution_input(dat=dat,
+                                               prior_model=prior_model,
+                                               nocb=nocb,object=object,p=p,
                                                estim_method=estim_method,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
@@ -413,8 +422,10 @@ poso_dose_auc <- function(object,time_auc,target_auc,
 #' of individual parameters, a selected point in time, and a target
 #' concentration.
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#'     function.
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param time_c Numeric. Point in time for which the dose is to be
 #'     optimized.
 #' @param target_conc Numeric. Target concentration.
@@ -424,6 +435,10 @@ poso_dose_auc <- function(object,time_auc,target_auc,
 #'    population model, and "sir" uses the Sequential Importance Resampling
 #'    algorithm to estimate the a posteriori distribution of the individual
 #'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #' @param p Numeric. The proportion of the distribution of concentrations to
 #'    consider for the optimization. Mandatory for `estim_method=sir`.
 #' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
@@ -493,23 +508,22 @@ poso_dose_auc <- function(object,time_auc,target_auc,
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # estimate the optimal dose to reach a concentration of 80 mg/l
 #' # one hour after starting the 30-minutes infusion
-#' poso_dose_conc(patient01,time_c=1,duration=0.5,target_conc=80)
+#' poso_dose_conc(dat=df_patient01,prior_model=mod_run001,
+#' time_c=1,duration=0.5,target_conc=80)
 #'
 #' @export
-poso_dose_conc <- function(object,time_c,target_conc,
-                           estim_method="map",p=NULL,greater_than=TRUE,
-                           starting_dose=100,interdose_interval=NULL,
-                           add_dose=NULL,duration=NULL,indiv_param=NULL){
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+poso_dose_conc <- function(dat=NULL,prior_model=NULL,time_c,target_conc,
+                           estim_method="map",nocb=FALSE,p=NULL,
+                           greater_than=TRUE,starting_dose=100,
+                           interdose_interval=NULL,add_dose=NULL,
+                           duration=NULL,indiv_param=NULL){
+  object <- posologyr(prior_model,dat,nocb)
 
-  read_input  <- read_optim_distribution_input(object=object,
-                                               p=p,
+  read_input  <- read_optim_distribution_input(dat=dat,
+                                               prior_model=prior_model,
+                                               nocb=nocb,object=object,p=p,
                                                estim_method=estim_method,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
@@ -600,8 +614,10 @@ poso_dose_conc <- function(object,time_c,target_conc,
 #' pharmacokinetic model, a set of individual parameters, and a
 #' target concentration.
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#'     function.
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. The dose given.
 #' @param estim_method A character string. An estimation method to be used for
@@ -610,6 +626,10 @@ poso_dose_conc <- function(object,time_c,target_conc,
 #'    population model, and "sir" uses the Sequential Importance Resampling
 #'    algorithm to estimate the a posteriori distribution of the individual
 #'    parameters. This argument is ignored if `indiv_param` is provided.
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #' @param p Numeric. The proportion of the distribution of concentrations to
 #'    consider for the optimization. Mandatory for `estim_method=sir`.
 #' @param greater_than A boolean. If `TRUE`: targets a dose leading to a
@@ -680,23 +700,21 @@ poso_dose_conc <- function(object,time_c,target_conc,
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # estimate the optimal interval to reach a cmin of of 2.5 mg/l
 #' # before each administration
-#' poso_inter_cmin(patient01,dose=1500,duration=0.5,target_cmin=2.5)
+#' poso_inter_cmin(dat=df_patient01,prior_model=mod_run001,
+#' dose=1500,duration=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_inter_cmin <- function(object,dose,target_cmin,
-                            estim_method="map",p=NULL,greater_than=TRUE,
-                            starting_interval=12,add_dose=10,
+poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
+                            estim_method="map",nocb=FALSE,p=NULL,
+                            greater_than=TRUE,starting_interval=12,add_dose=10,
                             duration=NULL,indiv_param=NULL){
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+  object <- posologyr(prior_model,dat,nocb)
 
-  read_input  <- read_optim_distribution_input(object=object,
-                                               p=p,
+  read_input  <- read_optim_distribution_input(dat=dat,
+                                               prior_model=prior_model,
+                                               nocb=nocb,object=object,p=p,
                                                estim_method=estim_method,
                                                indiv_param=indiv_param)
   indiv_param <- read_input[[1]]
@@ -772,13 +790,13 @@ poso_inter_cmin <- function(object,dose,target_cmin,
 #-------------------------------------------------------------------------
 
 # get the parameters for distribution-based optimal dosing
-read_optim_distribution_input <- function(object,
-                                          p,
+read_optim_distribution_input <- function(dat,prior_model,
+                                          nocb,object,p,
                                           estim_method,
                                           indiv_param){
   if (is.null(indiv_param)){ #theta_pop + estimates of eta + covariates
     if (estim_method=="map"){
-      model_map   <- poso_estim_map(object,return_model=TRUE)
+      model_map   <- poso_estim_map(dat,prior_model,nocb=nocb,return_model=TRUE)
       if(is.null(object$covariates)){
         indiv_param <- model_map[[2]]$params
       } else {
@@ -802,10 +820,10 @@ read_optim_distribution_input <- function(object,
         if (p < 0 || p >= 1){
           stop('p must be between 0 and 1')
         }
-        model_pop   <- poso_simu_pop(object,n_simul=1e5,return_model=TRUE)
+        model_pop   <- poso_simu_pop(dat,prior_model,n_simul=1e5,return_model=TRUE)
         select_proposal_from_distribution <- TRUE
       } else {
-        model_pop   <- poso_simu_pop(object,n_simul=0,return_model=TRUE)
+        model_pop   <- poso_simu_pop(dat,prior_model,n_simul=0,return_model=TRUE)
         select_proposal_from_distribution <- FALSE
       }
       if(is.null(object$covariates)){
@@ -820,7 +838,8 @@ read_optim_distribution_input <- function(object,
       if (p < 0 || p >= 1){
         stop('p must be between 0 and 1')
       }
-      model_sir   <- poso_estim_sir(object,n_sample=1e5,n_resample=1e4,
+      model_sir   <- poso_estim_sir(dat,prior_model,nocb=nocb,
+                                    n_sample=1e5,n_resample=1e4,
                                     return_model=TRUE)
       if(is.null(object$covariates)){
         indiv_param <- model_sir[[2]]$params

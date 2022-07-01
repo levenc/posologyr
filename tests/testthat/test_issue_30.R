@@ -47,7 +47,7 @@ df_patientA_tdm <-data.frame(ID=1,
                              OCC=1)
 
 # estimation
-patAmap <- poso_estim_map(posologyr(mod_MTXHD_joerger2011,df_patientA_tdm))
+patAmap <- poso_estim_map(df_patientA_tdm,mod_MTXHD_joerger2011)
 
 
 test_that("poso_estim_map provides estimates for models with a single IOV", {

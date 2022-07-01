@@ -43,39 +43,35 @@ mod_piperacillin_2cpt_Roberts2010 <- list(
   sigma       = c(additive_a = 3.2, proportional_b = 0.253))
 
 df_patient32 <- data.frame(ID=6,
-                         TIME=c(0.0,8,16,24,32,40,47.9,48,56,64,71.9,72,80,88,
-                                95.9,96,104,112,120),
-                         DV=c(NA,NA,NA,NA,NA,NA,63.0,NA,NA,NA,19.7,NA,NA,NA,31,
-                              NA,NA,NA,16),
+                         TIME=c(0.0,8,16,24,32,40,47.9,48,56,64,71.9),
+                         DV=c(NA,NA,NA,NA,NA,NA,63.0,NA,NA,NA,19.7),
                          AMT=c(4000,4000,4000,4000,4000,4000,NA,4000,4000,4000,
-                               NA,4000,4000,4000,NA,4000,4000,4000,NA),
-                         DUR=c(8,8,8,8,8,8,NA,8,8,8,NA,8,8,8,NA,8,8,8,NA),
-                         EVID=c(1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0),
-                         TBW=92,OCC=c(1,1,1,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4))
-
-patient32 <- posologyr(prior_model=mod_piperacillin_2cpt_Roberts2010,
-                             dat=df_patient32)
+                               NA),
+                         DUR=c(8,8,8,8,8,8,NA,8,8,8,NA),
+                         EVID=c(1,1,1,1,1,1,0,1,1,1,0),
+                         TBW=92,OCC=c(1,1,1,1,1,1,1,2,2,2,2))
 
 test_that("Dosing optim functions can use models with IOV", {
-            expect_equal(poso_time_cmin(patient32,
-                                        from=4,
-                                        dose=1500,
-                                        duration=4,
-                                        target_cmin=10)$time,4.7)
-            expect_equal(poso_dose_auc(patient32,
-                                       time_auc=24,
-                                       duration=4,
-                                       target_auc=200)$dose,
-                         3999,tolerance=1e-1)
-            expect_equal(poso_dose_conc(patient32,
-                                        time_c=6,
-                                        duration=4,
-                                        target_conc=10)$dose,
-                         3777,tolerance=1e-1)
-            expect_equal(poso_inter_cmin(patient32,
-                                         dose=5000,
-                                         add_dose=10,
-                                         duration=4,
-                                         target_cmin=20)$interval,
-                         5.5,tolerance=1e-1)
-          })
+  expect_equal(poso_time_cmin(dat=df_patient32,
+                              prior_model=mod_piperacillin_2cpt_Roberts2010,
+                              from=4,
+                              dose=1500,
+                              duration=4,
+                              target_cmin=10)$time,4.8)
+  expect_equal(poso_dose_auc(dat=df_patient32,
+                             prior_model=mod_piperacillin_2cpt_Roberts2010,
+                             time_auc=24,
+                             duration=4,
+                             target_auc=200)$dose,3793,tolerance=1e-1)
+  expect_equal(poso_dose_conc(dat=df_patient32,
+                              prior_model=mod_piperacillin_2cpt_Roberts2010,
+                              time_c=6,
+                              duration=4,
+                              target_conc=10)$dose,3388,tolerance=1e-1)
+  expect_equal(poso_inter_cmin(dat=df_patient32,
+                               prior_model=mod_piperacillin_2cpt_Roberts2010,
+                               dose=5000,
+                               add_dose=10,
+                               duration=4,
+                               target_cmin=20)$interval,5.66,tolerance=1e-1)
+  })

@@ -4,11 +4,19 @@
 \alias{poso_simu_pop}
 \title{Estimate the prior distribution of population parameters}
 \usage{
-poso_simu_pop(object, n_simul = 1000, return_model = TRUE)
+poso_simu_pop(
+  dat = NULL,
+  prior_model = NULL,
+  n_simul = 1000,
+  return_model = TRUE
+)
 }
 \arguments{
-\item{object}{A posologyr list, created by the \code{\link{posologyr}}
-function.}
+\item{dat}{Dataframe. An individual subject dataset following the
+structure of NONMEM/rxode2 event records.}
+
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{n_simul}{An integer, the number of simulations to be run. For \code{n_simul =0}, all ETAs are set to 0.}
 
@@ -66,10 +74,7 @@ df_patient01 <- data.frame(ID=1,
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
                         DUR=c(0.5,NA,NA))
-# loading the model and Patient01's event record
-patient01 <- posologyr(prior_model=mod_run001,
-                       dat=df_patient01)
 # estimate the prior distribution of population parameters
-poso_simu_pop(patient01,n_simul=100)
+poso_simu_pop(dat=df_patient01,prior_model=mod_run001,n_simul=100)
 
 }

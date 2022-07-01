@@ -5,18 +5,23 @@
 \title{Estimate the posterior distribution of individual parameters by MCMC}
 \usage{
 poso_estim_mcmc(
-  object,
+  dat = NULL,
+  prior_model = NULL,
   return_model = TRUE,
   burn_in = 50,
   n_iter = 1000,
   n_chains = 4,
+  nocb = FALSE,
   control = list(n_kernel = c(2, 2, 2), stepsize_rw = 0.4, proba_mcmc = 0.3, nb_max =
     3)
 )
 }
 \arguments{
-\item{object}{A posologyr list, created by the \code{\link{posologyr}}
-function.}
+\item{dat}{Dataframe. An individual subject dataset following the
+structure of NONMEM/rxode2 event records.}
+
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{return_model}{A boolean. Returns a rxode2 model using the estimated
 ETAs if set to \code{TRUE}.}
@@ -28,6 +33,11 @@ algorithm.}
 for each Markov chain of the Metropolis-Hastings algorithm.}
 
 \item{n_chains}{Number of Markov chains}
+
+\item{nocb}{A boolean. for time-varying covariates: the next observation
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+\code{FALSE}, the last observation carried forward (locf) style will be used.
+Defaults to \code{FALSE}.}
 
 \item{control}{A list of parameters controlling the Metropolis-Hastings
 algorithm.}
@@ -84,11 +94,9 @@ df_patient01 <- data.frame(ID=1,
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
                         DUR=c(0.5,NA,NA))
-# loading the model and Patient01's event record
-patient01 <- posologyr(prior_model=mod_run001,
-                       dat=df_patient01)
 # estimate the posterior distribution of population parameters
-\donttest{poso_estim_mcmc(patient01,n_iter=50,n_chains=2)}
+\donttest{poso_estim_mcmc(dat=df_patient01,prior_model=mod_run001,
+n_iter=50,n_chains=2)}
 
 }
 \references{

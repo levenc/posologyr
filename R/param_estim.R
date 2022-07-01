@@ -34,8 +34,10 @@
 #' Estimates the prior distribution of population parameters by Monte Carlo
 #' simulations
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#'    function.
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param n_simul An integer, the number of simulations to be run. For `n_simul
 #'   =0`, all ETAs are set to 0.
 #' @param return_model A boolean. Returns a rxode2 model using the simulated
@@ -87,17 +89,14 @@
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # estimate the prior distribution of population parameters
-#' poso_simu_pop(patient01,n_simul=100)
+#' poso_simu_pop(dat=df_patient01,prior_model=mod_run001,n_simul=100)
 #'
 #' @export
-poso_simu_pop <- function(object,n_simul=1000,
+poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
                           return_model=TRUE){
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+
+  object <- posologyr(prior_model,dat)
   no_covariates <- is.null(object$covariates)
 
   omega      <- object$omega
@@ -149,12 +148,18 @@ poso_simu_pop <- function(object,n_simul=1000,
 #' Estimates the Maximum A Posteriori (MAP) individual parameters,
 #' also known as Empirical Bayes Estimates (EBE).
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#'    function.
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`.
 #' @param return_ofv A boolean. Returns a the Objective Function Value (OFV)
 #'    if set to `TRUE`.
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #'
 #' @return A named list consisting of one or more of the following elements
 #' depending on the input parameters of the function: `$eta` a named vector
@@ -204,16 +209,14 @@ poso_simu_pop <- function(object,n_simul=1000,
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # estimate the Maximum A Posteriori individual parameters
-#' poso_estim_map(patient01)
+#' poso_estim_map(dat=df_patient01,prior_model=mod_run001)
 #'
 #' @export
-poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
+                           return_ofv=FALSE,nocb=FALSE){
+
+  object <- posologyr(prior_model,dat,nocb)
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 
@@ -452,8 +455,10 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
 #' Estimates the posterior distribution of individual parameters by Markov
 #' Chain Monte Carlo (using a Metropolis-Hastings algorithm)
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#' function.
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`.
 #' @param burn_in Number of burn-in iterations for the Metropolis-Hastings
@@ -461,6 +466,10 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
 #' @param n_iter Total number of iterations (following the burn-in iterations)
 #'  for each Markov chain of the Metropolis-Hastings algorithm.
 #' @param n_chains Number of Markov chains
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #' @param control A list of parameters controlling the Metropolis-Hastings
 #' algorithm.
 #'
@@ -517,18 +526,17 @@ poso_estim_map <- function(object,return_model=TRUE,return_ofv=FALSE){
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # estimate the posterior distribution of population parameters
-#' \donttest{poso_estim_mcmc(patient01,n_iter=50,n_chains=2)}
+#' \donttest{poso_estim_mcmc(dat=df_patient01,prior_model=mod_run001,
+#' n_iter=50,n_chains=2)}
 #'
 #' @export
-poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,n_iter=1000,
-                            n_chains=4,control=list(n_kernel=c(2,2,2),
+poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
+                            burn_in=50,n_iter=1000,n_chains=4,nocb=FALSE,
+                            control=list(n_kernel=c(2,2,2),
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+
+  object <- posologyr(prior_model,dat,nocb)
   no_covariates <- is.null(object$covariates)
 
   dat          <- object$tdm_data
@@ -711,12 +719,19 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,n_iter=1000,
 #' Estimates the posterior distribution of individual parameters by
 #' Sequential Importance Resampling (SIR)
 #'
-#' @param object A posologyr list, created by the \code{\link{posologyr}}
-#' function.
+#'
+#' @param dat Dataframe. An individual subject dataset following the
+#'     structure of NONMEM/rxode2 event records.
+#' @param prior_model A \code{posologyr} prior population pharmacokinetics
+#'    model, a list of six objects.
 #' @param n_sample Number of samples from the S-step
 #' @param n_resample Number of samples from the R-step
 #' @param return_model A boolean. Returns a rxode2 model using the estimated
 #'    ETAs if set to `TRUE`.
+#' @param nocb A boolean. for time-varying covariates: the next observation
+#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'     `FALSE`, the last observation carried forward (locf) style will be used.
+#'     Defaults to `FALSE`.
 #'
 #' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
@@ -766,16 +781,14 @@ poso_estim_mcmc <- function(object,return_model=TRUE,burn_in=50,n_iter=1000,
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0),
 #'                         DUR=c(0.5,NA,NA))
-#' # loading the model and Patient01's event record
-#' patient01 <- posologyr(prior_model=mod_run001,
-#'                        dat=df_patient01)
 #' # estimate the posterior distribution of population parameters
-#' poso_estim_sir(patient01,n_sample=1e4,n_resample=1e3)
+#' poso_estim_sir(dat=df_patient01,prior_model=mod_run001,
+#' n_sample=1e4,n_resample=1e3)
 #'
 #' @export
-poso_estim_sir <- function(object,n_sample=1e4,n_resample=1e3,return_model=TRUE){
-  validate_priormod(object)
-  validate_dat(object$tdm_data)
+poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
+                           n_resample=1e3,return_model=TRUE,nocb=FALSE){
+  object <- posologyr(prior_model,dat,nocb)
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 

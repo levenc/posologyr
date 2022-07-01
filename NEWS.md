@@ -1,6 +1,22 @@
-# posologyr v0.2.0.9000
-* RxODE import has been updated to rxode2
+# posologyr v1.0.0
+
+## Breaking changes
+* `posologyr()` is now an internal function, all exported functions take 
+patient data and a prior model as input parameters
 * The adaptive MAP forecasting option is removed
+
+## Additional features
+* `poso_estim_map` provides an rxode2 model using MAP-EBE and the input dataset, 
+with interpolation of covariates, to make plotting easier
+
+## Internal changes
+* RxODE import is updated to rxode2
+* All tests are updated to take into account the internalization of the 
+`posologyr` function
+
+## Bug fixes
+* `poso_time_cmin()`, `poso_dose_auc()`, `poso_dose_conc()`, and 
+`poso_inter_cmin()` no longer fail for models with IOV
 
 # posologyr v0.2.0
 

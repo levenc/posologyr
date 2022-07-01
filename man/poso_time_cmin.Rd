@@ -5,10 +5,12 @@
 \title{Predict time to a selected trough concentration}
 \usage{
 poso_time_cmin(
-  object,
+  dat = NULL,
+  prior_model = NULL,
   dose,
   target_cmin,
   estim_method = "map",
+  nocb = FALSE,
   p = NULL,
   greater_than = TRUE,
   from = 0.2,
@@ -20,8 +22,11 @@ poso_time_cmin(
 )
 }
 \arguments{
-\item{object}{A posologyr list, created by the \code{\link{posologyr}}
-function.}
+\item{dat}{Dataframe. An individual subject dataset following the
+structure of NONMEM/rxode2 event records.}
+
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{dose}{Numeric. Dose administered.}
 
@@ -33,6 +38,11 @@ Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
 parameters. This argument is ignored if \code{indiv_param} is provided.}
+
+\item{nocb}{A boolean. for time-varying covariates: the next observation
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+\code{FALSE}, the last observation carried forward (locf) style will be used.
+Defaults to \code{FALSE}.}
 
 \item{p}{Numeric. The proportion of the distribution of cmin to consider for
 the estimation. Mandatory for \code{estim_method=sir}.}
@@ -111,12 +121,10 @@ df_patient01 <- data.frame(ID=1,
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
                         DUR=c(0.5,NA,NA))
-# loading the model and Patient01's event record
-patient01 <- posologyr(prior_model=mod_run001,
-                       dat=df_patient01)
 # predict the time needed to reach a concentration of 2.5 mg/l
 # after the administration of a 2500 mg dose over a 30 minutes
 # infusion
-poso_time_cmin(patient01,dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
+poso_time_cmin(dat=df_patient01,prior_model=mod_run001,
+dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
 
 }

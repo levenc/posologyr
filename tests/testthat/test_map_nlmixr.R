@@ -37,10 +37,8 @@ df_patient03_amik <- data.frame(ID=1,TIME=c(0,1,6),
                                 DUR=c(0.5,NA,NA),
                                 CLCREAT4H=50,TBW=62,PoverF=169,AMS=1)
 
-patient03_amik  <- posologyr(mod_amikacin_2cpt_Burdet2015,
-                             dat=df_patient03_amik)
-
-patient03_amik_map  <- poso_estim_map(patient03_amik,
+patient03_amik_map  <- poso_estim_map(dat=df_patient03_amik,
+                                      prior_model=mod_amikacin_2cpt_Burdet2015,
                                       return_model=TRUE)
 
 test_that("MAP estimates match nlmixr posthoc estimates", {

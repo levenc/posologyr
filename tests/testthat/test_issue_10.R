@@ -34,17 +34,17 @@ df_patient01_tobra <- data.frame(ID=1,TIME=c(0.0,1.0,14.0),
                                  EVID=c(1,0,0),
                                  CLCREAT=80,WT=65)
 
-p01_tobra <- posologyr(prior_model=mod_tobramycin_2cpt_fictional,
-                          dat=df_patient01_tobra)
-
 test_that("poso_mcmc_pop accepts burn_in == n_iter", {
-  expect_equal(class(poso_estim_mcmc(p01_tobra,burn_in = 10,
+  expect_equal(class(poso_estim_mcmc(dat=df_patient01_tobra,
+                                     prior_model=mod_tobramycin_2cpt_fictional,burn_in = 10,
                                      n_iter = 10,
                                      return_model = FALSE)$eta),"data.frame")
 })
 
 test_that("poso_mcmc_pop accepts burn_in < n_iter", {
-  expect_equal(class(poso_estim_mcmc(p01_tobra,burn_in = 12,
+  expect_equal(class(poso_estim_mcmc(dat=df_patient01_tobra,
+                                     prior_model=mod_tobramycin_2cpt_fictional,
+                                     burn_in = 12,
                                      n_iter = 10,
                                      return_model = FALSE)$eta),"data.frame")
 })

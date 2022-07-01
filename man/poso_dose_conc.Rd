@@ -5,10 +5,12 @@
 \title{Estimate the optimal dose for a selected target concentration}
 \usage{
 poso_dose_conc(
-  object,
+  dat = NULL,
+  prior_model = NULL,
   time_c,
   target_conc,
   estim_method = "map",
+  nocb = FALSE,
   p = NULL,
   greater_than = TRUE,
   starting_dose = 100,
@@ -19,8 +21,11 @@ poso_dose_conc(
 )
 }
 \arguments{
-\item{object}{A posologyr list, created by the \code{\link{posologyr}}
-function.}
+\item{dat}{Dataframe. An individual subject dataset following the
+structure of NONMEM/rxode2 event records.}
+
+\item{prior_model}{A \code{posologyr} prior population pharmacokinetics
+model, a list of six objects.}
 
 \item{time_c}{Numeric. Point in time for which the dose is to be
 optimized.}
@@ -33,6 +38,11 @@ Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
 parameters. This argument is ignored if \code{indiv_param} is provided.}
+
+\item{nocb}{A boolean. for time-varying covariates: the next observation
+carried backward (nocb) interpolation style, similar to NONMEM.  If
+\code{FALSE}, the last observation carried forward (locf) style will be used.
+Defaults to \code{FALSE}.}
 
 \item{p}{Numeric. The proportion of the distribution of concentrations to
 consider for the optimization. Mandatory for \code{estim_method=sir}.}
@@ -116,11 +126,9 @@ df_patient01 <- data.frame(ID=1,
                         AMT=c(2000,0,0),
                         EVID=c(1,0,0),
                         DUR=c(0.5,NA,NA))
-# loading the model and Patient01's event record
-patient01 <- posologyr(prior_model=mod_run001,
-                       dat=df_patient01)
 # estimate the optimal dose to reach a concentration of 80 mg/l
 # one hour after starting the 30-minutes infusion
-poso_dose_conc(patient01,time_c=1,duration=0.5,target_conc=80)
+poso_dose_conc(dat=df_patient01,prior_model=mod_run001,
+time_c=1,duration=0.5,target_conc=80)
 
 }

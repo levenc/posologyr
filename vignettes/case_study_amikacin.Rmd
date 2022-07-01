@@ -74,21 +74,13 @@ df_patientA_prior <- data.frame(ID=1,TIME=0,
 df_patientA_prior
 ```
 
-## Apply the selected prior ppk model to patient data
-
-The `posologyr()` function combines the patient record and the ppk model into a single object.
-
-```{r posologyr_prior_patientA}
-patA_prior_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,
-                             df_patientA_prior)
-```
-
 ## Optimal dose selection
 
 In the absence of measured concentrations, the optimal dose in mg to achieve a so-called peak concentration of 80 mg/l (one hour after the start of the 30-minute infusion) is determined from the typical profile of the ppk model.
 
 ```{r prior_Cmax_optim_patientA}
-prior_dose <- poso_dose_conc(patA_prior_amik,
+prior_dose <- poso_dose_conc(dat=df_patientA_prior,
+                             prior_model=mod_amikacin_2cpt_Burdet2015,
                              time_c = 1,
                              duration = 0.5,
                              target_conc = 80)$dose
@@ -100,7 +92,8 @@ prior_dose
 With this dose, the time in hours required to reach a target Cmin concentration of 2.5 mg/l can be estimated.
 
 ```{r prior_Cmin_optim_patientA}
-prior_timecmin <- poso_time_cmin(patA_prior_amik,
+prior_timecmin <- poso_time_cmin(dat=df_patientA_prior,
+                                 prior_model=mod_amikacin_2cpt_Burdet2015,
                                  dose = prior_dose,
                                  duration = 0.5,
                                  target_cmin = 2.5)$time
@@ -109,28 +102,24 @@ prior_timecmin
 
 ## Simulate and plot the a priori dosage
 
-An event table is created to simulate the selected dosage with rxode2.
-
-```{r prior_plot_et}
-# infusion of prior_dose mg over 0.5 hours at time 0
-event_table_priordose <- rxode2::et(time=0,amt=prior_dose,dur=0.5)
-event_table_priordose$add.sampling(seq(0,7,by=0.1))
-```
-
 By setting `n_simul = 0`, the `poso_simu_pop()` function produces an rxode2 model that incorporates typical population parameter values and individual covariates from the patient record.
 
 ```{r prior_plot_model}
-prior_param_patA      <- poso_simu_pop(patA_prior_amik,n_simul = 0)$model$params
+prior_patA      <- poso_simu_pop(dat=df_patientA_prior,
+                                 prior_model=mod_amikacin_2cpt_Burdet2015,
+                                 n_simul = 0)
 
-prior_dose_model_patA <- rxode2::rxSolve(object=patA_prior_amik$ppk_model,
-                                  params=prior_param_patA,
-                                  events=event_table_priordose)
+# Add observations and a 30-minutes infusion of the optimal dose
+prior_patA$model$time <- seq(0,20,b=0.1)
+prior_patA$model$add.dosing(dose=prior_dose,rate=prior_dose/0.5)
+
+plot(prior_patA$model,Cc)
 ```
 
-The resulting model is plotted with an horizontal ribbon showing the 60-80 mg/l target interval of 1 h peak concentration, and a vertical dashed line marking 1 hour.
+The resulting model can be plotted with an horizontal ribbon showing the 60-80 mg/l target interval of 1 h peak concentration, and a vertical dashed line marking 1 hour.
 
 ```{r prior_plot}
-plot(prior_dose_model_patA,Cc) + 
+plot(prior_patA$model,Cc) + 
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_vline(xintercept=1, linetype="dashed") +
   ggplot2::geom_ribbon(ggplot2::aes(ymin=60, ymax=80),
@@ -155,24 +144,15 @@ df_patientA_tdm <- data.frame(ID=1,TIME=c(0,1,6),
 df_patientA_tdm
 ```
 
-## Apply the selected prior ppk model to patient data
-
-The updated patient record and the ppk model are combined into a single object by `posologyr()`.
-
-```{r posologyr_tdm_patientA}
-patA_tdm_amik <- posologyr(mod_amikacin_2cpt_Burdet2015,
-                           df_patientA_tdm)
-```
-
 ## Plot the observations from TDM over the simulated a priori dosage
 
 The observation from TDM are taken from the patient record, and renamed to match the plot of the prior dose model.
 
 ```{r prior_plot_tdm}
-indiv_obs           <- patA_tdm_amik$tdm_data[,c("DV","TIME")]
+indiv_obs           <- df_patientA_tdm[,c("DV","TIME")]
 names(indiv_obs)    <- c("value","time")
 
-plot(prior_dose_model_patA,Cc) + 
+plot(prior_patA$model,Cc) + 
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_point(data=indiv_obs, size= 3, na.rm=TRUE) +
   ggplot2::geom_vline(xintercept=1, linetype="dashed") +
@@ -187,7 +167,8 @@ The observations are not close to the a priori population profile. The target pe
 The maximum a posteriori (MAP) individual parameters are estimated.
 
 ```{r estim_map}
-patA_map <- poso_estim_map(patA_tdm_amik)
+patA_map <- poso_estim_map(dat=df_patientA_tdm,
+                           prior_model=mod_amikacin_2cpt_Burdet2015)
 patA_map
 ```
 
@@ -211,7 +192,8 @@ The MAP profile matches the observations.
 With the MAP estimates of the individual parameters, the prediction of the time in hours needed before reaching the target Cmin can be updated.
 
 ```{r map_Cmin_priordose_patientA}
-map_timecmin_priordose <- poso_time_cmin(patA_tdm_amik,
+map_timecmin_priordose <- poso_time_cmin(dat=df_patientA_tdm,
+                                         prior_model=mod_amikacin_2cpt_Burdet2015,
                                          dose = prior_dose,
                                          duration = 0.5,
                                          target_cmin = 2.5)$time
@@ -223,10 +205,11 @@ map_timecmin_priordose
 An optimal a posteriori dose to achieve a peak concentration of 80 mg/l is determined using the MAP estimates.
 
 ```{r map_Cmax_optim_patientA}
-map_dose <- poso_dose_conc(patA_tdm_amik,
-                            time_c = 1,
-                            duration = 0.5,
-                            target_conc = 80)$dose
+map_dose <- poso_dose_conc(dat=df_patientA_tdm,
+                           prior_model=mod_amikacin_2cpt_Burdet2015,
+                           time_c = 1,
+                           duration = 0.5,
+                           target_conc = 80)$dose
 map_dose
 ```
 
@@ -235,10 +218,11 @@ map_dose
 The optimal inter-dose interval to reach a Cmin of 2.5 mg/L before each dosing is determined using the MAP estimates.
 
 ```{r map_Cmin_optim_patientA}
-map_interval <- poso_inter_cmin(patA_tdm_amik,
-                               dose = map_dose,
-                               duration = 0.5,
-                               target_cmin = 2.5)$interval
+map_interval <- poso_inter_cmin(dat=df_patientA_tdm,
+                                prior_model=mod_amikacin_2cpt_Burdet2015,
+                                dose = map_dose,
+                                duration = 0.5,
+                                target_cmin = 2.5)$interval
 map_interval
 ```
 
@@ -255,12 +239,12 @@ event_table_mapdose$add.sampling(seq(0,24,by=0.1))
 map_param_patA      <- patA_map$model$params
 
 #Simulate with the event table and the individual MAP parameters
-map_dose_model_patA <- rxode2::rxSolve(object=patA_tdm_amik$ppk_model,
-                                   params=cbind(map_param_patA,
-                                            CLCREAT4H=50,
-                                            TBW=62,
-                                            PoverF=169),
-                                  events=event_table_mapdose)
+map_dose_model_patA <- rxode2::rxSolve(object=mod_amikacin_2cpt_Burdet2015$ppk_model,
+                                       params=cbind(map_param_patA,
+                                                    CLCREAT4H=50,
+                                                    TBW=62,
+                                                    PoverF=169),
+                                       events=event_table_mapdose)
 
 #Plot the results of the simulation
 plot(map_dose_model_patA,Cc) + 
@@ -279,12 +263,12 @@ event_table_mapdose_ss <- rxode2::et(amt=map_dose,dur=0.5,ii=map_interval,addl=2
 event_table_mapdose_ss$add.sampling(seq(0,3.5*map_interval,by=0.1))
 
 #Simulate with the event table and the individual MAP parameters
-map_dose_model_patA_ss <- rxode2::rxSolve(object=patA_tdm_amik$ppk_model,
-                                  params=cbind(map_param_patA,
-                                            CLCREAT4H=50,
-                                            TBW=62,
-                                            PoverF=169),
-                                  events=event_table_mapdose_ss)
+map_dose_model_patA_ss <- rxode2::rxSolve(object=mod_amikacin_2cpt_Burdet2015$ppk_model,
+                                          params=cbind(map_param_patA,
+                                                       CLCREAT4H=50,
+                                                       TBW=62,
+                                                       PoverF=169),
+                                          events=event_table_mapdose_ss)
 
 #Plot the results of the simulation
 plot(map_dose_model_patA_ss,Cc) + 
