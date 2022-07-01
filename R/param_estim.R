@@ -100,12 +100,10 @@ poso_simu_pop <- function(object,n_simul=1000,
   validate_dat(object$tdm_data)
   no_covariates <- is.null(object$covariates)
 
-  dat        <- object$tdm_data
   omega      <- object$omega
   ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
   omega_eta  <- omega[ind_eta,ind_eta]
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
-  interpolation <- object$interpolation
 
   if (n_simul > 0) {
     eta_mat <- matrix(0,nrow=n_simul,ncol=ncol(omega))
@@ -121,23 +119,15 @@ poso_simu_pop <- function(object,n_simul=1000,
 
   # outputs
   if(return_model){
-    et_poso <- rxode2::as.et(object$tdm_data)
-    et_poso$clearSampling()
-    et_poso$add.sampling(seq(dat$TIME[1],
-                             dat$TIME[length(dat$TIME)]+1,
-                             by=.1))
+    model_pop         <- object$solved_ppk_model
+    theta             <- rbind(object$theta)
 
-    theta  <- rbind(object$theta)
-    params <- cbind(theta,eta_df,row.names=NULL)
-
-    if(!no_covariates){
-      covar_mat <- sapply(object$covariates,FUN=extrapol_cov,dat=dat,
-                          covar=object$covariates,
-                          interpol_approx="constant",
-                          f=ifelse(object$interpolation == "nocb",1,0),
-                          event_table=et_poso)
-
-      et_poso <- cbind(et_poso,covar_mat)
+    if(no_covariates){
+      params <- cbind(theta,eta_df,row.names=NULL)
+    } else {
+      covar             <- as.data.frame(object$tdm_data[1,object$covariates])
+      names(covar)      <- object$covariates
+      params <- cbind(theta,eta_df,covar,row.names=NULL)
     }
 
     if (!is.null(object$pi_matrix)){
@@ -147,8 +137,8 @@ poso_simu_pop <- function(object,n_simul=1000,
       params            <- cbind(params,kappa_df)
     }
 
-    eta_pop$model <- rxode2::rxSolve(object$solved_ppk_model,et_poso,params,
-                                       covsInterpolation = interpolation)
+    model_pop$params  <- params
+    eta_pop$model     <- model_pop
   }
 
   return(eta_pop)
