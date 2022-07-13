@@ -164,7 +164,8 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 #' @return A named list consisting of one or more of the following elements
 #' depending on the input parameters of the function: `$eta` a named vector
 #' of the MAP estimates of the individual values of ETA, `$model` an rxode2
-#' model using the estimated ETAs.
+#' model using the estimated ETAs, `$event` the `data.table` used to solve the
+#' returned rxode2 model.
 #'
 #' @import data.table
 #'
@@ -429,6 +430,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
     estim_map$model <- rxode2::rxSolve(object$ppk_model,et_poso,
                                        c(object$theta,estim_map$eta),
                                        covsInterpolation = interpolation)
+    estim_map$event <- data.table::data.table(et_poso)
   }
 
   if(return_ofv){
