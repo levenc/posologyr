@@ -184,7 +184,7 @@ of the ppk model.</p>
 <span>                             duration <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                             target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span></span>
 <span><span class="va">prior_dose</span></span>
-<span><span class="co">#&gt; [1] 2087.669</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 2087.668</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="time-required-to-reach-the-target-cmin">Time required to reach the target Cmin<a class="anchor" aria-label="anchor" href="#time-required-to-reach-the-target-cmin"></a>
@@ -286,15 +286,15 @@ estimated.</p>
 <span><span class="va">patA_map</span></span>
 <span><span class="co">#&gt; $eta</span></span>
 <span><span class="co">#&gt;     ETA_Cl     ETA_Vc     ETA_Vp      ETA_Q </span></span>
-<span><span class="co">#&gt;  0.4692061  0.3065423  0.7507650 -0.1293749 </span></span>
+<span><span class="co">#&gt;  0.4692086  0.3065393  0.7507616 -0.1293750 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $model</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Solved rxode2 object ──</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;   THETA_Cl   THETA_Vc   THETA_Vp    THETA_Q     ETA_Cl     ETA_Vc     ETA_Vp </span></span>
-<span><span class="co">#&gt;  4.3000000 15.9000000 21.4000000 12.1000000  0.4692061  0.3065423  0.7507650 </span></span>
+<span><span class="co">#&gt;  4.3000000 15.9000000 21.4000000 12.1000000  0.4692086  0.3065393  0.7507616 </span></span>
 <span><span class="co">#&gt;      ETA_Q </span></span>
-<span><span class="co">#&gt; -0.1293749 </span></span>
+<span><span class="co">#&gt; -0.1293750 </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;  centr periph    AUC </span></span>
 <span><span class="co">#&gt;      0      0      0 </span></span>
@@ -309,7 +309,83 @@ estimated.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4  3.04  12.9  21.4  12.1  4.86  17.6  45.3  10.6 0.277 0.605 0.234  80.1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5  3.04  12.9  21.4  12.1  4.86  17.6  45.3  10.6 0.277 0.605 0.234  96.3</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 65 more rows, and 6 more variables: centr &lt;dbl&gt;, periph &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AUC &lt;dbl&gt;, CLCREAT4H &lt;dbl&gt;, TBW &lt;dbl&gt;, PoverF &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   AUC &lt;dbl&gt;, CLCREAT4H &lt;dbl&gt;, TBW &lt;dbl&gt;, PoverF &lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $event</span></span>
+<span><span class="co">#&gt;     id time  amt evid dur CLCREAT4H TBW PoverF</span></span>
+<span><span class="co">#&gt;  1:  1  0.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;  2:  1  0.0 2080    1 0.5        50  62    169</span></span>
+<span><span class="co">#&gt;  3:  1  0.1   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;  4:  1  0.2   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;  5:  1  0.3   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;  6:  1  0.4   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;  7:  1  0.5   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;  8:  1  0.6   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;  9:  1  0.7   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 10:  1  0.8   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 11:  1  0.9   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 12:  1  1.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 13:  1  1.1   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 14:  1  1.2   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 15:  1  1.3   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 16:  1  1.4   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 17:  1  1.5   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 18:  1  1.6   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 19:  1  1.7   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 20:  1  1.8   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 21:  1  1.9   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 22:  1  2.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 23:  1  2.1   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 24:  1  2.2   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 25:  1  2.3   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 26:  1  2.4   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 27:  1  2.5   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 28:  1  2.6   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 29:  1  2.7   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 30:  1  2.8   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 31:  1  2.9   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 32:  1  3.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 33:  1  3.1   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 34:  1  3.2   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 35:  1  3.3   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 36:  1  3.4   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 37:  1  3.5   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 38:  1  3.6   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 39:  1  3.7   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 40:  1  3.8   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 41:  1  3.9   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 42:  1  4.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 43:  1  4.1   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 44:  1  4.2   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 45:  1  4.3   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 46:  1  4.4   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 47:  1  4.5   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 48:  1  4.6   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 49:  1  4.7   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 50:  1  4.8   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 51:  1  4.9   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 52:  1  5.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 53:  1  5.1   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 54:  1  5.2   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 55:  1  5.3   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 56:  1  5.4   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 57:  1  5.5   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 58:  1  5.6   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 59:  1  5.7   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 60:  1  5.8   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 61:  1  5.9   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 62:  1  6.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 63:  1  6.1   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 64:  1  6.2   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 65:  1  6.3   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 66:  1  6.4   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 67:  1  6.5   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 68:  1  6.6   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 69:  1  6.7   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 70:  1  6.8   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 71:  1  6.9   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt; 72:  1  7.0   NA    0  NA        50  62    169</span></span>
+<span><span class="co">#&gt;     id time  amt evid dur CLCREAT4H TBW PoverF</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
@@ -354,7 +430,7 @@ mg/l is determined using the MAP estimates.</p>
 <span>                           duration <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                           target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span></span>
 <span><span class="va">map_dose</span></span>
-<span><span class="co">#&gt; [1] 2578.928</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 2578.922</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="interdose-interval-selection-a-posteriori">Interdose interval selection a posteriori<a class="anchor" aria-label="anchor" href="#interdose-interval-selection-a-posteriori"></a>
@@ -368,7 +444,7 @@ each dosing is determined using the MAP estimates.</p>
 <span>                                duration <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                                target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">$</span><span class="va">interval</span></span>
 <span><span class="va">map_interval</span></span>
-<span><span class="co">#&gt; [1] 39.62327</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 39.62343</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="simulate-and-plot-the-optimal-a-posteriori-dosage">Simulate and plot the optimal a posteriori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-optimal-a-posteriori-dosage"></a>
@@ -447,7 +523,7 @@ each dosing is determined using the MAP estimates.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

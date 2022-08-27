@@ -1,10 +1,10 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.5
+pandoc: '2.18'
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   case_study_amikacin: case_study_amikacin.html
   case_study_vancomycin: case_study_vancomycin.html
   patient_data_input: patient_data_input.html
   posologyr_user_defined_models: posologyr_user_defined_models.html
-last_built: 2022-07-01T22:46Z
+last_built: 2022-08-27T18:45Z
 

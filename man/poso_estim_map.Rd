@@ -34,7 +34,8 @@ Defaults to \code{FALSE}.}
 A named list consisting of one or more of the following elements
 depending on the input parameters of the function: \verb{$eta} a named vector
 of the MAP estimates of the individual values of ETA, \verb{$model} an rxode2
-model using the estimated ETAs.
+model using the estimated ETAs, \verb{$event} the \code{data.table} used to solve the
+returned rxode2 model.
 }
 \description{
 Estimates the Maximum A Posteriori (MAP) individual parameters,

@@ -12,8 +12,7 @@ poso_estim_mcmc(
   n_iter = 1000,
   n_chains = 4,
   nocb = FALSE,
-  control = list(n_kernel = c(2, 2, 2), stepsize_rw = 0.4, proba_mcmc = 0.3, nb_max =
-    3)
+  control = list(n_kernel = c(2, 2, 2), stepsize_rw = 0.4, proba_mcmc = 0.3, nb_max = 3)
 )
 }
 \arguments{

@@ -179,15 +179,15 @@ more details regarding the patient records.</p>
 <span><span class="va">patB_map</span></span>
 <span><span class="co">#&gt; $eta</span></span>
 <span><span class="co">#&gt;     ETA_Cl     ETA_Vc     ETA_Vp      ETA_Q </span></span>
-<span><span class="co">#&gt; 0.10796048 0.04652900 0.06865698 0.00000000 </span></span>
+<span><span class="co">#&gt; 0.10796039 0.04652920 0.06865727 0.00000000 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $model</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Solved rxode2 object ──</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;    THETA_Cl    THETA_Vc    THETA_Vp     THETA_Q      ETA_Cl      ETA_Vc </span></span>
-<span><span class="co">#&gt;  4.50000000 58.40000000 38.40000000  6.50000000  0.10796048  0.04652900 </span></span>
+<span><span class="co">#&gt;  4.50000000 58.40000000 38.40000000  6.50000000  0.10796039  0.04652920 </span></span>
 <span><span class="co">#&gt;      ETA_Vp </span></span>
-<span><span class="co">#&gt;  0.06865698 </span></span>
+<span><span class="co">#&gt;  0.06865727 </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;  centr periph    AUC </span></span>
 <span><span class="co">#&gt;      0      0      0 </span></span>
@@ -202,7 +202,21 @@ more details regarding the patient records.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  6.34</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5  2.76  58.4  38.4   6.5  3.07  61.2  41.1   6.5 0.050<span style="text-decoration: underline;">2</span> 0.106 0.158  7.87</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 485 more rows, and 6 more variables: centr &lt;dbl&gt;, periph &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AUC &lt;dbl&gt;, CLCREAT &lt;dbl&gt;, WT &lt;dbl&gt;, DIAL &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   AUC &lt;dbl&gt;, CLCREAT &lt;dbl&gt;, WT &lt;dbl&gt;, DIAL &lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $event</span></span>
+<span><span class="co">#&gt;      id time  amt evid dur CLCREAT WT DIAL</span></span>
+<span><span class="co">#&gt;   1:  1  0.0   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt;   2:  1  0.0 2000    1   2      65 70    0</span></span>
+<span><span class="co">#&gt;   3:  1  0.1   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt;   4:  1  0.2   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt;   5:  1  0.3   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt;  ---                                      </span></span>
+<span><span class="co">#&gt; 489:  1 48.6   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt; 490:  1 48.7   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt; 491:  1 48.8   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt; 492:  1 48.9   NA    0  NA      65 70    0</span></span>
+<span><span class="co">#&gt; 493:  1 49.0   NA    0  NA      65 70    0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
@@ -235,7 +249,7 @@ model provided by the <code><a href="../reference/poso_estim_map.html">poso_esti
 <span><span class="co">#AUC 24_48</span></span>
 <span><span class="va">AUC_map_second_dose</span> <span class="op">&lt;-</span> <span class="va">map_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span> <span class="va">AUC_map_first_dose</span></span>
 <span><span class="va">AUC_map_second_dose</span></span>
-<span><span class="co">#&gt; [1] 387.1363</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 387.1362</span></span></code></pre></div>
 <p>The current dosage does not meet the target AUC.</p>
 </div>
 <div class="section level3">
@@ -280,7 +294,7 @@ determined.</p>
 <span><span class="co">#Cmin at steady-state</span></span>
 <span><span class="va">target_cmin_ss</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">*</span><span class="fl">9</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">target_cmin_ss</span></span>
-<span><span class="co">#&gt; [1] 11.02488</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 11.02489</span></span></code></pre></div>
 <p>The dose needed to achieve the steady-state Cmin following the first
 administration can now be identified.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -290,7 +304,7 @@ administration can now be identified.</p>
 <span>                                   duration<span class="op">=</span><span class="fl">2</span>,</span>
 <span>                                   target_conc<span class="op">=</span><span class="va">target_cmin_ss</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span></span>
 <span><span class="va">loading_dose_map</span></span>
-<span><span class="co">#&gt; [1] 2525.159</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 2525.161</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="simulate-and-plot-the-optimal-a-posteriori-dosage">Simulate and plot the optimal a posteriori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-optimal-a-posteriori-dosage"></a>
@@ -321,13 +335,13 @@ administration can now be identified.</p>
 <code class="sourceCode R"><span><span class="co">#AUC 0_24</span></span>
 <span><span class="va">AUC_loading_dose</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">AUC_loading_dose</span></span>
-<span><span class="co">#&gt; [1] 424.7766</span></span>
+<span><span class="co">#&gt; [1] 424.777</span></span>
 <span></span>
 <span><span class="co">#AUC 24_48</span></span>
 <span><span class="va">AUC_maintenance_dose</span> <span class="op">&lt;-</span> <span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">map_optim_model_patB</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span></span>
 <span>  <span class="va">AUC_loading_dose</span></span>
 <span><span class="va">AUC_maintenance_dose</span></span>
-<span><span class="co">#&gt; [1] 399.7954</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 399.7957</span></span></code></pre></div>
 <p>The target AUC24 are now met.</p>
 </div>
 </div>
@@ -349,7 +363,7 @@ the <code>interdose_interval</code>.</p>
 <span>                                          duration<span class="op">=</span><span class="fl">24</span>,</span>
 <span>                                          target_conc<span class="op">=</span><span class="va">target_css</span><span class="op">)</span><span class="op">$</span><span class="va">dose</span></span>
 <span><span class="va">maintenance_dose_map_ci</span></span>
-<span><span class="co">#&gt; [1] 1229.425</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 1229.429</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="simulate-and-plot-the-optimal-a-posteriori-dosage-1">Simulate and plot the optimal a posteriori dosage<a class="anchor" aria-label="anchor" href="#simulate-and-plot-the-optimal-a-posteriori-dosage-1"></a>
 </h3>
@@ -396,7 +410,7 @@ the <code>interdose_interval</code>.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

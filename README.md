@@ -144,8 +144,13 @@ following vignettes:
 -   `vignette("case_study_amikacin")`
 -   `vignette("case_study_vancomycin")`
 
-All the vignettes are also available at
-<https://levenc.github.io/posologyr/>.
+## Performance of the MAP-EBE algorithm in posologyr
+
+Posologyr showed comparable performance to NONMEM:
+
+-   Pharmaceutics **2022**, 14(2), 442;
+    [doi:10.3390/pharmaceutics14020442](https://doi.org/10.3390/pharmaceutics14020442)
+-   Supporting data: <https://github.com/levenc/posologyr-pharmaceutics>
 
 ## Acknowledgments
 
