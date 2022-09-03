@@ -644,7 +644,6 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,time_c,target_conc,
 #' @param indiv_param Optional. A set of individual parameters : THETA,
 #'     estimates of ETA, and covariates.
 #'
-#' @return A numeric
 #'
 #' @return A list containing the following components:
 #' \describe{

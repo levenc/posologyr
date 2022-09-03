@@ -63,8 +63,6 @@ administrations.}
 estimates of ETA, and covariates.}
 }
 \value{
-A numeric
-
 A list containing the following components:
 \describe{
 \item{interval}{Numeric. An inter-dose interval to reach the target trough

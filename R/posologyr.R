@@ -63,6 +63,7 @@
 #' }
 #'
 #' @keywords internal
+#' @noRd
 posologyr <- function(prior_model=NULL,dat=NULL,nocb=FALSE){
 
   validate_priormod(prior_model)

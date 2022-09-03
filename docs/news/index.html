@@ -71,7 +71,7 @@
 <div class="section level3">
 <h3 id="breaking-changes-1-0-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-0-0"></a></h3>
 <ul><li>
-<code><a href="../reference/posologyr.html">posologyr()</a></code> is now an internal function, all exported functions take patient data and a prior model as input parameters</li>
+<code>posologyr()</code> is now an internal function, all exported functions take patient data and a prior model as input parameters</li>
 <li>The adaptive MAP forecasting option is removed</li>
 </ul></div>
 <div class="section level3">
@@ -82,7 +82,7 @@
 <div class="section level3">
 <h3 id="internal-changes-1-0-0">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-1-0-0"></a></h3>
 <ul><li>RxODE import is updated to rxode2</li>
-<li>All tests are updated to take into account the internalization of the <code><a href="../reference/posologyr.html">posologyr()</a></code> function</li>
+<li>All tests are updated to take into account the internalization of the <code>posologyr()</code> function</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-0-0"></a></h3>
@@ -108,7 +108,7 @@
 <li>
 <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code> is the new name of <code>poso_dose_ctime()</code>.</li>
 <li>Issues <a href="https://github.com/levenc/posologyr/issues/5" class="external-link">#5</a> and <a href="https://github.com/levenc/posologyr/issues/6" class="external-link">#6</a> are fixed: <code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>, <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, and <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> now work with prior and posterior distributions of ETA, and not only with point estimates (such as the MAP).</li>
-<li>A new <code>nocb</code> parameter is added to <code><a href="../reference/posologyr.html">posologyr()</a></code>. The interpolation method for time-varying covariates can be either last observation carried forward (locf, the RxODE default), or next observation carried backward (nocb, the NONMEM default).</li>
+<li>A new <code>nocb</code> parameter is added to <code>posologyr()</code>. The interpolation method for time-varying covariates can be either last observation carried forward (locf, the RxODE default), or next observation carried backward (nocb, the NONMEM default).</li>
 <li>
 <code>vignette("uncertainty_estimates")</code> is removed.</li>
 <li>The built-in models are removed.</li>
