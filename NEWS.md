@@ -1,3 +1,8 @@
+# posologyr v1.0.0.9999
+
+## Additional features
+* `poso_time_cmin()` can now estimate time needed to reach a selected trough concentration (Cmin) using the data from TDM directly
+
 # posologyr v1.0.0
 
 ## Breaking changes

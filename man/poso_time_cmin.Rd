@@ -7,8 +7,9 @@
 poso_time_cmin(
   dat = NULL,
   prior_model = NULL,
-  dose,
+  tdm = FALSE,
   target_cmin,
+  dose = NULL,
   estim_method = "map",
   nocb = FALSE,
   p = NULL,
@@ -28,9 +29,15 @@ structure of NONMEM/rxode2 event records.}
 \item{prior_model}{A \code{posologyr} prior population pharmacokinetics
 model, a list of six objects.}
 
-\item{dose}{Numeric. Dose administered.}
+\item{tdm}{A boolean. If \code{TRUE}: computes the predicted time to reach the
+target trough concentration (Cmin) following the last event from \code{dat},
+and using Maximum A Posteriori estimation. If \code{FALSE} : computes the
+predicted time to reach the target Cmin in a simulated scenario defined by
+the parameters remaining parameters.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
+
+\item{dose}{Numeric. Dose administered.}
 
 \item{estim_method}{A character string. An estimation method to be used for
 the individual parameters. The default method "map" is the Maximum A
@@ -39,7 +46,7 @@ population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
 parameters. This argument is ignored if \code{indiv_param} is provided.}
 
-\item{nocb}{A boolean. for time-varying covariates: the next observation
+\item{nocb}{A boolean. For time-varying covariates: the next observation
 carried backward (nocb) interpolation style, similar to NONMEM.  If
 \code{FALSE}, the last observation carried forward (locf) style will be used.
 Defaults to \code{FALSE}.}

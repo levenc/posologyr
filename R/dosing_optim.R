@@ -26,15 +26,20 @@
 #'     structure of NONMEM/rxode2 event records.
 #' @param prior_model A \code{posologyr} prior population pharmacokinetics
 #'    model, a list of six objects.
-#' @param dose Numeric. Dose administered.
+#' @param tdm A boolean. If `TRUE`: computes the predicted time to reach the
+#'    target trough concentration (Cmin) following the last event from `dat`,
+#'    and using Maximum A Posteriori estimation. If `FALSE` : computes the
+#'    predicted time to reach the target Cmin in a simulated scenario defined by
+#'    the parameters remaining parameters.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
+#' @param dose Numeric. Dose administered.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
 #'    population model, and "sir" uses the Sequential Importance Resampling
 #'    algorithm to estimate the a posteriori distribution of the individual
 #'    parameters. This argument is ignored if `indiv_param` is provided.
-#' @param nocb A boolean. for time-varying covariates: the next observation
+#' @param nocb A boolean. For time-varying covariates: the next observation
 #'     carried backward (nocb) interpolation style, similar to NONMEM.  If
 #'     `FALSE`, the last observation carried forward (locf) style will be used.
 #'     Defaults to `FALSE`.
@@ -109,51 +114,102 @@
 #' dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
 #'
 #' @export
-poso_time_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
-                           estim_method="map",nocb=FALSE,
+poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
+                           target_cmin,dose=NULL,estim_method="map",nocb=FALSE,
                            p=NULL,greater_than=TRUE,from=0.2,last_time=72,
                            add_dose=NULL,interdose_interval=NULL,
                            duration=NULL,indiv_param=NULL){
   object <- posologyr(prior_model,dat,nocb)
 
-  read_input  <- read_optim_distribution_input(dat=dat,
-                                               prior_model=prior_model,
-                                               nocb=nocb,object=object,p=p,
-                                               estim_method=estim_method,
-                                               indiv_param=indiv_param)
-  indiv_param <- read_input[[1]]
-  select_proposal_from_distribution <- read_input[[2]]
-
-  if (!is.null(add_dose)){
-    if (is.null(interdose_interval)){
-      stop("interdose_interval is mandatory when add_dose is used.",
-           call.=FALSE)
+  #Get or simulate the individual scenario: events and observations------------
+  if(tdm){ #using TDM data
+    #clear all unused input
+    estim_method <- NULL
+    dose <- NULL
+    p <- NULL
+    greater_than <- NULL
+    add_dose <- NULL
+    interdose_interval <- NULL
+    duration <- NULL
+    indiv_param <- NULL
+    select_proposal_from_distribution <- FALSE
+    #MAP estimation of the individual PK profile from TDM data
+    cmin_map <- poso_estim_map(dat=dat,prior_model=prior_model,nocb=nocb)
+    #individual parameters as ETA + covariates
+    covar <- utils::tail(dat[,prior_model$covariates],1)
+    indiv_param <- cbind(cmin_map$model$params,covar)
+    #time of the last dose
+    time_last_dose <- utils::tail(cmin_map$event[cmin_map$event$evid == 1,],1)$time
+    #starting time following the last dose
+    from <- time_last_dose + from
+    #last observation of the poso_estim_map output
+    lobs_map <- utils::tail(cmin_map$event,1)$time
+    #last observation desired
+    lobs <- lobs_map + last_time
+    #bind the inital eventTable with enough repetitions of the last row
+    # allows to keep EVID==0 and the last known values of the covariates for every obs
+    # where .N is a shortcut for "last row"
+    extended_et <- rbind(cmin_map$event,
+                         cmin_map$event[rep(.N,(lobs-lobs_map)/0.1)])
+    #fill the time column with the desired observation times: seq from the last
+    # observation of the MAP output to the last observation needed
+    time <- NULL    # avoid undefined global variables
+    extended_et[time>=lobs_map,time:=seq(lobs_map,lobs,
+                                         length.out=1+(lobs-lobs_map)/0.1)]
+    #Solve the model with the extended et
+    #rxSolve needs:
+    # an rxode2 model (eg. tobramycin_fictional$ppk_model)
+    # an eventTable
+    # parameters THETA from the prior model, ETA from the MAP estimation
+    # optionnal: an interpolation method for time-varying covariates
+    cmin_ppk_model <- rxode2::rxSolve(prior_model$ppk_model,extended_et,
+                                      c(prior_model$theta,cmin_map$eta),
+                                      covsInterpolation =
+                                        ifelse(nocb,"nocb","locf"))
+  } else { #tdm == FALSE: simulation of the individual scenario
+    #Read and process the parameters required for the simulation
+    read_input  <- read_optim_distribution_input(dat=dat,
+                                                 prior_model=prior_model,
+                                                 nocb=nocb,object=object,p=p,
+                                                 estim_method=estim_method,
+                                                 indiv_param=indiv_param)
+    indiv_param <- read_input[[1]]
+    select_proposal_from_distribution <- read_input[[2]]
+    #Input validation
+    if (!is.null(add_dose)){
+      if (is.null(interdose_interval)){
+        stop("interdose_interval is mandatory when add_dose is used.",
+             call.=FALSE)
+      }
     }
-  }
 
-  #compute the individual time-concentration profile
-  if (!is.null(add_dose)){
-    event_table_cmin <- rxode2::et(amt=dose,dur=duration,
-                                  ii=interdose_interval,
-                                  addl=add_dose)
-    time_last_dose   <- add_dose*interdose_interval
-    #add observations from the time of the last dose onward only
-    event_table_cmin$add.sampling(seq(time_last_dose+from,
-                                      time_last_dose+last_time,
-                                      by=0.1))
-  }
-  else {
-    event_table_cmin <- rxode2::et(amt=dose,dur=duration)
-    event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
-    time_last_dose   <- 0
-  }
+    #simulation of the individual scenario
+    # create an event table with the required number of administrations
+    if (!is.null(add_dose)){ #more than one dose is needed
+      event_table_cmin <- rxode2::et(amt=dose,dur=duration,
+                                     ii=interdose_interval,
+                                     addl=add_dose)
+      time_last_dose   <- add_dose*interdose_interval
+      #add observations from the time of the last dose onward only
+      event_table_cmin$add.sampling(seq(time_last_dose+from,
+                                        time_last_dose+last_time,
+                                        by=0.1))
+    }
+    else { #only one dose is needed: simulation of a single administration
+      event_table_cmin <- rxode2::et(amt=dose,dur=duration)
+      event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
+      time_last_dose   <- 0
+    }
 
-  cmin_ppk_model <- rxode2::rxSolve(object=object$ppk_model,
-                                   params=indiv_param,
-                                   event_table_cmin,
-                                   nDisplayProgress=1e5)
+    #solve the model with custom event table to simulate the individual scenario
+    cmin_ppk_model <- rxode2::rxSolve(object=object$ppk_model,
+                                      params=indiv_param,
+                                      event_table_cmin,
+                                      nDisplayProgress=1e5)
+  } #end of the individual scenario estimation
 
-  if (select_proposal_from_distribution){
+  #Estimate the time to Cmin----------------------------------------------------
+  if (select_proposal_from_distribution){ #simulated scenario distribution of ETA
     wide_cmin      <- tidyr::pivot_wider(cmin_ppk_model,
                                         id_cols = "time",
                                         names_from = "sim.id",
@@ -177,23 +233,24 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
     cmin_p            <- apply(wide_cmin,MARGIN=1,FUN=get_p_cmin)
     wide_cmin$cmin_p  <- cmin_p
 
-    # compute time_to_target taking into account the multiple doses if needed
+    #compute time_to_target taking into account the multiple doses if needed
     # time_to_target: time after the last dose for which cmin_p is lower than
     # target_cmin
     time_to_target <-
       min(wide_cmin$time[wide_cmin$cmin_p < target_cmin]) - time_last_dose
 
-    # unlist cmin_distribution to get a vector of numeric values
+    #unlist cmin_distribution to get a vector of numeric values
     cmin_distribution <- wide_cmin[wide_cmin$time == (time_to_target +
                                      time_last_dose),]
     cmin_distribution$time <- cmin_distribution$cmin_p <- NULL
     cmin_distribution      <- unlist(cmin_distribution,use.names=FALSE)
-  } else {
+  } else { #select_proposal_from_distribution == FALSE, TDM or not
     #compute time_to_target taking into account the multiple doses if needed
     # time_to_target: time after the last dose for which Cc is lower than
     # target_cmin
     time_to_target <-
-      min(cmin_ppk_model$time[cmin_ppk_model$Cc < target_cmin]) - time_last_dose
+      min(cmin_ppk_model[cmin_ppk_model$time > from &
+                         cmin_ppk_model$Cc < target_cmin,]$time) - time_last_dose
     #here cmin_distribution is a point estimate of Cc
     cmin_distribution <<-
       cmin_ppk_model$Cc[cmin_ppk_model$time == (time_to_target +

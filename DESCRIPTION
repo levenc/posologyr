@@ -16,7 +16,7 @@ Description: Individualization of drug dosage taking advantage of population pha
 License: AGPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Depends:
     R (>= 3.5.0)
 Imports:
