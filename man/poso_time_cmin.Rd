@@ -31,9 +31,8 @@ model, a list of six objects.}
 
 \item{tdm}{A boolean. If \code{TRUE}: computes the predicted time to reach the
 target trough concentration (Cmin) following the last event from \code{dat},
-and using Maximum A Posteriori estimation. If \code{FALSE} : computes the
-predicted time to reach the target Cmin in a simulated scenario defined by
-the parameters remaining parameters.}
+and using Maximum A Posteriori estimation. If \code{FALSE} : performs the
+estimation for a simulated scenario defined by the remaining parameters.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 

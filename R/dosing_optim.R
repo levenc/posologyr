@@ -28,9 +28,8 @@
 #'    model, a list of six objects.
 #' @param tdm A boolean. If `TRUE`: computes the predicted time to reach the
 #'    target trough concentration (Cmin) following the last event from `dat`,
-#'    and using Maximum A Posteriori estimation. If `FALSE` : computes the
-#'    predicted time to reach the target Cmin in a simulated scenario defined by
-#'    the parameters remaining parameters.
+#'    and using Maximum A Posteriori estimation. If `FALSE` : performs the
+#'    estimation for a simulated scenario defined by the remaining parameters.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. Dose administered.
 #' @param estim_method A character string. An estimation method to be used for
@@ -483,8 +482,13 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,time_auc,target_auc,
 #'     structure of NONMEM/rxode2 event records.
 #' @param prior_model A \code{posologyr} prior population pharmacokinetics
 #'    model, a list of six objects.
+#' @param tdm A boolean. If `TRUE`: estimates the optimal dose for a selected
+#'    target concentration at a selected point in time following the events from
+#'     `dat`, and using Maximum A Posteriori estimation. If `FALSE` : performs
+#'    the estimation in a simulated scenario defined by the remaining parameters.
 #' @param time_c Numeric. Point in time for which the dose is to be
 #'     optimized.
+#' @param time_dose Numeric. Time when the dose is to be given.
 #' @param target_conc Numeric. Target concentration.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
@@ -571,86 +575,155 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,time_auc,target_auc,
 #' time_c=1,duration=0.5,target_conc=80)
 #'
 #' @export
-poso_dose_conc <- function(dat=NULL,prior_model=NULL,time_c,target_conc,
-                           estim_method="map",nocb=FALSE,p=NULL,
-                           greater_than=TRUE,starting_dose=100,
-                           interdose_interval=NULL,add_dose=NULL,
-                           duration=NULL,indiv_param=NULL){
+poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
+                           time_c,time_dose=NULL,target_conc,estim_method="map",
+                           nocb=FALSE,p=NULL,greater_than=TRUE,
+                           starting_dose=100,interdose_interval=NULL,
+                           add_dose=NULL,duration=NULL,indiv_param=NULL){
   object <- posologyr(prior_model,dat,nocb)
 
-  read_input  <- read_optim_distribution_input(dat=dat,
-                                               prior_model=prior_model,
-                                               nocb=nocb,object=object,p=p,
-                                               estim_method=estim_method,
-                                               indiv_param=indiv_param)
-  indiv_param <- read_input[[1]]
-  select_proposal_from_distribution <- read_input[[2]]
-
-  if (!is.null(add_dose)){
-    if (is.null(interdose_interval)){
-      stop("interdose_interval is mandatory when add_dose is used.",
+  if(tdm){ #using TDM data
+    #input validation
+    if (time_c<=time_dose){
+      stop("time_c cannot be before time_dose.",
            call.=FALSE)
     }
-    if (time_c>(add_dose*interdose_interval)){
-      stop("The target time is outside of the dosing time range:
-           time_c>(add_dose*interdose_interval).",
+    #clear all unused input
+    estim_method <- NULL
+    p <- NULL
+    greater_than <- NULL
+    add_dose <- NULL
+    interdose_interval <- NULL
+    indiv_param <- NULL
+    select_proposal_from_distribution <- FALSE
+    #MAP estimation of the individual PK profile from TDM data
+    ctime_map <- poso_estim_map(dat=dat,prior_model=prior_model,nocb=nocb)
+    #individual parameters as ETA + covariates
+    covar <- utils::tail(dat[,prior_model$covariates],1)
+    indiv_param <- cbind(ctime_map$model$params,covar)
+    #remove all observations from the eventTable, keep only dosing
+    extended_et <- ctime_map$event[ctime_map$event$evid == 1,]
+    #last event of the poso_estim_map output
+    last_event <- utils::tail(extended_et,1)$time
+    #more input validation
+    if (time_dose<=last_event){
+      stop("time_dose must occur after the last recorded dosing.",
            call.=FALSE)
     }
-  }
+    #bind the inital eventTable with enough repetitions of the last row
+    # one row for dosing
+    # one row for the observation
+    extended_et <- rbind(extended_et,
+                         extended_et[rep(.N,2)])
+    #fill the time column with the desired observation times:
+    # the simulated administration, and subsequent concentration
+    time <- NULL    # avoid undefined global variables
+    extended_et[time>=last_event,time:=c(last_event,time_dose,time_c)]
 
-  err_dose <- function(dose,time_c,target_conc,prior_model,
-                       add_dose,interdose_interval,
-                       duration=duration,indiv_param){
+    err_dose_tdm <- function(dose,time_dose,target_conc,time_c,prior_model,
+                             extended_et,nocb){
+      #New dose at time_dose in the extended_et
+      # This shorter syntax with "list" allows for setting several variable at once
+      extended_et[time==time_dose,c("evid","amt","dur"):=list(1,dose,duration)]
+      #New observation at time_c
+      extended_et[time==time_c,c("evid","amt","dur"):=list(0,NA,NA)]
+      #Solve the model with the extended et
+      ctime_ppk_model <- rxode2::rxSolve(prior_model$ppk_model,extended_et,
+                                         c(prior_model$theta,ctime_map$eta),
+                                         covsInterpolation =
+                                           ifelse(nocb,"nocb","locf"))
 
-    #compute the individual time-concentration profile
-    if (!is.null(add_dose)){
-      event_table_ctime <- rxode2::et(amt=dose,dur=duration,
-                                     ii=interdose_interval,
-                                     addl=add_dose)
-    }
-    else {
-      event_table_ctime <- rxode2::et(amt=dose,dur=duration)
-    }
-    event_table_ctime$add.sampling(time_c)
-
-    ctime_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
-                                      params=indiv_param,
-                                      event_table_ctime,
-                                      nDisplayProgress=1e5)
-
-    if (select_proposal_from_distribution){
-
-      sorted_conc     <- sort(ctime_ppk_model$Cc)
-      n_conc          <- length(sorted_conc)
-      conc_index      <- ceiling(p * n_conc)
-
-      # assign the distribution of concentrations to the parent environment
-      conc_distribution <<- sorted_conc
-
-      if (greater_than){
-        conc_proposal <- sorted_conc[n_conc - conc_index]
-      } else {
-        conc_proposal <- sorted_conc[conc_index]
-      }
-    } else {
       conc_proposal     <- ctime_ppk_model$Cc
-      conc_distribution <<- conc_proposal
+      conc_distribution <<- conc_proposal #to parent environment
+      #return the difference between the computed ctime and the target
+      delta_conc <- (target_conc - conc_proposal)^2
+      return(delta_conc)
     }
+    #initialization of conc_distribution to avoid a global variable
+    conc_distribution <- 0
 
-    #return the difference between the computed ctime and the target
-    delta_conc <- (target_conc - conc_proposal)^2
-    return(delta_conc)
+    optim_dose_conc <- stats::optim(starting_dose,err_dose_tdm,
+                                    time_dose=time_dose,target_conc=target_conc,
+                                    time_c=time_c,prior_model=prior_model,
+                                    extended_et=extended_et,nocb=nocb,
+                                    method="Brent",lower=0, upper=1e5)
+
+  } else { #tdm == FALSE: simulation of the individual scenario
+    #time_dose is only used when tdm=TRUE
+    time_dose <- NULL
+    #Read and process the parameters required for the simulation
+    read_input  <- read_optim_distribution_input(dat=dat,
+                                                 prior_model=prior_model,
+                                                 nocb=nocb,object=object,p=p,
+                                                 estim_method=estim_method,
+                                                 indiv_param=indiv_param)
+    indiv_param <- read_input[[1]]
+    select_proposal_from_distribution <- read_input[[2]]
+    #Input validation
+    if (!is.null(add_dose)){
+      if (is.null(interdose_interval)){
+        stop("interdose_interval is mandatory when add_dose is used.",
+             call.=FALSE)
+      }
+      if (time_c>(add_dose*interdose_interval)){
+        stop("The target time is outside of the dosing time range:
+           time_c>(add_dose*interdose_interval).",
+             call.=FALSE)
+      }
+    }
+    err_dose <- function(dose,time_c,target_conc,prior_model,
+                         add_dose,interdose_interval,
+                         duration=duration,indiv_param){
+
+      #compute the individual time-concentration profile
+      if (!is.null(add_dose)){
+        event_table_ctime <- rxode2::et(amt=dose,dur=duration,
+                                        ii=interdose_interval,
+                                        addl=add_dose)
+      }
+      else {
+        event_table_ctime <- rxode2::et(amt=dose,dur=duration)
+      }
+      event_table_ctime$add.sampling(time_c)
+
+      ctime_ppk_model <- rxode2::rxSolve(object=prior_model$ppk_model,
+                                         params=indiv_param,
+                                         event_table_ctime,
+                                         nDisplayProgress=1e5)
+
+      if (select_proposal_from_distribution){
+
+        sorted_conc     <- sort(ctime_ppk_model$Cc)
+        n_conc          <- length(sorted_conc)
+        conc_index      <- ceiling(p * n_conc)
+
+        # assign the distribution of concentrations to the parent environment
+        conc_distribution <<- sorted_conc
+
+        if (greater_than){
+          conc_proposal <- sorted_conc[n_conc - conc_index]
+        } else {
+          conc_proposal <- sorted_conc[conc_index]
+        }
+      } else {
+        conc_proposal     <- ctime_ppk_model$Cc
+        conc_distribution <<- conc_proposal
+      }
+
+      #return the difference between the computed ctime and the target
+      delta_conc <- (target_conc - conc_proposal)^2
+      return(delta_conc)
+    }
+    #initialization of conc_distribution to avoid a global variable
+    conc_distribution <- 0
+
+    optim_dose_conc <- stats::optim(starting_dose,err_dose,time_c=time_c,
+                                    target_conc=target_conc,prior_model=object,
+                                    add_dose=add_dose,
+                                    interdose_interval=interdose_interval,
+                                    duration=duration,indiv_param=indiv_param,
+                                    method="Brent",lower=0, upper=1e5)
   }
-
-  #initialization of conc_distribution to avoid a global variable
-  conc_distribution <- 0
-
-  optim_dose_conc <- stats::optim(starting_dose,err_dose,time_c=time_c,
-                                   target_conc=target_conc,prior_model=object,
-                                   add_dose=add_dose,
-                                   interdose_interval=interdose_interval,
-                                   duration=duration,indiv_param=indiv_param,
-                                   method="Brent",lower=0, upper=1e5)
 
   ifelse(select_proposal_from_distribution,
          type_of_estimate <-"distribution",
