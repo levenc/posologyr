@@ -588,6 +588,10 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
       stop("time_c cannot be before time_dose.",
            call.=FALSE)
     }
+    if (is.null(time_dose)){
+      stop("time_dose is mandatory when tdm=TRUE",
+           call.=FALSE)
+    }
     #clear all unused input
     estim_method <- NULL
     p <- NULL
