@@ -16,7 +16,7 @@ poso_inter_cmin(
   greater_than = TRUE,
   starting_interval = 12,
   add_dose = 10,
-  duration = NULL,
+  duration = 0,
   indiv_param = NULL
 )
 }

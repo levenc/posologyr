@@ -7,7 +7,9 @@
 poso_dose_conc(
   dat = NULL,
   prior_model = NULL,
+  tdm = FALSE,
   time_c,
+  time_dose = NULL,
   target_conc,
   estim_method = "map",
   nocb = FALSE,
@@ -16,7 +18,7 @@ poso_dose_conc(
   starting_dose = 100,
   interdose_interval = NULL,
   add_dose = NULL,
-  duration = NULL,
+  duration = 0,
   indiv_param = NULL
 )
 }
@@ -27,8 +29,15 @@ structure of NONMEM/rxode2 event records.}
 \item{prior_model}{A \code{posologyr} prior population pharmacokinetics
 model, a list of six objects.}
 
+\item{tdm}{A boolean. If \code{TRUE}: estimates the optimal dose for a selected
+target concentration at a selected point in time following the events from
+\code{dat}, and using Maximum A Posteriori estimation. If \code{FALSE} : performs
+the estimation in a simulated scenario defined by the remaining parameters.}
+
 \item{time_c}{Numeric. Point in time for which the dose is to be
 optimized.}
+
+\item{time_dose}{Numeric. Time when the dose is to be given.}
 
 \item{target_conc}{Numeric. Target concentration.}
 

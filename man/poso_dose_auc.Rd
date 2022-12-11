@@ -8,7 +8,9 @@ time-concentration curve (AUC)}
 poso_dose_auc(
   dat = NULL,
   prior_model = NULL,
+  tdm = FALSE,
   time_auc,
+  time_dose = NULL,
   target_auc,
   estim_method = "map",
   nocb = FALSE,
@@ -17,7 +19,7 @@ poso_dose_auc(
   starting_time = 0,
   interdose_interval = NULL,
   add_dose = NULL,
-  duration = NULL,
+  duration = 0,
   starting_dose = 100,
   indiv_param = NULL
 )
@@ -29,7 +31,15 @@ structure of NONMEM/rxode2 event records.}
 \item{prior_model}{A \code{posologyr} prior population pharmacokinetics
 model, a list of six objects.}
 
-\item{time_auc}{Numeric. The target AUC is computed from 0 to \code{time_auc}.}
+\item{tdm}{A boolean. If \code{TRUE}: estimates the optimal dose for a selected
+target auc over a selected duration following the events from \code{dat}, and
+using Maximum A Posteriori estimation. If \code{FALSE} : performs the
+estimation in a simulated scenario defined by the remaining parameters.}
+
+\item{time_auc}{Numeric. The target AUC is computed from \code{starting_time} to
+\code{time_auc}.}
+
+\item{time_dose}{Numeric. Time when the dose is to be given.}
 
 \item{target_auc}{Numeric. The target AUC.}
 
@@ -53,7 +63,8 @@ proportion \code{p} of the AUCs to be greater than \code{target_auc}. Respective
 lower if \code{FALSE}.}
 
 \item{starting_time}{Numeric. First point in time of the AUC, for multiple
-dose regimen. The default is zero.}
+dose regimen. The default is zero. Set equal to \code{time_dose} when
+\code{tdm=TRUE}.}
 
 \item{interdose_interval}{Numeric. Time for the interdose interval for
 multiple dose regimen. Must be provided when add_dose is used.}

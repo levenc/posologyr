@@ -81,7 +81,9 @@ concentration.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">poso_dose_conc</span><span class="op">(</span></span>
 <span>  dat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prior_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tdm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">time_c</span>,</span>
+<span>  time_dose <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">target_conc</span>,</span>
 <span>  estim_method <span class="op">=</span> <span class="st">"map"</span>,</span>
 <span>  nocb <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -90,7 +92,7 @@ concentration.</p>
 <span>  starting_dose <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  interdose_interval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_dose <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  duration <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  duration <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  indiv_param <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -107,9 +109,20 @@ structure of NONMEM/rxode2 event records.</p></dd>
 model, a list of six objects.</p></dd>
 
 
+<dt>tdm</dt>
+<dd><p>A boolean. If <code>TRUE</code>: estimates the optimal dose for a selected
+target concentration at a selected point in time following the events from
+<code>dat</code>, and using Maximum A Posteriori estimation. If <code>FALSE</code> : performs
+the estimation in a simulated scenario defined by the remaining parameters.</p></dd>
+
+
 <dt>time_c</dt>
 <dd><p>Numeric. Point in time for which the dose is to be
 optimized.</p></dd>
+
+
+<dt>time_dose</dt>
+<dd><p>Numeric. Time when the dose is to be given.</p></dd>
 
 
 <dt>target_conc</dt>
@@ -226,6 +239,7 @@ covariates</p></dd>
 <span class="r-in"><span>      <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>sigma <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">prop</span> <span class="op">+</span> <span class="va">add</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>,<span class="fl">0.0</span>,<span class="fl">0.00</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span><span class="co"># df_patient01: event table for Patient01, following a 30 minutes intravenous</span></span></span>
 <span class="r-in"><span><span class="co"># infusion</span></span></span>
 <span class="r-in"><span><span class="va">df_patient01</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,</span></span>
@@ -239,7 +253,7 @@ covariates</p></dd>
 <span class="r-in"><span><span class="fu">poso_dose_conc</span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patient01</span>,prior_model<span class="op">=</span><span class="va">mod_run001</span>,</span></span>
 <span class="r-in"><span>time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.026</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.019</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -249,7 +263,7 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019042 -0.4291725 0.1278477</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019036 -0.4291734 0.1278478</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
