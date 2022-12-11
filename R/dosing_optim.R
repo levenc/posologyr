@@ -154,13 +154,8 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     # observation of the MAP output to the last observation needed
     time <- NULL    # avoid undefined global variables
     extended_et[time>=lobs_map,time:=seq(lobs_map,lobs,
-                                         length.out=1+(lobs-lobs_map)/0.1)]
+                                         length.out=(lobs-lobs_map)/0.1)]
     #Solve the model with the extended et
-    #rxSolve needs:
-    # an rxode2 model (eg. tobramycin_fictional$ppk_model)
-    # an eventTable
-    # parameters THETA from the prior model, ETA from the MAP estimation
-    # optionnal: an interpolation method for time-varying covariates
     cmin_ppk_model <- rxode2::rxSolve(prior_model$ppk_model,extended_et,
                                       c(prior_model$theta,cmin_map$eta),
                                       covsInterpolation =

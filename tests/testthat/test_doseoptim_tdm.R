@@ -1,0 +1,66 @@
+mod_daptomycin_Dvorchik_AAC2004 <- list(
+  ppk_model = rxode2::RxODE({
+    centr(0) = 0;
+
+    TVCl = ((THETA_Cl+0.00514*(ClCr-91.2))+0.14*(TEMP-37.2))*0.8^(SEX);
+    TVVc = THETA_Vc;
+    TVVp = (THETA_Vp+0.0458*(WT-75.1))*1.93;
+    TVQ = THETA_Q+0.0593*(WT-75.1);
+
+    Cl = TVCl*exp(ETA_Cl);
+    Vc = TVVc*exp(ETA_Vc);
+    Vp = TVVp*exp(ETA_Vp);
+    Q = TVQ*exp(ETA_Q);
+
+    K10 = Cl/Vc;
+    K12 = Q / Vc;
+    K21 = Q / Vp;
+    Cc = centr/Vc;
+
+    d/dt(centr) = -K10*centr - K12*centr + K21*periph;
+    d/dt(periph) = K12*centr - K21*periph;
+    d/dt(AUC) = Cc;
+  }),
+  error_model = function(f,sigma) {
+    dv <- cbind(f,1)
+    g <- diag(dv%*%sigma%*%t(dv))
+    return(sqrt(g))
+  },
+  theta = c(THETA_Cl=0.807, THETA_Vc=4.80, THETA_Vp=3.13,THETA_Q=3.46),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q  ~
+      c(sqrt(log(0.306^2+1)),
+        0, sqrt(log(0.567^2+1)),
+        0, 0, sqrt(log(0.191^2+1)),
+        0, 0, 0, sqrt(log(0.652^2+1)))}),
+  covariates  = c("ClCr","TEMP","SEX","WT"),
+  sigma = lotri::lotri({prop + add ~ c(0.00,0.00,4.72)})
+)
+
+df_patient_dap <- data.frame(ID=1,
+                           TIME=c(0.0,23.5,24,48.75,49,97.25),
+                           DV=c(NA,26.9,NA,48.7,NA,27.7),
+                           AMT=c(1000,NA,1000,NA,1000,NA),
+                           DUR=c(1,NA,1,NA,1,NA),
+                           EVID=c(1,0,1,0,1,0),
+                           SEX=1,WT=100,ClCr=53,TEMP=37.2)
+
+test_that("Optimization results do not deviate from known values
+          for single dose administration following TDM events", {
+  expect_equal(poso_time_cmin(df_patient_dap,
+                              mod_daptomycin_Dvorchik_AAC2004,
+                              tdm=TRUE,target_cmin = 24)$time,
+               55.1,
+               tolerance=1e-2)
+  expect_equal(poso_dose_conc(df_patient_dap,
+                              mod_daptomycin_Dvorchik_AAC2004,
+                              tdm=TRUE,time_c = 105,time_dose = 104,
+                              target_conc = 60,duration = 1)$dose,
+               323.538,
+               tolerance=1e-3)
+  expect_equal(poso_dose_auc(df_patient_dap,
+                             mod_daptomycin_Dvorchik_AAC2004,
+                             tdm=TRUE,time_auc = 24,time_dose = 104,
+                             target_auc = 666,duration = 1)$dose,
+               222.902,
+               tolerance=1e-3)
+})
