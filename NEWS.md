@@ -1,4 +1,4 @@
-# posologyr v1.0.0.9999
+# posologyr v1.1.0
 
 ## Additional features
 * `poso_time_cmin()` can now estimate time needed to reach a selected trough 
