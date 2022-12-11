@@ -1019,12 +1019,12 @@ read_optim_distribution_input <- function(dat,prior_model,
     if (estim_method=="map"){
       model_map   <- poso_estim_map(dat,prior_model,nocb=nocb,return_model=TRUE)
       if(is.null(object$covariates)){
-        indiv_param <- model_map[[2]]$params
+        indiv_param <- model_map$model$params
       } else {
         covar <- as.data.frame(object$tdm_data[length(object$tdm_data[,1]),
                                                      object$covariates])
         names(covar) <- object$covariates
-        indiv_param <- cbind(model_map[[2]]$params,covar,row.names=NULL)
+        indiv_param <- cbind(model_map$model$params,covar,row.names=NULL)
       }
       if (!is.null(object$pi_matrix)){
         kappa_mat         <- matrix(0,nrow=1,ncol=ncol(object$pi_matrix))
@@ -1048,12 +1048,12 @@ read_optim_distribution_input <- function(dat,prior_model,
         select_proposal_from_distribution <- FALSE
       }
       if(is.null(object$covariates)){
-        indiv_param <- model_pop[[2]]$params
+        indiv_param <- model_pop$model$params
       } else {
         covar <- as.data.frame(object$tdm_data[length(object$tdm_data[,1]),
                                                object$covariates])
         names(covar) <- object$covariates
-        indiv_param <- cbind(model_pop[[2]]$params,covar,row.names=NULL)
+        indiv_param <- cbind(model_pop$model$params,covar,row.names=NULL)
       }
     } else if (estim_method=="sir"){
       if (p < 0 || p >= 1){
@@ -1063,12 +1063,12 @@ read_optim_distribution_input <- function(dat,prior_model,
                                     n_sample=1e5,n_resample=1e4,
                                     return_model=TRUE)
       if(is.null(object$covariates)){
-        indiv_param <- model_sir[[2]]$params
+        indiv_param <- model_sir$model$params
       } else {
         covar <- as.data.frame(object$tdm_data[length(object$tdm_data[,1]),
                                                object$covariates])
         names(covar) <- object$covariates
-        indiv_param <- cbind(model_sir[[2]]$params,covar,row.names=NULL)
+        indiv_param <- cbind(model_sir$model$params,covar,row.names=NULL)
       }
       if (!is.null(object$pi_matrix)){
         kappa_mat         <- matrix(0,nrow=1,ncol=ncol(object$pi_matrix))
