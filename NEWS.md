@@ -1,8 +1,11 @@
 # posologyr v1.0.0.9999
 
 ## Additional features
-* `poso_time_cmin()` can now estimate time needed to reach a selected trough concentration (Cmin) using the data from TDM directly
-* `poso_dose_conc()` can now estimate an optimal dose to reach a target concentration
+* `poso_time_cmin()` can now estimate time needed to reach a selected trough 
+concentration (Cmin) using the data from TDM directly
+* `poso_dose_conc()` can now estimate an optimal dose to reach a target 
+concentration following the events from TDM
+* `poso_dose_auc()` can now estimate an optimal dose to reach a target auc 
 following the events from TDM
 
 # posologyr v1.0.0

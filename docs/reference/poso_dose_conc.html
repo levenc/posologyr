@@ -92,7 +92,7 @@ concentration.</p>
 <span>  starting_dose <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  interdose_interval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_dose <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  duration <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  duration <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  indiv_param <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -253,7 +253,7 @@ covariates</p></dd>
 <span class="r-in"><span><span class="fu">poso_dose_conc</span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patient01</span>,prior_model<span class="op">=</span><span class="va">mod_run001</span>,</span></span>
 <span class="r-in"><span>time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.027</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.019</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -263,7 +263,7 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019066 -0.4291688 0.1278531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019036 -0.4291734 0.1278478</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

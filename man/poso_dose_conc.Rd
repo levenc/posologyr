@@ -18,7 +18,7 @@ poso_dose_conc(
   starting_dose = 100,
   interdose_interval = NULL,
   add_dose = NULL,
-  duration = NULL,
+  duration = 0,
   indiv_param = NULL
 )
 }

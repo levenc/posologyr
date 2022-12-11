@@ -18,7 +18,7 @@ poso_time_cmin(
   last_time = 72,
   add_dose = NULL,
   interdose_interval = NULL,
-  duration = NULL,
+  duration = 0,
   indiv_param = NULL
 )
 }
