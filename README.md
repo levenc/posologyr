@@ -14,28 +14,27 @@
 taking advantage of population pharmacokinetics, patient
 characteristics, and the results of therapeutic drug monitoring.
 
-`posologyr` provides functions for estimating the pharmacokinetic (PK)
-parameters:
+`posologyr` provides the following functions for dosage optimization:
 
--   `poso_simu_pop()` for estimating the a priori distributions of PK
-    parameters by Monte-Carlo simulations
--   `poso_estim_map()` for computing the Maximum A Posteriori (MAP), aka
-    Empirical Bayes Estimates (EBE), of individual PK parameters from
-    the results of therapeutic drug monitoring
--   `poso_estim_mcmc()` for estimating the posterior distributions of
-    individual PK parameters by Markov Chain Monte Carlo (MCMC)
--   `poso_estim_sir()` for estimating the posterior distributions of
-    individual PK parameters by Sequential Importance Resampling (SIR)
+- `poso_dose_conc()` estimates the optimal dose to reach a target
+  concentration at any given time
+- `poso_dose_auc()` estimates the optimal dose to reach a target AUC
+- `poso_time_cmin()` computes the time needed to reach a target trough
+  concentration (Cmin)
+- `poso_inter_cmin()` estimates the optimal inter-dose interval to
+  reliably achieve a target Cmin between each administration
 
-Functions for dosage optimisation are included in `posologyr`:
+Individual pharmacokinetic (PK) profiles can be estimated with or
+without data from therapeutic drug monitoring (TDM):
 
--   `poso_dose_auc()` estimates the optimal dose to reach a target AUC
--   `poso_dose_conc()` estimates the optimal dose to reach a target
-    concentration at any given time
--   `poso_time_cmin()` computes the time needed to reach a target trough
-    concentration (Cmin)
--   `poso_inter_cmin()` estimates the optimal inter-dose interval to
-    reliably achieve a target Cmin between each administration
+- `poso_estim_map()` computes the Maximum A Posteriori (MAP), aka
+  Empirical Bayes Estimates (EBE), of individual PK parameters from the
+  results of TDM
+- `poso_simu_pop()` samples from the the a priori distributions of PK
+  parameters
+- `poso_estim_sir()` estimates the full posterior distributions of
+  individual PK parameters by Sequential Importance Resampling (SIR)
+  from the results of TDM
 
 `posologyr` takes advantage of the simulation framework provided by the
 [rxode2](https://github.com/nlmixr2/rxode2) package.
@@ -141,16 +140,16 @@ poso_estim_map(patient_data,tobramycin_fictional)
 Examples of dosage adjustment with posologyr are available in the
 following vignettes:
 
--   `vignette("case_study_amikacin")`
--   `vignette("case_study_vancomycin")`
+- `vignette("case_study_amikacin")`
+- `vignette("case_study_vancomycin")`
 
 ## Performance of the MAP-EBE algorithm in posologyr
 
 Posologyr showed comparable performance to NONMEM:
 
--   Pharmaceutics **2022**, 14(2), 442;
-    [doi:10.3390/pharmaceutics14020442](https://doi.org/10.3390/pharmaceutics14020442)
--   Supporting data: <https://github.com/levenc/posologyr-pharmaceutics>
+- Pharmaceutics **2022**, 14(2), 442;
+  [doi:10.3390/pharmaceutics14020442](https://doi.org/10.3390/pharmaceutics14020442)
+- Supporting data: <https://github.com/levenc/posologyr-pharmaceutics>
 
 ## Acknowledgments
 

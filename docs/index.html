@@ -103,27 +103,25 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p><code>posologyr</code> is an R package for the individualization of drug dosage, taking advantage of population pharmacokinetics, patient characteristics, and the results of therapeutic drug monitoring.</p>
-<p><code>posologyr</code> provides functions for estimating the pharmacokinetic (PK) parameters:</p>
+<p><code>posologyr</code> provides the following functions for dosage optimization:</p>
 <ul>
-<li>
-<code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> for estimating the a priori distributions of PK parameters by Monte-Carlo simulations</li>
-<li>
-<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> for computing the Maximum A Posteriori (MAP), aka Empirical Bayes Estimates (EBE), of individual PK parameters from the results of therapeutic drug monitoring</li>
-<li>
-<code><a href="reference/poso_estim_mcmc.html">poso_estim_mcmc()</a></code> for estimating the posterior distributions of individual PK parameters by Markov Chain Monte Carlo (MCMC)</li>
-<li>
-<code><a href="reference/poso_estim_sir.html">poso_estim_sir()</a></code> for estimating the posterior distributions of individual PK parameters by Sequential Importance Resampling (SIR)</li>
-</ul>
-<p>Functions for dosage optimisation are included in <code>posologyr</code>:</p>
-<ul>
-<li>
-<code><a href="reference/poso_dose_auc.html">poso_dose_auc()</a></code> estimates the optimal dose to reach a target AUC</li>
 <li>
 <code><a href="reference/poso_dose_conc.html">poso_dose_conc()</a></code> estimates the optimal dose to reach a target concentration at any given time</li>
+<li>
+<code><a href="reference/poso_dose_auc.html">poso_dose_auc()</a></code> estimates the optimal dose to reach a target AUC</li>
 <li>
 <code><a href="reference/poso_time_cmin.html">poso_time_cmin()</a></code> computes the time needed to reach a target trough concentration (Cmin)</li>
 <li>
 <code><a href="reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> estimates the optimal inter-dose interval to reliably achieve a target Cmin between each administration</li>
+</ul>
+<p>Individual pharmacokinetic (PK) profiles can be estimated with or without data from therapeutic drug monitoring (TDM):</p>
+<ul>
+<li>
+<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> computes the Maximum A Posteriori (MAP), aka Empirical Bayes Estimates (EBE), of individual PK parameters from the results of TDM</li>
+<li>
+<code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> samples from the the a priori distributions of PK parameters</li>
+<li>
+<code><a href="reference/poso_estim_sir.html">poso_estim_sir()</a></code> estimates the full posterior distributions of individual PK parameters by Sequential Importance Resampling (SIR) from the results of TDM</li>
 </ul>
 <p><code>posologyr</code> takes advantage of the simulation framework provided by the <a href="https://github.com/nlmixr2/rxode2" class="external-link">rxode2</a> package.</p>
 </div>
