@@ -1,4 +1,10 @@
 reference:
+- title: "Dose optimisation functions"
+- contents:
+  - poso_dose_auc
+  - poso_dose_conc
+  - poso_time_cmin
+  - poso_inter_cmin
 - title: "Estimation functions"
   desc: "Functions for estimating the pharmacokinetic parameters"
 - contents:
@@ -6,12 +12,6 @@ reference:
   - poso_estim_mcmc
   - poso_estim_sir
   - poso_simu_pop
-- title: "Dose optimisation functions"
-- contents:
-  - poso_dose_auc
-  - poso_dose_conc
-  - poso_time_cmin
-  - poso_inter_cmin
 - title: "Error models"
   desc: "Functions for user-defined posologyr models"
 - contents:
