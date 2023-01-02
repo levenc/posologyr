@@ -149,12 +149,12 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     # allows to keep EVID==0 and the last known values of the covariates for every obs
     # where .N is a shortcut for "last row"
     extended_et <- rbind(cmin_map$event,
-                         cmin_map$event[rep(.N,(lobs-lobs_map)/0.1)])
+                         cmin_map$event[rep(.N,round((lobs-lobs_map)/0.1))])
     #fill the time column with the desired observation times: seq from the last
     # observation of the MAP output to the last observation needed
     time <- NULL    # avoid undefined global variables
-    extended_et[time>=lobs_map,time:=seq(lobs_map,lobs,
-                                         length.out=(lobs-lobs_map)/0.1)]
+    extended_et[time==lobs_map,time:=seq(from=lobs_map,to=lobs,by=0.1)]
+    print(extended_et)
     #Solve the model with the extended et
     cmin_ppk_model <- rxode2::rxSolve(prior_model$ppk_model,extended_et,
                                       c(prior_model$theta,cmin_map$eta),
