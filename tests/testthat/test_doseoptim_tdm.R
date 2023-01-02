@@ -45,7 +45,7 @@ df_patient_dap <- data.frame(ID=1,
                            SEX=1,WT=100,ClCr=53,TEMP=37.2)
 
 test_that("Optimization results do not deviate from known values
-          for single dose administration following TDM events", {
+          following TDM events when the last time is a float number", {
   expect_equal(poso_time_cmin(df_patient_dap,
                               mod_daptomycin_Dvorchik_AAC2004,
                               tdm=TRUE,target_cmin = 24)$time,
@@ -64,3 +64,32 @@ test_that("Optimization results do not deviate from known values
                222.902,
                tolerance=1e-3)
 })
+
+df_patient_dap_int <- data.frame(ID=1,
+                             TIME=c(0.0,23.5,24,48.75,49,98),
+                             DV=c(NA,26.9,NA,48.7,NA,27.7),
+                             AMT=c(1000,NA,1000,NA,1000,NA),
+                             DUR=c(1,NA,1,NA,1,NA),
+                             EVID=c(1,0,1,0,1,0),
+                             SEX=1,WT=100,ClCr=53,TEMP=37.2)
+
+test_that("Optimization results do not deviate from known values
+          following TDM events when the last time is an integer", {
+            expect_equal(poso_time_cmin(df_patient_dap_int,
+                                        mod_daptomycin_Dvorchik_AAC2004,
+                                        tdm=TRUE,target_cmin = 24)$time,
+                         55.9,
+                         tolerance=1e-2)
+            expect_equal(poso_dose_conc(df_patient_dap_int,
+                                        mod_daptomycin_Dvorchik_AAC2004,
+                                        tdm=TRUE,time_c = 105,time_dose = 104,
+                                        target_conc = 60,duration = 1)$dose,
+                         322.9,
+                         tolerance=1e-3)
+            expect_equal(poso_dose_auc(df_patient_dap_int,
+                                       mod_daptomycin_Dvorchik_AAC2004,
+                                       tdm=TRUE,time_auc = 24,time_dose = 104,
+                                       target_auc = 666,duration = 1)$dose,
+                         214,
+                         tolerance=1e-3)
+          })
