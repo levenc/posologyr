@@ -18,11 +18,11 @@
 
 # Update model predictions with a new set of parameters, for all obs
 run_model <- function(x,model_init=NULL,solved_model=NULL,
-                      estim_with_iov=NULL){
+                      estim_with_iov=NULL,endpoints=NULL){
   if (!estim_with_iov){ #rxode2 already updated in errpred() if estim_with_iov
     solved_model$params <- x
   }
-  return(solved_model$Cc)
+  return(solved_model[endpoints])
 }
 
 # Objective function for the Empirical Bayes Estimates
@@ -56,6 +56,7 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
 errpred <- function(eta_estim=NULL,
                     run_model=NULL,
                     y_obs=NULL,
+                    endpoints=NULL,
                     theta=NULL,
                     ind_eta=NULL,
                     sigma=NULL,
@@ -87,13 +88,32 @@ errpred <- function(eta_estim=NULL,
     eta[ind_eta] <- eta_estim
   }
   #simulated concentrations with the proposed eta estimates
-  f   <- do.call(run_model,list(c(theta,eta),
-                                model_init=model_init,
-                                solved_model=solved_model,
-                                estim_with_iov=estim_with_iov))
-  g   <- error_model(f,sigma)
+  f_all_endpoints   <- do.call(run_model,list(c(theta,eta),
+                                              model_init=model_init,
+                                              solved_model=solved_model,
+                                              estim_with_iov=estim_with_iov,
+                                              endpoints=endpoints))
 
-  optimize_me <- objective_function(y_obs=y_obs,f=f,g=g,
+  f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
+  g_all_endpoints <- f_all_endpoints
+
+  if (endpoints == "Cc"){
+    g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
+  } else {
+    for (edp in endpoints){
+      g_all_endpoints[,(edp):=error_model[[edp]](f_all_endpoints[,edp],
+                                                 sigma[[edp]])]
+    }
+  }
+
+    for (observation in 1:nrow(f_all_endpoints)){
+    f_all_endpoints[observation, f := get(DVID)]
+    g_all_endpoints[observation, g := get(DVID)]
+  }
+
+  optimize_me <- objective_function(y_obs=y_obs[,"DV"],
+                                    f=f_all_endpoints$f,
+                                    g=g_all_endpoints$g,
                                     eta=eta_estim,
                                     solve_omega=solve_omega)
   return(optimize_me)

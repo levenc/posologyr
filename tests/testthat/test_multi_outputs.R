@@ -65,8 +65,8 @@ warf_01 <- data.frame(ID=1,
                            DV=c(0.0,0.0,1.9,3.3,6.6,9.1,10.8,8.6,5.6,44.0,4.0,
                                 27.0,2.7,28.0,0.8,31.0,60.0,65.0,71.0),
                            DVID=c("cp","cp","cp","cp","cp","cp","cp","cp","cp",
-                                  "pca","cp","pca","cp","pca","cp","pca","pca",
-                                  "pca","pca"),
+                                  "effect","cp","effect","cp","effect","cp",
+                                  "effect","effect","effect","effect"),
                            EVID=c(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
                            AMT=c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
 

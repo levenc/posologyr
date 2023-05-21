@@ -40,7 +40,7 @@ solve_by_groups <- function(index,pkmodel,params,dat,interpolation){
 }
 
 # select a suitable vector of ETA to start the optimization
-init_eta <- function(object,estim_with_iov,omega_iov=NULL){
+init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
 
   dat           <- object$tdm_data
   solved_model  <- object$solved_ppk_model
@@ -70,7 +70,15 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
   sigma         <- object$sigma
   interpolation <- object$interpolation
 
-  y_obs         <- dat$DV[dat$EVID == 0]     # only observations
+  if (endpoints=="Cc"){
+    #y_obs           <- data.frame(DV=dat[dat$EVID==0,"DV"],
+    #                              DVID="Cc")
+    y_obs           <- dat[dat$EVID==0,"DV"]
+  } else {
+    y_obs           <- dat[dat$EVID==0,c("DV","DVID")]
+
+  }
+
   error_model   <- object$error_model
 
   n_sample      <- 10
