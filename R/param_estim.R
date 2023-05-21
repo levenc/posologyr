@@ -218,6 +218,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                            return_ofv=FALSE,nocb=FALSE){
 
   object <- posologyr(prior_model,dat,nocb)
+  endpoints <- get_endpoints(object)
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 
@@ -275,9 +276,17 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
       diag_varcovar_matrix <- diag(all_the_mat)
     }
 
-    start_eta        <- init_eta(object,estim_with_iov,omega_iov=all_the_mat)
+    start_eta        <- init_eta(object,estim_with_iov,
+                                 omega_iov=all_the_mat,endpoints=endpoints)
     model_init       <- 0                             # to appease run_model()
-    y_obs            <- dat$DV[dat$EVID == 0]         # only observations
+
+    if (endpoints=="Cc"){
+      y_obs           <- data.frame(DV=dat[dat$EVID==0,"DV"],
+                               DVID="Cc")
+    } else {
+      y_obs           <- dat[dat$EVID==0,c("DV","DVID")]
+
+    }
 
     # initial bounds for the optimization
     bfgs_bounds       <- stats::qnorm(25e-3,0,sqrt(diag_varcovar_matrix),
@@ -290,7 +299,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
     # create a table to log the estimates after each attempt
     optim_attempt_log        <- matrix(Inf,nrow=max_attempt,
                                        ncol=(1+length(start_eta)))
-    optim_attempt_log        <- data.table(optim_attempt_log)
+    optim_attempt_log        <- data.table::data.table(optim_attempt_log)
 
     data.table::setnames(optim_attempt_log,
                          1:(length(start_eta)+1),
@@ -301,6 +310,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
       r <- try(stats::optim(start_eta,errpred,
                         run_model=run_model,
                         y_obs=y_obs,
+                        endpoints=endpoints,
                         theta=theta,
                         ind_eta=ind_eta,
                         sigma=sigma,
@@ -360,7 +370,8 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
           } else if(need_a_new_start){
             one_more_time <- TRUE
             start_eta     <- init_eta(object,estim_with_iov,
-                                      omega_iov=all_the_mat)
+                                      omega_iov=all_the_mat,
+                                      endpoints=endpoints)
           }
 
         } else if(optim_attempt == max_attempt){
@@ -378,7 +389,8 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
       } else{ # class(r) == 'try-error'
         one_more_time <- TRUE
         start_eta     <- init_eta(object,estim_with_iov,
-                                  omega_iov=all_the_mat)
+                                  omega_iov=all_the_mat,
+                                  endpoints=endpoints)
       }
 
       optim_attempt     <- optim_attempt + 1
