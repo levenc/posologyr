@@ -280,13 +280,9 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                                  omega_iov=all_the_mat,endpoints=endpoints)
     model_init       <- 0                             # to appease run_model()
 
-    if (endpoints=="Cc"){
-      y_obs           <- data.frame(DV=dat[dat$EVID==0,"DV"],
-                               DVID="Cc")
-    } else {
-      y_obs           <- dat[dat$EVID==0,c("DV","DVID")]
-
-    }
+    ifelse(endpoints=="Cc",
+           y_obs <- data.frame(DV=dat[dat$EVID==0,"DV"],DVID="Cc"),
+           y_obs <- dat[dat$EVID==0,c("DV","DVID")])
 
     # initial bounds for the optimization
     bfgs_bounds       <- stats::qnorm(25e-3,0,sqrt(diag_varcovar_matrix),
@@ -346,7 +342,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
         stuck_on_bound    <- TRUE %in% (abs(r$par) >= bfgs_bounds)
         all_eta_are_zero  <- !(FALSE %in% (r$par == 0))
         identical_abs_eta <- isTRUE(length(unique(abs(r$par))) < length(r$par))
-        sky_high_ofv      <- OFV_current >= 1e10
+        sky_high_ofv      <- isTRUE(OFV_current >= 1e10)
         not_the_best      <- isTRUE(OFV_current - best_attempt_ofv > 1e-7)
         far_from_2nd_best <- isTRUE(abs(second_best_ofv - best_attempt_ofv) > 1e-5)
 
@@ -802,7 +798,9 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #' @export
 poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
                            n_resample=1e3,return_model=TRUE,nocb=FALSE){
+
   object <- posologyr(prior_model,dat,nocb)
+  endpoints <- get_endpoints(object)
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 
@@ -813,7 +811,9 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
   error_model   <- object$error_model
   interpolation <- object$interpolation
 
-  y_obs        <- dat$DV[dat$EVID == 0]     # only observations
+  ifelse(endpoints=="Cc",
+         y_obs <- data.frame(DV=dat[dat$EVID==0,"DV"],DVID="Cc"),
+         y_obs <- dat[dat$EVID==0,c("DV","DVID")])
   ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
   nb_etas      <- length(ind_eta)
   omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
@@ -874,7 +874,6 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
   } else{
     eta_mat           <- matrix(0,nrow=n_sample,ncol=ncol(omega))
     eta_mat[,ind_eta] <- eta_sim
-
   }
 
   eta_df            <- data.frame(eta_mat)
@@ -927,39 +926,48 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
                           dat=data_iov,
                           interpolation=interpolation,
                           MARGIN=1,FUN=solve_by_groups)
-    solved_model  <- do.call(rbind,loads_omodels)
+    f_all_endpoints  <- do.call(rbind,loads_omodels)
 
-    data.table::setnames(solved_model,"id","sim.id")
-
-    wide_cc <- dcast_up_to_five(solved_model)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
+    data.table::setnames(f_all_endpoints,"id","sim.id")
   } else {
-    solved_model <- rxode2::rxSolve(solved_model,
-                                   cbind(theta,eta_dt,row.names=NULL),
-                                   dat,covsInterpolation=interpolation,
-                                   returnType="data.table")
-
-    wide_cc <- dcast_up_to_five(solved_model)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
+    f_all_endpoints <- rxode2::rxSolve(solved_model,
+                                       cbind(theta,eta_dt,row.names=NULL),
+                                       dat,covsInterpolation=interpolation,
+                                       returnType="data.table")
   }
+
+  f <- g <- DVID <- NULL # avoid undefined global variables
+
+  # binding the simulated observations with DVID, the DVID column is recycled
+  f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
+  g_all_endpoints <- f_all_endpoints
+
+  if (setequal(endpoints,"Cc")){    # for retro-compatibility purposes
+    g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
+  } else {
+    for (edp in endpoints){
+      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,get(edp)]),
+                                                  sigma[[edp]])
+    }
+  }
+
+  f_all_endpoints[, f := get(as.character(DVID)),by = seq_len(nrow(f_all_endpoints))]
+  g_all_endpoints[, g := get(as.character(DVID)),by = seq_len(nrow(g_all_endpoints))]
+
+  f_all_sim <- dcast(f_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "f")
+  g_all_sim <- dcast(g_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "g")
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
-    g        <- error_model(f,sigma)
-    minus_LL <- 0.5*objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+    g        <- g_all_sim[eta_id,-1]
+    minus_LL <- 0.5*objective_function(y_obs=y_obs$DV,f=f,g=g,eta=eta,
                                        solve_omega=solve_omega)
     return(-minus_LL)
   }
 
-  lf        <- apply(wide_cc,MARGIN=1,FUN=LL_func)
+  lf        <- apply(f_all_sim,MARGIN=1,FUN=LL_func)
   lp        <- mvtnorm::dmvnorm(eta_sim,mean=rep(0,ncol(omega_sim)),
                                 sigma=omega_sim,log=TRUE)
   md        <- max(lf - lp)

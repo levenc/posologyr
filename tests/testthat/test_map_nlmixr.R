@@ -18,8 +18,8 @@ mod_amikacin_2cpt_Burdet2015 <- list(
     d/dt(AUC)    =   Cc;
   }),
   error_model = function(f,sigma){
-    g <- sigma[1] + sigma[2]*f
-    return(g)
+    g <- sigma[1]^2 + (sigma[2]^2)*(f^2)
+    return(sqrt(g))
   },
   theta = c(THETA_Cl=4.3, THETA_Vc=15.9, THETA_Vp=21.4,THETA_Q=12.1),
   omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
@@ -42,8 +42,8 @@ patient03_amik_map  <- poso_estim_map(dat=df_patient03_amik,
                                       return_model=TRUE)
 
 test_that("MAP estimates match nlmixr posthoc estimates", {
-  expect_equal(patient03_amik_map$model$Cl[1], 2.62, tolerance=1e-2)
-  expect_equal(patient03_amik_map$model$Vc[1], 11.01, tolerance=1e-2)
-  expect_equal(patient03_amik_map$model$Vp[1], 14.57, tolerance=1e-2)
-  expect_equal(patient03_amik_map$model$Q[1], 11.96, tolerance=1e-2)
+  expect_equal(patient03_amik_map$model$Cl[1], 2.62, tolerance=1e-3)
+  expect_equal(patient03_amik_map$model$Vc[1], 11.01, tolerance=1e-3)
+  expect_equal(patient03_amik_map$model$Vp[1], 14.57, tolerance=1e-3)
+  expect_equal(patient03_amik_map$model$Q[1], 11.96, tolerance=1e-3)
 })

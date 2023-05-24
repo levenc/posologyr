@@ -38,7 +38,7 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
 
   U_y   <-  sum(((y_obs - f)/g)^2 + log(g^2))
 
-  #the transpose of a diagonal matrix is itself
+  # the transpose of a diagonal matrix is itself
   U_eta <- eta %*% solve_omega %*% eta
 
   if (TRUE %in% is.na(f)){
@@ -97,19 +97,19 @@ errpred <- function(eta_estim=NULL,
   f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
   g_all_endpoints <- f_all_endpoints
 
-  if (endpoints == "Cc"){
+  if (setequal(endpoints,"Cc")){    # for retro-compatibility purposes
     g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
   } else {
     for (edp in endpoints){
-      g_all_endpoints[,(edp):=error_model[[edp]](f_all_endpoints[,edp],
-                                                 sigma[[edp]])]
+      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,get(edp)]),
+                                                  sigma[[edp]])
     }
   }
 
-    for (observation in 1:nrow(f_all_endpoints)){
-    f_all_endpoints[observation, f := get(DVID)]
-    g_all_endpoints[observation, g := get(DVID)]
-  }
+  f <- g <- DVID <- NULL # avoid undefined global variables
+
+  f_all_endpoints[, f := get(as.character(DVID)),by = seq_len(nrow(f_all_endpoints))]
+  g_all_endpoints[, g := get(as.character(DVID)),by = seq_len(nrow(g_all_endpoints))]
 
   optimize_me <- objective_function(y_obs=y_obs[,"DV"],
                                     f=f_all_endpoints$f,

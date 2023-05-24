@@ -70,14 +70,9 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
   sigma         <- object$sigma
   interpolation <- object$interpolation
 
-  if (endpoints=="Cc"){
-    #y_obs           <- data.frame(DV=dat[dat$EVID==0,"DV"],
-    #                              DVID="Cc")
-    y_obs           <- dat[dat$EVID==0,"DV"]
-  } else {
-    y_obs           <- dat[dat$EVID==0,c("DV","DVID")]
-
-  }
+  ifelse(setequal(endpoints,"Cc"),
+         y_obs <- data.frame(DV=dat[dat$EVID==0,"DV"],DVID="Cc"),
+         y_obs <- dat[dat$EVID==0,c("DV","DVID")])
 
   error_model   <- object$error_model
 
@@ -148,46 +143,51 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
     param_cols <- c("ID",attr(omega,"dimnames")[[1]])
     params     <- cbind(eta_dt[,param_cols,with=F],theta)
 
-    long_cc <- rxode2::rxSolve(solved_model,
-                              cbind(theta,eta_dt,row.names=NULL),
-                              data_iov,covsInterpolation=interpolation,
-                              returnType="data.table")
+    f_all_endpoints <- rxode2::rxSolve(solved_model,
+                                       cbind(theta,eta_dt,row.names=NULL),
+                                       data_iov,covsInterpolation=interpolation,
+                                       returnType="data.table")
 
-    data.table::setnames(long_cc,"id","sim.id")
-
-    wide_cc <- dcast_up_to_five(long_cc)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
-
-    wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
+    data.table::setnames(f_all_endpoints,"id","sim.id")
   } else {
-    long_cc <- rxode2::rxSolve(solved_model,
-                              cbind(theta,eta_dt,row.names=NULL),
-                              dat,covsInterpolation=interpolation,
-                              returnType="data.table")
-
-    wide_cc <- dcast_up_to_five(long_cc)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
-
-    wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
+    f_all_endpoints <- rxode2::rxSolve(solved_model,
+                                       cbind(theta,eta_dt,row.names=NULL),
+                                       dat,covsInterpolation=interpolation,
+                                       returnType="data.table")
   }
+
+  # binding the simulated observations with DVID, the DVID column is recycled
+  f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
+  g_all_endpoints <- f_all_endpoints
+
+  if (setequal(endpoints,"Cc")){    # for retro-compatibility purposes
+    g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
+  } else {
+    for (edp in endpoints){
+      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,get(edp)]),
+                                                 sigma[[edp]])
+    }
+  }
+
+  f <- g <- DVID <- NULL # avoid undefined global variables
+
+  f_all_endpoints[, f := get(as.character(DVID)),by = seq_len(nrow(f_all_endpoints))]
+  g_all_endpoints[, g := get(as.character(DVID)),by = seq_len(nrow(g_all_endpoints))]
+
+  f_all_sim <- dcast(f_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "f")
+  g_all_sim <- dcast(g_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "g")
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
-    g        <- error_model(f,sigma)
-    minus_LL <- 0.5*objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+    g        <- g_all_sim[eta_id,-1]
+    minus_LL <- 0.5*objective_function(y_obs=y_obs$DV,f=f,g=g,eta=eta,
                                        solve_omega=solve_omega)
     return(-minus_LL)
   }
 
-  log_likelihood  <- unlist(apply(wide_cc,MARGIN=1,FUN=LL_func))
+  log_likelihood  <- unlist(apply(f_all_sim,MARGIN=1,FUN=LL_func))
 
   start_eta       <- eta_sim[which(log_likelihood == max(log_likelihood)),
                              1:ncol(omega_eta)]
