@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 # posologyr [<img src="man/figures/logo_120.png"  align="right" />](https://github.com/levenc/posologyr/)
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/levenc/posologyr/workflows/R-CMD-check/badge.svg)](https://github.com/levenc/posologyr/actions)
+[![R-CMD-check](https://github.com/levenc/posologyr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/levenc/posologyr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ## Overview
