@@ -316,7 +316,6 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                         iov_col=iov_col,
                         pimat=pimat,
                         dat=dat,
-                        eta_df=eta_df,
                         model_init=model_init,
                         solved_model=solved_model,
                         error_model=error_model,
@@ -936,26 +935,14 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
                                        returnType="data.table")
   }
 
-  f <- g <- DVID <- NULL # avoid undefined global variables
+  obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                          y_obs=y_obs,
+                                          error_model=error_model,
+                                          sigma=sigma,
+                                          endpoints=endpoints)
 
-  # binding the simulated observations with DVID, the DVID column is recycled
-  f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
-  g_all_endpoints <- f_all_endpoints
-
-  if (setequal(endpoints,"Cc")){    # for retro-compatibility purposes
-    g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
-  } else {
-    for (edp in endpoints){
-      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,get(edp)]),
-                                                  sigma[[edp]])
-    }
-  }
-
-  f_all_endpoints[, f := get(as.character(DVID)),by = seq_len(nrow(f_all_endpoints))]
-  g_all_endpoints[, g := get(as.character(DVID)),by = seq_len(nrow(g_all_endpoints))]
-
-  f_all_sim <- dcast(f_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "f")
-  g_all_sim <- dcast(g_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "g")
+  f_all_sim <- dcast(obs_res$f_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "f")
+  g_all_sim <- dcast(obs_res$g_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "g")
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]

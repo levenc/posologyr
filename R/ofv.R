@@ -66,13 +66,11 @@ errpred <- function(eta_estim=NULL,
                     iov_col=NULL,
                     pimat=NULL,
                     dat=NULL,
-                    eta_df=NULL,
                     model_init=NULL,
                     solved_model=NULL,
                     error_model=NULL,
                     estim_with_iov=NULL,
-                    interpolation=NULL,
-                    index_segment=NULL){
+                    interpolation=NULL){
 
   eta          <- diag(omega)*0
 
@@ -88,32 +86,21 @@ errpred <- function(eta_estim=NULL,
     eta[ind_eta] <- eta_estim
   }
   #simulated concentrations with the proposed eta estimates
-  f_all_endpoints   <- do.call(run_model,list(c(theta,eta),
-                                              model_init=model_init,
-                                              solved_model=solved_model,
-                                              estim_with_iov=estim_with_iov,
-                                              endpoints=endpoints))
+  f_all_endpoints <- do.call(run_model,list(c(theta,eta),
+                                            model_init=model_init,
+                                            solved_model=solved_model,
+                                            estim_with_iov=estim_with_iov,
+                                            endpoints=endpoints))
 
-  f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
-  g_all_endpoints <- f_all_endpoints
-
-  if (setequal(endpoints,"Cc")){    # for retro-compatibility purposes
-    g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
-  } else {
-    for (edp in endpoints){
-      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,get(edp)]),
-                                                  sigma[[edp]])
-    }
-  }
-
-  f <- g <- DVID <- NULL # avoid undefined global variables
-
-  f_all_endpoints[, f := get(as.character(DVID)),by = seq_len(nrow(f_all_endpoints))]
-  g_all_endpoints[, g := get(as.character(DVID)),by = seq_len(nrow(g_all_endpoints))]
+  obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                          y_obs=y_obs,
+                                          error_model=error_model,
+                                          sigma=sigma,
+                                          endpoints=endpoints)
 
   optimize_me <- objective_function(y_obs=y_obs[,"DV"],
-                                    f=f_all_endpoints$f,
-                                    g=g_all_endpoints$g,
+                                    f=obs_res$f_all_endpoints$f,
+                                    g=obs_res$g_all_endpoints$g,
                                     eta=eta_estim,
                                     solve_omega=solve_omega)
   return(optimize_me)
