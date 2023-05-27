@@ -11,6 +11,7 @@ poso_dose_conc(
   time_c,
   time_dose = NULL,
   target_conc,
+  endpoint = "Cc",
   estim_method = "map",
   nocb = FALSE,
   p = NULL,
@@ -40,6 +41,9 @@ optimized.}
 \item{time_dose}{Numeric. Time when the dose is to be given.}
 
 \item{target_conc}{Numeric. Target concentration.}
+
+\item{endpoint}{Character. The endpoint of the prior model to be optimised for.
+The default is "Cc", which is the central concentration.}
 
 \item{estim_method}{A character string. An estimation method to be used for
 the individual parameters. The default method "map" is the Maximum A
