@@ -12,10 +12,10 @@ Authors@R: c(
     person("Marc","Lavielle",role = c("ctb"),
            comment = c("Author of the saemix R package"))
     )
-Description: A set of functions to determine individual pharmacokinetic (and 
+Description: Determine individual pharmacokinetic (and 
     pharmacokinetic-pharmacodynamic) profiles and use them to personalise drug 
     regimens. You provide the data and a population pharmacokinetic model, 
-    posologyr provides the individual a posteriori estimate and allows you to 
+    `posologyr` provides the individual a posteriori estimate and allows you to 
     determine the optimal dosing.
 License: AGPL-3
 Encoding: UTF-8
