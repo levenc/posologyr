@@ -22,7 +22,7 @@ target concentration."><meta property="og:image" content="/logo.png"><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -86,6 +86,7 @@ target concentration.</p>
 <span>  prior_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">dose</span>,</span>
 <span>  <span class="va">target_cmin</span>,</span>
+<span>  endpoint <span class="op">=</span> <span class="st">"Cc"</span>,</span>
 <span>  estim_method <span class="op">=</span> <span class="st">"map"</span>,</span>
 <span>  nocb <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  p <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -115,6 +116,11 @@ model, a list of six objects.</p></dd>
 
 <dt>target_cmin</dt>
 <dd><p>Numeric. Target trough concentration (Cmin).</p></dd>
+
+
+<dt>endpoint</dt>
+<dd><p>Character. The endpoint of the prior model to be optimised for.
+The default is "Cc", which is the central concentration.</p></dd>
 
 
 <dt>estim_method</dt>
@@ -247,7 +253,7 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019036 -0.4291733 0.1278479</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291731 0.1278483</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -264,7 +270,7 @@ covariates</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
