@@ -1,6 +1,6 @@
 Package: posologyr
 Title: Individual Dose Optimization using Population Pharmacokinetics
-Version: 1.1.0
+Version: 1.2.0
 Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
@@ -12,7 +12,11 @@ Authors@R: c(
     person("Marc","Lavielle",role = c("ctb"),
            comment = c("Author of the saemix R package"))
     )
-Description: Individualization of drug dosage taking advantage of population pharmacokinetics, patient characteristics, and the results of therapeutic drug monitoring.
+Description: Determine individual pharmacokinetic (and 
+    pharmacokinetic-pharmacodynamic) profiles and use them to personalise drug 
+    regimens. You provide the data and a population pharmacokinetic model, 
+    `posologyr` provides the individual a posteriori estimate and allows you to 
+    determine the optimal dosing.
 License: AGPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

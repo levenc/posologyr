@@ -10,6 +10,7 @@ poso_inter_cmin(
   prior_model = NULL,
   dose,
   target_cmin,
+  endpoint = "Cc",
   estim_method = "map",
   nocb = FALSE,
   p = NULL,
@@ -30,6 +31,9 @@ model, a list of six objects.}
 \item{dose}{Numeric. The dose given.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
+
+\item{endpoint}{Character. The endpoint of the prior model to be optimised for.
+The default is "Cc", which is the central concentration.}
 
 \item{estim_method}{A character string. An estimation method to be used for
 the individual parameters. The default method "map" is the Maximum A

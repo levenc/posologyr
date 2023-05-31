@@ -52,3 +52,26 @@ check_for_iov <- function(object){
   }
   return(estim_with_iov)
 }
+
+get_endpoints <- function(object){
+  if (any(class(object$sigma) == "list",class(object$error_model) == "list")) {
+    if (is.null(object$tdm_data$DVID)){
+      stop("DVID is missing from the patient record")
+    }
+    if (any(!is.null(names(object$sigma)),!is.null(names(object$error_model)))){
+      if (!setequal(names(object$sigma),names(object$error_model))){
+        stop("The names of the sigma matrices do not match the names of the error models")
+      }
+      if (FALSE %in% ((unique(object$tdm_data$DVID) %in% names(object$sigma)))){
+        stop("The observation types in DVID do not match the names of the error models")
+      }
+    } else {
+      stop("The sigma and error models lists must be named lists, with names matching
+           the DVID column from the patient record")
+    }
+    endpoints <- names(object$sigma)
+  } else {
+    endpoints <- "Cc"
+  }
+  return(endpoints)
+}

@@ -17,12 +17,11 @@
 #-------------------------------------------------------------------------
 
 # Update model predictions with a new set of parameters, for all obs
-run_model <- function(x,model_init=NULL,solved_model=NULL,
-                      estim_with_iov=NULL){
+run_model <- function(x,solved_model=NULL,estim_with_iov=NULL,endpoints=NULL){
   if (!estim_with_iov){ #rxode2 already updated in errpred() if estim_with_iov
     solved_model$params <- x
   }
-  return(solved_model$Cc)
+  return(solved_model[endpoints])
 }
 
 # Objective function for the Empirical Bayes Estimates
@@ -38,7 +37,7 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
 
   U_y   <-  sum(((y_obs - f)/g)^2 + log(g^2))
 
-  #the transpose of a diagonal matrix is itself
+  # the transpose of a diagonal matrix is itself
   U_eta <- eta %*% solve_omega %*% eta
 
   if (TRUE %in% is.na(f)){
@@ -56,6 +55,7 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
 errpred <- function(eta_estim=NULL,
                     run_model=NULL,
                     y_obs=NULL,
+                    endpoints=NULL,
                     theta=NULL,
                     ind_eta=NULL,
                     sigma=NULL,
@@ -65,13 +65,10 @@ errpred <- function(eta_estim=NULL,
                     iov_col=NULL,
                     pimat=NULL,
                     dat=NULL,
-                    eta_df=NULL,
-                    model_init=NULL,
                     solved_model=NULL,
                     error_model=NULL,
                     estim_with_iov=NULL,
-                    interpolation=NULL,
-                    index_segment=NULL){
+                    interpolation=NULL){
 
   eta          <- diag(omega)*0
 
@@ -87,13 +84,20 @@ errpred <- function(eta_estim=NULL,
     eta[ind_eta] <- eta_estim
   }
   #simulated concentrations with the proposed eta estimates
-  f   <- do.call(run_model,list(c(theta,eta),
-                                model_init=model_init,
-                                solved_model=solved_model,
-                                estim_with_iov=estim_with_iov))
-  g   <- error_model(f,sigma)
+  f_all_endpoints <- do.call(run_model,list(c(theta,eta),
+                                            solved_model=solved_model,
+                                            estim_with_iov=estim_with_iov,
+                                            endpoints=endpoints))
 
-  optimize_me <- objective_function(y_obs=y_obs,f=f,g=g,
+  obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                          y_obs=y_obs,
+                                          error_model=error_model,
+                                          sigma=sigma,
+                                          endpoints=endpoints)
+
+  optimize_me <- objective_function(y_obs=y_obs[,"DV"],
+                                    f=obs_res$f_all_endpoints$f,
+                                    g=obs_res$g_all_endpoints$g,
                                     eta=eta_estim,
                                     solve_omega=solve_omega)
   return(optimize_me)

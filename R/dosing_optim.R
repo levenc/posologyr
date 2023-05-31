@@ -32,6 +32,8 @@
 #'    estimation for a simulated scenario defined by the remaining parameters.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. Dose administered.
+#' @param endpoint Character. The endpoint of the prior model to be optimised for.
+#'    The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -114,8 +116,9 @@
 #'
 #' @export
 poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
-                           target_cmin,dose=NULL,estim_method="map",nocb=FALSE,
-                           p=NULL,greater_than=TRUE,from=0.2,last_time=72,
+                           target_cmin,dose=NULL,endpoint="Cc",
+                           estim_method="map",nocb=FALSE,p=NULL,
+                           greater_than=TRUE,from=0.2,last_time=72,
                            add_dose=NULL,interdose_interval=NULL,
                            duration=0,indiv_param=NULL){
   object <- posologyr(prior_model,dat,nocb)
@@ -206,7 +209,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     wide_cmin      <- tidyr::pivot_wider(cmin_ppk_model,
                                         id_cols = "time",
                                         names_from = "sim.id",
-                                        values_from = "Cc")
+                                        values_from = endpoint)
 
     get_p_cmin <- function(all_cmin){
       all_cmin     <- all_cmin[-1]
@@ -239,15 +242,15 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     cmin_distribution      <- unlist(cmin_distribution,use.names=FALSE)
   } else { #select_proposal_from_distribution == FALSE, TDM or not
     #compute time_to_target taking into account the multiple doses if needed
-    # time_to_target: time after the last dose for which Cc is lower than
-    # target_cmin
+    # time_to_target: time after the last dose for which tne endpoint is lower
+    # than target_cmin
     time_to_target <-
       min(cmin_ppk_model[cmin_ppk_model$time > from &
-                         cmin_ppk_model$Cc < target_cmin,]$time) - time_last_dose
-    #here cmin_distribution is a point estimate of Cc
+                         cmin_ppk_model[,endpoint] < target_cmin,]$time) - time_last_dose
+    #here cmin_distribution is a point estimate of the endpoint
     cmin_distribution <<-
-      cmin_ppk_model$Cc[cmin_ppk_model$time == (time_to_target +
-                                                  time_last_dose)]
+      cmin_ppk_model[cmin_ppk_model$time == (time_to_target +
+                                                  time_last_dose),endpoint]
   }
 
   ifelse(select_proposal_from_distribution,
@@ -369,8 +372,8 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' @export
 poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                           time_auc,time_dose=NULL,target_auc,
-                          estim_method="map",nocb=FALSE,p=NULL,
-                          greater_than=TRUE,starting_time=0,
+                          estim_method="map",nocb=FALSE,
+                          p=NULL,greater_than=TRUE,starting_time=0,
                           interdose_interval=NULL,add_dose=NULL,
                           duration=0,starting_dose=100,indiv_param=NULL){
 
@@ -572,6 +575,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'     optimized.
 #' @param time_dose Numeric. Time when the dose is to be given.
 #' @param target_conc Numeric. Target concentration.
+#' @param endpoint Character. The endpoint of the prior model to be optimised for.
+#'    The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -658,10 +663,11 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'
 #' @export
 poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
-                           time_c,time_dose=NULL,target_conc,estim_method="map",
-                           nocb=FALSE,p=NULL,greater_than=TRUE,
-                           starting_dose=100,interdose_interval=NULL,
-                           add_dose=NULL,duration=0,indiv_param=NULL){
+                           time_c,time_dose=NULL,target_conc,endpoint="Cc",
+                           estim_method="map",nocb=FALSE,p=NULL,
+                           greater_than=TRUE,starting_dose=100,
+                           interdose_interval=NULL,add_dose=NULL,duration=0,
+                           indiv_param=NULL){
   object <- posologyr(prior_model,dat,nocb)
 
   if(tdm){ #using TDM data
@@ -719,7 +725,7 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                                          covsInterpolation =
                                            ifelse(nocb,"nocb","locf"))
 
-      conc_proposal     <- ctime_ppk_model$Cc
+      conc_proposal     <- ctime_ppk_model[,endpoint]
       conc_distribution <<- conc_proposal #to parent environment
       #return the difference between the computed ctime and the target
       delta_conc <- (target_conc - conc_proposal)^2
@@ -779,7 +785,7 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 
       if (select_proposal_from_distribution){
 
-        sorted_conc     <- sort(ctime_ppk_model$Cc)
+        sorted_conc     <- sort(ctime_ppk_model[,endpoint])
         n_conc          <- length(sorted_conc)
         conc_index      <- ceiling(p * n_conc)
 
@@ -792,7 +798,7 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
           conc_proposal <- sorted_conc[conc_index]
         }
       } else {
-        conc_proposal     <- ctime_ppk_model$Cc
+        conc_proposal     <- ctime_ppk_model[,endpoint]
         conc_distribution <<- conc_proposal
       }
 
@@ -836,6 +842,8 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'    model, a list of six objects.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. The dose given.
+#' @param endpoint Character. The endpoint of the prior model to be optimised for.
+#'    The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -922,7 +930,7 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'
 #' @export
 poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
-                            estim_method="map",nocb=FALSE,p=NULL,
+                            endpoint="Cc",estim_method="map",nocb=FALSE,p=NULL,
                             greater_than=TRUE,starting_interval=12,add_dose=10,
                             duration=0,indiv_param=NULL){
   object <- posologyr(prior_model,dat,nocb)
@@ -951,7 +959,7 @@ poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
 
     if (select_proposal_from_distribution){
 
-      sorted_cmin     <- sort(cmin_ppk_model$Cc)
+      sorted_cmin     <- sort(cmin_ppk_model[,endpoint])
       n_cmin          <- length(sorted_cmin)
       cmin_index      <- ceiling(p * n_cmin)
 
@@ -964,7 +972,7 @@ poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
         cmin_proposal <- sorted_cmin[cmin_index]
       }
     } else {
-      cmin_proposal     <-  cmin_ppk_model$Cc
+      cmin_proposal     <-  cmin_ppk_model[,endpoint]
       cmin_distribution <<- cmin_proposal
     }
 

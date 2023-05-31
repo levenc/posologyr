@@ -1,3 +1,12 @@
+# posologyr v1.2.0
+
+## Additional features
+* `poso_estim_map()`, `poso_estim_sir()` and `poso_estim_mcmc()` can now estimate individual PK profiles for multiple endpoints models (eg. PK-PD, parent-metabolite, blood-CSF...), using a different residual error model for each endpoint.
+* `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` now allow you to select the end point of interest for which you want to optimise, provided it is defined in the model.
+
+## Internal changes
+* The description of the package is updated
+
 # posologyr v1.1.0
 
 ## Additional features

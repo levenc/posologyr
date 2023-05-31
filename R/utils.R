@@ -40,7 +40,7 @@ solve_by_groups <- function(index,pkmodel,params,dat,interpolation){
 }
 
 # select a suitable vector of ETA to start the optimization
-init_eta <- function(object,estim_with_iov,omega_iov=NULL){
+init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
 
   dat           <- object$tdm_data
   solved_model  <- object$solved_ppk_model
@@ -70,7 +70,10 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
   sigma         <- object$sigma
   interpolation <- object$interpolation
 
-  y_obs         <- dat$DV[dat$EVID == 0]     # only observations
+  ifelse(setequal(endpoints,"Cc"),
+         y_obs <- data.frame(DV=dat[dat$EVID==0,"DV"],DVID="Cc"),
+         y_obs <- dat[dat$EVID==0,c("DV","DVID")])
+
   error_model   <- object$error_model
 
   n_sample      <- 10
@@ -140,46 +143,42 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
     param_cols <- c("ID",attr(omega,"dimnames")[[1]])
     params     <- cbind(eta_dt[,param_cols,with=F],theta)
 
-    long_cc <- rxode2::rxSolve(solved_model,
-                              cbind(theta,eta_dt,row.names=NULL),
-                              data_iov,covsInterpolation=interpolation,
-                              returnType="data.table")
+    f_all_endpoints <- rxode2::rxSolve(solved_model,
+                                       cbind(theta,eta_dt,row.names=NULL),
+                                       data_iov,covsInterpolation=interpolation,
+                                       returnType="data.table")
 
-    data.table::setnames(long_cc,"id","sim.id")
-
-    wide_cc <- dcast_up_to_five(long_cc)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
-
-    wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
+    data.table::setnames(f_all_endpoints,"id","sim.id")
   } else {
-    long_cc <- rxode2::rxSolve(solved_model,
-                              cbind(theta,eta_dt,row.names=NULL),
-                              dat,covsInterpolation=interpolation,
-                              returnType="data.table")
-
-    wide_cc <- dcast_up_to_five(long_cc)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
-
-    wide_cc <- wide_cc[stats::complete.cases(wide_cc[,2])]
+    f_all_endpoints <- rxode2::rxSolve(solved_model,
+                                       cbind(theta,eta_dt,row.names=NULL),
+                                       dat,covsInterpolation=interpolation,
+                                       returnType="data.table")
   }
+
+  # binding the simulated observations with DVID, the DVID column is recycled
+  f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
+
+  obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                          y_obs=y_obs,
+                                          error_model=error_model,
+                                          sigma=sigma,
+                                          endpoints=endpoints)
+
+  f_all_sim <- dcast(obs_res$f_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "f")
+  g_all_sim <- dcast(obs_res$g_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "g")
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
-    g        <- error_model(f,sigma)
-    minus_LL <- 0.5*objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+    g        <- g_all_sim[eta_id,-1]
+    minus_LL <- 0.5*objective_function(y_obs=y_obs$DV,f=f,g=g,eta=eta,
                                        solve_omega=solve_omega)
     return(-minus_LL)
   }
 
-  log_likelihood  <- unlist(apply(wide_cc,MARGIN=1,FUN=LL_func))
+  log_likelihood  <- unlist(apply(f_all_sim,MARGIN=1,FUN=LL_func))
 
   start_eta       <- eta_sim[which(log_likelihood == max(log_likelihood)),
                              1:ncol(omega_eta)]
@@ -190,61 +189,13 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL){
                                 # row
     start_eta <- start_eta[1,]
   }
-
   if(estim_with_iov){
     names(start_eta) <- c(colnames(omega[ind_eta,ind_eta]),
                           seq(1,length(start_eta)-ncol(omega[ind_eta,ind_eta])))
   } else{
     names(start_eta) <- colnames(omega_eta)
   }
-
   return(start_eta)
-}
-
-# dcast up to five simultaneous observations for parent-metabolite data
-dcast_up_to_five <- function(long_data){
-  dcast(long_data, formula = sim.id ~ time, value.var = "Cc",
-        fun.aggregate = list(obs1_=function(x){x[1]},
-                             obs2_=function(x){x[2]},
-                             obs3_=function(x){x[3]},
-                             obs4_=function(x){x[4]},
-                             obs5_=function(x){x[5]}
-                             ))
-}
-
-# drop empty columns
-drop_empty_cols <- function(df) {
-  for (nm in names(df)){
-    if(all(is.na(df[[nm]]))){
-      df[[nm]] <- NULL
-    }
-  }
-  return(df)
-}
-
-# order columns to preserve the initial sequence of observations after dcast
-order_columns <- function(DT){
-  dt_names <- names(DT[,-1]) # column names, minus the first one
-
-  split_colnames_list <- strsplit(dt_names,"__")
-
-  #type of observations in X1, time in X2
-  colnames_table <- data.frame(matrix(unlist(split_colnames_list),
-                        nrow=length(dt_names),
-                        byrow=T))
-
-  # Order colnames_table, first time, then type of observation
-  colnames_table <- colnames_table[order(as.numeric(colnames_table$X2),
-                                        colnames_table$X1,
-                                        decreasing = F),]
-
-  # Reformat names
-  df_names <- paste0(colnames_table$X1,"__",colnames_table$X2)
-
-  # Rearrange columns, bind the first col and the rearranged cols
-  DT <- cbind(DT[,1],DT[,dt_names,with=F])
-
-  return(DT)
 }
 
 #extrapolate covariates to allow more sampling times in rxode2 solved models
@@ -271,3 +222,28 @@ extrapol_iov <- function(x=NULL,dat=NULL,iov_kappa=NULL,event_table=NULL){
   approx_iov(event_table$time)
 }
 
+# apply the appropriate error model to all endpoints then match the DVID of the record
+residual_error_all_endpoints <- function(f_all_endpoints=NULL,
+                                         y_obs=NULL,
+                                         error_model=NULL,
+                                         sigma=NULL,
+                                         endpoints=NULL){
+  f_all_endpoints <- data.table::data.table(f_all_endpoints,DVID=y_obs$DVID)
+  g_all_endpoints <- f_all_endpoints
+
+  if (setequal(endpoints,"Cc")){    # for retro-compatibility purposes
+    g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
+  } else {
+    for (edp in endpoints){
+      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,get(edp)]),
+                                                  sigma[[edp]])
+    }
+  }
+
+  f <- g <- DVID <- NULL # avoid undefined global variables
+  f_all_endpoints[, f := get(as.character(DVID)),by = seq_len(nrow(f_all_endpoints))]
+  g_all_endpoints[, g := get(as.character(DVID)),by = seq_len(nrow(g_all_endpoints))]
+
+  return(list(f_all_endpoints = f_all_endpoints,
+              g_all_endpoints = g_all_endpoints))
+}

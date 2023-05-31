@@ -218,6 +218,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                            return_ofv=FALSE,nocb=FALSE){
 
   object <- posologyr(prior_model,dat,nocb)
+  endpoints <- get_endpoints(object)
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 
@@ -275,9 +276,12 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
       diag_varcovar_matrix <- diag(all_the_mat)
     }
 
-    start_eta        <- init_eta(object,estim_with_iov,omega_iov=all_the_mat)
-    model_init       <- 0                             # to appease run_model()
-    y_obs            <- dat$DV[dat$EVID == 0]         # only observations
+    start_eta        <- init_eta(object,estim_with_iov,
+                                 omega_iov=all_the_mat,endpoints=endpoints)
+
+    ifelse(setequal(endpoints,"Cc"),
+           y_obs <- data.frame(DV=dat[dat$EVID==0,"DV"],DVID="Cc"),
+           y_obs <- dat[dat$EVID==0,c("DV","DVID")])
 
     # initial bounds for the optimization
     bfgs_bounds       <- stats::qnorm(25e-3,0,sqrt(diag_varcovar_matrix),
@@ -290,7 +294,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
     # create a table to log the estimates after each attempt
     optim_attempt_log        <- matrix(Inf,nrow=max_attempt,
                                        ncol=(1+length(start_eta)))
-    optim_attempt_log        <- data.table(optim_attempt_log)
+    optim_attempt_log        <- data.table::data.table(optim_attempt_log)
 
     data.table::setnames(optim_attempt_log,
                          1:(length(start_eta)+1),
@@ -301,6 +305,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
       r <- try(stats::optim(start_eta,errpred,
                         run_model=run_model,
                         y_obs=y_obs,
+                        endpoints=endpoints,
                         theta=theta,
                         ind_eta=ind_eta,
                         sigma=sigma,
@@ -310,8 +315,6 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                         iov_col=iov_col,
                         pimat=pimat,
                         dat=dat,
-                        eta_df=eta_df,
-                        model_init=model_init,
                         solved_model=solved_model,
                         error_model=error_model,
                         estim_with_iov=estim_with_iov,
@@ -336,7 +339,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
         stuck_on_bound    <- TRUE %in% (abs(r$par) >= bfgs_bounds)
         all_eta_are_zero  <- !(FALSE %in% (r$par == 0))
         identical_abs_eta <- isTRUE(length(unique(abs(r$par))) < length(r$par))
-        sky_high_ofv      <- OFV_current >= 1e10
+        sky_high_ofv      <- isTRUE(OFV_current >= 1e10)
         not_the_best      <- isTRUE(OFV_current - best_attempt_ofv > 1e-7)
         far_from_2nd_best <- isTRUE(abs(second_best_ofv - best_attempt_ofv) > 1e-5)
 
@@ -360,7 +363,8 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
           } else if(need_a_new_start){
             one_more_time <- TRUE
             start_eta     <- init_eta(object,estim_with_iov,
-                                      omega_iov=all_the_mat)
+                                      omega_iov=all_the_mat,
+                                      endpoints=endpoints)
           }
 
         } else if(optim_attempt == max_attempt){
@@ -378,7 +382,8 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
       } else{ # class(r) == 'try-error'
         one_more_time <- TRUE
         start_eta     <- init_eta(object,estim_with_iov,
-                                  omega_iov=all_the_mat)
+                                  omega_iov=all_the_mat,
+                                  endpoints=endpoints)
       }
 
       optim_attempt     <- optim_attempt + 1
@@ -539,18 +544,16 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
 
   object <- posologyr(prior_model,dat,nocb)
+  if(check_for_iov(object)) stop("IOV is not supported, poso_estim_sir() can be
+                                 used instead to estimate the posterior
+                                 distributions")
+  endpoints <- get_endpoints(object)
   no_covariates <- is.null(object$covariates)
 
   dat          <- object$tdm_data
   solved_model <- object$solved_ppk_model
   omega        <- object$omega
   theta        <- object$theta
-
-  # Update model predictions with a new set of parameters, for all obs-----
-  run_model <- function(x,model=solved_model){
-    model$params <- x
-    return(model$Cc)
-  }
 
   one_mcmc_please <- function(chains,object,burn_in,n_iter,control){
 
@@ -560,7 +563,9 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
     sigma        <- object$sigma
     error_model  <- object$error_model
 
-    y_obs        <- dat$DV[dat$EVID == 0]     # only observations
+    ifelse(setequal(endpoints,"Cc"),
+           y_obs <- data.frame(DV=dat[dat$EVID==0,"DV"],DVID="Cc"),
+           y_obs <- dat[dat$EVID==0,c("DV","DVID")])
     ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
     nb_etas      <- length(ind_eta)
     omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
@@ -574,12 +579,21 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
     # Metropolis-Hastings algorithm------------------------------------------
     theta    <- object$theta
     eta      <- diag(omega_eta)*0
-    f        <- do.call(run_model,list(c(theta,eta),model=solved_model))
-    g        <- error_model(f,sigma)
+    f_all_endpoints <- do.call(run_model,list(c(theta,eta),
+                                              solved_model=solved_model,
+                                              estim_with_iov=FALSE,
+                                              endpoints=endpoints))
 
+    obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                            y_obs=y_obs,
+                                            error_model=error_model,
+                                            sigma=sigma,
+                                            endpoints=endpoints)
+    f <- obs_res$f_all_endpoints$f
+    g <- obs_res$g_all_endpoints$g
     g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
 
-    U_y      <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+    U_y      <- 0.5*sum(((y_obs[,"DV"] - f)/g)^2 + log(g^2))
     U_eta    <- 0.5 * eta %*% solve_omega %*% eta
 
     eta_mat     <- matrix(0,nrow=n_iter+1,ncol=ncol(omega))
@@ -593,12 +607,21 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
         {
           etac          <- as.vector(chol_omega%*%stats::rnorm(nb_etas))
           names(etac)   <- attr(omega_eta,"dimnames")[[1]]
-          f             <- do.call(run_model,list(c(theta,etac),model=solved_model))
-          g             <- error_model(f,sigma)
+          f_all_endpoints <- do.call(run_model,list(c(theta,etac),
+                                                    solved_model=solved_model,
+                                                    estim_with_iov=FALSE,
+                                                    endpoints=endpoints))
 
+          obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                                  y_obs=y_obs,
+                                                  error_model=error_model,
+                                                  sigma=sigma,
+                                                  endpoints=endpoints)
+          f <- obs_res$f_all_endpoints$f
+          g <- obs_res$g_all_endpoints$g
           g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
 
-          Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+          Uc_y          <- 0.5*sum(((y_obs[,"DV"] - f)/g)^2 + log(g^2))
           deltu         <- Uc_y - U_y
           if(deltu < (-1) * log(stats::runif(1)))
           {
@@ -623,12 +646,21 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
               vk2           <- jr%%nb_etas + 1
               etac          <- eta
               etac[vk2]     <- eta[vk2] + stats::rnorm(nrs2)*d_omega[vk2]
-              f             <- do.call(run_model,list(c(theta,etac),model=solved_model))
-              g             <- error_model(f,sigma)
+              f_all_endpoints <- do.call(run_model,list(c(theta,etac),
+                                                        solved_model=solved_model,
+                                                        estim_with_iov=FALSE,
+                                                        endpoints=endpoints))
 
+              obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                                      y_obs=y_obs,
+                                                      error_model=error_model,
+                                                      sigma=sigma,
+                                                      endpoints=endpoints)
+              f <- obs_res$f_all_endpoints$f
+              g <- obs_res$g_all_endpoints$g
               g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
 
-              Uc_y          <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+              Uc_y          <- 0.5*sum(((y_obs[,"DV"] - f)/g)^2 + log(g^2))
               Uc_eta        <- 0.5 * etac %*% solve_omega %*% etac
               deltu         <- Uc_y - U_y + Uc_eta - U_eta
               if(deltu < (-1) * log(stats::runif(1)))
@@ -660,12 +692,21 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
             etac            <- eta
             etac[vk2]       <- eta[vk2]+matrix(stats::rnorm(nrs2),
                                                ncol=nrs2)%*%diag(d_omega[vk2])
-            f               <- do.call(run_model,list(c(theta,etac),model=solved_model))
-            g               <- error_model(f,sigma)
+            f_all_endpoints <- do.call(run_model,list(c(theta,etac),
+                                                      solved_model=solved_model,
+                                                      estim_with_iov=FALSE,
+                                                      endpoints=endpoints))
 
+            obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                                    y_obs=y_obs,
+                                                    error_model=error_model,
+                                                    sigma=sigma,
+                                                    endpoints=endpoints)
+            f <- obs_res$f_all_endpoints$f
+            g <- obs_res$g_all_endpoints$g
             g[which(g == 0)] <- 1 # avoid NaN, idem issue #28
 
-            Uc_y            <- 0.5*sum(((y_obs - f)/g)^2 + log(g^2))
+            Uc_y            <- 0.5*sum(((y_obs[,"DV"] - f)/g)^2 + log(g^2))
             Uc_eta          <- 0.5*rowSums(etac*(etac%*%solve(omega_eta)))
             deltu           <- Uc_y-U_y+Uc_eta-U_eta
             ind             <- which(deltu<(-log(stats::runif(1))))
@@ -790,7 +831,9 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #' @export
 poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
                            n_resample=1e3,return_model=TRUE,nocb=FALSE){
+
   object <- posologyr(prior_model,dat,nocb)
+  endpoints <- get_endpoints(object)
   estim_with_iov <- check_for_iov(object)
   no_covariates  <- is.null(object$covariates)
 
@@ -801,7 +844,9 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
   error_model   <- object$error_model
   interpolation <- object$interpolation
 
-  y_obs        <- dat$DV[dat$EVID == 0]     # only observations
+  ifelse(endpoints=="Cc",
+         y_obs <- data.frame(DV=dat[dat$EVID==0,"DV"],DVID="Cc"),
+         y_obs <- dat[dat$EVID==0,c("DV","DVID")])
   ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
   nb_etas      <- length(ind_eta)
   omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
@@ -862,7 +907,6 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
   } else{
     eta_mat           <- matrix(0,nrow=n_sample,ncol=ncol(omega))
     eta_mat[,ind_eta] <- eta_sim
-
   }
 
   eta_df            <- data.frame(eta_mat)
@@ -915,39 +959,38 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
                           dat=data_iov,
                           interpolation=interpolation,
                           MARGIN=1,FUN=solve_by_groups)
-    solved_model  <- do.call(rbind,loads_omodels)
+    f_all_endpoints  <- do.call(rbind,loads_omodels)
 
-    data.table::setnames(solved_model,"id","sim.id")
-
-    wide_cc <- dcast_up_to_five(solved_model)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
+    data.table::setnames(f_all_endpoints,"id","sim.id")
   } else {
-    solved_model <- rxode2::rxSolve(solved_model,
-                                   cbind(theta,eta_dt,row.names=NULL),
-                                   dat,covsInterpolation=interpolation,
-                                   returnType="data.table")
-
-    wide_cc <- dcast_up_to_five(solved_model)
-
-    wide_cc <- drop_empty_cols(wide_cc)
-
-    wide_cc <- order_columns(wide_cc)
+    f_all_endpoints <- rxode2::rxSolve(solved_model,
+                                       cbind(theta,eta_dt,row.names=NULL),
+                                       dat,covsInterpolation=interpolation,
+                                       returnType="data.table")
   }
+
+  obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
+                                          y_obs=y_obs,
+                                          error_model=error_model,
+                                          sigma=sigma,
+                                          endpoints=endpoints)
+
+  f_all_sim <- dcast(obs_res$f_all_endpoints, formula = sim.id ~ rowid(sim.id),
+                     value.var = "f")
+  g_all_sim <- dcast(obs_res$g_all_endpoints, formula = sim.id ~ rowid(sim.id),
+                     value.var = "g")
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]
     eta      <- eta_sim[eta_id,]
     f        <- simu_obs[-1]
-    g        <- error_model(f,sigma)
-    minus_LL <- 0.5*objective_function(y_obs=y_obs,f=f,g=g,eta=eta,
+    g        <- g_all_sim[eta_id,-1]
+    minus_LL <- 0.5*objective_function(y_obs=y_obs$DV,f=f,g=g,eta=eta,
                                        solve_omega=solve_omega)
     return(-minus_LL)
   }
 
-  lf        <- apply(wide_cc,MARGIN=1,FUN=LL_func)
+  lf        <- apply(f_all_sim,MARGIN=1,FUN=LL_func)
   lp        <- mvtnorm::dmvnorm(eta_sim,mean=rep(0,ncol(omega_sim)),
                                 sigma=omega_sim,log=TRUE)
   md        <- max(lf - lp)
