@@ -17,8 +17,7 @@
 #-------------------------------------------------------------------------
 
 # Update model predictions with a new set of parameters, for all obs
-run_model <- function(x,model_init=NULL,solved_model=NULL,
-                      estim_with_iov=NULL,endpoints=NULL){
+run_model <- function(x,solved_model=NULL,estim_with_iov=NULL,endpoints=NULL){
   if (!estim_with_iov){ #rxode2 already updated in errpred() if estim_with_iov
     solved_model$params <- x
   }
@@ -66,7 +65,6 @@ errpred <- function(eta_estim=NULL,
                     iov_col=NULL,
                     pimat=NULL,
                     dat=NULL,
-                    model_init=NULL,
                     solved_model=NULL,
                     error_model=NULL,
                     estim_with_iov=NULL,
@@ -87,7 +85,6 @@ errpred <- function(eta_estim=NULL,
   }
   #simulated concentrations with the proposed eta estimates
   f_all_endpoints <- do.call(run_model,list(c(theta,eta),
-                                            model_init=model_init,
                                             solved_model=solved_model,
                                             estim_with_iov=estim_with_iov,
                                             endpoints=endpoints))
