@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # posologyr: individual dose optimisation using population PK
-# Copyright (C) 2022  Cyril Leven
+# Copyright (C) Cyril Leven
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,7 @@
 
 #-------------------------------------------------------------------------
 #  Adapted from: http://shiny.webpopix.org/mcmc/bayes1/
-#  Copyright (C) 2015 Marc Lavielle, Inria Saclay, CeCILL-B
+#  Copyright (C) Marc Lavielle, Inria Saclay, CeCILL-B
 #
 #  Modifications:
 #   - interfacing with rxode2
@@ -447,9 +447,9 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 
 # poso_estim_mcmc: distribution of the individual parameters
 #
-# Copyright (C) 2017-2021 Emmanuelle Comets <emmanuelle.comets@inserm.fr>,
+# Adapted from the saemix R package
+# Copyright (C) Emmanuelle Comets <emmanuelle.comets@inserm.fr>,
 # Audrey Lavenu, Marc Lavielle (authors of the saemix R package)
-# Copyright (C) 2021 Cyril Leven
 #
 # The saemix package is free software; licensed under the terms of the GNU
 # General Public License as published by the Free Software Foundation;
