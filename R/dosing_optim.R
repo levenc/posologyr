@@ -32,8 +32,8 @@
 #'    estimation for a simulated scenario defined by the remaining parameters.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. Dose administered.
-#' @param endpoint Character. The endpoint of the prior model to be optimised for.
-#'    The default is "Cc", which is the central concentration.
+#' @param endpoint Character. The endpoint of the prior model to be optimised
+#'    for. The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -141,7 +141,8 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     covar <- utils::tail(dat[,prior_model$covariates],1)
     indiv_param <- cbind(cmin_map$model$params,covar)
     #time of the last dose
-    time_last_dose <- utils::tail(cmin_map$event[cmin_map$event$evid == 1,],1)$time
+    time_last_dose <- utils::tail(cmin_map$event[cmin_map$event$evid == 1,],
+                                  1)$time
     #starting time following the last dose
     from <- time_last_dose + from
     #last observation of the poso_estim_map output
@@ -149,7 +150,8 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     #last observation desired
     lobs <- lobs_map + last_time
     #bind the inital eventTable with enough repetitions of the last row
-    # allows to keep EVID==0 and the last known values of the covariates for every obs
+    # allows to keep EVID==0 and the last known values of the covariates
+    # for every obs
     # where .N is a shortcut for "last row"
     extended_et <- rbind(cmin_map$event,
                          cmin_map$event[rep(.N,round((lobs-lobs_map)/0.1))])
@@ -205,7 +207,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
   } #end of the individual scenario estimation
 
   #Estimate the time to Cmin----------------------------------------------------
-  if (select_proposal_from_distribution){ #simulated scenario distribution of ETA
+  if (select_proposal_from_distribution){ #simu. scenario distribution of ETA
     wide_cmin      <- tidyr::pivot_wider(cmin_ppk_model,
                                         id_cols = "time",
                                         names_from = "sim.id",
@@ -246,7 +248,8 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     # than target_cmin
     time_to_target <-
       min(cmin_ppk_model[cmin_ppk_model$time > from &
-                         cmin_ppk_model[,endpoint] < target_cmin,]$time) - time_last_dose
+                         cmin_ppk_model[,endpoint] < target_cmin,
+                         ]$time) - time_last_dose
     #here cmin_distribution is a point estimate of the endpoint
     cmin_distribution <<-
       cmin_ppk_model[cmin_ppk_model$time == (time_to_target +
@@ -428,8 +431,9 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
       # get their row numbers to assign the correct information to each
       dose_and_start <- extended_et[,which(time==time_dose)]
       #New dose at time_dose in the extended_et
-      # This shorter syntax with "list" allows for setting several variable at once
-      extended_et[dose_and_start[1],c("evid","amt","dur"):=list(1,dose,duration)]
+      # Shorter syntax with "list" allows for setting several variable at once
+      extended_et[dose_and_start[1],
+                  c("evid","amt","dur"):=list(1,dose,duration)]
       #New observation at time_dose and ending_time
       extended_et[dose_and_start[2],c("evid","amt","dur"):=list(0,NA,NA)]
       extended_et[time==ending_time,c("evid","amt","dur"):=list(0,NA,NA)]
@@ -478,7 +482,7 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
              call.=FALSE)
       }
     }
-    # Optimization ---------------------------------------------------------------
+    # Optimization -------------------------------------------------------------
     err_dose <- function(dose,time_auc,starting_time,target_auc,
                          interdose_interval,add_dose,prior_model,
                          duration,indiv_param){
@@ -538,7 +542,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     auc_distribution <- 0
 
     optim_dose_auc <- stats::optim(starting_dose,err_dose,time_auc=time_auc,
-                                   starting_time=starting_time,add_dose=add_dose,
+                                   starting_time=starting_time,
+                                   add_dose=add_dose,
                                    interdose_interval=interdose_interval,
                                    target_auc=target_auc,prior_model=object,
                                    duration=duration,indiv_param=indiv_param,
@@ -570,7 +575,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' @param tdm A boolean. If `TRUE`: estimates the optimal dose for a selected
 #'    target concentration at a selected point in time following the events from
 #'     `dat`, and using Maximum A Posteriori estimation. If `FALSE` : performs
-#'    the estimation in a simulated scenario defined by the remaining parameters.
+#'    the estimation in a simulated scenario defined by the remaining
+#'    parameters.
 #' @param time_c Numeric. Point in time for which the dose is to be
 #'     optimized.
 #' @param time_dose Numeric. Time when the dose is to be given.
@@ -605,7 +611,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'
 #' @return A list containing the following components:
 #' \describe{
-#'   \item{dose}{Numeric. An optimal dose for the selected target concentration.}
+#'   \item{dose}{Numeric. An optimal dose for the selected target
+#'   concentration.}
 #'   \item{type_of_estimate}{Character string. The type of estimate of the
 #'   individual parameters. Either a point estimate, or a distribution.}
 #'   \item{conc_estimate}{A vector of numeric estimates of the conc. Either a
@@ -715,7 +722,7 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     err_dose_tdm <- function(dose,time_dose,target_conc,time_c,prior_model,
                              extended_et,nocb){
       #New dose at time_dose in the extended_et
-      # This shorter syntax with "list" allows for setting several variable at once
+      # Shorter syntax with "list" allows for setting several variable at once
       extended_et[time==time_dose,c("evid","amt","dur"):=list(1,dose,duration)]
       #New observation at time_c
       extended_et[time==time_c,c("evid","amt","dur"):=list(0,NA,NA)]
@@ -842,8 +849,8 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'    model, a list of six objects.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. The dose given.
-#' @param endpoint Character. The endpoint of the prior model to be optimised for.
-#'    The default is "Cc", which is the central concentration.
+#' @param endpoint Character. The endpoint of the prior model to be optimised
+#'    for. The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -1043,10 +1050,12 @@ read_optim_distribution_input <- function(dat,prior_model,
         if (p < 0 || p >= 1){
           stop('p must be between 0 and 1')
         }
-        model_pop   <- poso_simu_pop(dat,prior_model,n_simul=1e5,return_model=TRUE)
+        model_pop   <- poso_simu_pop(dat,prior_model,
+                                     n_simul=1e5,return_model=TRUE)
         select_proposal_from_distribution <- TRUE
       } else {
-        model_pop   <- poso_simu_pop(dat,prior_model,n_simul=0,return_model=TRUE)
+        model_pop   <- poso_simu_pop(dat,prior_model,
+                                     n_simul=0,return_model=TRUE)
         select_proposal_from_distribution <- FALSE
       }
       if(is.null(object$covariates)){
@@ -1090,9 +1099,9 @@ read_optim_distribution_input <- function(dat,prior_model,
     }
     if (!is.null(p) && (length(rbind(indiv_param[,1])) < 1000)){
       warn_1000 <-
-        sprintf("In order to perform the optimization using a parameter distribution, you
-need at least 1000 parameter samples. Only the first set of parameters will
-be used.")
+        sprintf("In order to perform the optimization using a parameter
+        distribution, you need at least 1000 parameter samples. Only the first
+        set of parameters will be used.")
       warning(warn_1000)
       indiv_param <- rbind(indiv_param)[1,]
       select_proposal_from_distribution <- FALSE

@@ -41,8 +41,8 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
   U_eta <- eta %*% solve_omega %*% eta
 
   if (TRUE %in% is.na(f)){
-    # if rxode2 fails to solve the model, the proposed ETA is not optimal, assign
-    # a large value to OFV to divert the algorithm from this area
+    # if rxode2 fails to solve the model, the proposed ETA is not optimal,
+    # assign a large value to OFV to divert the algorithm from this area
     OFV <- 10^10
   } else {
     OFV <- U_y + U_eta

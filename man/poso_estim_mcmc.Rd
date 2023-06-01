@@ -46,7 +46,8 @@ If \code{return_model} is set to \code{FALSE}, a list of one element: a
 dataframe \verb{$eta} of ETAs from the posterior distribution, estimated by
 Markov Chain Monte Carlo.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the posterior
-distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
+distribution of ETA, and a rxode2 model using the estimated distributions of
+ETAs.
 }
 \description{
 Estimates the posterior distribution of individual parameters by Markov
@@ -99,9 +100,9 @@ n_iter=50,n_chains=2)}
 
 }
 \references{
-Comets  E, Lavenu A, Lavielle M. Parameter estimation in nonlinear
-mixed effect models using saemix, an R implementation of the SAEM algorithm.
-Journal of Statistical Software 80, 3 (2017), 1-41.
+Comets  E, Lavenu A, Lavielle M. Parameter estimation in
+nonlinear mixed effect models using saemix, an R implementation of the SAEM
+algorithm. Journal of Statistical Software 80, 3 (2017), 1-41.
 }
 \author{
 Emmanuelle Comets, Audrey Lavenu, Marc Lavielle, Cyril Leven

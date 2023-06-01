@@ -37,7 +37,8 @@ If \code{return_model} is set to \code{FALSE}, a list of one element: a
 dataframe \verb{$eta} of ETAs from the posterior distribution, estimated by
 Sequential Importance Resampling.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the posterior
-distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
+distribution of ETA, and a rxode2 model using the estimated distributions of
+ETAs.
 }
 \description{
 Estimates the posterior distribution of individual parameters by

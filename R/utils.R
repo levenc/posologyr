@@ -165,8 +165,10 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
                                           sigma=sigma,
                                           endpoints=endpoints)
 
-  f_all_sim <- dcast(obs_res$f_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "f")
-  g_all_sim <- dcast(obs_res$g_all_endpoints, formula = sim.id ~ rowid(sim.id), value.var = "g")
+  f_all_sim <- dcast(obs_res$f_all_endpoints, formula = sim.id ~ rowid(sim.id),
+                     value.var = "f")
+  g_all_sim <- dcast(obs_res$g_all_endpoints, formula = sim.id ~ rowid(sim.id),
+                     value.var = "g")
 
   LL_func  <- function(simu_obs){ #doi: 10.4196/kjpp.2012.16.2.97
     eta_id   <- simu_obs[1]
@@ -215,14 +217,15 @@ extrapol_cov <- function(x=NULL,dat=NULL,covar=NULL,interpol_approx=NULL,
 extrapol_iov <- function(x=NULL,dat=NULL,iov_kappa=NULL,event_table=NULL){
   x <- which(iov_kappa == x) #input char, return position in the kappa vector
   approx_iov <- stats::approxfun(x = dat$TIME,
-                          y = dat[[iov_kappa[x]]],
-                          yleft = dat[[iov_kappa[x]]][x],
-                          yright = dat[[iov_kappa[x]]][length(dat[[iov_kappa[x]]])],
-                          method = "constant")
+                      y = dat[[iov_kappa[x]]],
+                      yleft = dat[[iov_kappa[x]]][x],
+                      yright = dat[[iov_kappa[x]]][length(dat[[iov_kappa[x]]])],
+                      method = "constant")
   approx_iov(event_table$time)
 }
 
-# apply the appropriate error model to all endpoints then match the DVID of the record
+# apply the appropriate error model to all endpoints
+# then match the DVID of the record
 residual_error_all_endpoints <- function(f_all_endpoints=NULL,
                                          y_obs=NULL,
                                          error_model=NULL,
@@ -235,14 +238,16 @@ residual_error_all_endpoints <- function(f_all_endpoints=NULL,
     g_all_endpoints$Cc <- error_model(f_all_endpoints$Cc,sigma)
   } else {
     for (edp in endpoints){
-      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,get(edp)]),
-                                                  sigma[[edp]])
+      g_all_endpoints[,edp] <- error_model[[edp]](as.matrix(f_all_endpoints[,
+                                                        get(edp)]),sigma[[edp]])
     }
   }
 
   f <- g <- DVID <- NULL # avoid undefined global variables
-  f_all_endpoints[, f := get(as.character(DVID)),by = seq_len(nrow(f_all_endpoints))]
-  g_all_endpoints[, g := get(as.character(DVID)),by = seq_len(nrow(g_all_endpoints))]
+  f_all_endpoints[, f := get(as.character(DVID)),
+                  by = seq_len(nrow(f_all_endpoints))]
+  g_all_endpoints[, g := get(as.character(DVID)),
+                  by = seq_len(nrow(g_all_endpoints))]
 
   return(list(f_all_endpoints = f_all_endpoints,
               g_all_endpoints = g_all_endpoints))

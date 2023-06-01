@@ -341,7 +341,8 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
         identical_abs_eta <- isTRUE(length(unique(abs(r$par))) < length(r$par))
         sky_high_ofv      <- isTRUE(OFV_current >= 1e10)
         not_the_best      <- isTRUE(OFV_current - best_attempt_ofv > 1e-7)
-        far_from_2nd_best <- isTRUE(abs(second_best_ofv - best_attempt_ofv) > 1e-5)
+        far_from_2nd_best <- isTRUE(abs(second_best_ofv -
+                                          best_attempt_ofv) > 1e-5)
 
         need_a_new_start  <- isTRUE(optim_attempt == 1|
                                       all_eta_are_zero|
@@ -484,13 +485,14 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Markov Chain Monte Carlo.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
-#' distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
+#' distribution of ETA, and a rxode2 model using the estimated distributions of
+#' ETAs.
 #'
 #' @author Emmanuelle Comets, Audrey Lavenu, Marc Lavielle, Cyril Leven
 #'
-#' @references Comets  E, Lavenu A, Lavielle M. Parameter estimation in nonlinear
-#' mixed effect models using saemix, an R implementation of the SAEM algorithm.
-#' Journal of Statistical Software 80, 3 (2017), 1-41.
+#' @references Comets  E, Lavenu A, Lavielle M. Parameter estimation in
+#' nonlinear mixed effect models using saemix, an R implementation of the SAEM
+#' algorithm. Journal of Statistical Software 80, 3 (2017), 1-41.
 #'
 #' @examples
 #' # model
@@ -571,7 +573,7 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
     omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
     solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
     chol_omega   <- chol(omega_eta)
-    rw_init      <- 0.5                       #initial variance parameter for kernels
+    rw_init      <- 0.5                  #initial variance parameter for kernels
     d_omega      <- diag(omega_eta)*rw_init
     VK           <- rep(c(1:nb_etas),2)
     n_iter       <- n_iter + burn_in
@@ -646,10 +648,11 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
               vk2           <- jr%%nb_etas + 1
               etac          <- eta
               etac[vk2]     <- eta[vk2] + stats::rnorm(nrs2)*d_omega[vk2]
-              f_all_endpoints <- do.call(run_model,list(c(theta,etac),
-                                                        solved_model=solved_model,
-                                                        estim_with_iov=FALSE,
-                                                        endpoints=endpoints))
+              f_all_endpoints <- do.call(run_model,
+                                         list(c(theta,etac),
+                                              solved_model=solved_model,
+                                              estim_with_iov=FALSE,
+                                              endpoints=endpoints))
 
               obs_res <- residual_error_all_endpoints(f_all_endpoints=f_all_endpoints,
                                                       y_obs=y_obs,
@@ -780,7 +783,8 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #' dataframe `$eta` of ETAs from the posterior distribution, estimated by
 #' Sequential Importance Resampling.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the posterior
-#' distribution of ETA, and a rxode2 model using the estimated distributions of ETAs.
+#' distribution of ETA, and a rxode2 model using the estimated distributions of
+#' ETAs.
 #'
 #' @import data.table
 #' @examples

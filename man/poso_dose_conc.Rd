@@ -33,7 +33,8 @@ model, a list of six objects.}
 \item{tdm}{A boolean. If \code{TRUE}: estimates the optimal dose for a selected
 target concentration at a selected point in time following the events from
 \code{dat}, and using Maximum A Posteriori estimation. If \code{FALSE} : performs
-the estimation in a simulated scenario defined by the remaining parameters.}
+the estimation in a simulated scenario defined by the remaining
+parameters.}
 
 \item{time_c}{Numeric. Point in time for which the dose is to be
 optimized.}
@@ -82,7 +83,8 @@ estimates of ETA, and covariates.}
 \value{
 A list containing the following components:
 \describe{
-\item{dose}{Numeric. An optimal dose for the selected target concentration.}
+\item{dose}{Numeric. An optimal dose for the selected target
+concentration.}
 \item{type_of_estimate}{Character string. The type of estimate of the
 individual parameters. Either a point estimate, or a distribution.}
 \item{conc_estimate}{A vector of numeric estimates of the conc. Either a
