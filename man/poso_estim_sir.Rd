@@ -87,6 +87,6 @@ df_patient01 <- data.frame(ID=1,
                         DUR=c(0.5,NA,NA))
 # estimate the posterior distribution of population parameters
 poso_estim_sir(dat=df_patient01,prior_model=mod_run001,
-n_sample=1e4,n_resample=1e3)
+n_sample=1e3,n_resample=1e2)
 
 }
