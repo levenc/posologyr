@@ -140,6 +140,3 @@ plot(patient_001$model,Cc) +
 
 * Pharmaceutics **2022**, 14(2), 442; [doi:10.3390/pharmaceutics14020442](https://doi.org/10.3390/pharmaceutics14020442)
 * Supporting data: [https://github.com/levenc/posologyr-pharmaceutics](https://github.com/levenc/posologyr-pharmaceutics)
-
-## Acknowledgments
-`posologyr`'s estimation functions were based on [Marc Lavielle's shiny app]( http://shiny.webpopix.org/mcmc/bayes1/)
