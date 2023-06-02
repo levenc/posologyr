@@ -68,6 +68,8 @@
 #'     time of administration.
 #'
 #' @examples
+#' rxode2::setRxThreads(1) # limit the number of threads
+#'
 #' # model
 #' mod_run001 <- list(
 #' ppk_model = rxode2::rxode({
@@ -328,6 +330,8 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' }
 #'
 #' @examples
+#' rxode2::setRxThreads(1) # limit the number of threads
+#'
 #' # model
 #' mod_run001 <- list(
 #' ppk_model = rxode2::rxode({
@@ -623,6 +627,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' }
 #'
 #' @examples
+#' rxode2::setRxThreads(1) # limit the number of threads
+#'
 #' # model
 #' mod_run001 <- list(
 #' ppk_model = rxode2::rxode({
@@ -890,6 +896,8 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' }
 #'
 #' @examples
+#' rxode2::setRxThreads(1) # limit the number of threads
+#'
 #' # model
 #' mod_run001 <- list(
 #' ppk_model = rxode2::rxode({

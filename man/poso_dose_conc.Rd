@@ -101,6 +101,8 @@ of individual parameters, a selected point in time, and a target
 concentration.
 }
 \examples{
+rxode2::setRxThreads(1) # limit the number of threads
+
 # model
 mod_run001 <- list(
 ppk_model = rxode2::rxode({

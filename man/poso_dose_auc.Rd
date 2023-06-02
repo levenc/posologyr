@@ -100,6 +100,8 @@ time-concentration curve (AUC) given a population pharmacokinetic
 model, a set of individual parameters, and a target AUC.
 }
 \examples{
+rxode2::setRxThreads(1) # limit the number of threads
+
 # model
 mod_run001 <- list(
 ppk_model = rxode2::rxode({

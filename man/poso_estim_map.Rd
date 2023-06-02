@@ -42,6 +42,8 @@ Estimates the Maximum A Posteriori (MAP) individual parameters,
 also known as Empirical Bayes Estimates (EBE).
 }
 \examples{
+rxode2::setRxThreads(1) # limit the number of threads
+
 # model
 mod_run001 <- list(
 ppk_model = rxode2::rxode({
