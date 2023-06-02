@@ -1,0 +1,129 @@
+---
+title: "Multiple endpoints"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multiple endpoints}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(posologyr)
+```
+
+# Introduction
+A different error model can be defined for multiple endpoints models (eg. 
+PK-PD, parent-metabolite, blood-urine...).
+
+To obtain individual estimations, consistency in the naming convention must be maintained across the following:
+
+  *  The dataset (using the column DVID).
+  *  The residual error models (stored in a named list).
+  *  The standard deviation of the residual error models (stored in a named list).
+
+As many residual error models as desired can be defined. Each model defined in the named list error_models must have its counterpart in the named list `sigma`, and the names must match those defined in the `DVID` column of the dataset.
+
+An example can be seen below, utilizing the warfarin data and model (provided by Tomoo Funaki and Nick Holford) from the nlmixr documentation (https://nlmixr2.org/articles/multiple-endpoints.html).
+
+## warfarin PKPD model
+
+```{r}
+mod_warfarin_nlmixr <- list(
+  ppk_model   = rxode2::rxode({
+    ktr <- exp(THETA_ktr + ETA_ktr)
+    ka <- exp(THETA_ka + ETA_ka)
+    cl <- exp(THETA_cl + ETA_cl)
+    v <- exp(THETA_v + ETA_v)
+    emax = expit(THETA_emax + ETA_emax)
+    ec50 =  exp(THETA_ec50 + ETA_ec50)
+    kout = exp(THETA_kout + ETA_kout)
+    e0 = exp(THETA_e0 + ETA_e0)
+    ##
+    DCP = center/v
+    PD=1-emax*DCP/(ec50+DCP)
+    ##
+    effect(0) = e0
+    kin = e0*kout
+    ##
+    d/dt(depot) = -ktr * depot
+    d/dt(gut) =  ktr * depot -ka * gut
+    d/dt(center) =  ka * gut - cl / v * center
+    d/dt(effect) = kin*PD -kout*effect
+    ##
+    cp = center / v
+    pca = effect
+  }),
+  error_model = list(
+    cp = function(f,sigma){
+      g <- sigma[1]^2 + (sigma[2]^2)*(f^2)
+      return(sqrt(g))
+    },
+    pca = function(f,sigma){
+      g <- sigma[1]^2 + (sigma[2]^2)*(f^2)
+      return(sqrt(g))
+    }
+  ),
+  theta = c(THETA_ktr=0.106,
+            THETA_ka=-0.087,
+            THETA_cl=-2.03,
+            THETA_v=2.07,
+            THETA_emax=3.4,
+            THETA_ec50=0.00724,
+            THETA_kout=-2.9,
+            THETA_e0=4.57),
+  omega = lotri::lotri({ETA_ktr + ETA_ka + ETA_cl + ETA_v + ETA_emax + ETA_ec50 +
+      ETA_kout + ETA_e0 ~
+      c(1.024695,
+        0.00     ,   0.9518403 ,
+        0.00     ,   0.00 ,   0.5300943  ,
+        0.00    ,    0.00,   0.00,   0.4785394,
+        0.00    ,    0.00,   0.00,   0.00,   0.7134424,
+        0.00    ,    0.00,   0.00,   0.00,   0.00,   0.7204165,
+        0.00    ,    0.00,   0.00,   0.00,   0.00,   0.00,   0.3563706,
+        0.00    ,    0.00,   0.00,   0.00,   0.00,   0.00,   0.00,   0.2660827)}),
+  sigma       = list(
+    cp=c(additive_a = 0.144, proportional_b = 0.15),
+    pca=c(additive_a = 3.91, proportional_b = 0.0)
+    )
+  )
+```
+
+## data: first subject from the warfarin dataset
+
+```{r}
+warf_01 <- data.frame(ID=1,
+                      TIME=c(0.0,0.5,1.0,2.0,3.0,6.0,9.0,12.0,24.0,24.0,36.0,
+                             36.0,48.0,48.0,72.0,72.0,96.0,120.0,144.0),
+                      DV=c(0.0,0.0,1.9,3.3,6.6,9.1,10.8,8.6,5.6,44.0,4.0,27.0,
+                           2.7,28.0,0.8,31.0,60.0,65.0,71.0),
+                      DVID=c("cp","cp","cp","cp","cp","cp","cp","cp","cp","pca",
+                              "cp","pca","cp","pca","cp","pca","pca","pca","pca"),
+                      EVID=c(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                      AMT=c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+warf_01
+```
+
+posologyr can compute the EBE for the combined PKPD model with `poso_estim_map()`
+
+```{r}
+map_warf_01  <- poso_estim_map(warf_01,mod_warfarin_nlmixr)
+map_warf_01
+```
+
+The observation/time curves for both endpoints can also be plotted
+
+```{r}
+plot(map_warf_01$model,"cp")
+```
+
+
+```{r}
+plot(map_warf_01$model,"pca")
+```

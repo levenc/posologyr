@@ -17,13 +17,14 @@ knitr::opts_chunk$set(
 This describes the structure of prior models usable by `posologyr` and illustrates how to define new models from published population pharmacokinetic (ppk) models.
 
 # Structure
-A `posologyr` prior ppk model is a list of six objects:
+A `posologyr` prior ppk model is a named R list:
 
 ppk_model 
 : A rxode2 model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
 
 error_model 
-: A function of the residual error model
+: A function of the residual error model, alternatively a named list of functions 
+for multiple endpoints model `vignette("multiple_endpoints")`
 
 theta
 : A named vector of the population estimates of the fixed effects parameters (called THETAs, following [NONMEM terminology](https://doi.org/10.1002/psp4.12404))
@@ -31,15 +32,15 @@ theta
 omega 
 : A named square variance-covariance matrix of the population parameters inter-individual variability
 
+sigma 
+: The estimates of the parameters of the residual error model
+
 pi_matrix
 : Optional. A named square variance-covariance matrix of the population parameters
 inter-occasion variability
 
 covariates 
 : A character vector of the covariates of the model
-
-sigma 
-: The estimates of the parameters of the residual error model
 
 # Definition of a prior model through an example
 The model to implement is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
@@ -73,7 +74,7 @@ ppk_model   = rxode2::rxode({
 ```
 
 ## error_model
-A function of the residual error model, taking two arguments: the simulated concentrations, and a vector **sigma** of the estimates of the parameters for the residual error model.
+A function of the residual error model, taking two arguments: the simulated concentrations, and a vector `sigma` of the estimates of the parameters for the residual error model.
 
 ```{r error_model}
 error_model <- function(f,sigma){     #additive model if sigma[2] == 0
@@ -82,25 +83,28 @@ error_model <- function(f,sigma){     #additive model if sigma[2] == 0
 }
 ```
 
-Alternatively, the function can take the simulated concentrations, and a matrix **sigma** of the estimates of the parameters for the residual error model, as in the following example:
+Alternatively, the function can take the simulated concentrations, and a matrix `sigma` of the estimates of the parameters for the residual error model, as in the following example:
 
 ```{r error_model_nonmem}
-error_model_mixednm <- function(f,sigma){
+error_model <- function(f,sigma){
   dv <- cbind(f,1)
   g  <- diag(dv%*%sigma%*%t(dv))     #sigma is the square matrix of the residual
   return(sqrt(g))                    #errors
 }
 ```
 
+For multiple endpoint models, `error_model` must be a named list with a function
+for each endpoint `vignette("multiple_endpoints")`.
+
 ## theta
-The estimations of the parameters for the fixed effects of the model (THETA), in a named vector. The names must match the names used in **ppk_model**.
+The estimations of the parameters for the fixed effects of the model (THETA), in a named vector. The names must match the names used in `ppk_model`.
 
 ```{r theta}
 theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4, THETA_Q=6.5)
 ```
 
 ## omega
-The variance-covariance matrix of the random effects (ETA) for the individual model. A symmetric matrix. The names must match the names used in **ppk_model**. The easiest way to define it is with `lotri::lotri()`.
+The variance-covariance matrix of the random effects (ETA) for the individual model. A symmetric matrix. The names must match the names used in `ppk_model`. An easy way to define it is using `lotri::lotri()`.
 
 The estimates of the variances of the random effects can be given under different parameterizations depending on the authors.
 
@@ -108,7 +112,7 @@ The estimates of the variances of the random effects can be given under differen
 * Coefficient of variation (CV): calculated as `sqrt(exp(SD^2)-1)`, the standard deviation can be computed back with `sqrt(log((CV^2)+1))`
 * Full covariance matrix: the easiest to reuse, but rarely seen in articles
 
-In the case of the [vancomycin model](https://doi.org/10.1097/FTD.0000000000000490), the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in **omega**.
+In the case of the [vancomycin model](https://doi.org/10.1097/FTD.0000000000000490), the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in `omega`.
 
 |Parameter |CV%  (from the article)|SD       |Variance = SD^2|
 |----------|:---------------------:|:-------:|:-------------:|
@@ -129,9 +133,34 @@ The estimates of covariance (off diagonal) are sometimes given as coefficients o
 
 In this example, all covariances are equal to zero.
 
+## sigma
+The estimates of the parameters for the residual error model, either in a vector:
+
+```{r sigma}
+sigma       = c(additive_a = 3.4, proportional_b = 0.227)
+```
+
+in a matrix:
+
+```{r matrix}
+sigma       = lotri::lotri({prop + add ~ c(0.227,0.0,3.4)})
+```
+
+or in a named list, see `vignette("multiple_endpoints")`:
+
+```{r named_list}
+sigma       = list(
+    cp=c(additive_a = 0.144, proportional_b = 0.15),
+    pca=c(additive_a = 3.91, proportional_b = 0.0)
+    )
+```
+
+depending on the residual error model.
+
 ## pi_matrix
 Optional: only needed for models with inter-occasion variability (IOV).
-The variance-covariance matrix of the random effects (KAPPA) for the IOV. As for the `omega` matrix, the names must match the names used in **ppk_model**. The easiest way to define it is with `lotri::lotri()`.
+The variance-covariance matrix of the random effects (KAPPA) for the IOV. As for the `omega` matrix, the names must match the names used in `ppk_model`. An easy way 
+to define it is using `lotri::lotri()`.
 
 ```{r pi_matrix}
 pi_matrix = lotri::lotri({KAPPA_Cl + KAPPA_Vc ~
@@ -141,26 +170,11 @@ pi_matrix = lotri::lotri({KAPPA_Cl + KAPPA_Vc ~
 ```
 
 ## covariates
-The names of every covariate defined in **ppk_model**, in a character vector.
+The names of every covariate defined in `ppk_model`, in a character vector.
 
 ```{r covariates}
 covariates  = c("CLCREAT","WT","DIAL")
 ```
-
-## sigma
-The estimates of the parameters for the residual error model, either in a vector:
-
-```{r sigma}
-sigma       = c(additive_a = 3.4, proportional_b = 0.227)
-```
-
-or in a matrix:
-
-```{r matrix}
-sigma       = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)})
-```
-
-depending on the residual error model.
 
 ## Full model
 The `posologyr` model is the list of all these objects. 
@@ -196,8 +210,8 @@ mod_vancomyin_Goti2018 <- list(
                             0    ,  0.510 ,
                             0    ,  0     ,   0.282,
                             0    ,  0     ,   0    ,    0)}),
-  covariates  = c("CLCREAT","WT","DIAL"),
-  sigma       = c(additive_a = 3.4, proportional_b = 0.227))
+  sigma       = c(additive_a = 3.4, proportional_b = 0.227),
+  covariates  = c("CLCREAT","WT","DIAL"))
 ```
 
 ### Resulting R object

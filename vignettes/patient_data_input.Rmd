@@ -47,10 +47,13 @@ DV
 : For concentrations. Must be NA when EVID is not 0.
 
 Covariates
-: Every covariate defined in the prior `posologyr` model. The column labels must match the **covariate** vector from the ppk model.
+: Every covariate defined in the prior `posologyr` model. The column names must match the **covariate** vector from the ppk model.
 
 OCC
 : Occasions. Required for models with inter-occasion variability.
+
+DVID
+: Observation type. Required for models with multiple endpoints.
 
 # Common use cases
 ## A priori dose adjustment
@@ -111,3 +114,18 @@ data.frame(ID=1,
            COVAR1=c("X"),
            COVAR2=c("Y"))
 ```
+
+## Multiple endpoints
+`DVID` is used to specify the type of each observation. The values of `DVID` in the dataset must match the names of the residual error models, see `vignette("multiple_endpoints")`.
+
+```{r endpoints}
+data.frame(ID=1,
+           TIME=c(0.0,1.0,14.0,24.0,25.0,36.0),
+           DV=c(NA,20.0,80,35.5,60.0,40.0),
+           AMT=c(1000,0,0,0,0,0),
+           EVID=c(1,0,0,0,0,0),
+           DVID=c("parent","parent","metabolite","parent","metabolite","metabolite"),
+           COVAR1=c("X"),
+           COVAR2=c("Y"))
+```
+
