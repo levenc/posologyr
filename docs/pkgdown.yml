@@ -2,9 +2,11 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  case_study_amikacin: case_study_amikacin.html
-  case_study_vancomycin: case_study_vancomycin.html
+  a_posteriori_dosing: a_posteriori_dosing.html
+  a_priori_dosing: a_priori_dosing.html
+  auc_based_dosing: auc_based_dosing.html
+  multiple_endpoints: multiple_endpoints.html
   patient_data_input: patient_data_input.html
   posologyr_user_defined_models: posologyr_user_defined_models.html
-last_built: 2023-05-31T20:56Z
+last_built: 2023-06-02T08:51Z
 

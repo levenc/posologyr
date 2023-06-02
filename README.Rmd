@@ -123,12 +123,14 @@ plot(patient_001$model,Cc)
 Using `ggplot2` the observed data points can be added to the plot
 
 ```{r map_plot_dv}
-## plot with data
+# get the observations from the data
 indiv_obs           <- patient_data[,c("DV","TIME")]
+
+# set the names to match the names in the rxode2 model
 names(indiv_obs)    <- c("value","time")
 
+# call ggplot2
 plot(patient_001$model,Cc) +
-  ggplot2::ylab("Central concentration") +
   ggplot2::geom_point(data=indiv_obs, size= 3, na.rm=TRUE)
 ```
 

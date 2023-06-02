@@ -4,6 +4,12 @@
 * `poso_estim_map()`, `poso_estim_sir()` and `poso_estim_mcmc()` can now estimate individual PK profiles for multiple endpoints models (eg. PK-PD, parent-metabolite, blood-CSF...), using a different residual error model for each endpoint.
 * `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` now allow you to select the end point of interest for which you want to optimise, provided it is defined in the model.
 
+## Documentation
+* `vignette("a_priori_dosing")` illustrates a priori dose selection
+* `vignette("a_posteriori_dosing")` illustrates a posteriori dose selection, using TDM data
+* `vignette("auc_based_dosing")` shows how to select an optimal dose for a given target AUC using data from TDM
+* `vignette("multiple_endpoints")` introduces the new multiple endpoints feature
+
 ## Internal changes
 * The description of the package is updated
 
