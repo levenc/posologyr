@@ -1,14 +1,14 @@
-citHeader("To cite posologyr in publications use:")
-
-citEntry(
-  entry    = "Article",
-  title    = "Free and Open-Source Posologyr Software for Bayesian Dose Individualization: An Extensive Validation on Simulated Data",
-  author   = as.person(c("Cyril Leven", "Anne Coste","Camille Mané")),
-  journal  = "Pharmaceutics",
-  year     = "2022",
-  volume   = "14",
-  number   = "2",
-  pages    = "442",
-  url      = "https://doi.org/10.3390/pharmaceutics14020442",
-  textVersion = paste("Leven C, Coste A, Mané C. Free and Open-Source Posologyr Software for Bayesian Dose Individualization: An Extensive Validation on Simulated Data. Pharmaceutics. 2022; 14(2):442. https://doi.org/10.3390/pharmaceutics14020442 ")
+bibentry(
+    key = "posologyrpaper",
+    bibtype  = "Article",
+    title = "Free and Open-Source Posologyr Software for Bayesian Dose Individualization: An Extensive Validation on Simulated Data",
+    author = "Cyril Leven, Anne Coste and Camille Mané",
+    journal="Pharmaceutics",
+    year = "2022",
+    volume = "14",
+    pages = "442",
+    number = "2",
+    doi = "10.3390/pharmaceutics14020442",
+    publisher = "MDPI",
+    url="https://europepmc.org/article/pmc/8879752"
 )
