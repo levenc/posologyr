@@ -72,11 +72,11 @@ posologyr <- function(prior_model=NULL,dat=NULL,nocb=FALSE){
   # check the validity of the compiled model and call rxode2::rxode
   # on invalid models
     if (!prior_model$ppk_model$isValid()){
-      cat("Invalid rxode2 model, trying to recompile...")
+      warning("Invalid rxode2 model, trying to recompile...")
       prior_model$ppk_model <- try(rxode2::rxode(prior_model$ppk_model),
                                    silent=TRUE)
       if (prior_model$ppk_model$isValid()){
-        cat("Success","\n")
+        message("Success","\n")
        } else {
          stop("Failed. The rxode2 model is still invalid. Aborting",
               call. = FALSE)

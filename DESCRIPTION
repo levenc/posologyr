@@ -1,6 +1,6 @@
 Package: posologyr
 Title: Individual Dose Optimization using Population Pharmacokinetics
-Version: 1.2.0
+Version: 1.2.1
 Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
@@ -12,8 +12,9 @@ Authors@R: c(
 Description: Determine individual pharmacokinetic (and 
     pharmacokinetic-pharmacodynamic) profiles and use them to personalise drug 
     regimens. You provide the data and a population pharmacokinetic model, 
-    `posologyr` provides the individual a posteriori estimate and allows you to 
-    determine the optimal dosing.
+    'posologyr' provides the individual a posteriori estimate and allows you to 
+    determine the optimal dosing. The empirical Bayes estimates are computed as 
+    described in Kang et al. (2012) <doi:10.4196/kjpp.2012.16.2.97>.
 License: AGPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

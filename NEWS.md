@@ -1,3 +1,8 @@
+# posologyr v1.2.1
+* Add a reference to Kang et al. (2012) <doi:10.4196/kjpp.2012.16.2.97> in the DESCRIPTION (as requested by CRAN)
+* Fix messages to the console in the internal function `posologyr()` (as requested by CRAN)
+* Fix assignment to parent environment in dose optim functions, using `parent.frame()` (as requested by CRAN)
+
 # posologyr v1.2.0
 
 ## Additional features

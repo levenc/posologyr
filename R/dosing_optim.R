@@ -253,7 +253,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                          cmin_ppk_model[,endpoint] < target_cmin,
                          ]$time) - time_last_dose
     #here cmin_distribution is a point estimate of the endpoint
-    cmin_distribution <<-
+    cmin_distribution <-
       cmin_ppk_model[cmin_ppk_model$time == (time_to_target +
                                                   time_last_dose),endpoint]
   }
@@ -386,6 +386,9 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 
   object <- posologyr(prior_model,dat,nocb)
 
+  #initialization of conc_distribution to avoid a global variable
+  auc_distribution <- 0
+
   if(tdm){ #using TDM data
     #input validation
     if (is.null(time_dose)){
@@ -448,13 +451,12 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                                            ifelse(nocb,"nocb","locf"))
 
       auc_proposal     <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
-      auc_distribution <<- auc_proposal #to parent environment
+      p <- parent.frame()
+      p$auc_distribution <- auc_proposal
       #return the difference between the computed auc and the target
       delta_auc <- (target_auc - auc_proposal)^2
       return(delta_auc)
     }
-    #initialization of conc_distribution to avoid a global variable
-    auc_distribution <- 0
 
     optim_dose_auc <- stats::optim(starting_dose,err_dose_tdm,
                                     time_dose=time_dose,target_auc=target_auc,
@@ -525,7 +527,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
         auc_index      <- ceiling(p * n_auc)
 
         # assign the distribution of auc to the parent environment
-        auc_distribution <<- sorted_auc
+        p <- parent.frame()
+        p$auc_distribution <- sorted_auc
 
         if (greater_than){
           auc_proposal <- sorted_auc[n_auc - auc_index]
@@ -534,7 +537,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
         }
       } else {
         auc_proposal  <- max(auc_ppk_model$AUC)-min(auc_ppk_model$AUC)
-        auc_distribution <<- auc_proposal
+        p <- parent.frame()
+        p$auc_distribution <- auc_proposal
       }
 
       #return the difference between the computed AUC and the target
@@ -739,7 +743,8 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                                            ifelse(nocb,"nocb","locf"))
 
       conc_proposal     <- ctime_ppk_model[,endpoint]
-      conc_distribution <<- conc_proposal #to parent environment
+      p <- parent.frame()
+      p$conc_distribution <- conc_proposal
       #return the difference between the computed ctime and the target
       delta_conc <- (target_conc - conc_proposal)^2
       return(delta_conc)
@@ -803,7 +808,8 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
         conc_index      <- ceiling(p * n_conc)
 
         # assign the distribution of concentrations to the parent environment
-        conc_distribution <<- sorted_conc
+        p <- parent.frame()
+        p$conc_distribution <- sorted_conc
 
         if (greater_than){
           conc_proposal <- sorted_conc[n_conc - conc_index]
@@ -812,7 +818,8 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
         }
       } else {
         conc_proposal     <- ctime_ppk_model[,endpoint]
-        conc_distribution <<- conc_proposal
+        p <- parent.frame()
+        p$conc_distribution <- conc_proposal
       }
 
       #return the difference between the computed ctime and the target
@@ -979,7 +986,8 @@ poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
       cmin_index      <- ceiling(p * n_cmin)
 
       # assign the distribution of cmin to the parent environment
-      cmin_distribution <<- sorted_cmin
+      p <- parent.frame()
+      p$cmin_distribution <- sorted_cmin
 
       if (greater_than){
         cmin_proposal <- sorted_cmin[n_cmin - cmin_index]
@@ -988,7 +996,8 @@ poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
       }
     } else {
       cmin_proposal     <-  cmin_ppk_model[,endpoint]
-      cmin_distribution <<- cmin_proposal
+      p <- parent.frame()
+      p$cmin_distribution <- cmin_proposal
     }
 
     #return the difference between the computed cmin and the target,
