@@ -9,3 +9,5 @@
 ^doc$
 ^Meta$
 ^\.github$
+^CRAN-SUBMISSION$
+^cran-comments\.md$

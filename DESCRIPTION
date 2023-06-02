@@ -5,12 +5,9 @@ Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
            comment = c(ORCID = "0000-0002-0697-4370")),
-    person("Emmanuelle","Comets",role = c("ctb"),
-           comment = c("Author of the saemix R package")),
-    person("Audrey","Lavenu",role = c("ctb"),
-           comment = c("Author of the saemix R package")),
-    person("Marc","Lavielle",role = c("ctb"),
-           comment = c("Author of the saemix R package"))
+    person("Emmanuelle","Comets",role = c("ctb")),
+    person("Audrey","Lavenu",role = c("ctb")),
+    person("Marc","Lavielle",role = c("ctb"))
     )
 Description: Determine individual pharmacokinetic (and 
     pharmacokinetic-pharmacodynamic) profiles and use them to personalise drug 
