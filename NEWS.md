@@ -1,3 +1,6 @@
+# posologyr v1.2.2
+* Relax the requirements of the NONMEM comparison test for time-varying covariates to account for computational differences observed with the alternative BLAS ATLAS on CRAN.
+
 # posologyr v1.2.1
 * Add a reference to Kang et al. (2012) <doi:10.4196/kjpp.2012.16.2.97> in the DESCRIPTION (as requested by CRAN)
 * Fix messages to the console in the internal function `posologyr()` (as requested by CRAN)
