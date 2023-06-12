@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/levenc/posologyr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/levenc/posologyr/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/posologyr)](https://CRAN.R-project.org/package=posologyr)
 <!-- badges: end -->
 
 ## Overview
