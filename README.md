@@ -47,6 +47,13 @@ without data from therapeutic drug monitoring (TDM):
 
 ## Installation
 
+You can install the released version of `posologyr` from
+[CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("posologyr")
+```
+
 You can install the development version of `posologyr` from
 [GitHub](https://github.com/) with:
 
@@ -110,6 +117,7 @@ omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
       0, 0.2,
       0, 0, 0.2)}),
 sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
+#> using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’
 ```
 
 With these two elements, one can estimate the patient’s MAP-EBE PK

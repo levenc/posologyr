@@ -44,7 +44,15 @@ Individual pharmacokinetic (PK) profiles can be estimated with or without data f
 
 ## Installation
 
-You can install the development version of `posologyr` from [GitHub](https://github.com/) with:
+You can install the released version of `posologyr` from
+[CRAN](https://CRAN.R-project.org) with:
+
+``` {r eval = FALSE}
+install.packages("posologyr")
+``` 
+
+You can install the development version of `posologyr` from 
+[GitHub](https://github.com/) with:
 
 ```{r eval = FALSE}
 # install.packages("remotes")
