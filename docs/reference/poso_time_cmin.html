@@ -19,7 +19,7 @@ parameters, a dose, and a target Cmin."><meta property="og:image" content="/logo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2.9000</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@ model, a list of six objects.</p></dd>
 <dt>tdm</dt>
 <dd><p>A boolean. If <code>TRUE</code>: computes the predicted time to reach the
 target trough concentration (Cmin) following the last event from <code>dat</code>,
-and using Maximum A Posteriori estimation. If <code>FALSE</code> : performs the
+and using Maximum A Posteriori estimation. If <code>FALSE</code>: performs the
 estimation for a simulated scenario defined by the remaining parameters.</p></dd>
 
 
@@ -126,7 +126,8 @@ estimation for a simulated scenario defined by the remaining parameters.</p></dd
 
 
 <dt>dose</dt>
-<dd><p>Numeric. Dose administered.</p></dd>
+<dd><p>Numeric. Dose administered. This argument is ignored if <code>tdm</code> is
+set to <code>TRUE</code>.</p></dd>
 
 
 <dt>endpoint</dt>
@@ -140,52 +141,59 @@ the individual parameters. The default method "map" is the Maximum A
 Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
-parameters. This argument is ignored if <code>indiv_param</code> is provided.</p></dd>
+parameters. This argument is ignored if <code>indiv_param</code> is provided, or if
+<code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>nocb</dt>
 <dd><p>A boolean. For time-varying covariates: the next observation
-carried backward (nocb) interpolation style, similar to NONMEM.  If
+carried backward (nocb) interpolation style, similar to NONMEM. If
 <code>FALSE</code>, the last observation carried forward (locf) style will be used.
 Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt>p</dt>
-<dd><p>Numeric. The proportion of the distribution of cmin to consider for
-the estimation. Mandatory for <code>estim_method=sir</code>.</p></dd>
+<dd><p>Numeric. The proportion of the distribution of Cmin to consider for
+the estimation. Mandatory for <code>estim_method=sir</code>. This argument is ignored
+if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>greater_than</dt>
 <dd><p>A boolean. If <code>TRUE</code>: targets a time leading to a
 proportion <code>p</code> of the cmins to be greater than <code>target_cmin</code>.
-Respectively, lower if <code>FALSE</code>.</p></dd>
+Respectively, lower if <code>FALSE</code>. This argument is ignored if <code>tdm</code> is set
+to <code>TRUE</code>.</p></dd>
 
 
 <dt>from</dt>
-<dd><p>Numeric. Starting time for the simulation of the
-individual time-concentration profile. The default value is
-0.2</p></dd>
+<dd><p>Numeric. Starting time for the simulation of the individual
+time-concentration profile. The default value is 0.2. When <code>tdm</code> is set
+to <code>TRUE</code> the simulation starts at the time of the last recorded dose plus
+<code>from</code>.</p></dd>
 
 
 <dt>last_time</dt>
-<dd><p>Numeric. Ending time for the simulation of the
-individual time-concentration profile. The default value is
-72.</p></dd>
+<dd><p>Numeric. Ending time for the simulation of the individual
+time-concentration profile. The default value is 72. When <code>tdm</code> is set to
+<code>TRUE</code> the simulation stops at the time of the last recorded dose plus
+<code>last_time</code>.</p></dd>
 
 
 <dt>add_dose</dt>
-<dd><p>Numeric. Additional doses administered at
-inter-dose interval after the first dose. Optional.</p></dd>
+<dd><p>Numeric. Additional doses administered at inter-dose interval
+after the first dose. Optional. This argument is ignored if <code>tdm</code> is
+set to <code>TRUE</code>.</p></dd>
 
 
 <dt>interdose_interval</dt>
-<dd><p>Numeric. Time for the inter-dose interval
-for multiple dose regimen. Must be provided when add_dose is used.</p></dd>
+<dd><p>Numeric. Time for the inter-dose interval for
+multiple dose regimen. Must be provided when add_dose is used. This
+argument is ignored if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>duration</dt>
 <dd><p>Numeric. Duration of infusion, for zero-order
-administrations.</p></dd>
+administrations. This argument is ignored if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>indiv_param</dt>
@@ -197,9 +205,24 @@ estimates of ETA, and covariates.</p></dd>
     <h2>Value</h2>
     
 
-<p>A numeric time to the selected trough concentration, from the
-time of administration.</p>
-    </div>
+<p>A list containing the following components:</p><dl><dt>time</dt>
+<dd><p>Numeric. Time needed to reach the selected Cmin.</p></dd>
+
+<dt>type_of_estimate</dt>
+<dd><p>Character string. The type of estimate of the
+individual parameters. Either a point estimate, or a distribution.</p></dd>
+
+<dt>cmin_estimate</dt>
+<dd><p>A vector of numeric estimates of the Cmin. Either a
+single value (for a point estimate of ETA), or a distribution.</p></dd>
+
+<dt>indiv_param</dt>
+<dd><p>A <code>data.frame</code>. The set of individual parameters used
+for the determination of the time needed to reach a selected Cmin: THETA,
+estimates of ETA, and covariates</p></dd>
+
+
+</dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -259,11 +282,11 @@ time of administration.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cmin_estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489932</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291734 0.1278479</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019055 -0.4291705 0.1278507</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

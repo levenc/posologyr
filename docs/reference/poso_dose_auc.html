@@ -21,7 +21,7 @@ model, a set of individual parameters, and a target AUC."><meta property="og:ima
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2.9000</span>
       </span>
     </div>
 
@@ -120,17 +120,18 @@ model, a list of six objects.</p></dd>
 <dt>tdm</dt>
 <dd><p>A boolean. If <code>TRUE</code>: estimates the optimal dose for a selected
 target auc over a selected duration following the events from <code>dat</code>, and
-using Maximum A Posteriori estimation. If <code>FALSE</code> : performs the
+using Maximum A Posteriori estimation. If <code>FALSE</code>: performs the
 estimation in a simulated scenario defined by the remaining parameters.</p></dd>
 
 
 <dt>time_auc</dt>
-<dd><p>Numeric. The target AUC is computed from <code>starting_time</code> to
-<code>time_auc</code>.</p></dd>
+<dd><p>Numeric. A duration. The target AUC is computed from
+<code>starting_time</code> to <code>starting_time</code> + <code>time_auc</code>.</p></dd>
 
 
 <dt>time_dose</dt>
-<dd><p>Numeric. Time when the dose is to be given.</p></dd>
+<dd><p>Numeric. Time when the dose is to be given. Only used when
+<code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>target_auc</dt>
@@ -143,7 +144,8 @@ the individual parameters. The default method "map" is the Maximum A
 Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
-parameters. This argument is ignored if <code>indiv_param</code> is provided.</p></dd>
+parameters. This argument is ignored if <code>indiv_param</code> is provided, or if
+<code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>nocb</dt>
@@ -155,29 +157,32 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt>p</dt>
 <dd><p>Numeric. The proportion of the distribution of AUC to consider for
-the optimization. Mandatory for <code>estim_method=sir</code>.</p></dd>
+the optimization. Mandatory for <code>estim_method=sir</code>. This argument is
+ignored if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>greater_than</dt>
 <dd><p>A boolean. If <code>TRUE</code>: targets a dose leading to a
 proportion <code>p</code> of the AUCs to be greater than <code>target_auc</code>. Respectively,
-lower if <code>FALSE</code>.</p></dd>
+lower if <code>FALSE</code>. This argument is ignored if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>starting_time</dt>
 <dd><p>Numeric. First point in time of the AUC, for multiple
-dose regimen. The default is zero. Set equal to <code>time_dose</code> when
-<code>tdm=TRUE</code>.</p></dd>
+dose regimen. The default is zero. This argument is ignored if <code>tdm</code> is
+set to <code>TRUE</code>.</p></dd>
 
 
 <dt>interdose_interval</dt>
 <dd><p>Numeric. Time for the interdose interval for
-multiple dose regimen. Must be provided when add_dose is used.</p></dd>
+multiple dose regimen. Must be provided when add_dose is used. This
+argument is ignored if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>add_dose</dt>
-<dd><p>Numeric. Additional doses administered at
-inter-dose interval after the first dose. Optional.</p></dd>
+<dd><p>Numeric. Additional doses administered at inter-dose interval
+after the first dose. Optional. This argument is ignored if <code>tdm</code> is set
+to <code>TRUE</code>.</p></dd>
 
 
 <dt>duration</dt>
@@ -192,7 +197,8 @@ algorithm.</p></dd>
 
 <dt>indiv_param</dt>
 <dd><p>Optional. A set of individual parameters : THETA,
-estimates of ETA, and covariates.</p></dd>
+estimates of ETA, and covariates. This argument is ignored if <code>tdm</code> is
+set to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -274,11 +280,11 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $auc_estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291734 0.1278478</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291731 0.1278485</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

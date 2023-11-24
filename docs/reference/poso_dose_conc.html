@@ -20,7 +20,7 @@ concentration."><meta property="og:image" content="/logo.png"><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2.9000</span>
       </span>
     </div>
 
@@ -119,7 +119,7 @@ model, a list of six objects.</p></dd>
 <dt>tdm</dt>
 <dd><p>A boolean. If <code>TRUE</code>: estimates the optimal dose for a selected
 target concentration at a selected point in time following the events from
-<code>dat</code>, and using Maximum A Posteriori estimation. If <code>FALSE</code> : performs
+<code>dat</code>, and using Maximum A Posteriori estimation. If <code>FALSE</code>: performs
 the estimation in a simulated scenario defined by the remaining
 parameters.</p></dd>
 
@@ -148,7 +148,8 @@ the individual parameters. The default method "map" is the Maximum A
 Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
-parameters. This argument is ignored if <code>indiv_param</code> is provided.</p></dd>
+parameters. This argument is ignored if <code>indiv_param</code> is provided or if
+<code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>nocb</dt>
@@ -160,13 +161,15 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt>p</dt>
 <dd><p>Numeric. The proportion of the distribution of concentrations to
-consider for the optimization. Mandatory for <code>estim_method=sir</code>.</p></dd>
+consider for the optimization. Mandatory for <code>estim_method=sir</code>. This
+argument is ignored if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>greater_than</dt>
 <dd><p>A boolean. If <code>TRUE</code>: targets a dose leading to a
 proportion <code>p</code> of the concentrations to be greater than <code>target_conc</code>.
-Respectively, lower if <code>FALSE</code>.</p></dd>
+Respectively, lower if <code>FALSE</code>. This argument is ignored if <code>tdm</code> is
+set to <code>TRUE</code>.</p></dd>
 
 
 <dt>starting_dose</dt>
@@ -176,12 +179,14 @@ algorithm.</p></dd>
 
 <dt>interdose_interval</dt>
 <dd><p>Numeric. Time for the interdose interval
-for multiple dose regimen. Must be provided when add_dose is used.</p></dd>
+for multiple dose regimen. Must be provided when add_dose is used. This
+argument is ignored if <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>add_dose</dt>
-<dd><p>Numeric. Additional doses administered at
-inter-dose interval after the first dose. Optional.</p></dd>
+<dd><p>Numeric. Additional doses administered at inter-dose interval
+after the first dose. Optional. This argument is ignored if <code>tdm</code> is set
+to <code>TRUE</code>.</p></dd>
 
 
 <dt>duration</dt>
@@ -191,7 +196,8 @@ administrations.</p></dd>
 
 <dt>indiv_param</dt>
 <dd><p>Optional. A set of individual parameters : THETA,
-estimates of ETA, and covariates.</p></dd>
+estimates of ETA, and covariates. This argument is ignored if <code>tdm</code> is
+set to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -269,17 +275,17 @@ covariates</p></dd>
 <span class="r-in"><span><span class="fu">poso_dose_conc</span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patient01</span>,prior_model<span class="op">=</span><span class="va">mod_run001</span>,</span></span>
 <span class="r-in"><span>time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.029</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $conc_estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 80</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019039 -0.4291728 0.1278487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc   ETA_Ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019047 -0.4291711 0.127849</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -32,12 +32,13 @@ model, a list of six objects.}
 
 \item{tdm}{A boolean. If \code{TRUE}: computes the predicted time to reach the
 target trough concentration (Cmin) following the last event from \code{dat},
-and using Maximum A Posteriori estimation. If \code{FALSE} : performs the
+and using Maximum A Posteriori estimation. If \code{FALSE}: performs the
 estimation for a simulated scenario defined by the remaining parameters.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 
-\item{dose}{Numeric. Dose administered.}
+\item{dose}{Numeric. Dose administered. This argument is ignored if \code{tdm} is
+set to \code{TRUE}.}
 
 \item{endpoint}{Character. The endpoint of the prior model to be optimised
 for. The default is "Cc", which is the central concentration.}
@@ -47,43 +48,59 @@ the individual parameters. The default method "map" is the Maximum A
 Posteriori estimation, the method "prior" simulates from the prior
 population model, and "sir" uses the Sequential Importance Resampling
 algorithm to estimate the a posteriori distribution of the individual
-parameters. This argument is ignored if \code{indiv_param} is provided.}
+parameters. This argument is ignored if \code{indiv_param} is provided, or if
+\code{tdm} is set to \code{TRUE}.}
 
 \item{nocb}{A boolean. For time-varying covariates: the next observation
-carried backward (nocb) interpolation style, similar to NONMEM.  If
+carried backward (nocb) interpolation style, similar to NONMEM. If
 \code{FALSE}, the last observation carried forward (locf) style will be used.
 Defaults to \code{FALSE}.}
 
-\item{p}{Numeric. The proportion of the distribution of cmin to consider for
-the estimation. Mandatory for \code{estim_method=sir}.}
+\item{p}{Numeric. The proportion of the distribution of Cmin to consider for
+the estimation. Mandatory for \code{estim_method=sir}. This argument is ignored
+if \code{tdm} is set to \code{TRUE}.}
 
 \item{greater_than}{A boolean. If \code{TRUE}: targets a time leading to a
 proportion \code{p} of the cmins to be greater than \code{target_cmin}.
-Respectively, lower if \code{FALSE}.}
+Respectively, lower if \code{FALSE}. This argument is ignored if \code{tdm} is set
+to \code{TRUE}.}
 
-\item{from}{Numeric. Starting time for the simulation of the
-individual time-concentration profile. The default value is
-0.2}
+\item{from}{Numeric. Starting time for the simulation of the individual
+time-concentration profile. The default value is 0.2. When \code{tdm} is set
+to \code{TRUE} the simulation starts at the time of the last recorded dose plus
+\code{from}.}
 
-\item{last_time}{Numeric. Ending time for the simulation of the
-individual time-concentration profile. The default value is
-72.}
+\item{last_time}{Numeric. Ending time for the simulation of the individual
+time-concentration profile. The default value is 72. When \code{tdm} is set to
+\code{TRUE} the simulation stops at the time of the last recorded dose plus
+\code{last_time}.}
 
-\item{add_dose}{Numeric. Additional doses administered at
-inter-dose interval after the first dose. Optional.}
+\item{add_dose}{Numeric. Additional doses administered at inter-dose interval
+after the first dose. Optional. This argument is ignored if \code{tdm} is
+set to \code{TRUE}.}
 
-\item{interdose_interval}{Numeric. Time for the inter-dose interval
-for multiple dose regimen. Must be provided when add_dose is used.}
+\item{interdose_interval}{Numeric. Time for the inter-dose interval for
+multiple dose regimen. Must be provided when add_dose is used. This
+argument is ignored if \code{tdm} is set to \code{TRUE}.}
 
 \item{duration}{Numeric. Duration of infusion, for zero-order
-administrations.}
+administrations. This argument is ignored if \code{tdm} is set to \code{TRUE}.}
 
 \item{indiv_param}{Optional. A set of individual parameters : THETA,
 estimates of ETA, and covariates.}
 }
 \value{
-A numeric time to the selected trough concentration, from the
-time of administration.
+A list containing the following components:
+\describe{
+\item{time}{Numeric. Time needed to reach the selected Cmin.}
+\item{type_of_estimate}{Character string. The type of estimate of the
+individual parameters. Either a point estimate, or a distribution.}
+\item{cmin_estimate}{A vector of numeric estimates of the Cmin. Either a
+single value (for a point estimate of ETA), or a distribution.}
+\item{indiv_param}{A \code{data.frame}. The set of individual parameters used
+for the determination of the time needed to reach a selected Cmin: THETA,
+estimates of ETA, and covariates}
+}
 }
 \description{
 Predicts the time needed to reach a selected trough concentration

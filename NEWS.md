@@ -1,3 +1,12 @@
+# posologyr v1.2.2.9000
+
+## Bug fix
+* Fix a bug in `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` where the returned estimate of the target value to be optimized against was always equal to zero.
+
+## Documentation
+* The documentation of `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` now specifies which parameters are ignored when the value of `tdm` is set to `TRUE`, and the functions return a warning if input parameters are ignored.
+* Fix incorrect information regarding the duration of the AUC in the documentation of `poso_dose_auc()`
+
 # posologyr v1.2.2
 * Relax the requirements of the NONMEM comparison test for time-varying covariates to account for computational differences observed with the alternative BLAS ATLAS on CRAN.
 
