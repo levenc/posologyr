@@ -4,8 +4,8 @@
 * Fix a bug in `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` where the returned estimate of the target value to be optimized against was always equal to zero.
 
 ## Documentation
-* The documentation for `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()`, and `poso_inter_cmin()` now explicitly states the consequences of setting `tdm` to `TRUE`: which parameters are required, which parameters are ignored, and which parameters behave differently. 
-* The functions `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()`, and `poso_inter_cmin()` now return a warning if any of the input parameters are ignored.
+* The documentation for `poso_time_cmin()`, `poso_dose_conc()`, and `poso_dose_auc()` now explicitly states the consequences of setting `tdm` to `TRUE`: which parameters are required, which parameters are ignored, and which parameters behave differently. 
+* The functions `poso_time_cmin()`, `poso_dose_conc()`, and `poso_dose_auc()` now return a warning if any of the input parameters are ignored.
 * Fix incorrect information regarding the duration of the AUC in the documentation of `poso_dose_auc()`
 
 # posologyr v1.2.2
