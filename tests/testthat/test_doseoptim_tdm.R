@@ -92,4 +92,117 @@ test_that("Optimization results do not deviate from known values
                                        target_auc = 666,duration = 1)$dose,
                          214,
                          tolerance=1e-3)
-          })
+})
+
+df_patient_dap_tdm <- data.frame(ID=1,
+                                 TIME=c(0.0,23.5,24),
+                                 DV=c(NA,26.9,NA),
+                                 AMT=c(1000,NA,1000),
+                                 DUR=c(1,NA,1),
+                                 EVID=c(1,0,1),
+                                 SEX=1,WT=100,ClCr=53,TEMP=37.2)
+
+test_that("The functions issue a warning when parameters are ignored because
+          TDM=true", {
+            #test issue #45
+            #estim_method is ignored
+            expect_warning(poso_time_cmin(df_patient_dap_tdm,
+                                          mod_daptomycin_Dvorchik_AAC2004,
+                                          tdm=TRUE,target_cmin = 24,
+                                          estim_method="sir"))
+            #dose is ignored
+            expect_warning(poso_time_cmin(df_patient_dap_tdm,
+                                          mod_daptomycin_Dvorchik_AAC2004,
+                                          tdm=TRUE,target_cmin = 24,
+                                          dose=100))
+            #duration is ignored
+            expect_warning(poso_time_cmin(df_patient_dap_tdm,
+                                          mod_daptomycin_Dvorchik_AAC2004,
+                                          tdm=TRUE,target_cmin = 24,
+                                          duration=0.5))
+            #interdose_interval is ignored
+            expect_warning(poso_time_cmin(df_patient_dap_tdm,
+                                          mod_daptomycin_Dvorchik_AAC2004,
+                                          tdm=TRUE,target_cmin = 24,
+                                          interdose_interval=12))
+            #add_dose is ignored
+            expect_warning(poso_time_cmin(df_patient_dap_tdm,
+                                          mod_daptomycin_Dvorchik_AAC2004,
+                                          tdm=TRUE,target_cmin = 24,
+                                          add_dose=10))
+            #indiv_param is ignored
+            expect_warning(poso_time_cmin(df_patient_dap_tdm,
+                                          mod_daptomycin_Dvorchik_AAC2004,
+                                          tdm=TRUE,target_cmin = 24,
+                                          indiv_param="anything"))
+            #estim_method is ignored
+            expect_warning(poso_dose_auc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_dose=122,time_auc=12,
+                                         target_auc = 400,
+                                         estim_method="sir"))
+            #time_dose must be provided
+            expect_error(poso_dose_auc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_auc=12,
+                                         target_auc = 400,
+                                         time_dose=NULL))
+            #starting_time is ignored
+            expect_warning(poso_dose_auc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_dose=122,time_auc=12,
+                                         target_auc = 400,
+                                         starting_time=24))
+            #interdose_interval is ignored
+            expect_warning(poso_dose_auc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_dose=122,time_auc=12,
+                                         target_auc = 400,
+                                         interdose_interval=12))
+            #add_dose is ignored
+            expect_warning(poso_dose_auc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_dose=122,time_auc=12,
+                                         target_auc = 400,
+                                         add_dose=10))
+            #indiv_param is ignored
+            expect_warning(poso_dose_auc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_dose=122,time_auc=12,
+                                         target_auc = 400,
+                                         indiv_param="anything"))
+            #estim_method is ignored
+            expect_warning(poso_dose_conc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_c=123,time_dose=122,
+                                         target_conc=50,
+                                         estim_method="sir"))
+            #time_dose must be provided
+            expect_error(poso_dose_conc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_c=123,target_conc=50,
+                                         time_dose=NULL))
+            #time_dose must happen before time_c
+            expect_error(poso_dose_conc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,target_conc=50,
+                                         time_c=121,time_dose=122))
+            #interdose_interval is ignored
+            expect_warning(poso_dose_conc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_c=123,time_dose=122,
+                                         target_conc=50,
+                                         interdose_interval=12))
+            #add_dose is ignored
+            expect_warning(poso_dose_conc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_c=123,time_dose=122,
+                                         target_conc=50,
+                                         add_dose=10))
+            #indiv_param is ignored
+            expect_warning(poso_dose_conc(df_patient_dap_tdm,
+                                         mod_daptomycin_Dvorchik_AAC2004,
+                                         tdm=TRUE,time_c=123,time_dose=122,
+                                         target_conc=50,
+                                         indiv_param="anything"))
+})
