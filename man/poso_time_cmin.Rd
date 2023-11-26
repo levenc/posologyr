@@ -32,8 +32,17 @@ model, a list of six objects.}
 
 \item{tdm}{A boolean. If \code{TRUE}: computes the predicted time to reach the
 target trough concentration (Cmin) following the last event from \code{dat},
-and using Maximum A Posteriori estimation. If \code{FALSE}: performs the
-estimation for a simulated scenario defined by the remaining parameters.}
+and using Maximum A Posteriori estimation. Setting \code{tdm} to \code{TRUE} causes
+the following to occur:
+\itemize{
+\item the simulation  starts at the time of the last recorded dose (from the
+TDM data) plus \code{from};
+\item the simulation stops at the time of the last recorded dose (from the TDM
+data) plus \code{last_time};
+\item the arguments \code{dose}, \code{duration}, \code{estim_method}, \code{p}, \code{greater_than},
+\code{interdose_interval}, \code{add_dose}, \code{indiv_param} and \code{starting_time} are
+ignored.
+}}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
 

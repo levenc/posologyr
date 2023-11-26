@@ -119,9 +119,10 @@ model, a list of six objects.</p></dd>
 <dt>tdm</dt>
 <dd><p>A boolean. If <code>TRUE</code>: estimates the optimal dose for a selected
 target concentration at a selected point in time following the events from
-<code>dat</code>, and using Maximum A Posteriori estimation. If <code>FALSE</code>: performs
-the estimation in a simulated scenario defined by the remaining
-parameters.</p></dd>
+<code>dat</code>, and using Maximum A Posteriori estimation. Setting <code>tdm</code> to <code>TRUE</code> causes the
+following to occur:</p><ul><li><p>the arguments <code>estim_method</code>, <code>p</code>, <code>greater_than</code>, <code>interdose_interval</code>,
+<code>add_dose</code>, <code>indiv_param</code> and <code>starting_time</code> are ignored.</p></li>
+</ul></dd>
 
 
 <dt>time_c</dt>
@@ -138,8 +139,8 @@ optimized.</p></dd>
 
 
 <dt>endpoint</dt>
-<dd><p>Character. The endpoint of the prior model to be optimised for.
-The default is "Cc", which is the central concentration.</p></dd>
+<dd><p>Character. The endpoint of the prior model to be optimised
+for. The default is "Cc", which is the central concentration.</p></dd>
 
 
 <dt>estim_method</dt>
@@ -275,7 +276,7 @@ covariates</p></dd>
 <span class="r-in"><span><span class="fu">poso_dose_conc</span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patient01</span>,prior_model<span class="op">=</span><span class="va">mod_run001</span>,</span></span>
 <span class="r-in"><span>time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.019</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -284,8 +285,8 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 80</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc   ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019047 -0.4291711 0.127849</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019036 -0.4291734 0.1278479</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

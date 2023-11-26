@@ -28,8 +28,17 @@
 #'    model, a list of six objects.
 #' @param tdm A boolean. If `TRUE`: computes the predicted time to reach the
 #'    target trough concentration (Cmin) following the last event from `dat`,
-#'    and using Maximum A Posteriori estimation. If `FALSE`: performs the
-#'    estimation for a simulated scenario defined by the remaining parameters.
+#'    and using Maximum A Posteriori estimation. Setting `tdm` to `TRUE` causes
+#'    the following to occur:
+#'
+#'    * the simulation  starts at the time of the last recorded dose (from the
+#'    TDM data) plus `from`;
+#'    * the simulation stops at the time of the last recorded dose (from the TDM
+#'     data) plus `last_time`;
+#'    * the arguments `dose`, `duration`, `estim_method`, `p`, `greater_than`,
+#'    `interdose_interval`, `add_dose`, `indiv_param` and `starting_time` are
+#'    ignored.
+#'
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. Dose administered. This argument is ignored if `tdm` is
 #'    set to `TRUE`.
@@ -174,7 +183,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     duration <- NULL
     indiv_param <- NULL
     select_proposal_from_distribution <- FALSE
-    #MAP estimation of the individual PK profile from TDM data
+    #MAP estimation of the individual PK profile from the TDM data
     cmin_map <- poso_estim_map(dat=dat,prior_model=prior_model,nocb=nocb)
     #individual parameters as ETA + covariates
     covar <- utils::tail(dat[,prior_model$covariates],1)
@@ -313,17 +322,25 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' model, a set of individual parameters, and a target AUC.
 #'
 #' @param dat Dataframe. An individual subject dataset following the
-#'     structure of NONMEM/rxode2 event records.
+#'    structure of NONMEM/rxode2 event records.
 #' @param prior_model A \code{posologyr} prior population pharmacokinetics
 #'    model, a list of six objects.
 #' @param tdm A boolean. If `TRUE`: estimates the optimal dose for a selected
 #'    target auc over a selected duration following the events from `dat`, and
-#'    using Maximum A Posteriori estimation. If `FALSE`: performs the
-#'    estimation in a simulated scenario defined by the remaining parameters.
+#'    using Maximum A Posteriori estimation. Setting `tdm` to `TRUE` causes the
+#'    following to occur:
+#'
+#'    * the `time_dose` argument is required and is used as the starting point
+#'    for the AUC calculation instead of `starting_time`;
+#'    * the arguments `estim_method`, `p`, `greater_than`, `interdose_interval`,
+#'    `add_dose`, `indiv_param` and `starting_time` are ignored.
+#'
 #' @param time_auc Numeric. A duration. The target AUC is computed from
 #'    `starting_time` to `starting_time` + `time_auc`.
-#' @param time_dose Numeric. Time when the dose is to be given. Only used when
-#'     `tdm` is set to `TRUE`.
+#'    When `tdm` is set to `TRUE` the target AUC is computed from `time_dose` to
+#'    `time_dose` + `time_auc` instead.
+#' @param time_dose Numeric. Time when the dose is to be given. Only used and
+#'    mandatory, when `tdm` is set to `TRUE`.
 #' @param target_auc Numeric. The target AUC.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
@@ -333,9 +350,9 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'    parameters. This argument is ignored if `indiv_param` is provided, or if
 #'    `tdm` is set to `TRUE`.
 #' @param nocb A boolean. for time-varying covariates: the next observation
-#'     carried backward (nocb) interpolation style, similar to NONMEM.  If
-#'     `FALSE`, the last observation carried forward (locf) style will be used.
-#'     Defaults to `FALSE`.
+#'    carried backward (nocb) interpolation style, similar to NONMEM.  If
+#'    `FALSE`, the last observation carried forward (locf) style will be used.
+#'    Defaults to `FALSE`.
 #' @param p Numeric. The proportion of the distribution of AUC to consider for
 #'    the optimization. Mandatory for `estim_method=sir`. This argument is
 #'    ignored if `tdm` is set to `TRUE`.
@@ -344,20 +361,20 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'    lower if `FALSE`. This argument is ignored if `tdm` is set to `TRUE`.
 #' @param starting_time Numeric. First point in time of the AUC, for multiple
 #'    dose regimen. The default is zero. This argument is ignored if `tdm` is
-#'    set to `TRUE`.
+#'    set to `TRUE`, and `time_dose` is used as a starting point instead.
 #' @param interdose_interval Numeric. Time for the interdose interval for
-#'     multiple dose regimen. Must be provided when add_dose is used. This
-#'     argument is ignored if `tdm` is set to `TRUE`.
+#'    multiple dose regimen. Must be provided when add_dose is used. This
+#'    argument is ignored if `tdm` is set to `TRUE`.
 #' @param add_dose Numeric. Additional doses administered at inter-dose interval
-#'     after the first dose. Optional. This argument is ignored if `tdm` is set
-#'     to `TRUE`.
+#'    after the first dose. Optional. This argument is ignored if `tdm` is set
+#'    to `TRUE`.
 #' @param duration Numeric. Duration of infusion, for zero-order
-#'     administrations.
+#'    administrations.
 #' @param starting_dose Numeric. Starting dose for the optimization
-#'     algorithm.
+#'    algorithm.
 #' @param indiv_param Optional. A set of individual parameters : THETA,
-#'     estimates of ETA, and covariates. This argument is ignored if `tdm` is
-#'     set to `TRUE`.
+#'    estimates of ETA, and covariates. This argument is ignored if `tdm` is
+#'    set to `TRUE`.
 #'
 #' @return A list containing the following components:
 #' \describe{
@@ -463,7 +480,7 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     #auc starts immediately after the optimized dose
     # starting_time <- time_dose
     ending_time <- time_dose + time_auc
-    #MAP estimation of the individual PK profile from TDM data
+    #MAP estimation of the individual PK profile from the TDM data
     auc_map <- poso_estim_map(dat=dat,prior_model=prior_model,nocb=nocb)
     #individual parameters as ETA + covariates
     covar <- utils::tail(dat[,prior_model$covariates],1)
@@ -637,15 +654,18 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'    model, a list of six objects.
 #' @param tdm A boolean. If `TRUE`: estimates the optimal dose for a selected
 #'    target concentration at a selected point in time following the events from
-#'     `dat`, and using Maximum A Posteriori estimation. If `FALSE`: performs
-#'    the estimation in a simulated scenario defined by the remaining
-#'    parameters.
+#'     `dat`, and using Maximum A Posteriori estimation. Setting `tdm` to `TRUE` causes the
+#'    following to occur:
+#'
+#'    * the arguments `estim_method`, `p`, `greater_than`, `interdose_interval`,
+#'    `add_dose`, `indiv_param` and `starting_time` are ignored.
+#'
 #' @param time_c Numeric. Point in time for which the dose is to be
 #'     optimized.
 #' @param time_dose Numeric. Time when the dose is to be given.
 #' @param target_conc Numeric. Target concentration.
-#' @param endpoint Character. The endpoint of the prior model to be optimised for.
-#'    The default is "Cc", which is the central concentration.
+#' @param endpoint Character. The endpoint of the prior model to be optimised
+#'    for. The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
 #'    Posteriori estimation, the method "prior" simulates from the prior
@@ -780,7 +800,7 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     interdose_interval <- NULL
     indiv_param <- NULL
     select_proposal_from_distribution <- FALSE
-    #MAP estimation of the individual PK profile from TDM data
+    #MAP estimation of the individual PK profile from the TDM data
     ctime_map <- poso_estim_map(dat=dat,prior_model=prior_model,nocb=nocb)
     #individual parameters as ETA + covariates
     covar <- utils::tail(dat[,prior_model$covariates],1)

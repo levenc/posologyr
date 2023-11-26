@@ -32,9 +32,12 @@ model, a list of six objects.}
 
 \item{tdm}{A boolean. If \code{TRUE}: estimates the optimal dose for a selected
 target concentration at a selected point in time following the events from
-\code{dat}, and using Maximum A Posteriori estimation. If \code{FALSE}: performs
-the estimation in a simulated scenario defined by the remaining
-parameters.}
+\code{dat}, and using Maximum A Posteriori estimation. Setting \code{tdm} to \code{TRUE} causes the
+following to occur:
+\itemize{
+\item the arguments \code{estim_method}, \code{p}, \code{greater_than}, \code{interdose_interval},
+\code{add_dose}, \code{indiv_param} and \code{starting_time} are ignored.
+}}
 
 \item{time_c}{Numeric. Point in time for which the dose is to be
 optimized.}
@@ -43,8 +46,8 @@ optimized.}
 
 \item{target_conc}{Numeric. Target concentration.}
 
-\item{endpoint}{Character. The endpoint of the prior model to be optimised for.
-The default is "Cc", which is the central concentration.}
+\item{endpoint}{Character. The endpoint of the prior model to be optimised
+for. The default is "Cc", which is the central concentration.}
 
 \item{estim_method}{A character string. An estimation method to be used for
 the individual parameters. The default method "map" is the Maximum A

@@ -117,8 +117,15 @@ model, a list of six objects.</p></dd>
 <dt>tdm</dt>
 <dd><p>A boolean. If <code>TRUE</code>: computes the predicted time to reach the
 target trough concentration (Cmin) following the last event from <code>dat</code>,
-and using Maximum A Posteriori estimation. If <code>FALSE</code>: performs the
-estimation for a simulated scenario defined by the remaining parameters.</p></dd>
+and using Maximum A Posteriori estimation. Setting <code>tdm</code> to <code>TRUE</code> causes
+the following to occur:</p><ul><li><p>the simulation  starts at the time of the last recorded dose (from the
+TDM data) plus <code>from</code>;</p></li>
+<li><p>the simulation stops at the time of the last recorded dose (from the TDM
+data) plus <code>last_time</code>;</p></li>
+<li><p>the arguments <code>dose</code>, <code>duration</code>, <code>estim_method</code>, <code>p</code>, <code>greater_than</code>,
+<code>interdose_interval</code>, <code>add_dose</code>, <code>indiv_param</code> and <code>starting_time</code> are
+ignored.</p></li>
+</ul></dd>
 
 
 <dt>target_cmin</dt>
@@ -282,11 +289,11 @@ estimates of ETA, and covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cmin_estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489933</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019055 -0.4291705 0.1278507</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019035 -0.4291735 0.1278478</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

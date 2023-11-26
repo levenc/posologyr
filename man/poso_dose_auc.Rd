@@ -33,14 +33,22 @@ model, a list of six objects.}
 
 \item{tdm}{A boolean. If \code{TRUE}: estimates the optimal dose for a selected
 target auc over a selected duration following the events from \code{dat}, and
-using Maximum A Posteriori estimation. If \code{FALSE}: performs the
-estimation in a simulated scenario defined by the remaining parameters.}
+using Maximum A Posteriori estimation. Setting \code{tdm} to \code{TRUE} causes the
+following to occur:
+\itemize{
+\item the \code{time_dose} argument is required and is used as the starting point
+for the AUC calculation instead of \code{starting_time};
+\item the arguments \code{estim_method}, \code{p}, \code{greater_than}, \code{interdose_interval},
+\code{add_dose}, \code{indiv_param} and \code{starting_time} are ignored.
+}}
 
 \item{time_auc}{Numeric. A duration. The target AUC is computed from
-\code{starting_time} to \code{starting_time} + \code{time_auc}.}
+\code{starting_time} to \code{starting_time} + \code{time_auc}.
+When \code{tdm} is set to \code{TRUE} the target AUC is computed from \code{time_dose} to
+\code{time_dose} + \code{time_auc} instead.}
 
-\item{time_dose}{Numeric. Time when the dose is to be given. Only used when
-\code{tdm} is set to \code{TRUE}.}
+\item{time_dose}{Numeric. Time when the dose is to be given. Only used and
+mandatory, when \code{tdm} is set to \code{TRUE}.}
 
 \item{target_auc}{Numeric. The target AUC.}
 
@@ -67,7 +75,7 @@ lower if \code{FALSE}. This argument is ignored if \code{tdm} is set to \code{TR
 
 \item{starting_time}{Numeric. First point in time of the AUC, for multiple
 dose regimen. The default is zero. This argument is ignored if \code{tdm} is
-set to \code{TRUE}.}
+set to \code{TRUE}, and \code{time_dose} is used as a starting point instead.}
 
 \item{interdose_interval}{Numeric. Time for the interdose interval for
 multiple dose regimen. Must be provided when add_dose is used. This

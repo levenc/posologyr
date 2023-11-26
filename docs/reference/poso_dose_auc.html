@@ -120,18 +120,24 @@ model, a list of six objects.</p></dd>
 <dt>tdm</dt>
 <dd><p>A boolean. If <code>TRUE</code>: estimates the optimal dose for a selected
 target auc over a selected duration following the events from <code>dat</code>, and
-using Maximum A Posteriori estimation. If <code>FALSE</code>: performs the
-estimation in a simulated scenario defined by the remaining parameters.</p></dd>
+using Maximum A Posteriori estimation. Setting <code>tdm</code> to <code>TRUE</code> causes the
+following to occur:</p><ul><li><p>the <code>time_dose</code> argument is required and is used as the starting point
+for the AUC calculation instead of <code>starting_time</code>;</p></li>
+<li><p>the arguments <code>estim_method</code>, <code>p</code>, <code>greater_than</code>, <code>interdose_interval</code>,
+<code>add_dose</code>, <code>indiv_param</code> and <code>starting_time</code> are ignored.</p></li>
+</ul></dd>
 
 
 <dt>time_auc</dt>
 <dd><p>Numeric. A duration. The target AUC is computed from
-<code>starting_time</code> to <code>starting_time</code> + <code>time_auc</code>.</p></dd>
+<code>starting_time</code> to <code>starting_time</code> + <code>time_auc</code>.
+When <code>tdm</code> is set to <code>TRUE</code> the target AUC is computed from <code>time_dose</code> to
+<code>time_dose</code> + <code>time_auc</code> instead.</p></dd>
 
 
 <dt>time_dose</dt>
-<dd><p>Numeric. Time when the dose is to be given. Only used when
-<code>tdm</code> is set to <code>TRUE</code>.</p></dd>
+<dd><p>Numeric. Time when the dose is to be given. Only used and
+mandatory, when <code>tdm</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>target_auc</dt>
@@ -170,7 +176,7 @@ lower if <code>FALSE</code>. This argument is ignored if <code>tdm</code> is set
 <dt>starting_time</dt>
 <dd><p>Numeric. First point in time of the AUC, for multiple
 dose regimen. The default is zero. This argument is ignored if <code>tdm</code> is
-set to <code>TRUE</code>.</p></dd>
+set to <code>TRUE</code>, and <code>time_dose</code> is used as a starting point instead.</p></dd>
 
 
 <dt>interdose_interval</dt>
@@ -284,7 +290,7 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291731 0.1278485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291735 0.1278482</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
