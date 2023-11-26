@@ -133,48 +133,37 @@ test_that("Same optimal dose with or without providing MAP estimates", {
                tolerance=1e-3)
 })
 
+single_adm_cmin <- poso_time_cmin(dat=df_patient04_vanco,
+                                  prior_model=mod_vancomycin_2cpt_Goti2018,
+                                  from=2,
+                                  dose=1500,
+                                  duration=2,
+                                  target_cmin=10,
+                                  indiv_param=params_patient04_vanco_map)
+
+single_adm_auc <- poso_dose_auc(dat=df_patient04_vanco,
+                                prior_model=mod_vancomycin_2cpt_Goti2018,
+                                time_auc=24,
+                                duration=2,
+                                target_auc=400,
+                                indiv_param=params_patient04_vanco_map)
+
+single_adm_conc <- poso_dose_conc(dat=df_patient04_vanco,
+                                  prior_model=mod_vancomycin_2cpt_Goti2018,
+                                  time_c=24,
+                                  duration=2,
+                                  target_conc=11.04931,
+                                  indiv_param=params_patient04_vanco_map)
+
 test_that("Optimization results do not deviate from known values
           for single dose administration", {
-  expect_equal(poso_time_cmin(dat=df_patient04_vanco,
-                              prior_model=mod_vancomycin_2cpt_Goti2018,
-                              from=2,
-                              dose=1500,
-                              duration=2,
-                              target_cmin=10,
-                              indiv_param=params_patient04_vanco_map)$time,
-               11.2)
-  expect_equal(poso_dose_auc(dat=df_patient04_vanco,
-                             prior_model=mod_vancomycin_2cpt_Goti2018,
-                             time_auc=24,
-                             duration=2,
-                             target_auc=400,
-                             indiv_param=params_patient04_vanco_map)$dose,
-               2377.758,
-               tolerance=1e-3)
-  expect_equal(poso_dose_conc(dat=df_patient04_vanco,
-                              prior_model=mod_vancomycin_2cpt_Goti2018,
-                              time_c=24,
-                              duration=2,
-                              target_conc=11.04931,
-                              indiv_param=params_patient04_vanco_map)$dose,
-               2530.699,
-               tolerance=1e-3)
-  expect_equal(poso_time_cmin(dat=df_patient04_vanco,
-                              prior_model=mod_vancomycin_2cpt_Goti2018,
-                              from=2,
-                              dose=1500,
-                              duration=2,
-                              target_cmin=10)$time,11.2)
-  expect_equal(poso_dose_auc(dat=df_patient04_vanco,
-                             prior_model=mod_vancomycin_2cpt_Goti2018,
-                             time_auc=24,
-                             duration=2,
-                             target_auc=400)$dose,2377.758,tolerance=1e-3)
-  expect_equal(poso_dose_conc(dat=df_patient04_vanco,
-                              prior_model=mod_vancomycin_2cpt_Goti2018,
-                              time_c=24,
-                              duration=2,
-                              target_conc=11.04931)$dose,2530.699,tolerance=1e-3)
+            #also test for issue #43
+            expect_equal(single_adm_cmin$time,11.2)
+            expect_equal(single_adm_cmin$cmin_estimate,10,tolerance=1e-1)
+            expect_equal(single_adm_auc$dose,2377.758,tolerance=1e-3)
+            expect_equal(single_adm_auc$auc_estimate,400)
+            expect_equal(single_adm_conc$dose,2530.699,tolerance=1e-3)
+            expect_equal(single_adm_conc$conc_estimate,11.05,tolerance=1e-2)
 })
 
 test_that("Optimization results do not deviate from known values
