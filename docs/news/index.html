@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.3</span>
       </span>
     </div>
 
@@ -73,13 +73,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.2.2.9000" id="posologyr-v1229000">posologyr v1.2.2.9000<a class="anchor" aria-label="anchor" href="#posologyr-v1229000"></a></h2>
+<h2 class="page-header" data-toc-text="1.2.3" id="posologyr-v123">posologyr v1.2.3<a class="anchor" aria-label="anchor" href="#posologyr-v123"></a></h2>
 <div class="section level3">
-<h3 id="bug-fix-1-2-2-9000">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-1-2-2-9000"></a></h3>
+<h3 id="bug-fix-1-2-3">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-1-2-3"></a></h3>
 <ul><li>Fix a bug in <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> and <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> where the returned estimate of the target value to be optimized against was always equal to zero.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="documentation-1-2-2-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-2-9000"></a></h3>
+<h3 id="documentation-1-2-3">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-3"></a></h3>
 <ul><li>The documentation for <code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, and <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> now explicitly states the consequences of setting <code>tdm</code> to <code>TRUE</code>: which parameters are required, which parameters are ignored, and which parameters behave differently.</li>
 <li>The functions <code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, and <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> now return a warning if any of the input parameters are ignored.</li>
 <li>Fix incorrect information regarding the duration of the AUC in the documentation of <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>

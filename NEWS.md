@@ -1,4 +1,4 @@
-# posologyr v1.2.2.9000
+# posologyr v1.2.3
 
 ## Bug fix
 * Fix a bug in `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` where the returned estimate of the target value to be optimized against was always equal to zero.

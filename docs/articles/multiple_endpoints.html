@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.3</span>
       </span>
     </div>
 
@@ -193,7 +193,8 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span>    cp<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">0.144</span>, proportional_b <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>,</span>
 <span>    pca<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.91</span>, proportional_b <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-first-subject-from-the-warfarin-dataset">data: first subject from the warfarin dataset<a class="anchor" aria-label="anchor" href="#data-first-subject-from-the-warfarin-dataset"></a>
@@ -235,20 +236,20 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <code class="sourceCode R"><span><span class="va">map_warf_01</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">warf_01</span>,<span class="va">mod_warfarin_nlmixr</span><span class="op">)</span></span>
 <span><span class="va">map_warf_01</span></span>
 <span><span class="co">#&gt; $eta</span></span>
-<span><span class="co">#&gt;    ETA_ktr     ETA_ka     ETA_cl      ETA_v   ETA_emax   ETA_ec50   ETA_kout </span></span>
-<span><span class="co">#&gt; -0.4339156 -0.6947270  0.8233712 -0.0230694  0.0682924  0.1418802 -0.1987010 </span></span>
-<span><span class="co">#&gt;     ETA_e0 </span></span>
-<span><span class="co">#&gt; -0.1238196 </span></span>
+<span><span class="co">#&gt;     ETA_ktr      ETA_ka      ETA_cl       ETA_v    ETA_emax    ETA_ec50 </span></span>
+<span><span class="co">#&gt; -0.43461299 -0.69405538  0.82338134 -0.02303193  0.06846897  0.14181369 </span></span>
+<span><span class="co">#&gt;    ETA_kout      ETA_e0 </span></span>
+<span><span class="co">#&gt; -0.19868748 -0.12379062 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $model</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Solved rxode2 object ──</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span></span>
-<span><span class="co">#&gt;  THETA_ktr    ETA_ktr   THETA_ka     ETA_ka   THETA_cl     ETA_cl    THETA_v </span></span>
-<span><span class="co">#&gt;  0.1060000 -0.4339156 -0.0870000 -0.6947270 -2.0300000  0.8233712  2.0700000 </span></span>
-<span><span class="co">#&gt;      ETA_v THETA_emax   ETA_emax THETA_ec50   ETA_ec50 THETA_kout   ETA_kout </span></span>
-<span><span class="co">#&gt; -0.0230694  3.4000000  0.0682924  0.0072400  0.1418802 -2.9000000 -0.1987010 </span></span>
-<span><span class="co">#&gt;   THETA_e0     ETA_e0 </span></span>
-<span><span class="co">#&gt;  4.5700000 -0.1238196 </span></span>
+<span><span class="co">#&gt;   THETA_ktr     ETA_ktr    THETA_ka      ETA_ka    THETA_cl      ETA_cl </span></span>
+<span><span class="co">#&gt;  0.10600000 -0.43461299 -0.08700000 -0.69405538 -2.03000000  0.82338134 </span></span>
+<span><span class="co">#&gt;     THETA_v       ETA_v  THETA_emax    ETA_emax  THETA_ec50    ETA_ec50 </span></span>
+<span><span class="co">#&gt;  2.07000000 -0.02303193  3.40000000  0.06846897  0.00724000  0.14181369 </span></span>
+<span><span class="co">#&gt;  THETA_kout    ETA_kout    THETA_e0      ETA_e0 </span></span>
+<span><span class="co">#&gt; -2.90000000 -0.19868748  4.57000000 -0.12379062 </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;  depot    gut center effect </span></span>
 <span><span class="co">#&gt;      0      0      0      0 </span></span>
