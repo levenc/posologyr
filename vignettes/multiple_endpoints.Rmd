@@ -14,6 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r chunkname, echo=-1}
+data.table::setDTthreads(2)
+```
+
 ```{r setup}
 library(posologyr)
 ```
