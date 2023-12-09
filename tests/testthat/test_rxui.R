@@ -30,11 +30,28 @@ mod_amikacin_Burdet2015 <- function() {
     d/dt(periph) =            + k12*centr - k21*periph
     d/dt(AUC)    =   Cc
 
-    Cc ~ add(add_sd) + prop(prop_sd)
+    Cc ~ add(add_sd) + prop(prop_sd) + combined1()
   })
 }
 
-mod_amikacin_Burdet2015 <- rxode2::rxode2(mod_amikacin_Burdet2015)
+#mod_amikacin_Burdet2015 <- rxode2::rxode2(mod_amikacin_Burdet2015)
+
+df_patientA <- data.frame(ID=1,TIME=c(0,1,6),
+                          DV=c(NA,58,14),
+                          EVID=c(1,0,0),
+                          AMT=c(2000,0,0),
+                          DUR=c(0.5,NA,NA),
+                          CLCREAT4H=50,TBW=62,PoverF=169)
+df_patientA
+
+
+patA_map <- poso_estim_map(dat=df_patientA,
+                           prior_model=mod_amikacin_Burdet2015)
+
+poso_time_cmin(dat=df_patientA,
+               prior_model=mod_amikacin_Burdet2015,
+               tdm = TRUE,
+               target_cmin = 2.5)
 
 
 pk_turnover_emax3 <- function() {

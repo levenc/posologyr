@@ -152,7 +152,8 @@ posologyr_get_error_model_prop <- function(ui, pred1, fun=TRUE) {
     return(.p1)
   }
   f <- function(f, sigma) {
-    g <- sigma[1]^2 * f
+    var <- sigma^2
+    g <- var[1]^2 * f
     sqrt(g)
   }
   f
@@ -211,12 +212,14 @@ posologyr_get_error_model_add_prop <- function(ui, pred1, fun=TRUE) {
   if (!fun) return(c(.p1, .p2))
   if (.addProp == "combined2") {
     f <- function(f, sigma) {
-      g <- sigma[1]^2 + f^2 * sigma[2]^2
+      var <- sigma^2
+      g <- var[1]^2 + f^2 * var[2]^2
       sqrt(g)
     }
   } else {
     f <- function(f, sigma) {
-      g <- (sigma[1] + f * sigma[2])^2
+      var <- sigma^2
+      g <- (var[1] + f * var[2])^2
       sqrt(g)
     }
   }
