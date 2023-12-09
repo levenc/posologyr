@@ -29,7 +29,7 @@ posologyr_error_lines.norm <- function(line) {
   if (length(env$predDf$cond) == 1L) {
     ret[[6]] <- bquote(Cc <- .(rxode2::.rxGetPredictionFTransform(env, pred1, .yj)))
   } else {
-    ret[[6]] <- bquote(.(str2lang(paste0("rxEndpoint", pred1$dvid))) <- .(rxode2::.rxGetPredictionFTransform(env, pred1, .yj)))
+    ret[[6]] <- bquote(.(str2lang(pred1$cond)) <- .(rxode2::.rxGetPredictionFTransform(env, pred1, .yj)))
   }
   ret
 }
@@ -47,7 +47,7 @@ posologyr_error_lines.default  <- function(line) {
 }
 
 # This handles the errors for focei
-create_posologyr_line_object <- function(x, line) {
+create_posologyr_line_object <- function(x, line, type="posologyr_error_lines") {
   pred_df <- x$predDf
   if (line > nrow(pred_df)) {
     return(NULL)
@@ -82,30 +82,213 @@ rxUiGet.posologyr_ppk_model <- function(x, ...) {
       ui <- rxode2::rxRename(ui, rxCc=Cc)
     }
   }
-  rxode2::rxCombineErrorLines(ui, errLines=posologyr_error_lines(ui),
-                              cmtLines=FALSE, dvidLine=FALSE)
+  mod <- rxode2::rxCombineErrorLines(ui, errLines=posologyr_error_lines(ui),
+                                     cmtLines=FALSE, dvidLine=FALSE, useIf = FALSE)
+  mod[[1]] <- str2lang("rxode2::rxode2")
+  mod
 }
 attr(rxUiGet.posologyr_ppk_model, "desc") <- "posologyr ppk_model element"
 
+
+#'  Get the additive error model function or estimate from ui
+#'
+#' @param ui environment of rxode2 ui
+#' @param pred1 prediction line for endpint
+#' @param fun boolean to return function
+#' @return function or estimate of error line
+#' @noRd
+#' @author Matthew L. Fidler
+posologyr_get_error_model_add <- function(ui, pred1, fun=TRUE) {
+  if (!is.na(pred1$a)) {
+    stop("residual variability parameters must be in ini block (not more complex)",
+         call.=FALSE)
+  } else {
+    .cnd <- pred1$cond
+    .w <- which(ui$iniDf$err %in% c("add", "lnorm", "logitNorm", "probitNorm") & ui$iniDf$condition == .cnd)
+    if (length(.w) == 1L) {
+      .p1 <- setNames(ui$iniDf$est[.w], ui$iniDf$name[.w])
+    } else {
+      stop("cannot find additive standard deviation for '", .cnd, "'",
+           ifelse(length(ui$predDf$condition) == 1L, "", "; this parameter could be estimated by another endpoint, to fix move outside of error expression."), call.=FALSE)
+    }
+  }
+  if (!fun) {
+    return(.p1)
+  }
+  f <- function(f, sigma) {
+    g <- sigma[1]^2
+    sqrt(g)
+  }
+  f
+}
+
+#' Get the proportional error model function or estimate from ui
+#'
+#' @param ui environment of rxode2 ui
+#' @param pred1 prediction line for endpint
+#' @param fun boolean to return function
+#' @return function or estimate of error line
+#' @noRd
+#' @author Matthew L. Fidler
+posologyr_get_error_model_prop <- function(ui, pred1, fun=TRUE) {
+  type <- as.character(pred1$errTypeF)
+  if (!(.type %in% c("untransformed", "none"))) {
+    stop("f can only be untransformed for poslogyr", call.=FALSE)
+  }
+  if (!fun) {
+    if (!is.na(pred1$b)) {
+      .p1 <- str2lang(pred1$b)
+    } else {
+      .cnd <- pred1$cond
+      .w <- which(env$iniDf$err %in% c("prop", "propF", "propT") & env$iniDf$condition == .cnd)
+      if (length(.w) == 1L) {
+        .p1 <- setNames(env$iniDf$est[.w], env$iniDf$name[.w])
+      } else {
+        stop("cannot find proportional standard deviation", call.=FALSE)
+      }
+    }
+  }
+  if (!fun) {
+    return(.p1)
+  }
+  f <- function(f, sigma) {
+    g <- sigma[1]^2 * f
+    sqrt(g)
+  }
+  f
+}
+
+#' Get the power error model function or estimate from ui
+#'
+#' @param ui environment of rxode2 ui
+#' @param pred1 prediction line for endpint
+#' @param fun boolean to return function
+#' @return function or estimate of error line
+#' @noRd
+#' @author Matthew L. Fidler
+posologyr_get_error_model_pow <- function(env, pred1, fun=TRUE) {
+  stop("pow not supported with posologyr", call.=FALSE)
+}
+
+#' Get the add+prop error model function or estimate from ui
+#'
+#' @param ui environment of rxode2 ui
+#' @param pred1 prediction line for endpint
+#' @param fun boolean to return function
+#' @return function or estimate of error line
+#' @noRd
+#' @author Matthew L. Fidler
+posologyr_get_error_model_add_prop <- function(ui, pred1, fun=TRUE) {
+  if (!is.na(pred1$a)) {
+    stop("residual variability parameters must be in ini block (not more complex)",
+         call.=FALSE)
+  } else {
+    .cnd <- pred1$cond
+    .w <- which(ui$iniDf$err %in% c("add", "lnorm", "probitNorm", "logitNorm") & ui$iniDf$condition == .cnd)
+    if (length(.w) == 1L) {
+      .p1 <- setNames(ui$iniDf$est[.w], ui$iniDf$name[.w])
+    } else {
+      stop("cannot find additive standard deviation", call.=FALSE)
+    }
+  }
+  if (!is.na(pred1$b)) {
+    stop("residual variability parameters must be in ini block (not more complex)",
+         call.=FALSE)
+  } else {
+    .cnd <- pred1$cond
+    .w <- which(ui$iniDf$err %in% c("prop", "propT", "propF") & ui$iniDf$condition == .cnd)
+    if (length(.w) == 1L) {
+      .p2 <- setNames(ui$iniDf$est[.w], ui$iniDf$name[.w])
+    } else {
+      stop("cannot find proportional standard deviation", call.=FALSE)
+    }
+  }
+  if (pred1$addProp == "default") {
+    .addProp <- rxode2::rxGetControl(ui, "addProp", getOption("rxode2.addProp", "combined2"))
+  } else {
+    .addProp <- pred1$addProp
+  }
+  if (!fun) return(c(.p1, .p2))
+  if (.addProp == "combined2") {
+    f <- function(f, sigma) {
+      g <- sigma[1]^2 + f^2 * sigma[2]^2
+      sqrt(g)
+    }
+  } else {
+    f <- function(f, sigma) {
+      g <- (sigma[1] + f * sigma[2])^2
+      sqrt(g)
+    }
+  }
+}
+
+#' Get the add+prop error model function or estimate from ui
+#'
+#' @param ui environment of rxode2 ui
+#' @param pred1 prediction line for endpint
+#' @param fun boolean to return function
+#' @return function or estimate of error line
+#' @noRd
+#' @author Matthew L. Fidler
+posologyr_get_error_model_add_pow <- function(ui, pred1, fun=TRUE) {
+  stop("add+pow not supported with posologyr", call.=FALSE)
+}
+#'  Get error model based on pred line
+#'
+#' @param ui rxode2 ui environment
+#' @param pred1 pred1 line
+#' @param fun boolean to return function or ini estimate
+#' @return function for error type
+#' @noRd
+#' @author Matthew L. Fidler
+#' @keywords internal
+posologyr_get_error_model <- function(ui, pred1, fun=TRUE) {
+  switch(as.character(pred1$errType),
+         "add"=posologyr_get_error_model_add(ui, pred1, fun), # 1
+         "prop"=posologyr_get_error_model_prop(ui, pred1, fun), # 2
+         "pow"=posologyr_get_error_model_pow(ui, pred1, fun), # 3
+         "add + prop"=posologyr_get_error_model_add_prop(ui, pred1, fun),# 4
+         "add + pow"=posologyr_get_error_model_add_pow(ui, pred1, fun) # 5
+         )
+}
+
 #' @export
 rxUiGet.posologyr_error_model <- function(x, ...) {
-
+  ui <- x[[1]]
+  pred_df <- ui$predDf
+  ret <- lapply(seq_along(pred_df$cond), function(c) {
+    posologyr_get_error_model(ui, pred_df[c, ], fun=TRUE)
+  })
+  if (length(ret) == 1) return(ret[[1]])
+  names(ret) <- pred_df$cond
+  ret
 }
 attr(rxUiGet.posologyr_error_model, "desc") <- "posologyr error_model element"
 
 
 #' @export
 rxUiGet.posologyr_sigma <- function(x, ...) {
-
+  ui <- x[[1]]
+  pred_df <- ui$predDf
+  ret <- lapply(seq_along(pred_df$cond), function(c) {
+    posologyr_get_error_model(ui, pred_df[c, ], fun=FALSE)
+  })
+  if (length(ret) == 1) return(ret[[1]])
+  names(ret) <- pred_df$cond
+  ret
 }
 
 #' @export
 rxUiGet.posologyr <- function(x, ...) {
   ui <- x[[1]]
-  list(ppk_model=rxUiGet.posologyr_ppk_model(x, ...),
+  mod <- eval(rxUiGet.posologyr_ppk_model(x, ...))
+  ret <- list(ppk_model=mod,
        error_model=rxUiGet.posologyr_error_model(x, ...),
        theta=ui$theta,
        omega=ui$omega,
-       sigma=rxUiGet.posologyr_sigma(x, ...))
+       sigma=rxUiGet.posologyr_sigma(x, ...),
+       covariates=ui$allCovs)
+  if (length(ret$covariates) == 0L) ret$covariates <- NULL
+  ret
 }
 attr(rxUiGet.posologyr, "desc") <- "posologyr model from ui"

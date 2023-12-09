@@ -95,7 +95,7 @@
 #' @export
 poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
                           return_model=TRUE){
-
+  prior_model <- get_prior_model(prior_model)
   object <- posologyr(prior_model,dat)
   no_covariates <- is.null(object$covariates)
 
@@ -218,7 +218,7 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 #' @export
 poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                            return_ofv=FALSE,nocb=FALSE){
-
+  prior_model <- get_prior_model(prior_model)
   object <- posologyr(prior_model,dat,nocb)
   endpoints <- get_endpoints(object)
   estim_with_iov <- check_for_iov(object)
@@ -546,7 +546,7 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
                             burn_in=50,n_iter=1000,n_chains=4,nocb=FALSE,
                             control=list(n_kernel=c(2,2,2),
                             stepsize_rw=0.4,proba_mcmc=0.3,nb_max=3)){
-
+  prior_model <- get_prior_model(prior_model)
   object <- posologyr(prior_model,dat,nocb)
   if(check_for_iov(object)) stop("IOV is not supported, poso_estim_sir() can be
                                  used instead to estimate the posterior
@@ -837,6 +837,8 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #' @export
 poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
                            n_resample=1e3,return_model=TRUE,nocb=FALSE){
+
+  prior_model <- get_prior_model(prior_model)
 
   object <- posologyr(prior_model,dat,nocb)
   endpoints <- get_endpoints(object)

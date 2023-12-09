@@ -1,3 +1,42 @@
+mod_amikacin_Burdet2015 <- function() {
+  ini({
+    THETA_Cl=4.3
+    THETA_Vc=15.9
+    THETA_Vp=21.4
+    THETA_Q=12.1
+    ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.1,
+        0.01     ,   0.05 ,
+        0.01     ,   0.02 ,   0.2  ,
+        -0.06    ,   0.004,   0.003,    0.08)
+    add_sd <- sqrt(0.2)
+    prop_sd <- sqrt(0.1)
+  })
+  model({
+    centr(0) = 0
+    TVCl  = THETA_Cl*(CLCREAT4H/82)^0.7
+    TVVc  = THETA_Vc*(TBW/78)^0.9*(PoverF/169)^0.4
+    TVVp  = THETA_Vp
+    TVQ   = THETA_Q
+    Cl    = TVCl*exp(ETA_Cl)
+    Vc    = TVVc*exp(ETA_Vc)
+    Vp    = TVVp*exp(ETA_Vp)
+    Q     = TVQ *exp(ETA_Q)
+    ke    = Cl/Vc
+    k12   = Q/Vc
+    k21   = Q/Vp
+    Cc    = centr/Vc
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph
+    d/dt(periph) =            + k12*centr - k21*periph
+    d/dt(AUC)    =   Cc
+
+    Cc ~ add(add_sd) + prop(prop_sd)
+  })
+}
+
+mod_amikacin_Burdet2015 <- rxode2::rxode2(mod_amikacin_Burdet2015)
+
+
 pk_turnover_emax3 <- function() {
   ini({
     tktr <- log(1)

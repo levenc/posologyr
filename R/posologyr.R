@@ -16,6 +16,22 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
+#' Get prior model making sure to account for rxode2 ui
+#'
+#' @param prior_model prior model list or ui
+#' @return  prior model lis
+#' @noRd
+#' @author Matthew L. Fidler
+get_prior_model <- function(prior_model) {
+  if (!is.list(prior_model)) {
+    rxui <- try(rxode2::as.rxUi(prior_model), silent=FALSE)
+    if (inherits(rxui, "rxUi")) {
+      prior_model <- rxui$posologyr
+    }
+  }
+  prior_model
+}
+
 #' Creates a posologyr list from a prior model and an individual event
 #' record
 #'
@@ -65,7 +81,7 @@
 #' @keywords internal
 #' @noRd
 posologyr <- function(prior_model=NULL,dat=NULL,nocb=FALSE){
-
+  prior_model <- get_prior_model(prior_model)
   validate_priormod(prior_model)
   validate_dat(dat)
 
