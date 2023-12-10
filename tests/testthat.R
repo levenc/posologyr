@@ -1,4 +1,4 @@
-data.table::setDTthreads(2) #throttle data.table for CRAN
+rxode2::setRxThreads(2) # limit the number of threads
 
 library(testthat)
 library(posologyr)

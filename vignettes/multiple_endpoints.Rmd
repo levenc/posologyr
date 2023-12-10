@@ -12,10 +12,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-
-```{r chunkname, echo=-1}
-data.table::setDTthreads(2)
+set.seed(1)
+rxode2::setRxThreads(2) # limit the number of threads
 ```
 
 ```{r setup}

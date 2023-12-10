@@ -193,8 +193,7 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span>    cp<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">0.144</span>, proportional_b <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>,</span>
 <span>    pca<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.91</span>, proportional_b <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-first-subject-from-the-warfarin-dataset">data: first subject from the warfarin dataset<a class="anchor" aria-label="anchor" href="#data-first-subject-from-the-warfarin-dataset"></a>
@@ -237,19 +236,19 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span><span class="va">map_warf_01</span></span>
 <span><span class="co">#&gt; $eta</span></span>
 <span><span class="co">#&gt;     ETA_ktr      ETA_ka      ETA_cl       ETA_v    ETA_emax    ETA_ec50 </span></span>
-<span><span class="co">#&gt; -0.43461299 -0.69405538  0.82338134 -0.02303193  0.06846897  0.14181369 </span></span>
+<span><span class="co">#&gt; -0.43629043 -0.69246533  0.82338031 -0.02295265  0.06901167  0.14181589 </span></span>
 <span><span class="co">#&gt;    ETA_kout      ETA_e0 </span></span>
-<span><span class="co">#&gt; -0.19868748 -0.12379062 </span></span>
+<span><span class="co">#&gt; -0.19873712 -0.12377532 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $model</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Solved rxode2 object ──</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;   THETA_ktr     ETA_ktr    THETA_ka      ETA_ka    THETA_cl      ETA_cl </span></span>
-<span><span class="co">#&gt;  0.10600000 -0.43461299 -0.08700000 -0.69405538 -2.03000000  0.82338134 </span></span>
+<span><span class="co">#&gt;  0.10600000 -0.43629043 -0.08700000 -0.69246533 -2.03000000  0.82338031 </span></span>
 <span><span class="co">#&gt;     THETA_v       ETA_v  THETA_emax    ETA_emax  THETA_ec50    ETA_ec50 </span></span>
-<span><span class="co">#&gt;  2.07000000 -0.02303193  3.40000000  0.06846897  0.00724000  0.14181369 </span></span>
+<span><span class="co">#&gt;  2.07000000 -0.02295265  3.40000000  0.06901167  0.00724000  0.14181589 </span></span>
 <span><span class="co">#&gt;  THETA_kout    ETA_kout    THETA_e0      ETA_e0 </span></span>
-<span><span class="co">#&gt; -2.90000000 -0.19868748  4.57000000 -0.12379062 </span></span>
+<span><span class="co">#&gt; -2.90000000 -0.19873712  4.57000000 -0.12377532 </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;  depot    gut center effect </span></span>
 <span><span class="co">#&gt;      0      0      0      0 </span></span>
@@ -257,12 +256,12 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,451 × 18</span></span></span>
 <span><span class="co">#&gt;    time   ktr    ka    cl     v  emax  ec50   kout    e0    DCP    PD   kin</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0   0.720 0.458 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0      1      3.85</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.1 0.720 0.458 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.020<span style="text-decoration: underline;">4</span> 0.983  3.85</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.2 0.720 0.458 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.078<span style="text-decoration: underline;">5</span> 0.939  3.85</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.3 0.720 0.458 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.170  0.876  3.85</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4 0.720 0.458 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.290  0.806  3.85</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5 0.720 0.458 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.436  0.735  3.85</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0   0.719 0.459 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0      1      3.85</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.1 0.719 0.459 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.020<span style="text-decoration: underline;">4</span> 0.983  3.85</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.2 0.719 0.459 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.078<span style="text-decoration: underline;">5</span> 0.939  3.85</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.3 0.719 0.459 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.170  0.876  3.85</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4 0.719 0.459 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.290  0.806  3.85</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5 0.719 0.459 0.299  7.74 0.970  1.16 0.045<span style="text-decoration: underline;">1</span>  85.3 0.435  0.735  3.85</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,445 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: cp &lt;dbl&gt;, pca &lt;dbl&gt;, depot &lt;dbl&gt;, gut &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   center &lt;dbl&gt;, effect &lt;dbl&gt;</span></span></span>
