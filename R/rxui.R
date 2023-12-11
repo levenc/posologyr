@@ -75,20 +75,33 @@ rxUiGet.posologyr_ppk_model <- function(x, ...) {
   if (is.null(ui$predDf)) {
     stop("need endpoint defined for now")
   }
+  add_auc <- FALSE
   if (length(ui$predDf$cond) == 1L) {
     # Here Cc  needs to be the endpoint
     mv <- rxode2::rxModelVars(ui)
     if (any(mv$lhs == "Cc")) {
       ui <- rxode2::rxRename(ui, rxCc=Cc)
     }
+    if (!any(mv$state == "AUC")) {
+      # add AUC for single endpoint models
+      states <- mv$state
+      add_auc <- TRUE
+    }
   }
   mod <- rxode2::rxCombineErrorLines(ui, errLines=posologyr_error_lines(ui),
                                      cmtLines=FALSE, dvidLine=FALSE, useIf = FALSE)
   mod[[1]] <- str2lang("rxode2::rxode2")
+  if (add_auc) {
+    message("Added AUC to model")
+    m2 <- mod[[2]]
+    mod[[2]] <- as.call(lapply(seq_len(length(m2) + 1), function(i) {
+      if (i > length(m2)) return(str2lang("d/dt(AUC)=Cc"))
+      m2[[i]]
+    }))
+  }
   mod
 }
 attr(rxUiGet.posologyr_ppk_model, "desc") <- "posologyr ppk_model element"
-
 
 #'  Get the additive error model function or estimate from ui
 #'
@@ -115,9 +128,9 @@ posologyr_get_error_model_add <- function(ui, pred1, fun=TRUE) {
   if (!fun) {
     return(.p1)
   }
+  # on standard deviation scale
   f <- function(f, sigma) {
-    g <- sigma[1]^2
-    sqrt(g)
+    sigma[1]
   }
   f
 }
@@ -152,9 +165,7 @@ posologyr_get_error_model_prop <- function(ui, pred1, fun=TRUE) {
     return(.p1)
   }
   f <- function(f, sigma) {
-    var <- sigma^2
-    g <- var[1]^2 * f
-    sqrt(g)
+    sigma[1]^2 * f
   }
   f
 }
@@ -212,15 +223,12 @@ posologyr_get_error_model_add_prop <- function(ui, pred1, fun=TRUE) {
   if (!fun) return(c(.p1, .p2))
   if (.addProp == "combined2") {
     f <- function(f, sigma) {
-      var <- sigma^2
-      g <- var[1]^2 + f^2 * var[2]^2
-      sqrt(g)
+      sqrt(sigma[1]^2 + f^2 * sigma[2]^2)
     }
   } else {
+    # combined1, standard deviations add
     f <- function(f, sigma) {
-      var <- sigma^2
-      g <- (var[1] + f * var[2])^2
-      sqrt(g)
+      sigma[1] + f * sigma[2]
     }
   }
 }
