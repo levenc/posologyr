@@ -1,3 +1,44 @@
+patient_data <- data.frame(ID=1,
+                           TIME=c(0.0,1.0,14.0),
+                           DV=c(NA,25.0,5.5),
+                           AMT=c(2000,0,0),
+                           DUR=c(0.5,NA,NA),
+                           EVID=c(1,0,0),
+                           CLCREAT=80,
+                           WT=65)
+
+mod_run001 <- function() {
+  ini({
+    THETA_Cl <- 4.0
+    THETA_Vc <- 70.0
+    THETA_Ka <- 1.0
+    ETA_Cl + ETA_Vc + ETA_Ka ~
+      c(0.2,
+        0, 0.2,
+        0, 0, 0.2)
+    prop.sd <- 0.05
+  })
+  model({
+    TVCl <- THETA_Cl
+    TVVc <- THETA_Vc
+    TVKa <- THETA_Ka
+
+    Cl <- TVCl*exp(ETA_Cl)
+    Vc <- TVVc*exp(ETA_Vc)
+    Ka <- TVKa*exp(ETA_Ka)
+
+    K20 <- Cl/Vc
+    Cc <- centr/Vc
+
+    d/dt(depot) = -Ka*depot
+    d/dt(centr) = Ka*depot - K20*centr
+    Cc ~ prop(prop.sd)
+  })
+}
+
+poso_estim_map(patient_data, mod_run001)
+
+
 mod_amikacin_Burdet2015 <- function() {
   ini({
     THETA_Cl=4.3
@@ -25,12 +66,11 @@ mod_amikacin_Burdet2015 <- function() {
     ke    = Cl/Vc
     k12   = Q/Vc
     k21   = Q/Vp
-    Cc    = centr/Vc
+    Cp    = centr/Vc
     d/dt(centr)  = - ke*centr - k12*centr + k21*periph
     d/dt(periph) =            + k12*centr - k21*periph
-    d/dt(AUC)    =   Cc
 
-    Cc ~ add(add_sd) + prop(prop_sd) + combined1()
+    Cp ~ add(add_sd) + prop(prop_sd) + combined1()
   })
 }
 

@@ -145,7 +145,7 @@ posologyr_get_error_model_add <- function(ui, pred1, fun=TRUE) {
 #' @author Matthew L. Fidler
 posologyr_get_error_model_prop <- function(ui, pred1, fun=TRUE) {
   type <- as.character(pred1$errTypeF)
-  if (!(.type %in% c("untransformed", "none"))) {
+  if (!(type %in% c("untransformed", "none"))) {
     stop("f can only be untransformed for poslogyr", call.=FALSE)
   }
   if (!fun) {
@@ -153,9 +153,9 @@ posologyr_get_error_model_prop <- function(ui, pred1, fun=TRUE) {
       .p1 <- str2lang(pred1$b)
     } else {
       .cnd <- pred1$cond
-      .w <- which(env$iniDf$err %in% c("prop", "propF", "propT") & env$iniDf$condition == .cnd)
+      .w <- which(ui$iniDf$err %in% c("prop", "propF", "propT") & ui$iniDf$condition == .cnd)
       if (length(.w) == 1L) {
-        .p1 <- setNames(env$iniDf$est[.w], env$iniDf$name[.w])
+        .p1 <- setNames(ui$iniDf$est[.w], ui$iniDf$name[.w])
       } else {
         stop("cannot find proportional standard deviation", call.=FALSE)
       }
