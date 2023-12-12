@@ -443,7 +443,7 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                           p=NULL,greater_than=TRUE,starting_time=0,
                           interdose_interval=NULL,add_dose=NULL,
                           duration=0,starting_dose=100,indiv_param=NULL){
-  prior_model <- get_prior_model(prior_model, auc=TRUE)
+  prior_model <- get_prior_model(prior_model)
   object <- posologyr(prior_model,dat,nocb)
 
   #dedicated environment to retrieve variables created inside functions
