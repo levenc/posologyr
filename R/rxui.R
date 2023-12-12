@@ -94,7 +94,6 @@ rxUiGet.posologyr_ppk_model <- function(x, ...) {
                                      cmtLines=FALSE, dvidLine=FALSE, useIf = FALSE)
   mod[[1]] <- str2lang("rxode2::rxode2")
   if (add_auc) {
-    message("Added AUC to model")
     m2 <- mod[[2]]
     mod[[2]] <- as.call(lapply(seq_len(length(m2) + 1), function(i) {
       if (i > length(m2)) return(str2lang("d/dt(AUC)=Cc"))
