@@ -22,11 +22,15 @@
 #' @return  prior model lis
 #' @noRd
 #' @author Matthew L. Fidler
-get_prior_model <- function(prior_model) {
+get_prior_model <- function(prior_model, auc=FALSE) {
   if (!is.list(prior_model)) {
     rxui <- try(rxode2::as.rxUi(prior_model), silent=FALSE)
     if (inherits(rxui, "rxUi")) {
-      prior_model <- rxui$posologyr
+      if (auc) {
+        prior_model <- rxui$posologyr_auc
+      } else {
+        prior_model <- rxui$posologyr
+      }
     }
   }
   prior_model

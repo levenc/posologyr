@@ -68,10 +68,7 @@ posologyr_error_lines.rxUi <- function(line) {
   })
 }
 
-
-#' @export
-rxUiGet.posologyr_ppk_model <- function(x, ...) {
-  ui <- x[[1]]
+posologyr_ppk_model_rxui <- function(ui, auc=FALSE) {
   if (is.null(ui$predDf)) {
     stop("need endpoint defined for now")
   }
@@ -85,7 +82,7 @@ rxUiGet.posologyr_ppk_model <- function(x, ...) {
     if (!any(mv$state == "AUC")) {
       # add AUC for single endpoint models
       states <- mv$state
-      add_auc <- TRUE
+      add_auc <- auc
     }
   }
   mod <- rxode2::rxCombineErrorLines(ui, errLines=posologyr_error_lines(ui),
@@ -101,7 +98,22 @@ rxUiGet.posologyr_ppk_model <- function(x, ...) {
   }
   mod
 }
+
+#' @export
+rxUiGet.posologyr_ppk_model <- function(x, ...) {
+  ui <- x[[1]]
+  posologyr_ppk_model_rxui(ui, auc=FALSE)
+}
 attr(rxUiGet.posologyr_ppk_model, "desc") <- "posologyr ppk_model element"
+
+
+#' @export
+rxUiGet.posologyr_auc_ppk_model <- function(x, ...) {
+  ui <- x[[1]]
+  posologyr_ppk_model_rxui(ui, auc=TRUE)
+}
+attr(rxUiGet.posologyr_auc_ppk_model, "desc") <- "posologyr ppk_model element (add AUC for single endpoint)"
+
 
 #'  Get the additive error model function or estimate from ui
 #'
@@ -165,7 +177,7 @@ posologyr_get_error_model_prop <- function(ui, pred1, fun=TRUE) {
     return(.p1)
   }
   f <- function(f, sigma) {
-    sigma[1]^2 * f
+    sigma[1] * f
   }
   f
 }
@@ -299,6 +311,21 @@ rxUiGet.posologyr <- function(x, ...) {
        omega=ui$omega,
        sigma=rxUiGet.posologyr_sigma(x, ...),
        covariates=ui$allCovs)
+  if (length(ret$covariates) == 0L) ret$covariates <- NULL
+  ret
+}
+attr(rxUiGet.posologyr, "desc") <- "posologyr model from ui"
+
+#' @export
+rxUiGet.posologyr_auc <- function(x, ...) {
+  ui <- x[[1]]
+  mod <- eval(rxUiGet.posologyr_auc_ppk_model(x, ...))
+  ret <- list(ppk_model=mod,
+              error_model=rxUiGet.posologyr_error_model(x, ...),
+              theta=ui$theta,
+              omega=ui$omega,
+              sigma=rxUiGet.posologyr_sigma(x, ...),
+              covariates=ui$allCovs)
   if (length(ret$covariates) == 0L) ret$covariates <- NULL
   ret
 }
