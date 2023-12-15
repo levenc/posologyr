@@ -1,6 +1,6 @@
 # posologyr (development version)
 
-* Add ability to use rxode2 ui models for the `podo_*` functions.  Once the model has been parsed by `rxode2()` with this package the `model$posologyr` gives the list needed for `podo_*` functions
+* Add ability to use rxode2 ui models for the `poso_*` functions.  Once the model has been parsed by `rxode2()` with this package the `model$posologyr` gives the list needed for `poso_*` functions
 
 # posologyr v1.2.3
 
