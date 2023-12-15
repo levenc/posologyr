@@ -5,15 +5,18 @@ Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
            comment = c(ORCID = "0000-0002-0697-4370")),
+    person("Matthew","nfidler",role = c("ctb"),
+           email="matthew.fidler@gmail.com",
+           comment = c(ORCID = "0000-0001-8538-6691")),
     person("Emmanuelle","Comets",role = c("ctb")),
     person("Audrey","Lavenu",role = c("ctb")),
     person("Marc","Lavielle",role = c("ctb"))
     )
-Description: Determine individual pharmacokinetic (and 
-    pharmacokinetic-pharmacodynamic) profiles and use them to personalise drug 
-    regimens. You provide the data and a population pharmacokinetic model, 
-    'posologyr' provides the individual a posteriori estimate and allows you to 
-    determine the optimal dosing. The empirical Bayes estimates are computed as 
+Description: Determine individual pharmacokinetic (and
+    pharmacokinetic-pharmacodynamic) profiles and use them to personalise drug
+    regimens. You provide the data and a population pharmacokinetic model,
+    'posologyr' provides the individual a posteriori estimate and allows you to
+    determine the optimal dosing. The empirical Bayes estimates are computed as
     described in Kang et al. (2012) <doi:10.4196/kjpp.2012.16.2.97>.
 License: AGPL-3
 Encoding: UTF-8
@@ -26,7 +29,7 @@ Imports:
     stats,
     mvtnorm,
     data.table
-Suggests: 
+Suggests:
     lotri,
     knitr,
     rmarkdown,

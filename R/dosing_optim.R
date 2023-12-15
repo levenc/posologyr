@@ -150,6 +150,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                            add_dose=NULL,interdose_interval=NULL,
                            duration=0,indiv_param=NULL){
 
+  prior_model <- get_prior_model(prior_model)
   object <- posologyr(prior_model,dat,nocb)
 
   #Get or simulate the individual scenario: events and observations-------------
@@ -442,7 +443,7 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                           p=NULL,greater_than=TRUE,starting_time=0,
                           interdose_interval=NULL,add_dose=NULL,
                           duration=0,starting_dose=100,indiv_param=NULL){
-
+  prior_model <- get_prior_model(prior_model)
   object <- posologyr(prior_model,dat,nocb)
 
   #dedicated environment to retrieve variables created inside functions
@@ -766,7 +767,7 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                            greater_than=TRUE,starting_dose=100,
                            interdose_interval=NULL,add_dose=NULL,duration=0,
                            indiv_param=NULL){
-
+  prior_model <- get_prior_model(prior_model)
   object <- posologyr(prior_model,dat,nocb)
 
   #dedicated environment to retrieve variables created inside functions
@@ -1051,6 +1052,8 @@ poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
                             greater_than=TRUE,starting_interval=12,add_dose=10,
                             duration=0,indiv_param=NULL){
 
+  prior_model <- get_prior_model(prior_model)
+
   object <- posologyr(prior_model,dat,nocb)
 
   #dedicated environment to retrieve variables created inside functions
@@ -1140,6 +1143,7 @@ read_optim_distribution_input <- function(dat,prior_model,
                                           nocb,object,p,
                                           estim_method,
                                           indiv_param){
+  prior_model <- get_prior_model(prior_model)
   if (is.null(indiv_param)){ #theta_pop + estimates of eta + covariates
     if (estim_method=="map"){
       model_map <- poso_estim_map(dat,prior_model,nocb=nocb,return_model=TRUE)
