@@ -169,6 +169,8 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 #'
 #' @import data.table
 #'
+#' @importFrom stats setNames
+#'
 #' @examples
 #' rxode2::setRxThreads(1) # limit the number of threads
 #'
