@@ -68,10 +68,6 @@ posologyr_error_lines.rxUi <- function(line) {
   })
 }
 
-posologyr_ppk_model_rxui <- function(ui, auc=FALSE) {
-}
-
-#' @export
 rxUiGet.posologyr_ppk_model <- function(x, ...) {
   ui <- x[[1]]
   if (is.null(ui$predDf)) {
@@ -264,7 +260,6 @@ posologyr_get_error_model <- function(ui, pred1, fun=TRUE) {
          )
 }
 
-#' @export
 rxUiGet.posologyr_error_model <- function(x, ...) {
   ui <- x[[1]]
   pred_df <- ui$predDf
@@ -277,8 +272,6 @@ rxUiGet.posologyr_error_model <- function(x, ...) {
 }
 attr(rxUiGet.posologyr_error_model, "desc") <- "posologyr error_model element"
 
-
-#' @export
 rxUiGet.posologyr_sigma <- function(x, ...) {
   ui <- x[[1]]
   pred_df <- ui$predDf
@@ -290,7 +283,6 @@ rxUiGet.posologyr_sigma <- function(x, ...) {
   ret
 }
 
-#' @export
 rxUiGet.posologyr <- function(x, ...) {
   ui <- x[[1]]
   mod <- eval(rxUiGet.posologyr_ppk_model(x, ...))
