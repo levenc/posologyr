@@ -69,6 +69,7 @@ posologyr_error_lines.rxUi <- function(line) {
 }
 
 rxUiGet.posologyr_ppk_model <- function(x, ...) {
+  Cc <- NULL # check silliness
   ui <- x[[1]]
   if (is.null(ui$predDf)) {
     stop("need endpoint defined for now")
