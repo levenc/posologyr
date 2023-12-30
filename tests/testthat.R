@@ -1,6 +1,6 @@
-rxode2::setRxThreads(2) # limit the number of threads
-
-library(testthat)
+library(rxode2)
 library(posologyr)
+library(testthat)
+setRxThreads(1L) #for CRAN, following the advice of mattfidler
 
 test_check("posologyr")
