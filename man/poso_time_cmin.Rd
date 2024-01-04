@@ -117,7 +117,7 @@ Predicts the time needed to reach a selected trough concentration
 parameters, a dose, and a target Cmin.
 }
 \examples{
-rxode2::setRxThreads(1) # limit the number of threads
+rxode2::setRxThreads(2L) # limit the number of threads
 
 # model
 mod_run001 <- list(

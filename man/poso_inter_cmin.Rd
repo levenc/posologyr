@@ -87,7 +87,7 @@ pharmacokinetic model, a set of individual parameters, and a
 target concentration.
 }
 \examples{
-rxode2::setRxThreads(1) # limit the number of threads
+rxode2::setRxThreads(2L) # limit the number of threads
 
 # model
 mod_run001 <- list(
