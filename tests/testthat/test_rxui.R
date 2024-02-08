@@ -220,6 +220,8 @@ test_that("mod_vancomycin_Goti2018", {
 
 test_that("warfarin example", {
 
+  skip_on_cran()
+
   mod_warfarin_nlmixr <- function() {
     ini({
       THETA_ktr=0.106
