@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.4</span>
       </span>
     </div>
 
@@ -193,7 +193,8 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span>    cp<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">0.144</span>, proportional_b <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>,</span>
 <span>    pca<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.91</span>, proportional_b <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-first-subject-from-the-warfarin-dataset">data: first subject from the warfarin dataset<a class="anchor" aria-label="anchor" href="#data-first-subject-from-the-warfarin-dataset"></a>
@@ -267,18 +268,19 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span><span class="co">#&gt; <span style="color: #949494;">#   center &lt;dbl&gt;, effect &lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $event</span></span>
-<span><span class="co">#&gt;       id  time amt evid</span></span>
-<span><span class="co">#&gt;    1:  1   0.0  NA    0</span></span>
-<span><span class="co">#&gt;    2:  1   0.0 100    1</span></span>
-<span><span class="co">#&gt;    3:  1   0.1  NA    0</span></span>
-<span><span class="co">#&gt;    4:  1   0.2  NA    0</span></span>
-<span><span class="co">#&gt;    5:  1   0.3  NA    0</span></span>
-<span><span class="co">#&gt;   ---                  </span></span>
-<span><span class="co">#&gt; 1448:  1 144.6  NA    0</span></span>
-<span><span class="co">#&gt; 1449:  1 144.7  NA    0</span></span>
-<span><span class="co">#&gt; 1450:  1 144.8  NA    0</span></span>
-<span><span class="co">#&gt; 1451:  1 144.9  NA    0</span></span>
-<span><span class="co">#&gt; 1452:  1 145.0  NA    0</span></span></code></pre></div>
+<span><span class="co">#&gt;          id  time   amt  evid</span></span>
+<span><span class="co">#&gt;       &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt;    1:     1   0.0    NA     0</span></span>
+<span><span class="co">#&gt;    2:     1   0.0   100     1</span></span>
+<span><span class="co">#&gt;    3:     1   0.1    NA     0</span></span>
+<span><span class="co">#&gt;    4:     1   0.2    NA     0</span></span>
+<span><span class="co">#&gt;    5:     1   0.3    NA     0</span></span>
+<span><span class="co">#&gt;   ---                        </span></span>
+<span><span class="co">#&gt; 1448:     1 144.6    NA     0</span></span>
+<span><span class="co">#&gt; 1449:     1 144.7    NA     0</span></span>
+<span><span class="co">#&gt; 1450:     1 144.8    NA     0</span></span>
+<span><span class="co">#&gt; 1451:     1 144.9    NA     0</span></span>
+<span><span class="co">#&gt; 1452:     1 145.0    NA     0</span></span></code></pre></div>
 <p>The observation/time curves for both endpoints can also be
 plotted</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">

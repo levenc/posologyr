@@ -20,7 +20,7 @@ concentration."><meta property="og:image" content="/logo.png"><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.4</span>
       </span>
     </div>
 
@@ -227,7 +227,7 @@ covariates</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/getRxThreads.html" class="external-link">setRxThreads</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="co"># limit the number of threads</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/getRxThreads.html" class="external-link">setRxThreads</a></span><span class="op">(</span><span class="fl">2L</span><span class="op">)</span> <span class="co"># limit the number of threads</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># model</span></span></span>
 <span class="r-in"><span><span class="va">mod_run001</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -276,7 +276,7 @@ covariates</p></dd>
 <span class="r-in"><span><span class="fu">poso_dose_conc</span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patient01</span>,prior_model<span class="op">=</span><span class="va">mod_run001</span>,</span></span>
 <span class="r-in"><span>time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6886.024</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $type_of_estimate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
@@ -286,7 +286,7 @@ covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019035 -0.4291745 0.1278455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019041 -0.4291723 0.1278484</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

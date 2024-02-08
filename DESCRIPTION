@@ -1,6 +1,6 @@
 Package: posologyr
 Title: Individual Dose Optimization using Population Pharmacokinetics
-Version: 1.2.3.9000
+Version: 1.2.4
 Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",

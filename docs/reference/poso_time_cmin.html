@@ -19,7 +19,7 @@ parameters, a dose, and a target Cmin."><meta property="og:image" content="/logo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posologyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.4</span>
       </span>
     </div>
 
@@ -233,7 +233,7 @@ estimates of ETA, and covariates</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/getRxThreads.html" class="external-link">setRxThreads</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="co"># limit the number of threads</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/getRxThreads.html" class="external-link">setRxThreads</a></span><span class="op">(</span><span class="fl">2L</span><span class="op">)</span> <span class="co"># limit the number of threads</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># model</span></span></span>
 <span class="r-in"><span><span class="va">mod_run001</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -289,11 +289,11 @@ estimates of ETA, and covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point estimate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cmin_estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489933</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc    ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019035 -0.4291737 0.1278476</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc   ETA_Ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291733 0.127848</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
