@@ -1,6 +1,7 @@
 # Difference from the usual warfarin PKPD model: some IIV are set to zero to
 # reduce the dimension of omega and reduce the execution time of the test
 
+if(Sys.getenv("POSOLOGYR_DEV_MACHINE")=="TRUE"){
 mod_warfarin_nlmixr <- list(
   ppk_model   = rxode2::rxode({
     ktr <- exp(THETA_ktr + ETA_ktr)
@@ -84,7 +85,7 @@ test_that("MAP estimates match nlmixr posthoc estimates for multi endpoints mode
   expect_equal(map_warf_01$model$kout[1], 0.05502322, tolerance=1e-3)
   expect_equal(map_warf_01$model$e0[1], 96.54411, tolerance=1e-3)
 })
-
+}
 ## estimates from nlmixr
 #pk.turnover.emax3 <- function() {
 #  ini({

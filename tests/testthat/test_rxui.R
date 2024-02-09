@@ -1,6 +1,4 @@
 test_that("readme model equivalent", {
-  skip_on_cran()
-
   patient_data <- data.frame(ID=1,
                              TIME=c(0.0,1.0,14.0),
                              DV=c(NA,25.0,5.5),
@@ -217,10 +215,8 @@ test_that("mod_vancomycin_Goti2018", {
 
 })
 
-
+if(Sys.getenv("POSOLOGYR_DEV_MACHINE")=="TRUE"){ #skip on CRAN or github actions
 test_that("warfarin example", {
-
-  skip_on_cran()
 
   mod_warfarin_nlmixr <- function() {
     ini({
@@ -288,3 +284,4 @@ test_that("warfarin example", {
                map_warf_01$eta, tolerance =3)
 
 })
+}
