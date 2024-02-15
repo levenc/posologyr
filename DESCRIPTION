@@ -5,7 +5,7 @@ Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
            comment = c(ORCID = "0000-0002-0697-4370")),
-    person("Matthew","nfidler",role = c("ctb"),
+    person("Matthew","Fidler",role = c("ctb"),
            email="matthew.fidler@gmail.com",
            comment = c(ORCID = "0000-0001-8538-6691")),
     person("Emmanuelle","Comets",role = c("ctb")),
