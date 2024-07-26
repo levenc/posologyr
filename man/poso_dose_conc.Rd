@@ -11,6 +11,7 @@ poso_dose_conc(
   time_c,
   time_dose = NULL,
   target_conc,
+  cmt_dose = 1,
   endpoint = "Cc",
   estim_method = "map",
   nocb = FALSE,
@@ -45,6 +46,10 @@ optimized.}
 \item{time_dose}{Numeric. Time when the dose is to be given.}
 
 \item{target_conc}{Numeric. Target concentration.}
+
+\item{cmt_dose}{Character or numeric. The compartment in which the dose is
+to be administered. Must match one of the compartments in the prior model.
+Defaults to 1.}
 
 \item{endpoint}{Character. The endpoint of the prior model to be optimised
 for. The default is "Cc", which is the central concentration.}

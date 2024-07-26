@@ -89,6 +89,8 @@ patA_map <- poso_estim_map(dat=df_patientA,
 The individual pharmacokinetic profile can be plotted using the `rxode2` model provided by the `poso_estim_map()` function.
 
 ```{r map_plot_tdm}
+#| fig.alt: >
+#|   Plot of the individual PK profile
 plot(patA_map$model,Cc)
 ```
 

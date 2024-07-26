@@ -124,12 +124,18 @@ simu_patA$model$add.dosing(dose=prior_dose$dose,rate=prior_dose$dose/0.5)
 Plotting the simulated scenario.
 
 ```{r}
+#| fig.alt: >
+#|   Plot of the concentration over time following the selected dosing
 plot(simu_patA$model,Cc)
 ```
 
 The resulting plot can be further augmented with `ggplot2`. For example, by adding an horizontal ribbon showing the 60-80 mg/l target interval of 1 h peak concentration, and a vertical dashed line marking 1 hour.
 
 ```{r prior_plot}
+#| fig.alt: >
+#|   Plot of the concentration over time following the selected dosing
+#|   with an horizontal ribbon showing the 60-80 mg/l target interval of 
+#|   1 h peak concentration, and a vertical dashed line marking 1 hour.
 plot(simu_patA$model,Cc) + 
   ggplot2::ylab("Central concentration") +
   ggplot2::geom_vline(xintercept=1, linetype="dashed") +

@@ -1,3 +1,7 @@
+# posologyr v1.2.4.9000
+
+* The route of administration (i.e. the compartment in which the drug is to be administered) can now be specified in `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()`.
+
 # posologyr v1.2.4
 
 * Add ability to use rxode2 ui models for the `poso_*` functions.  Once the model has been parsed by `rxode2()` with this package the `model$posologyr` gives the list needed for `poso_*` functions

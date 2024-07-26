@@ -1,78 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/a_posteriori_dosing.html</loc>
-  </url>
-  <url>
-    <loc>/articles/a_priori_dosing.html</loc>
-  </url>
-  <url>
-    <loc>/articles/auc_based_dosing.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/multiple_endpoints.html</loc>
-  </url>
-  <url>
-    <loc>/articles/patient_data_input.html</loc>
-  </url>
-  <url>
-    <loc>/articles/posologyr_user_defined_models.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/error_model_comb1.html</loc>
-  </url>
-  <url>
-    <loc>/reference/error_model_comb2.html</loc>
-  </url>
-  <url>
-    <loc>/reference/error_model_mixednm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_dose_auc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_dose_conc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_estim_map.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_estim_mcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_estim_sir.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_inter_cmin.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_simu_pop.html</loc>
-  </url>
-  <url>
-    <loc>/reference/poso_time_cmin.html</loc>
-  </url>
-  <url>
-    <loc>/reference/posologyr_error_lines.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://levenc.github.io/posologyr/404.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/LICENSE.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/a_posteriori_dosing.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/a_priori_dosing.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/auc_based_dosing.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/index.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/multiple_endpoints.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/patient_data_input.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/posologyr_user_defined_models.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/authors.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/index.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/news/index.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/error_model_comb1.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/error_model_comb2.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/error_model_mixednm.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/index.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_dose_auc.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_dose_conc.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_estim_map.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_estim_mcmc.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_estim_sir.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_inter_cmin.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_simu_pop.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/poso_time_cmin.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/posologyr_error_lines.html</loc></url>
 </urlset>
+

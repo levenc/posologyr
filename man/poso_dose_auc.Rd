@@ -11,6 +11,7 @@ poso_dose_auc(
   tdm = FALSE,
   time_auc,
   time_dose = NULL,
+  cmt_dose = 1,
   target_auc,
   estim_method = "map",
   nocb = FALSE,
@@ -49,6 +50,10 @@ When \code{tdm} is set to \code{TRUE} the target AUC is computed from \code{time
 
 \item{time_dose}{Numeric. Time when the dose is to be given. Only used and
 mandatory, when \code{tdm} is set to \code{TRUE}.}
+
+\item{cmt_dose}{Character or numeric. The compartment in which the dose is
+to be administered. Must match one of the compartments in the prior model.
+Defaults to 1.}
 
 \item{target_auc}{Numeric. The target AUC.}
 

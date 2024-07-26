@@ -86,12 +86,16 @@ patB_map <- poso_estim_map(dat=df_patientB,
 The individual pharmacokinetic profile can be plotted using the `rxode2` model provided by the `poso_estim_map()` function.
 
 ```{r}
+#| fig.alt: >
+#|   Plot of the invidual PK profile
 plot(patB_map$model,Cc)
 ```
 
 Using `ggplot2` the observed data points can be added to the plot
 
 ```{r map_plot_tdm}
+#| fig.alt: >
+#|   Plot of the individual PK profile, including the observed data points
 #Get the observations from the patient record
 indiv_obs             <- df_patientB[,c("DV","TIME")]
 names(indiv_obs)      <- c("value","time")

@@ -150,18 +150,19 @@ poso_estim_map(patient_data,mod_run001)
 #> # ℹ 145 more rows
 #> 
 #> $event
-#>      id time  amt evid dur
-#>   1:  1  0.0   NA    0  NA
-#>   2:  1  0.0 2000    1 0.5
-#>   3:  1  0.1   NA    0  NA
-#>   4:  1  0.2   NA    0  NA
-#>   5:  1  0.3   NA    0  NA
-#>  ---                      
-#> 148:  1 14.6   NA    0  NA
-#> 149:  1 14.7   NA    0  NA
-#> 150:  1 14.8   NA    0  NA
-#> 151:  1 14.9   NA    0  NA
-#> 152:  1 15.0   NA    0  NA
+#>         id  time   amt  evid   dur
+#>      <int> <num> <num> <int> <num>
+#>   1:     1   0.0    NA     0    NA
+#>   2:     1   0.0  2000     1   0.5
+#>   3:     1   0.1    NA     0    NA
+#>   4:     1   0.2    NA     0    NA
+#>   5:     1   0.3    NA     0    NA
+#>  ---                              
+#> 148:     1  14.6    NA     0    NA
+#> 149:     1  14.7    NA     0    NA
+#> 150:     1  14.8    NA     0    NA
+#> 151:     1  14.9    NA     0    NA
+#> 152:     1  15.0    NA     0    NA
 ```
 
 The individual profile can be plotted easily
@@ -171,7 +172,7 @@ patient_001 <- poso_estim_map(patient_data,mod_run001)
 plot(patient_001$model,Cc)
 ```
 
-<img src="man/figures/README-map_plot-1.png" width="100%" />
+<img src="man/figures/README-map_plot-1.png" alt="Plot of the individual profile" width="100%" />
 
 Using `ggplot2` the observed data points can be added to the plot
 
@@ -187,7 +188,7 @@ plot(patient_001$model,Cc) +
   ggplot2::geom_point(data=indiv_obs, size= 3, na.rm=TRUE)
 ```
 
-<img src="man/figures/README-map_plot_dv-1.png" width="100%" />
+<img src="man/figures/README-map_plot_dv-1.png" alt="Plot of the individual PK profile with the observed data points" width="100%" />
 
 ## Performance of the MAP-EBE algorithm in posologyr
 

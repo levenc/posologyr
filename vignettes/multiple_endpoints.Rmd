@@ -120,10 +120,14 @@ map_warf_01
 The observation/time curves for both endpoints can also be plotted
 
 ```{r}
+#| fig.alt: >
+#|   Plot of the individual PK profile of warfarin
 plot(map_warf_01$model,"cp")
 ```
 
 
 ```{r}
+#| fig.alt: >
+#|   Plot of the individual PD profile of warfarin
 plot(map_warf_01$model,"pca")
 ```

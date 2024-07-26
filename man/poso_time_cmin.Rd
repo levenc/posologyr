@@ -10,6 +10,7 @@ poso_time_cmin(
   tdm = FALSE,
   target_cmin,
   dose = NULL,
+  cmt_dose = 1,
   endpoint = "Cc",
   estim_method = "map",
   nocb = FALSE,
@@ -48,6 +49,10 @@ ignored.
 
 \item{dose}{Numeric. Dose administered. This argument is ignored if \code{tdm} is
 set to \code{TRUE}.}
+
+\item{cmt_dose}{Character or numeric. The compartment in which the dose is
+to be administered. Must match one of the compartments in the prior model.
+Defaults to 1.}
 
 \item{endpoint}{Character. The endpoint of the prior model to be optimised
 for. The default is "Cc", which is the central concentration.}

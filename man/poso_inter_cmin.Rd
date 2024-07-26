@@ -10,6 +10,7 @@ poso_inter_cmin(
   prior_model = NULL,
   dose,
   target_cmin,
+  cmt_dose = 1,
   endpoint = "Cc",
   estim_method = "map",
   nocb = FALSE,
@@ -31,6 +32,10 @@ model, a list of six objects.}
 \item{dose}{Numeric. The dose given.}
 
 \item{target_cmin}{Numeric. Target trough concentration (Cmin).}
+
+\item{cmt_dose}{Character or numeric. The compartment in which the dose is
+to be administered. Must match one of the compartments in the prior model.
+Defaults to 1.}
 
 \item{endpoint}{Character. The endpoint of the prior model to be optimised
 for. The default is "Cc", which is the central concentration.}

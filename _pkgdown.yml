@@ -1,3 +1,6 @@
+url: https://levenc.github.io/posologyr/
+template:
+  bootstrap: 5
 reference:
 - title: "Dose optimisation functions"
 - contents:

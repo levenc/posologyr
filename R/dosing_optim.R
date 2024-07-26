@@ -42,6 +42,9 @@
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. Dose administered. This argument is ignored if `tdm` is
 #'    set to `TRUE`.
+#' @param cmt_dose Character or numeric. The compartment in which the dose is
+#'    to be administered. Must match one of the compartments in the prior model.
+#'    Defaults to 1.
 #' @param endpoint Character. The endpoint of the prior model to be optimised
 #'    for. The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
@@ -144,7 +147,7 @@
 #'
 #' @export
 poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
-                           target_cmin,dose=NULL,endpoint="Cc",
+                           target_cmin,dose=NULL,cmt_dose=1,endpoint="Cc",
                            estim_method="map",nocb=FALSE,p=NULL,
                            greater_than=TRUE,from=0.2,last_time=72,
                            add_dose=NULL,interdose_interval=NULL,
@@ -232,7 +235,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
     #simulation of the individual scenario
     # create an event table with the required number of administrations
     if (!is.null(add_dose)){ #more than one dose is needed
-      event_table_cmin <- rxode2::et(amt=dose,dur=duration,
+      event_table_cmin <- rxode2::et(amt=dose,dur=duration,cmt=cmt_dose,
                                      ii=interdose_interval,
                                      addl=add_dose)
       time_last_dose   <- add_dose*interdose_interval
@@ -242,7 +245,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                                         by=0.1))
     }
     else { #only one dose is needed: simulation of a single administration
-      event_table_cmin <- rxode2::et(amt=dose,dur=duration)
+      event_table_cmin <- rxode2::et(amt=dose,dur=duration,cmt=cmt_dose)
       event_table_cmin$add.sampling(seq(from,last_time,by=0.1))
       time_last_dose   <- 0
     }
@@ -342,6 +345,9 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'    `time_dose` + `time_auc` instead.
 #' @param time_dose Numeric. Time when the dose is to be given. Only used and
 #'    mandatory, when `tdm` is set to `TRUE`.
+#' @param cmt_dose Character or numeric. The compartment in which the dose is
+#'    to be administered. Must match one of the compartments in the prior model.
+#'    Defaults to 1.
 #' @param target_auc Numeric. The target AUC.
 #' @param estim_method A character string. An estimation method to be used for
 #'    the individual parameters. The default method "map" is the Maximum A
@@ -438,7 +444,7 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'
 #' @export
 poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
-                          time_auc,time_dose=NULL,target_auc,
+                          time_auc,time_dose=NULL,cmt_dose=1,target_auc,
                           estim_method="map",nocb=FALSE,
                           p=NULL,greater_than=TRUE,starting_time=0,
                           interdose_interval=NULL,add_dose=NULL,
@@ -513,10 +519,10 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
       #New dose at time_dose in the extended_et
       # Shorter syntax with "list" allows for setting several variable at once
       extended_et[dose_and_start[1],
-                  c("evid","amt","dur"):=list(1,dose,duration)]
+                  c("evid","amt","cmt","dur"):=list(1,dose,cmt_dose,duration)]
       #New observation at time_dose and ending_time
-      extended_et[dose_and_start[2],c("evid","amt","dur"):=list(0,NA,NA)]
-      extended_et[time==ending_time,c("evid","amt","dur"):=list(0,NA,NA)]
+      extended_et[dose_and_start[2],c("evid","amt","cmt","dur"):=list(0,NA,NA,NA)]
+      extended_et[time==ending_time,c("evid","amt","cmt","dur"):=list(0,NA,NA,NA)]
       #Solve the model with the extended et
       auc_ppk_model <- rxode2::rxSolve(prior_model$ppk_model,extended_et,
                                          c(prior_model$theta,auc_map$eta),
@@ -568,11 +574,11 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 
       #compute the individual time-concentration profile
       if (!is.null(add_dose)){
-        event_table_auc <- rxode2::et(amt=dose,dur=duration,
+        event_table_auc <- rxode2::et(amt=dose,dur=duration,cmt=cmt_dose,
                                       ii=interdose_interval,
                                       addl=add_dose)
       } else {
-        event_table_auc <- rxode2::et(amt=dose,dur=duration)
+        event_table_auc <- rxode2::et(amt=dose,dur=duration,cmt=cmt_dose)
       }
 
       event_table_auc$add.sampling(starting_time)
@@ -665,6 +671,9 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'     optimized.
 #' @param time_dose Numeric. Time when the dose is to be given.
 #' @param target_conc Numeric. Target concentration.
+#' @param cmt_dose Character or numeric. The compartment in which the dose is
+#'    to be administered. Must match one of the compartments in the prior model.
+#'    Defaults to 1.
 #' @param endpoint Character. The endpoint of the prior model to be optimised
 #'    for. The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
@@ -762,8 +771,8 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'
 #' @export
 poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
-                           time_c,time_dose=NULL,target_conc,endpoint="Cc",
-                           estim_method="map",nocb=FALSE,p=NULL,
+                           time_c,time_dose=NULL,target_conc,cmt_dose=1,
+                           endpoint="Cc",estim_method="map",nocb=FALSE,p=NULL,
                            greater_than=TRUE,starting_dose=100,
                            interdose_interval=NULL,add_dose=NULL,duration=0,
                            indiv_param=NULL){
@@ -828,9 +837,10 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
                              extended_et,nocb){
       #New dose at time_dose in the extended_et
       # Shorter syntax with "list" allows for setting several variable at once
-      extended_et[time==time_dose,c("evid","amt","dur"):=list(1,dose,duration)]
+      extended_et[time==time_dose,
+                  c("evid","amt","cmt","dur"):=list(1,dose,cmt_dose,duration)]
       #New observation at time_c
-      extended_et[time==time_c,c("evid","amt","dur"):=list(0,NA,NA)]
+      extended_et[time==time_c,c("evid","amt","cmt","dur"):=list(0,NA,NA,NA)]
       #Solve the model with the extended et
       ctime_ppk_model <- rxode2::rxSolve(prior_model$ppk_model,extended_et,
                                          c(prior_model$theta,ctime_map$eta),
@@ -880,12 +890,12 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 
       #compute the individual time-concentration profile
       if (!is.null(add_dose)){
-        event_table_ctime <- rxode2::et(amt=dose,dur=duration,
+        event_table_ctime <- rxode2::et(amt=dose,dur=duration,cmt=cmt_dose,
                                         ii=interdose_interval,
                                         addl=add_dose)
       }
       else {
-        event_table_ctime <- rxode2::et(amt=dose,dur=duration)
+        event_table_ctime <- rxode2::et(amt=dose,dur=duration,cmt=cmt_dose)
       }
       event_table_ctime$add.sampling(time_c)
 
@@ -958,6 +968,9 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'    model, a list of six objects.
 #' @param target_cmin Numeric. Target trough concentration (Cmin).
 #' @param dose Numeric. The dose given.
+#' @param cmt_dose Character or numeric. The compartment in which the dose is
+#'    to be administered. Must match one of the compartments in the prior model.
+#'    Defaults to 1.
 #' @param endpoint Character. The endpoint of the prior model to be optimised
 #'    for. The default is "Cc", which is the central concentration.
 #' @param estim_method A character string. An estimation method to be used for
@@ -1048,9 +1061,10 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'
 #' @export
 poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
-                            endpoint="Cc",estim_method="map",nocb=FALSE,p=NULL,
-                            greater_than=TRUE,starting_interval=12,add_dose=10,
-                            duration=0,indiv_param=NULL){
+                            cmt_dose=1,endpoint="Cc",estim_method="map",
+                            nocb=FALSE,p=NULL,greater_than=TRUE,
+                            starting_interval=12,add_dose=10,duration=0,
+                            indiv_param=NULL){
 
   prior_model <- get_prior_model(prior_model)
 
@@ -1071,7 +1085,7 @@ poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
                         prior_model,add_dose,duration=duration,
                         indiv_param){
     #compute the individual time-concentration profile
-    event_table_cmin <- rxode2::et(amt=dose,dur=duration,
+    event_table_cmin <- rxode2::et(amt=dose,dur=duration,cmt=cmt_dose,
                                   ii=interdose_interval,
                                   addl=add_dose)
     event_table_cmin$add.sampling(interdose_interval*add_dose-0.1)

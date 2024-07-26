@@ -125,6 +125,8 @@ poso_estim_map(patient_data,mod_run001)
 The individual profile can be plotted easily
 
 ```{r map_plot}
+#| fig.alt: >
+#|   Plot of the individual profile
 patient_001 <- poso_estim_map(patient_data,mod_run001)
 plot(patient_001$model,Cc)
 ```
@@ -132,6 +134,8 @@ plot(patient_001$model,Cc)
 Using `ggplot2` the observed data points can be added to the plot
 
 ```{r map_plot_dv}
+#| fig.alt: >
+#|   Plot of the individual PK profile with the observed data points
 # get the observations from the data
 indiv_obs           <- patient_data[,c("DV","TIME")]
 
