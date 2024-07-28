@@ -8,7 +8,7 @@ articles:
   multiple_endpoints: multiple_endpoints.html
   patient_data_input: patient_data_input.html
   posologyr_user_defined_models: posologyr_user_defined_models.html
-last_built: 2024-07-26T13:46Z
+last_built: 2024-07-28T19:08Z
 urls:
   reference: https://levenc.github.io/posologyr/reference
   article: https://levenc.github.io/posologyr/articles

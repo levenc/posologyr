@@ -90,9 +90,7 @@
 <p>Individual pharmacokinetic (PK) profiles can be estimated with or without data from therapeutic drug monitoring (TDM):</p>
 <ul>
 <li>
-<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> computes the Maximum A Posteriori (MAP), aka Empirical Bayes Estimates (EBE), of individual PK parameters from the results of TDM</li>
-<li>
-<code><a href="reference/poso_estim_sir.html">poso_estim_sir()</a></code> estimates the full posterior distributions of individual PK parameters by Sequential Importance Resampling (SIR) from the results of TDM</li>
+<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> computes the Maximum A Posteriori Bayesian Estimates(MAP-BE) of the individual PK parameters from the results of TDM</li>
 <li>
 <code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> samples from the the a priori distributions of PK parameters</li>
 </ul>
@@ -110,110 +108,122 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"levenc/posologyr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example-of-map-ebe-estimation">Example of MAP-EBE estimation<a class="anchor" aria-label="anchor" href="#example-of-map-ebe-estimation"></a>
+<h2 id="bayesian-dosing-example">Bayesian dosing example<a class="anchor" aria-label="anchor" href="#bayesian-dosing-example"></a>
 </h2>
-<p><code>posologyr</code> allows the adaptation of dosage from two elements: a data set, and a prior population PK model.</p>
+<p>To determine the optimal dose of gentamicin for a patient with <code>posologyr</code>, you will need:</p>
+<ol style="list-style-type: decimal">
+<li>A prior PK model, written in <code>rxode2</code> mini-language</li>
+</ol>
+<p>In this example, a gentamicin PK from the literature <a href="doi:10.1016/j.ijantimicag.2003.07.010" class="uri">doi:10.1016/j.ijantimicag.2003.07.010</a></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://levenc.github.io/posologyr/">"posologyr"</a></span><span class="op">)</span></span></code></pre></div>
-<p>Data for input into <code>posologyr</code> is the same type of data input for rxode2, see <code><a href="articles/patient_data_input.html">vignette("patient_data_input")</a></code> for minimal examples.</p>
+<code class="sourceCode R"><span><span class="va">mod_gentamicin_Xuan2003</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="va">THETA_Cl</span>  <span class="op">=</span> <span class="fl">0.047</span></span>
+<span>    <span class="va">THETA_V</span>   <span class="op">=</span> <span class="fl">0.28</span></span>
+<span>    <span class="va">THETA_k12</span> <span class="op">=</span> <span class="fl">0.092</span></span>
+<span>    <span class="va">THETA_k21</span> <span class="op">=</span> <span class="fl">0.071</span></span>
+<span>    <span class="va">ETA_Cl</span>  <span class="op">~</span> <span class="fl">0.084</span></span>
+<span>    <span class="va">ETA_V</span>   <span class="op">~</span> <span class="fl">0.003</span></span>
+<span>    <span class="va">ETA_k12</span> <span class="op">~</span> <span class="fl">0.398</span></span>
+<span>    <span class="va">ETA_k21</span> <span class="op">~</span> <span class="fl">0.342</span></span>
+<span>    <span class="va">add_sd</span>  <span class="op">&lt;-</span> <span class="fl">0.230</span></span>
+<span>    <span class="va">prop_sd</span> <span class="op">&lt;-</span> <span class="fl">0.237</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="fu">model</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="va">TVl</span>   <span class="op">=</span> <span class="va">THETA_Cl</span><span class="op">*</span><span class="va">ClCr</span></span>
+<span>    <span class="va">TVV</span>   <span class="op">=</span> <span class="va">THETA_V</span><span class="op">*</span><span class="va">WT</span></span>
+<span>    <span class="va">TVk12</span> <span class="op">=</span> <span class="va">THETA_k12</span></span>
+<span>    <span class="va">TVk21</span> <span class="op">=</span> <span class="va">THETA_k21</span></span>
+<span>    </span>
+<span>    <span class="va">Cl</span>    <span class="op">=</span> <span class="va">TVl</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Cl</span><span class="op">)</span></span>
+<span>    <span class="va">V</span>     <span class="op">=</span> <span class="va">TVV</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_V</span><span class="op">)</span></span>
+<span>    <span class="va">k12</span>   <span class="op">=</span> <span class="va">TVk12</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_k12</span><span class="op">)</span></span>
+<span>    <span class="va">k21</span>   <span class="op">=</span> <span class="va">TVk21</span> <span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_k21</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="va">ke</span>    <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">V</span></span>
+<span>    <span class="va">Cp</span>    <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">V</span></span>
+<span>    </span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span></span>
+<span></span>
+<span>    <span class="va">Cp</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">add_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">combined1</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>A table of the patient’s TDM data, in a format similar to the data for NONMEM</li>
+</ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patient_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,</span>
-<span>                           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,</span>
-<span>                           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,</span>
-<span>                           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,</span>
+<span>                           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">11.0</span><span class="op">)</span>,</span>
+<span>                           DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">9</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span>                           AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">180</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,</span>
 <span>                           DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>,</span>
 <span>                           EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,</span>
-<span>                           CLCREAT<span class="op">=</span><span class="fl">80</span>,</span>
-<span>                           WT<span class="op">=</span><span class="fl">65</span><span class="op">)</span></span></code></pre></div>
-<p>A <code>posologyr</code> prior ppk model is a named R list. Its structure is described in <code><a href="articles/posologyr_user_defined_models.html">vignette("posologyr_user_defined_models")</a></code>.</p>
+<span>                           ClCr<span class="op">=</span><span class="fl">38</span>,</span>
+<span>                           WT<span class="op">=</span><span class="fl">63</span><span class="op">)</span></span>
+<span><span class="va">patient_data</span></span>
+<span><span class="co">#&gt;   ID TIME DV AMT DUR EVID ClCr WT</span></span>
+<span><span class="co">#&gt; 1  1    0 NA 180 0.5    1   38 63</span></span>
+<span><span class="co">#&gt; 2  1    1  9   0  NA    0   38 63</span></span>
+<span><span class="co">#&gt; 3  1   11  2   0  NA    0   38 63</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="individual-pk-profile">Individual PK profile<a class="anchor" aria-label="anchor" href="#individual-pk-profile"></a>
+</h3>
+<p>With these two elements, you can estimate and plot and the individual concentrations over time.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mod_run001</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>ppk_model <span class="op">=</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="va">TVCl</span> <span class="op">=</span> <span class="va">THETA_Cl</span>;</span>
-<span>  <span class="va">TVVc</span> <span class="op">=</span> <span class="va">THETA_Vc</span>;</span>
-<span>  <span class="va">TVKa</span> <span class="op">=</span> <span class="va">THETA_Ka</span>;</span>
-<span></span>
-<span>  <span class="va">Cl</span> <span class="op">=</span> <span class="va">TVCl</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Cl</span><span class="op">)</span>;</span>
-<span>  <span class="va">Vc</span> <span class="op">=</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span>;</span>
-<span>  <span class="va">Ka</span> <span class="op">=</span> <span class="va">TVKa</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Ka</span><span class="op">)</span>;</span>
-<span></span>
-<span>  <span class="va">K20</span> <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span>;</span>
-<span>  <span class="va">Cc</span> <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span>;</span>
-<span></span>
-<span>  <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">depot</span><span class="op">)</span> <span class="op">=</span> <span class="op">-</span><span class="va">Ka</span><span class="op">*</span><span class="va">depot</span>;</span>
-<span>  <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span> <span class="op">=</span> <span class="va">Ka</span><span class="op">*</span><span class="va">depot</span> <span class="op">-</span> <span class="va">K20</span><span class="op">*</span><span class="va">centr</span>;</span>
-<span>  <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span> <span class="op">=</span> <span class="va">Cc</span>;</span>
-<span><span class="op">}</span><span class="op">)</span>,</span>
-<span>error_model <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>,<span class="va">sigma</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">dv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">f</span>,<span class="fl">1</span><span class="op">)</span></span>
-<span>  <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">dv</span><span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span><span class="va">sigma</span><span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">dv</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span>,</span>
-<span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.0</span>, THETA_Vc<span class="op">=</span><span class="fl">70.0</span>, THETA_Ka<span class="op">=</span><span class="fl">1.0</span><span class="op">)</span>,</span>
-<span>omega <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Ka</span> <span class="op">~</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>,</span>
-<span>      <span class="fl">0</span>, <span class="fl">0.2</span>,</span>
-<span>      <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,</span>
-<span>sigma <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">prop</span> <span class="op">+</span> <span class="va">add</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>,<span class="fl">0.0</span>,<span class="fl">0.00</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span></code></pre></div>
-<p>With these two elements, one can estimate the patient’s MAP-EBE PK parameters, and the individual concentrations over time.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://levenc.github.io/posologyr/">"posologyr"</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_run001</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $eta</span></span>
-<span><span class="co">#&gt;     ETA_Cl     ETA_Vc     ETA_Ka </span></span>
-<span><span class="co">#&gt;  0.6019038 -0.4291736  0.1278476 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $model</span></span>
-<span><span class="co">#&gt; ── Solved rxode2 object ──</span></span>
-<span><span class="co">#&gt; ── Parameters ($params): ──</span></span>
-<span><span class="co">#&gt;   THETA_Cl   THETA_Vc   THETA_Ka     ETA_Cl     ETA_Vc     ETA_Ka </span></span>
-<span><span class="co">#&gt;  4.0000000 70.0000000  1.0000000  0.6019038 -0.4291736  0.1278476 </span></span>
-<span><span class="co">#&gt; ── Initial Conditions ($inits): ──</span></span>
-<span><span class="co">#&gt; depot centr   AUC </span></span>
-<span><span class="co">#&gt;     0     0     0 </span></span>
-<span><span class="co">#&gt; ── First part of data (object): ──</span></span>
-<span><span class="co">#&gt; # A tibble: 151 × 12</span></span>
-<span><span class="co">#&gt;    time  TVCl  TVVc  TVKa    Cl    Vc    Ka   K20     Cc depot centr    AUC</span></span>
-<span><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1   0       4    70     1  7.30  45.6  1.14 0.160  0        0    0   0     </span></span>
-<span><span class="co">#&gt; 2   0.1     4    70     1  7.30  45.6  1.14 0.160  0.478  378.  21.8 0.0161</span></span>
-<span><span class="co">#&gt; 3   0.2     4    70     1  7.30  45.6  1.14 0.160  1.83   716.  83.5 0.125 </span></span>
-<span><span class="co">#&gt; 4   0.3     4    70     1  7.30  45.6  1.14 0.160  3.95  1017. 180.  0.408 </span></span>
-<span><span class="co">#&gt; 5   0.4     4    70     1  7.30  45.6  1.14 0.160  6.75  1286. 307.  0.938 </span></span>
-<span><span class="co">#&gt; 6   0.5     4    70     1  7.30  45.6  1.14 0.160 10.1   1526. 461.  1.78  </span></span>
-<span><span class="co">#&gt; # ℹ 145 more rows</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $event</span></span>
-<span><span class="co">#&gt;         id  time   amt  evid   dur</span></span>
-<span><span class="co">#&gt;      &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;int&gt; &lt;num&gt;</span></span>
-<span><span class="co">#&gt;   1:     1   0.0    NA     0    NA</span></span>
-<span><span class="co">#&gt;   2:     1   0.0  2000     1   0.5</span></span>
-<span><span class="co">#&gt;   3:     1   0.1    NA     0    NA</span></span>
-<span><span class="co">#&gt;   4:     1   0.2    NA     0    NA</span></span>
-<span><span class="co">#&gt;   5:     1   0.3    NA     0    NA</span></span>
-<span><span class="co">#&gt;  ---                              </span></span>
-<span><span class="co">#&gt; 148:     1  14.6    NA     0    NA</span></span>
-<span><span class="co">#&gt; 149:     1  14.7    NA     0    NA</span></span>
-<span><span class="co">#&gt; 150:     1  14.8    NA     0    NA</span></span>
-<span><span class="co">#&gt; 151:     1  14.9    NA     0    NA</span></span>
-<span><span class="co">#&gt; 152:     1  15.0    NA     0    NA</span></span></code></pre></div>
-<p>The individual profile can be plotted easily</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">patient_001</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_run001</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">patient_001</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">patient_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">patient_map</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-map_plot-1.png" alt="Plot of the individual profile" width="100%"></p>
-<p>Using <code>ggplot2</code> the observed data points can be added to the plot</p>
+</div>
+<div class="section level3">
+<h3 id="dose-optimization">Dose optimization<a class="anchor" aria-label="anchor" href="#dose-optimization"></a>
+</h3>
+<p>We will optimize the gentamicin dosage for this patient to meet two criteria:</p>
+<ul>
+<li>A peak concentration of 35 mg/L, 30 minutes after a 30-minute infusion.</li>
+<li>A trough concentration of less than 0.5 mg/L.</li>
+</ul>
+<p>The time required to reach a residual concentration of 0.5 mg/L can be estimated as follows</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>               target_cmin <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $time</span></span>
+<span><span class="co">#&gt; [1] 44.9</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $type_of_estimate</span></span>
+<span><span class="co">#&gt; [1] "point estimate"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cmin_estimate</span></span>
+<span><span class="co">#&gt; [1] 0.4991313</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $indiv_param</span></span>
+<span><span class="co">#&gt;   THETA_Cl THETA_V THETA_k12 THETA_k21 add_sd prop_sd     ETA_Cl       ETA_V</span></span>
+<span><span class="co">#&gt; 3    0.047    0.28     0.092     0.071   0.23   0.237 0.03701064 0.001447308</span></span>
+<span><span class="co">#&gt;      ETA_k12     ETA_k21 ClCr WT</span></span>
+<span><span class="co">#&gt; 3 0.08904703 -0.04838898   38 63</span></span></code></pre></div>
+<p>The dose required to achieve our target concentration can then be determined for an infusion at H48</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># get the observations from the data</span></span>
-<span><span class="va">indiv_obs</span>           <span class="op">&lt;-</span> <span class="va">patient_data</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DV"</span>,<span class="st">"TIME"</span><span class="op">)</span><span class="op">]</span></span>
-<span></span>
-<span><span class="co"># set the names to match the names in the rxode2 model</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">indiv_obs</span><span class="op">)</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"value"</span>,<span class="st">"time"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># call ggplot2</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">patient_001</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">indiv_obs</span>, size<span class="op">=</span> <span class="fl">3</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-map_plot_dv-1.png" alt="Plot of the individual PK profile with the observed data points" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>               target_conc <span class="op">=</span> <span class="fl">35</span>,time_dose <span class="op">=</span> <span class="fl">48</span>,time_c <span class="op">=</span> <span class="fl">49</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $dose</span></span>
+<span><span class="co">#&gt; [1] 747.0631</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $type_of_estimate</span></span>
+<span><span class="co">#&gt; [1] "point estimate"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $conc_estimate</span></span>
+<span><span class="co">#&gt; [1] 35</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $indiv_param</span></span>
+<span><span class="co">#&gt;   THETA_Cl THETA_V THETA_k12 THETA_k21 add_sd prop_sd     ETA_Cl       ETA_V</span></span>
+<span><span class="co">#&gt; 3    0.047    0.28     0.092     0.071   0.23   0.237 0.03701052 0.001447305</span></span>
+<span><span class="co">#&gt;      ETA_k12     ETA_k21 ClCr WT</span></span>
+<span><span class="co">#&gt; 3 0.08904752 -0.04838936   38 63</span></span></code></pre></div>
+<p>In conclusion, to meet our 2 criteria, a dose of 760 mg 48 h after the first injection would be appropriate.</p>
+<p>More examples can be found at: <a href="https://levenc.github.io/posologyr/" class="uri">https://levenc.github.io/posologyr/</a></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="performance-of-the-map-ebe-algorithm-in-posologyr">Performance of the MAP-EBE algorithm in posologyr<a class="anchor" aria-label="anchor" href="#performance-of-the-map-ebe-algorithm-in-posologyr"></a>

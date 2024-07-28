@@ -33,12 +33,9 @@ determine the optimal dosing.
 Individual pharmacokinetic (PK) profiles can be estimated with or
 without data from therapeutic drug monitoring (TDM):
 
-- `poso_estim_map()` computes the Maximum A Posteriori (MAP), aka
-  Empirical Bayes Estimates (EBE), of individual PK parameters from the
-  results of TDM
-- `poso_estim_sir()` estimates the full posterior distributions of
-  individual PK parameters by Sequential Importance Resampling (SIR)
-  from the results of TDM
+- `poso_estim_map()` computes the Maximum A Posteriori Bayesian
+  Estimates(MAP-BE) of the individual PK parameters from the results of
+  TDM
 - `poso_simu_pop()` samples from the the a priori distributions of PK
   parameters
 
@@ -62,133 +59,144 @@ You can install the development version of `posologyr` from
 remotes::install_github("levenc/posologyr")
 ```
 
-## Example of MAP-EBE estimation
+## Bayesian dosing example
 
-`posologyr` allows the adaptation of dosage from two elements: a data
-set, and a prior population PK model.
+To determine the optimal dose of gentamicin for a patient with
+`posologyr`, you will need:
+
+1.  A prior PK model, written in `rxode2` mini-language
+
+In this example, a gentamicin PK from the literature
+<doi:10.1016/j.ijantimicag.2003.07.010>
+
+``` r
+mod_gentamicin_Xuan2003 <- function() {
+  ini({
+    THETA_Cl  = 0.047
+    THETA_V   = 0.28
+    THETA_k12 = 0.092
+    THETA_k21 = 0.071
+    ETA_Cl  ~ 0.084
+    ETA_V   ~ 0.003
+    ETA_k12 ~ 0.398
+    ETA_k21 ~ 0.342
+    add_sd  <- 0.230
+    prop_sd <- 0.237
+  })
+  model({
+    TVl   = THETA_Cl*ClCr
+    TVV   = THETA_V*WT
+    TVk12 = THETA_k12
+    TVk21 = THETA_k21
+    
+    Cl    = TVl*exp(ETA_Cl)
+    V     = TVV*exp(ETA_V)
+    k12   = TVk12*exp(ETA_k12)
+    k21   = TVk21 *exp(ETA_k21)
+    
+    ke    = Cl/V
+    Cp    = centr/V
+    
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph
+    d/dt(periph) =            + k12*centr - k21*periph
+
+    Cp ~ add(add_sd) + prop(prop_sd) + combined1()
+  })
+}
+```
+
+2.  A table of the patient’s TDM data, in a format similar to the data
+    for NONMEM
+
+``` r
+patient_data <- data.frame(ID=1,
+                           TIME=c(0.0,1.0,11.0),
+                           DV=c(NA,9,2),
+                           AMT=c(180,0,0),
+                           DUR=c(0.5,NA,NA),
+                           EVID=c(1,0,0),
+                           ClCr=38,
+                           WT=63)
+patient_data
+#>   ID TIME DV AMT DUR EVID ClCr WT
+#> 1  1    0 NA 180 0.5    1   38 63
+#> 2  1    1  9   0  NA    0   38 63
+#> 3  1   11  2   0  NA    0   38 63
+```
+
+### Individual PK profile
+
+With these two elements, you can estimate and plot and the individual
+concentrations over time.
 
 ``` r
 library("posologyr")
 ```
 
-Data for input into `posologyr` is the same type of data input for
-rxode2, see `vignette("patient_data_input")` for minimal examples.
-
 ``` r
-patient_data <- data.frame(ID=1,
-                           TIME=c(0.0,1.0,14.0),
-                           DV=c(NA,25.0,5.5),
-                           AMT=c(2000,0,0),
-                           DUR=c(0.5,NA,NA),
-                           EVID=c(1,0,0),
-                           CLCREAT=80,
-                           WT=65)
-```
-
-A `posologyr` prior ppk model is a named R list. Its structure is
-described in `vignette("posologyr_user_defined_models")`.
-
-``` r
-mod_run001 <- list(
-ppk_model = rxode2::rxode({
-  TVCl = THETA_Cl;
-  TVVc = THETA_Vc;
-  TVKa = THETA_Ka;
-
-  Cl = TVCl*exp(ETA_Cl);
-  Vc = TVVc*exp(ETA_Vc);
-  Ka = TVKa*exp(ETA_Ka);
-
-  K20 = Cl/Vc;
-  Cc = centr/Vc;
-
-  d/dt(depot) = -Ka*depot;
-  d/dt(centr) = Ka*depot - K20*centr;
-  d/dt(AUC) = Cc;
-}),
-error_model = function(f,sigma) {
-  dv <- cbind(f,1)
-  g <- diag(dv%*%sigma%*%t(dv))
-  return(sqrt(g))
-},
-theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
-omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
-    c(0.2,
-      0, 0.2,
-      0, 0, 0.2)}),
-sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
-#> using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’
-```
-
-With these two elements, one can estimate the patient’s MAP-EBE PK
-parameters, and the individual concentrations over time.
-
-``` r
-poso_estim_map(patient_data,mod_run001)
-#> $eta
-#>     ETA_Cl     ETA_Vc     ETA_Ka 
-#>  0.6019038 -0.4291736  0.1278476 
-#> 
-#> $model
-#> ── Solved rxode2 object ──
-#> ── Parameters ($params): ──
-#>   THETA_Cl   THETA_Vc   THETA_Ka     ETA_Cl     ETA_Vc     ETA_Ka 
-#>  4.0000000 70.0000000  1.0000000  0.6019038 -0.4291736  0.1278476 
-#> ── Initial Conditions ($inits): ──
-#> depot centr   AUC 
-#>     0     0     0 
-#> ── First part of data (object): ──
-#> # A tibble: 151 × 12
-#>    time  TVCl  TVVc  TVKa    Cl    Vc    Ka   K20     Cc depot centr    AUC
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>
-#> 1   0       4    70     1  7.30  45.6  1.14 0.160  0        0    0   0     
-#> 2   0.1     4    70     1  7.30  45.6  1.14 0.160  0.478  378.  21.8 0.0161
-#> 3   0.2     4    70     1  7.30  45.6  1.14 0.160  1.83   716.  83.5 0.125 
-#> 4   0.3     4    70     1  7.30  45.6  1.14 0.160  3.95  1017. 180.  0.408 
-#> 5   0.4     4    70     1  7.30  45.6  1.14 0.160  6.75  1286. 307.  0.938 
-#> 6   0.5     4    70     1  7.30  45.6  1.14 0.160 10.1   1526. 461.  1.78  
-#> # ℹ 145 more rows
-#> 
-#> $event
-#>         id  time   amt  evid   dur
-#>      <int> <num> <num> <int> <num>
-#>   1:     1   0.0    NA     0    NA
-#>   2:     1   0.0  2000     1   0.5
-#>   3:     1   0.1    NA     0    NA
-#>   4:     1   0.2    NA     0    NA
-#>   5:     1   0.3    NA     0    NA
-#>  ---                              
-#> 148:     1  14.6    NA     0    NA
-#> 149:     1  14.7    NA     0    NA
-#> 150:     1  14.8    NA     0    NA
-#> 151:     1  14.9    NA     0    NA
-#> 152:     1  15.0    NA     0    NA
-```
-
-The individual profile can be plotted easily
-
-``` r
-patient_001 <- poso_estim_map(patient_data,mod_run001)
-plot(patient_001$model,Cc)
+patient_map <- poso_estim_map(patient_data,mod_gentamicin_Xuan2003)
+plot(patient_map$model,Cc)
 ```
 
 <img src="man/figures/README-map_plot-1.png" alt="Plot of the individual profile" width="100%" />
 
-Using `ggplot2` the observed data points can be added to the plot
+### Dose optimization
+
+We will optimize the gentamicin dosage for this patient to meet two
+criteria:
+
+- A peak concentration of 35 mg/L, 30 minutes after a 30-minute
+  infusion.
+- A trough concentration of less than 0.5 mg/L.
+
+The time required to reach a residual concentration of 0.5 mg/L can be
+estimated as follows
 
 ``` r
-# get the observations from the data
-indiv_obs           <- patient_data[,c("DV","TIME")]
-
-# set the names to match the names in the rxode2 model
-names(indiv_obs)    <- c("value","time")
-
-# call ggplot2
-plot(patient_001$model,Cc) +
-  ggplot2::geom_point(data=indiv_obs, size= 3, na.rm=TRUE)
+poso_time_cmin(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
+               target_cmin = 0.5)
+#> $time
+#> [1] 44.9
+#> 
+#> $type_of_estimate
+#> [1] "point estimate"
+#> 
+#> $cmin_estimate
+#> [1] 0.4991313
+#> 
+#> $indiv_param
+#>   THETA_Cl THETA_V THETA_k12 THETA_k21 add_sd prop_sd     ETA_Cl       ETA_V
+#> 3    0.047    0.28     0.092     0.071   0.23   0.237 0.03701064 0.001447308
+#>      ETA_k12     ETA_k21 ClCr WT
+#> 3 0.08904703 -0.04838898   38 63
 ```
 
-<img src="man/figures/README-map_plot_dv-1.png" alt="Plot of the individual PK profile with the observed data points" width="100%" />
+The dose required to achieve our target concentration can then be
+determined for an infusion at H48
+
+``` r
+poso_dose_conc(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
+               target_conc = 35,time_dose = 48,time_c = 49)
+#> $dose
+#> [1] 747.0631
+#> 
+#> $type_of_estimate
+#> [1] "point estimate"
+#> 
+#> $conc_estimate
+#> [1] 35
+#> 
+#> $indiv_param
+#>   THETA_Cl THETA_V THETA_k12 THETA_k21 add_sd prop_sd     ETA_Cl       ETA_V
+#> 3    0.047    0.28     0.092     0.071   0.23   0.237 0.03701052 0.001447305
+#>      ETA_k12     ETA_k21 ClCr WT
+#> 3 0.08904752 -0.04838936   38 63
+```
+
+In conclusion, to meet our 2 criteria, a dose of 760 mg 48 h after the
+first injection would be appropriate.
+
+More examples can be found at: <https://levenc.github.io/posologyr/>
 
 ## Performance of the MAP-EBE algorithm in posologyr
 
