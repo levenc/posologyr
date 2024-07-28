@@ -35,7 +35,7 @@ therapeutic drug monitoring, or TDM) and a population pharmacokinetic model, `po
 
 Individual pharmacokinetic (PK) profiles can be estimated with or without data from therapeutic drug monitoring (TDM):
 
-+ `poso_estim_map()` computes the Maximum A Posteriori Bayesian Estimates(MAP-BE) of the individual PK parameters from the results of TDM
++ `poso_estim_map()` computes the Maximum A Posteriori Bayesian Estimates (MAP-BE) of the individual PK parameters from the results of TDM
 + `poso_simu_pop()` samples from the the a priori distributions of PK parameters
 
 `posologyr` takes advantage of the simulation framework provided by the
@@ -139,25 +139,25 @@ We will optimize the gentamicin dosage for this patient to meet two criteria:
 + A peak concentration of 35 mg/L, 30 minutes after a 30-minute infusion.
 + A trough concentration of less than 0.5 mg/L.
 
-The time required to reach a residual concentration of 0.5 mg/L can be estimated as follows
+The time required to reach a residual concentration of 0.5 mg/L can be estimated as follows:
 
 ```{r}
 poso_time_cmin(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
                target_cmin = 0.5)
 ```
 
-The dose required to achieve our target concentration can then be determined for an infusion at H48
+The dose required to achieve our target concentration can then be determined for an infusion at H48.
 
 ```{r}
 poso_dose_conc(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
                target_conc = 35,time_dose = 48,time_c = 49)
 ```
 
-In conclusion, to meet our 2 criteria, a dose of 760 mg 48 h after the first injection would be appropriate.
+In conclusion a dose of 760 mg 48 h after the first injection would be appropriate to meet our 2 criteria.
 
 More examples can be found at: https://levenc.github.io/posologyr/
 
-## Performance of the MAP-EBE algorithm in posologyr
+## Performance of the MAP-BE algorithm in posologyr
 `posologyr` showed comparable performance to NONMEM MAP estimation with option `MAXEVAL=0`:
 
 * Pharmaceutics **2022**, 14(2), 442; [doi:10.3390/pharmaceutics14020442](https://doi.org/10.3390/pharmaceutics14020442)

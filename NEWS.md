@@ -5,6 +5,7 @@
 
 ## Documentation
 * The README illustrates a simple example of dose adaptation
+* `vignette("route_of_administration")` shows how to select a route of administration for optimal dosing
 
 # posologyr v1.2.4
 

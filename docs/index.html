@@ -48,6 +48,7 @@
     <li><a class="dropdown-item" href="articles/multiple_endpoints.html">Multiple endpoints</a></li>
     <li><a class="dropdown-item" href="articles/patient_data_input.html">Patient data input</a></li>
     <li><a class="dropdown-item" href="articles/posologyr_user_defined_models.html">User defined models</a></li>
+    <li><a class="dropdown-item" href="articles/route_of_administration.html">Route of administration</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -90,7 +91,7 @@
 <p>Individual pharmacokinetic (PK) profiles can be estimated with or without data from therapeutic drug monitoring (TDM):</p>
 <ul>
 <li>
-<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> computes the Maximum A Posteriori Bayesian Estimates(MAP-BE) of the individual PK parameters from the results of TDM</li>
+<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> computes the Maximum A Posteriori Bayesian Estimates (MAP-BE) of the individual PK parameters from the results of TDM</li>
 <li>
 <code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> samples from the the a priori distributions of PK parameters</li>
 </ul>
@@ -185,7 +186,7 @@
 <li>A peak concentration of 35 mg/L, 30 minutes after a 30-minute infusion.</li>
 <li>A trough concentration of less than 0.5 mg/L.</li>
 </ul>
-<p>The time required to reach a residual concentration of 0.5 mg/L can be estimated as follows</p>
+<p>The time required to reach a residual concentration of 0.5 mg/L can be estimated as follows:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>               target_cmin <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
@@ -203,7 +204,7 @@
 <span><span class="co">#&gt; 3    0.047    0.28     0.092     0.071   0.23   0.237 0.03701064 0.001447308</span></span>
 <span><span class="co">#&gt;      ETA_k12     ETA_k21 ClCr WT</span></span>
 <span><span class="co">#&gt; 3 0.08904703 -0.04838898   38 63</span></span></code></pre></div>
-<p>The dose required to achieve our target concentration can then be determined for an infusion at H48</p>
+<p>The dose required to achieve our target concentration can then be determined for an infusion at H48.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>               target_conc <span class="op">=</span> <span class="fl">35</span>,time_dose <span class="op">=</span> <span class="fl">48</span>,time_c <span class="op">=</span> <span class="fl">49</span><span class="op">)</span></span>
@@ -221,12 +222,12 @@
 <span><span class="co">#&gt; 3    0.047    0.28     0.092     0.071   0.23   0.237 0.03701052 0.001447305</span></span>
 <span><span class="co">#&gt;      ETA_k12     ETA_k21 ClCr WT</span></span>
 <span><span class="co">#&gt; 3 0.08904752 -0.04838936   38 63</span></span></code></pre></div>
-<p>In conclusion, to meet our 2 criteria, a dose of 760 mg 48 h after the first injection would be appropriate.</p>
+<p>In conclusion a dose of 760 mg 48 h after the first injection would be appropriate to meet our 2 criteria.</p>
 <p>More examples can be found at: <a href="https://levenc.github.io/posologyr/" class="uri">https://levenc.github.io/posologyr/</a></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="performance-of-the-map-ebe-algorithm-in-posologyr">Performance of the MAP-EBE algorithm in posologyr<a class="anchor" aria-label="anchor" href="#performance-of-the-map-ebe-algorithm-in-posologyr"></a>
+<h2 id="performance-of-the-map-be-algorithm-in-posologyr">Performance of the MAP-BE algorithm in posologyr<a class="anchor" aria-label="anchor" href="#performance-of-the-map-be-algorithm-in-posologyr"></a>
 </h2>
 <p><code>posologyr</code> showed comparable performance to NONMEM MAP estimation with option <code>MAXEVAL=0</code>:</p>
 <ul>

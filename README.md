@@ -34,7 +34,7 @@ Individual pharmacokinetic (PK) profiles can be estimated with or
 without data from therapeutic drug monitoring (TDM):
 
 - `poso_estim_map()` computes the Maximum A Posteriori Bayesian
-  Estimates(MAP-BE) of the individual PK parameters from the results of
+  Estimates (MAP-BE) of the individual PK parameters from the results of
   TDM
 - `poso_simu_pop()` samples from the the a priori distributions of PK
   parameters
@@ -150,7 +150,7 @@ criteria:
 - A trough concentration of less than 0.5 mg/L.
 
 The time required to reach a residual concentration of 0.5 mg/L can be
-estimated as follows
+estimated as follows:
 
 ``` r
 poso_time_cmin(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
@@ -172,7 +172,7 @@ poso_time_cmin(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
 ```
 
 The dose required to achieve our target concentration can then be
-determined for an infusion at H48
+determined for an infusion at H48.
 
 ``` r
 poso_dose_conc(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
@@ -193,12 +193,12 @@ poso_dose_conc(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
 #> 3 0.08904752 -0.04838936   38 63
 ```
 
-In conclusion, to meet our 2 criteria, a dose of 760 mg 48 h after the
-first injection would be appropriate.
+In conclusion a dose of 760 mg 48 h after the first injection would be
+appropriate to meet our 2 criteria.
 
 More examples can be found at: <https://levenc.github.io/posologyr/>
 
-## Performance of the MAP-EBE algorithm in posologyr
+## Performance of the MAP-BE algorithm in posologyr
 
 `posologyr` showed comparable performance to NONMEM MAP estimation with
 option `MAXEVAL=0`:
