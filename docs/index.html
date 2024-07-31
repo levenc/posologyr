@@ -183,7 +183,7 @@
 </h3>
 <p>We will optimize the gentamicin dosage for this patient to meet two criteria:</p>
 <ul>
-<li>A peak concentration of 35 mg/L, 30 minutes after a 30-minute infusion.</li>
+<li>A peak concentration of 12 mg/L, 30 minutes after a 30-minute infusion.</li>
 <li>A trough concentration of less than 0.5 mg/L.</li>
 </ul>
 <p>The time required to reach a residual concentration of 0.5 mg/L can be estimated as follows:</p>
@@ -207,22 +207,22 @@
 <p>The dose required to achieve our target concentration can then be determined for an infusion at H48.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>               target_conc <span class="op">=</span> <span class="fl">35</span>,time_dose <span class="op">=</span> <span class="fl">48</span>,time_c <span class="op">=</span> <span class="fl">49</span><span class="op">)</span></span>
+<span>               target_conc <span class="op">=</span> <span class="fl">12</span>,duration<span class="op">=</span><span class="fl">0.5</span>,time_dose <span class="op">=</span> <span class="fl">48</span>,time_c <span class="op">=</span> <span class="fl">49</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 747.0631</span></span>
+<span><span class="co">#&gt; [1] 237.5902</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $conc_estimate</span></span>
-<span><span class="co">#&gt; [1] 35</span></span>
+<span><span class="co">#&gt; [1] 12</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_V THETA_k12 THETA_k21 add_sd prop_sd     ETA_Cl       ETA_V</span></span>
 <span><span class="co">#&gt; 3    0.047    0.28     0.092     0.071   0.23   0.237 0.03701052 0.001447305</span></span>
 <span><span class="co">#&gt;      ETA_k12     ETA_k21 ClCr WT</span></span>
 <span><span class="co">#&gt; 3 0.08904752 -0.04838936   38 63</span></span></code></pre></div>
-<p>In conclusion a dose of 760 mg 48 h after the first injection would be appropriate to meet our 2 criteria.</p>
+<p>In conclusion a dose of 240 mg 48 h after the first injection would be appropriate to meet our 2 criteria.</p>
 <p>More examples can be found at: <a href="https://levenc.github.io/posologyr/" class="uri">https://levenc.github.io/posologyr/</a></p>
 </div>
 </div>

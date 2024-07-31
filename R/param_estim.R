@@ -101,7 +101,7 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 
   omega      <- object$omega
   ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
-  omega_eta  <- omega[ind_eta,ind_eta]
+  omega_eta  <- omega[ind_eta,ind_eta,drop=FALSE]
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
 
   if (n_simul > 0) {
@@ -234,9 +234,9 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
   error_model   <- object$error_model
   interpolation <- object$interpolation
 
-  ind_eta      <- which(diag(omega)>0)          # only parameters with IIV
-  omega_eta    <- omega[ind_eta,ind_eta]        # only variances > 0
-  solve_omega  <- try(solve(omega_eta))         # inverse of omega_eta
+  ind_eta      <- which(diag(omega)>0)               # only parameters with IIV
+  omega_eta    <- omega[ind_eta,ind_eta,drop=FALSE]  # only variances > 0
+  solve_omega  <- try(solve(omega_eta))              # inverse of omega_eta
 
   eta_map      <- diag(omega)*0
 
@@ -574,7 +574,7 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
            y_obs <- dat[dat$EVID==0,c("DV","DVID")])
     ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
     nb_etas      <- length(ind_eta)
-    omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
+    omega_eta    <- omega[ind_eta,ind_eta,drop=FALSE]    # only variances > 0
     solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
     chol_omega   <- chol(omega_eta)
     rw_init      <- 0.5                  #initial variance parameter for kernels
@@ -859,7 +859,7 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
          y_obs <- dat[dat$EVID==0,c("DV","DVID")])
   ind_eta      <- which(diag(omega)>0)      # only parameters with IIV
   nb_etas      <- length(ind_eta)
-  omega_eta    <- omega[ind_eta,ind_eta]    # only variances > 0
+  omega_eta    <- omega[ind_eta,ind_eta,drop=FALSE]    # only variances > 0
   omega_sim    <- omega_eta
   omega_dim    <- ncol(omega_eta)
   solve_omega  <- try(solve(omega_eta))     # inverse of omega_eta
@@ -903,7 +903,7 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
     # matrix large enough for omega + pi
     eta_mat           <- matrix(0,nrow=n_sample,
                                 ncol=ncol(all_the_mat)-
-                                  ncol(omega[ind_eta,ind_eta])+
+                                  ncol(omega[ind_eta,ind_eta,drop=FALSE])+
                                   ncol(omega))
 
     # IIV

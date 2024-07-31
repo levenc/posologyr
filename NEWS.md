@@ -7,6 +7,9 @@
 * The README illustrates a simple example of dose adaptation
 * `vignette("route_of_administration")` shows how to select a route of administration for optimal dosing
 
+## Bug fix
+* Fix a bug where `poso_estim_map()`, `poso_estim_sir()` and `poso_simu_pop()` failed for models featuring a single parameter with IIV.
+
 # posologyr v1.2.4
 
 * Add ability to use rxode2 ui models for the `poso_*` functions.  Once the model has been parsed by `rxode2()` with this package the `model$posologyr` gives the list needed for `poso_*` functions

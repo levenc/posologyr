@@ -145,7 +145,7 @@ plot(patient_map$model,Cc)
 We will optimize the gentamicin dosage for this patient to meet two
 criteria:
 
-- A peak concentration of 35 mg/L, 30 minutes after a 30-minute
+- A peak concentration of 12 mg/L, 30 minutes after a 30-minute
   infusion.
 - A trough concentration of less than 0.5 mg/L.
 
@@ -176,15 +176,15 @@ determined for an infusion at H48.
 
 ``` r
 poso_dose_conc(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
-               target_conc = 35,time_dose = 48,time_c = 49)
+               target_conc = 12,duration=0.5,time_dose = 48,time_c = 49)
 #> $dose
-#> [1] 747.0631
+#> [1] 237.5902
 #> 
 #> $type_of_estimate
 #> [1] "point estimate"
 #> 
 #> $conc_estimate
-#> [1] 35
+#> [1] 12
 #> 
 #> $indiv_param
 #>   THETA_Cl THETA_V THETA_k12 THETA_k21 add_sd prop_sd     ETA_Cl       ETA_V
@@ -193,7 +193,7 @@ poso_dose_conc(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
 #> 3 0.08904752 -0.04838936   38 63
 ```
 
-In conclusion a dose of 760 mg 48 h after the first injection would be
+In conclusion a dose of 240 mg 48 h after the first injection would be
 appropriate to meet our 2 criteria.
 
 More examples can be found at: <https://levenc.github.io/posologyr/>

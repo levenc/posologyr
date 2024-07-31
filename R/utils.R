@@ -51,7 +51,7 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
   ind_eta       <- which(diag(omega)>0)
   ifelse(estim_with_iov,
          omega_eta<-omega_iov,
-         omega_eta<-omega[ind_eta,ind_eta])
+         omega_eta<-omega[ind_eta,ind_eta,drop = FALSE])
   solve_omega   <- try(solve(omega_eta))
 
   pimat        <- object$pi_matrix
@@ -86,7 +86,7 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
     # matrix large enough for omega + pi
     eta_mat           <- matrix(0,nrow=n_sample,
                                 ncol=ncol(omega_iov)-
-                                ncol(omega[ind_eta,ind_eta])+
+                                ncol(omega[ind_eta,ind_eta,drop=FALSE])+
                                 ncol(omega))
 
     # IIV
@@ -192,8 +192,9 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
     start_eta <- start_eta[1,]
   }
   if(estim_with_iov){
-    names(start_eta) <- c(colnames(omega[ind_eta,ind_eta]),
-                          seq(1,length(start_eta)-ncol(omega[ind_eta,ind_eta])))
+    names(start_eta) <- c(colnames(omega[ind_eta,ind_eta,drop=FALSE]),
+                          seq(1,length(start_eta)-ncol(omega[ind_eta,ind_eta,
+                                                             drop=FALSE])))
   } else{
     names(start_eta) <- colnames(omega_eta)
   }
