@@ -23,8 +23,11 @@ set.seed(1)
 
 ## Overview
 
-Determine individual pharmacokinetic (and pharmacokinetic-pharmacodynamic) profiles and use them to personalise drug regimens. You provide the data (observations from
-therapeutic drug monitoring, or TDM) and a population pharmacokinetic model, `posologyr` provides the individual a posteriori estimate and allows you to determine the optimal dosing.
+Personalize drug regimens using individual pharmacokinetic and
+pharmacokinetic-pharmacodynamic profiles. Using combining therapeutic drug
+monitoring (TDM) data and a population model, `posologyr` provides accurate a
+posteriori estimates and allows you to compute the optimal individualized dosing
+regimen.
 
 `posologyr` provides the following functions for dosage optimization:
 

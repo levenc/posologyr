@@ -12,12 +12,11 @@ status](https://www.r-pkg.org/badges/version/posologyr)](https://CRAN.R-project.
 
 ## Overview
 
-Determine individual pharmacokinetic (and
-pharmacokinetic-pharmacodynamic) profiles and use them to personalise
-drug regimens. You provide the data (observations from therapeutic drug
-monitoring, or TDM) and a population pharmacokinetic model, `posologyr`
-provides the individual a posteriori estimate and allows you to
-determine the optimal dosing.
+Personalize drug regimens using individual pharmacokinetic and
+pharmacokinetic-pharmacodynamic profiles. Using combining therapeutic
+drug monitoring (TDM) data and a population model, `posologyr` provides
+accurate a posteriori estimates and allows you to compute the optimal
+individualized dosing regimen.
 
 `posologyr` provides the following functions for dosage optimization:
 
@@ -135,6 +134,7 @@ library("posologyr")
 
 ``` r
 patient_map <- poso_estim_map(patient_data,mod_gentamicin_Xuan2003)
+#> using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’
 plot(patient_map$model,Cc)
 ```
 
@@ -155,6 +155,7 @@ estimated as follows:
 ``` r
 poso_time_cmin(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
                target_cmin = 0.5)
+#> using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’
 #> $time
 #> [1] 44.9
 #> 
