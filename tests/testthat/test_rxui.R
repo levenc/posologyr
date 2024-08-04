@@ -39,7 +39,7 @@ test_that("readme model equivalent", {
   f <- poso_estim_map(patient_data, mod_run001)
 
   expect_equal(f$eta, c(ETA_Cl = 0.601903430923289, ETA_Vc = -0.429173629074746, ETA_Ka = 0.127847428673983),
-               tolerance=3)
+               tolerance=1e-4)
 
 })
 
@@ -94,14 +94,14 @@ test_that("mod_amikacin_Burdet2015", {
 
   expect_equal(patA_map$eta,
                c(ETA_Cl = 0.449952188793169, ETA_Vc = 0.273058665000001, ETA_Vp = 0.70615858706018, ETA_Q = -0.138843327030614),
-               tolerance=4)
+               tolerance=1e-4)
 
   cmin <- poso_time_cmin(dat=df_patientA,
                  prior_model=mod_amikacin_Burdet2015,
                  tdm = TRUE,
                  target_cmin = 2.5)
 
-  expect_equal(cmin$time, 33.9, tolerance=3)
+  expect_equal(cmin$time, 33.9, tolerance=0.1)
 
   map_dose <- poso_dose_conc(dat=df_patientA,
                              prior_model=mod_amikacin_Burdet2015,
@@ -111,7 +111,7 @@ test_that("mod_amikacin_Burdet2015", {
                              duration = 0.5,
                              target_conc = 80)
 
-  expect_equal(map_dose$dose, 2447.917, tolerance = 3)
+  expect_equal(map_dose$dose, 2447.917, tolerance = 1)
 
   map_interval <- poso_inter_cmin(dat=df_patientA,
                                   prior_model=mod_amikacin_Burdet2015,
@@ -119,7 +119,7 @@ test_that("mod_amikacin_Burdet2015", {
                                   duration = 0.5,
                                   target_cmin = 2.5)
 
-  expect_equal(map_interval$interval, 38.57782, tolerance=4)
+  expect_equal(map_interval$interval, 38.57782, tolerance=0.1)
 
 })
 
@@ -281,7 +281,7 @@ test_that("warfarin example", {
   map_warf_01  <- poso_estim_map(warf_01,mod_warfarin_nlmixr)
 
   expect_equal(c(ETA_ktr = -0.434704890568383, ETA_ka = -0.694024512420889, ETA_cl = 0.823372753994899, ETA_v = -0.0230522657927063, ETA_emax = 0.0684548537529647, ETA_ec50 = 0.141904594137433, ETA_kout = -0.198702717691606, ETA_e0 = -0.123821088809355),
-               map_warf_01$eta, tolerance =3)
+               map_warf_01$eta, tolerance =1e-4)
 
 })
 }
