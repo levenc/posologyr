@@ -99,7 +99,11 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
   ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
   omega_eta  <- omega[ind_eta,ind_eta,drop=FALSE]
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
+<<<<<<< HEAD
   first_cov  <- data.frame(object$tdm_data[1,object$covariates]) #first value of the covariates
+=======
+  first_cov  <- data.frame(object$tdm_data[1,object$covariates])
+>>>>>>> ba7565fa07978083aeb0fc5321143658522578a6
 
   if (n_simul > 0) {
     eta_mat <- matrix(0,nrow=n_simul,ncol=ncol(omega))
