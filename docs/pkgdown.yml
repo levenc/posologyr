@@ -10,7 +10,7 @@ articles:
   patient_data: patient_data.html
   population_models: population_models.html
   route_of_administration: route_of_administration.html
-last_built: 2024-08-27T08:13Z
+last_built: 2024-08-27T12:29Z
 urls:
   reference: https://levenc.github.io/posologyr/reference
   article: https://levenc.github.io/posologyr/articles

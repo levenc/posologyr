@@ -1,4 +1,4 @@
-# posologyr v1.2.4.9000
+# posologyr v1.2.5
 
 ## Additional feature
 * The route of administration (i.e. the compartment in which the drug is to be administered) can now be specified in `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()`.
