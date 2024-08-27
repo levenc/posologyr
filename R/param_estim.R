@@ -114,26 +114,32 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 
   # outputs
   if(return_model){
-    model_pop         <- object$solved_ppk_model
-    theta             <- rbind(object$theta)
+    et_poso <- rxode2::as.et(object$tdm_data)
+    et_poso$clearSampling()
+    et_poso$add.sampling(seq(dat$TIME[1],
+                             dat$TIME[length(dat$TIME)]+1,
+                             by=.1))
 
-    if(no_covariates){
-      params <- cbind(theta,eta_df,row.names=NULL)
-    } else {
-      covar             <- as.data.frame(object$tdm_data[1,object$covariates])
-      names(covar)      <- object$covariates
-      params <- cbind(theta,eta_df,covar,row.names=NULL)
+    if(!no_covariates){
+      covar_mat <- sapply(object$covariates,FUN=extrapol_cov,dat=dat,
+                          covar=object$covariates,
+                          interpol_approx="constant",
+                          f=ifelse(object$interpolation == "nocb",1,0),
+                          event_table=et_poso)
+
+      et_poso <- cbind(et_poso,covar_mat)
     }
 
     if (!is.null(object$pi_matrix)){
       kappa_mat         <- matrix(0,nrow=1,ncol=ncol(omega))
       kappa_df          <- data.frame(kappa_mat)
       names(kappa_df)   <- attr(object$pi_matrix,"dimnames")[[1]]
-      params            <- cbind(params,kappa_df)
+      et_poso           <- cbind(et_poso,kappa_df)
     }
 
-    model_pop$params  <- params
-    eta_pop$model     <- model_pop
+    eta_pop$model <- rxode2::rxSolve(object$ppk_model,et_poso,
+                                       cbind(rbind(object$theta),
+                                             eta_pop$eta,row.names=NULL))
   }
 
   return(eta_pop)
