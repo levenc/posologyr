@@ -70,7 +70,7 @@ mod_gentamicin_Xuan2003 <- function() {
 The rxode2 mini-language syntax is detailed in the [rxode2 documentation](https://nlmixr2.github.io/rxode2/articles/rxode2-syntax.html#syntax).
 
 # Individual model, random effects
-Inter-individual variability can also be defined as a symmetric matrix to integrate the covariance between random effects. An easy way to define it is using `lotri::lotri()`.
+Inter-individual variability can also be defined as a symmetric matrix to integrate the covariance between random effects.
 
 For example, the amikacin model of Burdet et al. 2015 (<doi:10.1007/s00228-014-1766-y>) can be written as:
 
