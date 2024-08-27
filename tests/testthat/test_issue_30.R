@@ -36,13 +36,13 @@ mod_MTXHD_joerger2011 <- list(
 
 # patient record
 df_patientA_tdm <-data.frame(ID=1,
-                             TIME=c(0,24,28,34,36,42,48),
-                             DV=c(NA,25.0,18.5,11.4,10.32,6.59,4.58),
-                             AMT=c(11723,0,0,0,0,0,0),
-                             DUR=c(3,NA,NA,NA,NA,NA,NA),
-                             EVID=c(1,0,0,0,0,0,0),
-                             OCC=c(1,1,1,1,1,1,1),
-                             CLCREAT=c(59,120,130,156,175,175,175),
+                             TIME=c(0,36,42,48),
+                             DV=c(NA,10.32,6.59,4.58),
+                             AMT=c(11723,0,0,0),
+                             DUR=c(3,NA,NA,NA),
+                             EVID=c(1,0,0,0),
+                             OCC=c(1,1,1,1),
+                             CLCREAT=c(59,175,175,175),
                              BSA=2.049,
                              OCC=1)
 
@@ -52,6 +52,6 @@ patAmap <- poso_estim_map(df_patientA_tdm,mod_MTXHD_joerger2011)
 
 test_that("poso_estim_map provides estimates for models with a single IOV", {
   expect_equal(patAmap$eta,
-            c(ETA_Cl=-0.81668461,ETA_Vc=0.0,
-              ETA_Vp=0.08900547,ETA_Q=0.0),tolerance=1e-3)
+            c(ETA_Cl=-0.78916725,ETA_Vc=0.0,
+              ETA_Vp=0.05709275,ETA_Q=0.0),tolerance=1e-3)
 })
