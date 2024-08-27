@@ -1,3 +1,8 @@
+# posologyr v1.2.6
+
+* Use undirected quotes when quoting in the DESCRIPTION (as requested by CRAN)
+* CRAN test times have been reduced by using an environment variable to identify the development machine, which now determines whether less critical tests are executed (as requested by CRAN)
+
 # posologyr v1.2.5
 
 ## Additional feature

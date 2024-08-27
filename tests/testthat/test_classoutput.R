@@ -1,4 +1,5 @@
-mod_tobramycin_2cpt_fictional <- list(
+if(Sys.getenv("POSOLOGYR_DEV_MACHINE")=="TRUE"){ #skip on CRAN or github actions
+  mod_tobramycin_2cpt_fictional <- list(
   ppk_model   = rxode2::rxode({
     centr(0) = 0;
     tTVke  = log(THETA_ke)+log(CLCREAT/67.8)*0.89+log(WT/66.4)*(-1.09);
@@ -229,3 +230,4 @@ test_that("poso_estim_sir returns the expected objects (with IOV)", {
   expect_equal("rxSolve" %in% attributes(p06_sir_nomod$model)$class,
                FALSE)
 })
+}
