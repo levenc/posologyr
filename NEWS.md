@@ -2,6 +2,8 @@
 
 ## Additional feature
 * The route of administration (i.e. the compartment in which the drug is to be administered) can now be specified in `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()`.
+* `poso_simu_pop()` provides an rxode2 model using the simulated ETA and the input dataset,
+with interpolation of covariates, to make plotting easier
 
 ## Documentation
 * The README illustrates a simple example of dose adaptation
