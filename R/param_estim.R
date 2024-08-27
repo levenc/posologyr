@@ -99,6 +99,7 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
   ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
   omega_eta  <- omega[ind_eta,ind_eta,drop=FALSE]
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
+  first_cov  <- data.frame(object$tdm_data[1,object$covariates])
 
   if (n_simul > 0) {
     eta_mat <- matrix(0,nrow=n_simul,ncol=ncol(omega))
@@ -139,7 +140,9 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 
     eta_pop$model <- rxode2::rxSolve(object$ppk_model,et_poso,
                                        cbind(rbind(object$theta),
-                                             eta_pop$eta,row.names=NULL))
+                                             eta_pop$eta,
+                                             first_cov,
+                                             row.names=NULL))
   }
 
   return(eta_pop)
