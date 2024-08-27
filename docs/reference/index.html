@@ -15,15 +15,21 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-models-data" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-book"></span> Models &amp; Data</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-models-data"><li><h6 class="dropdown-header" data-toc-skip>Getting started</h6></li>
+    <li><a class="dropdown-item" href="../articles/population_models.html">Population models</a></li>
+    <li><a class="dropdown-item" href="../articles/patient_data.html">Patient data</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced models</h6></li>
+    <li><a class="dropdown-item" href="../articles/multiple_endpoints.html">Multiple endpoints models</a></li>
+    <li><a class="dropdown-item" href="../articles/classic_posologyr_models.html">Classic posologyr models</a></li>
+  </ul></li>
 <li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
-    <li><a class="dropdown-item" href="../articles/a_priori_dosing.html">A priori dose selection</a></li>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-dose-selection" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-pills"></span> Dose selection</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-dose-selection"><li><a class="dropdown-item" href="../articles/a_priori_dosing.html">A priori dose selection</a></li>
+    <li><a class="dropdown-item" href="../articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
     <li><a class="dropdown-item" href="../articles/auc_based_dosing.html">AUC-based dose selection</a></li>
-    <li><a class="dropdown-item" href="../articles/multiple_endpoints.html">Multiple endpoints</a></li>
-    <li><a class="dropdown-item" href="../articles/patient_data_input.html">Patient data input</a></li>
-    <li><a class="dropdown-item" href="../articles/posologyr_user_defined_models.html">User defined models</a></li>
     <li><a class="dropdown-item" href="../articles/route_of_administration.html">Route of administration</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -41,7 +47,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="dose-optimisation-functions">Dose optimisation functions<a class="anchor" aria-label="anchor" href="#dose-optimisation-functions"></a></h2>
+      <h2 id="dose-optimization-functions">Dose optimization functions<a class="anchor" aria-label="anchor" href="#dose-optimization-functions"></a></h2>
 
 
 
@@ -110,35 +116,6 @@
 
         </dt>
         <dd>Estimate the prior distribution of population parameters</dd>
-      </dl></div><div class="section level2">
-      <h2 id="error-models">Error models<a class="anchor" aria-label="anchor" href="#error-models"></a></h2>
-
-      <div class="section-desc"><p>Functions for user-defined posologyr models</p></div>
-
-
-    </div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="error_model_comb1.html">error_model_comb1()</a></code>
-
-        </dt>
-        <dd>Residual error model combined 1</dd>
-      </dl><dl><dt>
-
-          <code><a href="error_model_comb2.html">error_model_comb2()</a></code>
-
-        </dt>
-        <dd>Residual error model combined 2</dd>
-      </dl><dl><dt>
-
-          <code><a href="error_model_mixednm.html">error_model_mixednm()</a></code>
-
-        </dt>
-        <dd>Residual error model mixed (idem NONMEM)</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

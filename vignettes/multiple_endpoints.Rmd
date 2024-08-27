@@ -25,77 +25,69 @@ library(posologyr)
 A different error model can be defined for multiple endpoints models (eg. 
 PK-PD, parent-metabolite, blood-urine...).
 
-To obtain individual estimations, consistency in the naming convention must be maintained across the following:
-
-  *  The dataset (using the column DVID).
-  *  The residual error models (stored in a named list).
-  *  The standard deviation of the residual error models (stored in a named list).
-
-As many residual error models as desired can be defined. Each model defined in the named list error_models must have its counterpart in the named list `sigma`, and the names must match those defined in the `DVID` column of the dataset.
-
 An example can be seen below, utilizing the warfarin data and model (provided by Tomoo Funaki and Nick Holford) from the nlmixr documentation (https://nlmixr2.org/articles/multiple-endpoints.html).
 
 ## warfarin PKPD model
 
 ```{r}
-mod_warfarin_nlmixr <- list(
-  ppk_model   = rxode2::rxode({
-    ktr <- exp(THETA_ktr + ETA_ktr)
-    ka <- exp(THETA_ka + ETA_ka)
-    cl <- exp(THETA_cl + ETA_cl)
-    v <- exp(THETA_v + ETA_v)
-    emax = expit(THETA_emax + ETA_emax)
-    ec50 =  exp(THETA_ec50 + ETA_ec50)
-    kout = exp(THETA_kout + ETA_kout)
-    e0 = exp(THETA_e0 + ETA_e0)
-    ##
-    DCP = center/v
-    PD=1-emax*DCP/(ec50+DCP)
-    ##
-    effect(0) = e0
-    kin = e0*kout
-    ##
-    d/dt(depot) = -ktr * depot
-    d/dt(gut) =  ktr * depot -ka * gut
-    d/dt(center) =  ka * gut - cl / v * center
-    d/dt(effect) = kin*PD -kout*effect
-    ##
-    cp = center / v
-    pca = effect
-  }),
-  error_model = list(
-    cp = function(f,sigma){
-      g <- sigma[1]^2 + (sigma[2]^2)*(f^2)
-      return(sqrt(g))
-    },
-    pca = function(f,sigma){
-      g <- sigma[1]^2 + (sigma[2]^2)*(f^2)
-      return(sqrt(g))
-    }
-  ),
-  theta = c(THETA_ktr=0.106,
-            THETA_ka=-0.087,
-            THETA_cl=-2.03,
-            THETA_v=2.07,
-            THETA_emax=3.4,
-            THETA_ec50=0.00724,
-            THETA_kout=-2.9,
-            THETA_e0=4.57),
-  omega = lotri::lotri({ETA_ktr + ETA_ka + ETA_cl + ETA_v + ETA_emax + ETA_ec50 +
-      ETA_kout + ETA_e0 ~
-      c(1.024695,
-        0.00     ,   0.9518403 ,
-        0.00     ,   0.00 ,   0.5300943  ,
-        0.00    ,    0.00,   0.00,   0.4785394,
-        0.00    ,    0.00,   0.00,   0.00,   0.7134424,
-        0.00    ,    0.00,   0.00,   0.00,   0.00,   0.7204165,
-        0.00    ,    0.00,   0.00,   0.00,   0.00,   0.00,   0.3563706,
-        0.00    ,    0.00,   0.00,   0.00,   0.00,   0.00,   0.00,   0.2660827)}),
-  sigma       = list(
-    cp=c(additive_a = 0.144, proportional_b = 0.15),
-    pca=c(additive_a = 3.91, proportional_b = 0.0)
-    )
-  )
+mod_warfarin_nlmixr <- function() {
+    ini({
+      #Fixed effects: population estimates 
+      THETA_ktr=0.106
+      THETA_ka=-0.087
+      THETA_cl=-2.03
+      THETA_v=2.07
+      THETA_emax=3.4
+      THETA_ec50=0.00724
+      THETA_kout=-2.9
+      THETA_e0=4.57
+      
+      #Random effects: inter-individual variability
+      ETA_ktr ~ 1.024695
+      ETA_ka ~ 0.9518403
+      ETA_cl ~ 0.5300943
+      ETA_v ~ 0.4785394
+      ETA_emax ~ 0.7134424
+      ETA_ec50 ~ 0.7204165
+      ETA_kout ~ 0.3563706
+      ETA_e0 ~ 0.2660827
+      
+      #Unexplained residual variability
+      cp.sd <- 0.144
+      cp.prop.sd <- 0.15
+      pca.sd <- 3.91
+    })
+    model({
+      #Individual model and covariates
+      ktr <- exp(THETA_ktr + ETA_ktr)
+      ka <- exp(THETA_ka + ETA_ka)
+      cl <- exp(THETA_cl + ETA_cl)
+      v <- exp(THETA_v + ETA_v)
+      emax = expit(THETA_emax + ETA_emax)
+      ec50 =  exp(THETA_ec50 + ETA_ec50)
+      kout = exp(THETA_kout + ETA_kout)
+      e0 = exp(THETA_e0 + ETA_e0)
+      
+      #Structural model defined using ordinary differential equations (ODE)
+      DCP = center/v
+      PD=1-emax*DCP/(ec50+DCP)
+      
+      effect(0) = e0
+      kin = e0*kout
+      
+      d/dt(depot) = -ktr * depot
+      d/dt(gut) =  ktr * depot -ka * gut
+      d/dt(center) =  ka * gut - cl / v * center
+      d/dt(effect) = kin*PD -kout*effect
+      
+      cp = center / v
+      pca = effect
+      
+      #Model for unexplained residual variability
+      cp ~ add(cp.sd) + prop(cp.prop.sd)
+      pca ~ add(pca.sd)
+    })
+  }
 ```
 
 ## data: first subject from the warfarin dataset

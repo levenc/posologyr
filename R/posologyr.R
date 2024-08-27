@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------
-# posologyr: individual dose optimisation using population PK
+# posologyr: individual dose optimization using population PK
 # Copyright (C) Cyril Leven
 #
 #    This program is free software: you can redistribute it and/or modify

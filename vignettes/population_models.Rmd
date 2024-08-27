@@ -1,0 +1,195 @@
+---
+title: "Population models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Population models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# Introduction
+This describes the structure of prior population models compatible with `posologyr` and illustrates how to define new models from published population models.
+
+# General structure
+Most models can be written as a model function which can be parsed by `rxode2`. The models are written in two block statements: 
+
+* `ini({})` defining parameter values 
+* `model({})` for the ODE-based model specification. 
+
+For example, the gentamicin model of Xuan et al. 2003 (<doi:10.1016/j.ijantimicag.2003.07.010>) can be written as:
+
+```{r gentamicin}
+mod_gentamicin_Xuan2003 <- function() {
+  ini({
+    #Fixed effects: population estimates 
+    THETA_Cl  = 0.047
+    THETA_V   = 0.28
+    THETA_k12 = 0.092
+    THETA_k21 = 0.071
+    
+    #Random effects: inter-individual variability
+    ETA_Cl  ~ 0.084
+    ETA_V   ~ 0.003
+    ETA_k12 ~ 0.398
+    ETA_k21 ~ 0.342
+    
+    #Unexplained residual variability
+    add_sd  <- 0.230
+    prop_sd <- 0.237
+  })
+  model({
+    #Individual model and covariates
+    TVl   = THETA_Cl*ClCr
+    TVV   = THETA_V*WT
+    TVk12 = THETA_k12
+    TVk21 = THETA_k21
+    Cl    = TVl*exp(ETA_Cl)
+    V     = TVV*exp(ETA_V)
+    k12   = TVk12*exp(ETA_k12)
+    k21   = TVk21*exp(ETA_k21)
+    
+    #Structural model defined using ordinary differential equations (ODE)
+    ke    = Cl/V
+    Cp    = centr/V
+
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph
+    d/dt(periph) =            + k12*centr - k21*periph
+
+    #Model for unexplained residual variability
+    Cp ~ add(add_sd) + prop(prop_sd) + combined1()
+  })
+}
+```
+
+The rxode2 mini-language syntax is detailed in the [rxode2 documentation](https://nlmixr2.github.io/rxode2/articles/rxode2-syntax.html#syntax).
+
+# Individual model, random effects
+Inter-individual variability can also be defined as a symmetric matrix to integrate the covariance between random effects. An easy way to define it is using `lotri::lotri()`.
+
+For example, the amikacin model of Burdet et al. 2015 (<doi:10.1007/s00228-014-1766-y>) can be written as:
+
+```{r amikacin}
+mod_amikacin_Burdet2015 <- function() {
+    ini({
+      #Fixed effects: population estimates 
+      THETA_Cl=4.3
+      THETA_Vc=15.9
+      THETA_Vp=21.4
+      THETA_Q=12.1
+      
+      #Random effects: inter-individual variability
+      ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+        c(0.1,
+          0.01     ,    0.05 ,
+          0.01     ,    0.02 ,   0.2  ,
+         -0.06     ,    0.004,   0.003,    0.08)
+          
+      #Unexplained residual variability
+      add_sd <- 0.2
+      prop_sd <- 0.1
+    })
+    model({
+      #Individual model and covariates
+      TVCl  = THETA_Cl*(CLCREAT4H/82)^0.7
+      TVVc  = THETA_Vc*(TBW/78)^0.9*(PoverF/169)^0.4
+      TVVp  = THETA_Vp
+      TVQ   = THETA_Q
+      Cl    = TVCl*exp(ETA_Cl)
+      Vc    = TVVc*exp(ETA_Vc)
+      Vp    = TVVp*exp(ETA_Vp)
+      Q     = TVQ *exp(ETA_Q)
+      
+      #Structural model defined using ordinary differential equations (ODE)
+      ke    = Cl/Vc
+      k12   = Q/Vc
+      k21   = Q/Vp
+      Cp    = centr/Vc      
+      
+      d/dt(centr)  = - ke*centr - k12*centr + k21*periph
+      d/dt(periph) =            + k12*centr - k21*periph
+
+      #Model for unexplained residual variability
+      Cp ~ add(add_sd) + prop(prop_sd) + combined1()
+    })
+  }
+```
+
+The estimates of the variances of the random effects can be given under different parameterizations depending on the authors.
+
+* Standard deviation (SD): the square root of the variance, as returned by Monolix
+* Coefficient of variation (CV): calculated as `sqrt(exp(SD^2)-1)`, the variance can be computed back with `log((CV^2)+1)`
+* Full covariance matrix: the easiest to reuse, but less common in the literature
+
+The estimates of covariance (off diagonal) are sometimes given as coefficients of correlation between ETAs. The covariance between ETA_a and ETA_b can be computed with the following product: `standard_deviation(ETA_a) * standard_deviation(ETA_b) * correlation(ETA_a and ETA_b)`.
+
+# Bioavailability, lag-time
+Special model event changes including bioavailability `(f(depot)=1)`, and lag time `(alag(depot)=0)` can be used in the `model({})` block. For example, the ganciclovir model of Caldès et al. 2009 (<doi:10.1128/aac.00085-09>) can be written as:
+
+```{r ganciclovir}
+mod_ganciclovir_Caldes2009 <- function() {
+  ini({
+    #Fixed effects: population estimates 
+    THETA_cl  <- 7.49
+    THETA_v1  <- 31.90
+    THETA_cld <- 10.20
+    THETA_v2  <- 32.0
+    THETA_ka  <- 0.895
+    THETA_baf <- 0.825
+      
+    #Random effects: inter-individual variability
+    ETA_cl ~ 0.107
+    ETA_v1 ~ 0.227
+    ETA_ka ~ 0.464
+    ETA_baf ~ 0.049
+    
+    #Unexplained residual variability
+    add.sd <- 0.465
+    prop.sd <- 0.143
+  })
+  model({
+    #Individual model and covariates
+    TVcl  = THETA_cl*(ClCr/57);
+    TVv1  = THETA_v1;
+    TVcld = THETA_cld;
+    TVv2  = THETA_v2;
+    TVka  = THETA_ka;
+    TVbaf = THETA_baf;
+    cl  = TVcl*exp(ETA_cl);
+    v1  = TVv1*exp(ETA_v1);
+    cld = TVcld;
+    v2  = TVv2;
+    ka  = TVka*exp(ETA_ka);
+    baf = TVbaf*exp(ETA_baf);
+
+    #Structural model defined using ordinary differential equations (ODE)
+    k10 = cl/v1;
+    k12 = cld / v1;
+    k21 = cld / v2;
+    Cc = centr/v1;
+
+    d/dt(depot)  = -ka*depot
+    d/dt(centr)  =  ka*depot - k10*centr - k12*centr + k21*periph;
+    d/dt(periph) =                         k12*centr - k21*periph;
+    d/dt(AUC)    = Cc;
+
+    #Special model event changes
+    f(depot)=baf;
+    alag(depot)=0.382;
+    
+    #Model for unexplained residual variability
+    Cc ~ add(add.sd) + prop(prop.sd) + combined1()
+  })
+}
+```
+
+# Classic posologyr models
+Some models cannot be described by an `rxode2` model function alone. It is then possible to define a classic `posologyr` model, see `vignette ("classic_posologyr_models")`. Models falling in this category are :
+
+- models with inter-occasion variability (IOV), sometimes called intra-individual variability
+- models with an unexplained residual error model other than additive, proportional, or combined models

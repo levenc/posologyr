@@ -25,7 +25,7 @@ library(posologyr)
 The Caldès 2009 ganciclovir model (https://doi.org/10.1128/aac.00085-09) is capable of describing the pharmacokinetics of either injectable ganciclovir or oral valganciclovir.
 
 ```{r model}
-mod_ganciclovir_Caldes_AAC2009 <- function() {
+mod_ganciclovir_Caldes_2009 <- function() {
   ini({
     THETA_cl  <- 7.49
     THETA_v1  <- 31.90
@@ -99,7 +99,7 @@ patient
 The individual PK profile can be estimated, and plotted.
 
 ```{r estim_map}
-map_patient <- poso_estim_map(patient,mod_ganciclovir_Caldes_AAC2009)
+map_patient <- poso_estim_map(patient,mod_ganciclovir_Caldes_2009)
 ```
 
 ```{r plot_map}
@@ -121,7 +121,7 @@ data.table(map_patient$model)[time==144,AUC] -
 The optimal dose to achieve an AUC of 50 mg.h/L can be determined for a new injection of IV ganciclovir by setting `cmt_dose = "centr"`.
 
 ```{r optimal_intravenous_ganci}
-poso_dose_auc(patient,mod_ganciclovir_Caldes_AAC2009,tdm=TRUE,
+poso_dose_auc(patient,mod_ganciclovir_Caldes_2009,tdm=TRUE,
               time_dose = 145,
               duration = 1,
               time_auc = 24,
@@ -134,7 +134,7 @@ poso_dose_auc(patient,mod_ganciclovir_Caldes_AAC2009,tdm=TRUE,
 The optimal dose to achieve an AUC of 50 mg.h/L can be determined for an administration of oral valganciclovir by setting `cmt_dose = "depot"`. 
 
 ```{r optimal_oral_valganci}
-poso_dose_auc(patient,mod_ganciclovir_Caldes_AAC2009,tdm=TRUE,
+poso_dose_auc(patient,mod_ganciclovir_Caldes_2009,tdm=TRUE,
               time_dose = 145,
               time_auc = 24,
               target_auc = 50,

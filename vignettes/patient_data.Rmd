@@ -1,5 +1,5 @@
 ---
-title: "Patient data input"
+title: "Patient data"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Patient data input}
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-This describes the structure of patient records usable by `posologyr`.
+This describes the structure of patient records compatible with `posologyr`.
 
 # Structure
 Data for input into `posologyr` is the same type of data input for rxode2. As stated in the [rxode2 documentation (rxode2 datasets)](https://nlmixr2.github.io/rxode2/articles/rxode2-datasets.html), it is also similar to [data for NONMEM](https://doi.org/10.1002/psp4.12404).
@@ -54,6 +54,9 @@ OCC
 
 DVID
 : Observation type. Required for models with multiple endpoints.
+
+CMT
+: Name (or number) of the compartment where the dose is administered, see `vignette("route_of_administration")`.
 
 # Common use cases
 ## A priori dose adjustment

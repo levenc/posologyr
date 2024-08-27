@@ -19,15 +19,21 @@ parameters, a dose, and a target Cmin."><meta property="og:image" content="https
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-models-data" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-book"></span> Models &amp; Data</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-models-data"><li><h6 class="dropdown-header" data-toc-skip>Getting started</h6></li>
+    <li><a class="dropdown-item" href="../articles/population_models.html">Population models</a></li>
+    <li><a class="dropdown-item" href="../articles/patient_data.html">Patient data</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced models</h6></li>
+    <li><a class="dropdown-item" href="../articles/multiple_endpoints.html">Multiple endpoints models</a></li>
+    <li><a class="dropdown-item" href="../articles/classic_posologyr_models.html">Classic posologyr models</a></li>
+  </ul></li>
 <li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
-    <li><a class="dropdown-item" href="../articles/a_priori_dosing.html">A priori dose selection</a></li>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-dose-selection" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-pills"></span> Dose selection</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-dose-selection"><li><a class="dropdown-item" href="../articles/a_priori_dosing.html">A priori dose selection</a></li>
+    <li><a class="dropdown-item" href="../articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
     <li><a class="dropdown-item" href="../articles/auc_based_dosing.html">AUC-based dose selection</a></li>
-    <li><a class="dropdown-item" href="../articles/multiple_endpoints.html">Multiple endpoints</a></li>
-    <li><a class="dropdown-item" href="../articles/patient_data_input.html">Patient data input</a></li>
-    <li><a class="dropdown-item" href="../articles/posologyr_user_defined_models.html">User defined models</a></li>
     <li><a class="dropdown-item" href="../articles/route_of_administration.html">Route of administration</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -215,39 +221,33 @@ estimates of ETA, and covariates</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/getRxThreads.html" class="external-link">setRxThreads</a></span><span class="op">(</span><span class="fl">2L</span><span class="op">)</span> <span class="co"># limit the number of threads</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># model</span></span></span>
-<span class="r-in"><span><span class="va">mod_run001</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>ppk_model <span class="op">=</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu">centr</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;</span></span>
-<span class="r-in"><span>  <span class="fu">depot</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="fl">0</span>;</span></span>
+<span class="r-in"><span><span class="va">mod_run001</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">THETA_Cl</span> <span class="op">&lt;-</span> <span class="fl">4.0</span></span></span>
+<span class="r-in"><span>    <span class="va">THETA_Vc</span> <span class="op">&lt;-</span> <span class="fl">70.0</span></span></span>
+<span class="r-in"><span>    <span class="va">THETA_Ka</span> <span class="op">&lt;-</span> <span class="fl">1.0</span></span></span>
+<span class="r-in"><span>    <span class="va">ETA_Cl</span> <span class="op">~</span> <span class="fl">0.2</span></span></span>
+<span class="r-in"><span>    <span class="va">ETA_Vc</span> <span class="op">~</span> <span class="fl">0.2</span></span></span>
+<span class="r-in"><span>    <span class="va">ETA_Ka</span> <span class="op">~</span> <span class="fl">0.2</span></span></span>
+<span class="r-in"><span>    <span class="va">prop.sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">model</span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">TVCl</span> <span class="op">&lt;-</span> <span class="va">THETA_Cl</span></span></span>
+<span class="r-in"><span>    <span class="va">TVVc</span> <span class="op">&lt;-</span> <span class="va">THETA_Vc</span></span></span>
+<span class="r-in"><span>    <span class="va">TVKa</span> <span class="op">&lt;-</span> <span class="va">THETA_Ka</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">TVCl</span> <span class="op">=</span> <span class="va">THETA_Cl</span>;</span></span>
-<span class="r-in"><span>  <span class="va">TVVc</span> <span class="op">=</span> <span class="va">THETA_Vc</span>;</span></span>
-<span class="r-in"><span>  <span class="va">TVKa</span> <span class="op">=</span> <span class="va">THETA_Ka</span>;</span></span>
+<span class="r-in"><span>    <span class="va">Cl</span> <span class="op">&lt;-</span> <span class="va">TVCl</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Cl</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">Vc</span> <span class="op">&lt;-</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">Ka</span> <span class="op">&lt;-</span> <span class="va">TVKa</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Ka</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">Cl</span> <span class="op">=</span> <span class="va">TVCl</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Cl</span><span class="op">)</span>;</span></span>
-<span class="r-in"><span>  <span class="va">Vc</span> <span class="op">=</span> <span class="va">TVVc</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Vc</span><span class="op">)</span>;</span></span>
-<span class="r-in"><span>  <span class="va">Ka</span> <span class="op">=</span> <span class="va">TVKa</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ETA_Ka</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span>    <span class="va">K20</span> <span class="op">&lt;-</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span></span></span>
+<span class="r-in"><span>    <span class="va">Cc</span> <span class="op">&lt;-</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">K20</span> <span class="op">=</span> <span class="va">Cl</span><span class="op">/</span><span class="va">Vc</span>;</span></span>
-<span class="r-in"><span>  <span class="va">Cc</span> <span class="op">=</span> <span class="va">centr</span><span class="op">/</span><span class="va">Vc</span>;</span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">depot</span><span class="op">)</span> <span class="op">=</span> <span class="op">-</span><span class="va">Ka</span><span class="op">*</span><span class="va">depot</span>;</span></span>
-<span class="r-in"><span>  <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span> <span class="op">=</span> <span class="va">Ka</span><span class="op">*</span><span class="va">depot</span> <span class="op">-</span> <span class="va">K20</span><span class="op">*</span><span class="va">centr</span>;</span></span>
-<span class="r-in"><span>  <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span> <span class="op">=</span> <span class="va">Cc</span>;</span></span>
-<span class="r-in"><span><span class="op">}</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>error_model <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>,<span class="va">sigma</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">dv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">f</span>,<span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">dv</span><span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span><span class="va">sigma</span><span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">dv</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span>,</span></span>
-<span class="r-in"><span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.0</span>, THETA_Vc<span class="op">=</span><span class="fl">70.0</span>, THETA_Ka<span class="op">=</span><span class="fl">1.0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>omega <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Ka</span> <span class="op">~</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>,</span></span>
-<span class="r-in"><span>      <span class="fl">0</span>, <span class="fl">0.2</span>,</span></span>
-<span class="r-in"><span>      <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>sigma <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">prop</span> <span class="op">+</span> <span class="va">add</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>,<span class="fl">0.0</span>,<span class="fl">0.00</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-in"><span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">depot</span><span class="op">)</span> <span class="op">=</span> <span class="op">-</span><span class="va">Ka</span><span class="op">*</span><span class="va">depot</span></span></span>
+<span class="r-in"><span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span> <span class="op">=</span> <span class="va">Ka</span><span class="op">*</span><span class="va">depot</span> <span class="op">-</span> <span class="va">K20</span><span class="op">*</span><span class="va">centr</span></span></span>
+<span class="r-in"><span>    <span class="va">Cc</span> <span class="op">~</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop.sd</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="co"># df_patient01: event table for Patient01, following a 30 minutes intravenous</span></span></span>
 <span class="r-in"><span><span class="co"># infusion</span></span></span>
 <span class="r-in"><span><span class="va">df_patient01</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,</span></span>
@@ -261,6 +261,10 @@ estimates of ETA, and covariates</p></dd>
 <span class="r-in"><span><span class="co"># infusion</span></span></span>
 <span class="r-in"><span><span class="fu">poso_time_cmin</span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patient01</span>,prior_model<span class="op">=</span><span class="va">mod_run001</span>,</span></span>
 <span class="r-in"><span>dose<span class="op">=</span><span class="fl">2500</span>,duration<span class="op">=</span><span class="fl">0.5</span>,from<span class="op">=</span><span class="fl">0.5</span>,target_cmin<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -271,8 +275,8 @@ estimates of ETA, and covariates</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.489933</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $indiv_param</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka    ETA_Cl     ETA_Vc   ETA_Ka</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.6019037 -0.4291733 0.127848</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   THETA_Cl THETA_Vc THETA_Ka   prop.sd    ETA_Cl     ETA_Vc   ETA_Ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        4       70        1 0.2236068 0.6019037 -0.4291733 0.127848</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

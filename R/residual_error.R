@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------
-# posologyr: individual dose optimisation using population PK
+# posologyr: individual dose optimization using population PK
 # Copyright (C) Cyril Leven
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 #' \code{g <- sigma[1] + sigma[2]*f}
 #'
 #' @return Numeric vector, residual error
-#' @export
+#' @keywords internal
 error_model_comb1 <- function(f,sigma){
   g <- sigma[1] + sigma[2]*f
   return(g)
@@ -49,7 +49,7 @@ error_model_comb1 <- function(f,sigma){
 #' \code{g <- sqrt(sigma[1]^2 + sigma[2]^2*f^2)}
 #'
 #' @return Numeric vector, residual error
-#' @export
+#' @keywords internal
 error_model_comb2 <- function(f,sigma){
   g <- sqrt(sigma[1]^2 + sigma[2]^2*f^2)
   return(g)
@@ -64,7 +64,7 @@ error_model_comb2 <- function(f,sigma){
 #' residual error model
 #'
 #' @return Numeric vector, residual error
-#' @export
+#' @keywords internal
 error_model_mixednm <- function(f,sigma){
   dv <- cbind(f,1)
   g  <- diag(dv%*%sigma%*%t(dv))

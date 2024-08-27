@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------
-# posologyr: individual dose optimisation using population PK
+# posologyr: individual dose optimization using population PK
 # Copyright (C) Cyril Leven
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -50,37 +50,33 @@
 #'
 #' @examples
 #' # model
-#' mod_run001 <- list(
-#' ppk_model = rxode2::rxode({
-#'   centr(0) = 0;
-#'   depot(0) = 0;
+#' mod_run001 <- function() {
+#'   ini({
+#'     THETA_Cl <- 4.0
+#'     THETA_Vc <- 70.0
+#'     THETA_Ka <- 1.0
+#'     ETA_Cl ~ 0.2
+#'     ETA_Vc ~ 0.2
+#'     ETA_Ka ~ 0.2
+#'     prop.sd <- sqrt(0.05)
+#'   })
+#'   model({
+#'     TVCl <- THETA_Cl
+#'     TVVc <- THETA_Vc
+#'     TVKa <- THETA_Ka
 #'
-#'   TVCl = THETA_Cl;
-#'   TVVc = THETA_Vc;
-#'   TVKa = THETA_Ka;
+#'     Cl <- TVCl*exp(ETA_Cl)
+#'     Vc <- TVVc*exp(ETA_Vc)
+#'     Ka <- TVKa*exp(ETA_Ka)
 #'
-#'   Cl = TVCl*exp(ETA_Cl);
-#'   Vc = TVVc*exp(ETA_Vc);
-#'   Ka = TVKa*exp(ETA_Ka);
+#'     K20 <- Cl/Vc
+#'     Cc <- centr/Vc
 #'
-#'   K20 = Cl/Vc;
-#'   Cc = centr/Vc;
-#'
-#'   d/dt(depot) = -Ka*depot;
-#'   d/dt(centr) = Ka*depot - K20*centr;
-#'   d/dt(AUC) = Cc;
-#' }),
-#' error_model = function(f,sigma) {
-#'   dv <- cbind(f,1)
-#'   g <- diag(dv%*%sigma%*%t(dv))
-#'   return(sqrt(g))
-#' },
-#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
-#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
-#'     c(0.2,
-#'       0, 0.2,
-#'       0, 0, 0.2)}),
-#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
+#'     d/dt(depot) = -Ka*depot
+#'     d/dt(centr) = Ka*depot - K20*centr
+#'     Cc ~ prop(prop.sd)
+#'   })
+#' }
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion
 #' df_patient01 <- data.frame(ID=1,
@@ -175,37 +171,33 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 #' rxode2::setRxThreads(1) # limit the number of threads
 #'
 #' # model
-#' mod_run001 <- list(
-#' ppk_model = rxode2::rxode({
-#'   centr(0) = 0;
-#'   depot(0) = 0;
+#' mod_run001 <- function() {
+#'   ini({
+#'     THETA_Cl <- 4.0
+#'     THETA_Vc <- 70.0
+#'     THETA_Ka <- 1.0
+#'     ETA_Cl ~ 0.2
+#'     ETA_Vc ~ 0.2
+#'     ETA_Ka ~ 0.2
+#'     prop.sd <- sqrt(0.05)
+#'   })
+#'   model({
+#'     TVCl <- THETA_Cl
+#'     TVVc <- THETA_Vc
+#'     TVKa <- THETA_Ka
 #'
-#'   TVCl = THETA_Cl;
-#'   TVVc = THETA_Vc;
-#'   TVKa = THETA_Ka;
+#'     Cl <- TVCl*exp(ETA_Cl)
+#'     Vc <- TVVc*exp(ETA_Vc)
+#'     Ka <- TVKa*exp(ETA_Ka)
 #'
-#'   Cl = TVCl*exp(ETA_Cl);
-#'   Vc = TVVc*exp(ETA_Vc);
-#'   Ka = TVKa*exp(ETA_Ka);
+#'     K20 <- Cl/Vc
+#'     Cc <- centr/Vc
 #'
-#'   K20 = Cl/Vc;
-#'   Cc = centr/Vc;
-#'
-#'   d/dt(depot) = -Ka*depot;
-#'   d/dt(centr) = Ka*depot - K20*centr;
-#'   d/dt(AUC) = Cc;
-#' }),
-#' error_model = function(f,sigma) {
-#'   dv <- cbind(f,1)
-#'   g <- diag(dv%*%sigma%*%t(dv))
-#'   return(sqrt(g))
-#' },
-#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
-#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
-#'     c(0.2,
-#'       0, 0.2,
-#'       0, 0, 0.2)}),
-#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
+#'     d/dt(depot) = -Ka*depot
+#'     d/dt(centr) = Ka*depot - K20*centr
+#'     Cc ~ prop(prop.sd)
+#'   })
+#' }
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion
 #' df_patient01 <- data.frame(ID=1,
@@ -500,37 +492,33 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #'
 #' @examples
 #' # model
-#' mod_run001 <- list(
-#' ppk_model = rxode2::rxode({
-#'   centr(0) = 0;
-#'   depot(0) = 0;
+#' mod_run001 <- function() {
+#'   ini({
+#'     THETA_Cl <- 4.0
+#'     THETA_Vc <- 70.0
+#'     THETA_Ka <- 1.0
+#'     ETA_Cl ~ 0.2
+#'     ETA_Vc ~ 0.2
+#'     ETA_Ka ~ 0.2
+#'     prop.sd <- sqrt(0.05)
+#'   })
+#'   model({
+#'     TVCl <- THETA_Cl
+#'     TVVc <- THETA_Vc
+#'     TVKa <- THETA_Ka
 #'
-#'   TVCl = THETA_Cl;
-#'   TVVc = THETA_Vc;
-#'   TVKa = THETA_Ka;
+#'     Cl <- TVCl*exp(ETA_Cl)
+#'     Vc <- TVVc*exp(ETA_Vc)
+#'     Ka <- TVKa*exp(ETA_Ka)
 #'
-#'   Cl = TVCl*exp(ETA_Cl);
-#'   Vc = TVVc*exp(ETA_Vc);
-#'   Ka = TVKa*exp(ETA_Ka);
+#'     K20 <- Cl/Vc
+#'     Cc <- centr/Vc
 #'
-#'   K20 = Cl/Vc;
-#'   Cc = centr/Vc;
-#'
-#'   d/dt(depot) = -Ka*depot;
-#'   d/dt(centr) = Ka*depot - K20*centr;
-#'   d/dt(AUC) = Cc;
-#' }),
-#' error_model = function(f,sigma) {
-#'   dv <- cbind(f,1)
-#'   g <- diag(dv%*%sigma%*%t(dv))
-#'   return(sqrt(g))
-#' },
-#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
-#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
-#'     c(0.2,
-#'       0, 0.2,
-#'       0, 0, 0.2)}),
-#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
+#'     d/dt(depot) = -Ka*depot
+#'     d/dt(centr) = Ka*depot - K20*centr
+#'     Cc ~ prop(prop.sd)
+#'   })
+#' }
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion
 #' df_patient01 <- data.frame(ID=1,
@@ -793,37 +781,33 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #' @import data.table
 #' @examples
 #' # model
-#' mod_run001 <- list(
-#' ppk_model = rxode2::rxode({
-#'   centr(0) = 0;
-#'   depot(0) = 0;
+#' mod_run001 <- function() {
+#'   ini({
+#'     THETA_Cl <- 4.0
+#'     THETA_Vc <- 70.0
+#'     THETA_Ka <- 1.0
+#'     ETA_Cl ~ 0.2
+#'     ETA_Vc ~ 0.2
+#'     ETA_Ka ~ 0.2
+#'     prop.sd <- sqrt(0.05)
+#'   })
+#'   model({
+#'     TVCl <- THETA_Cl
+#'     TVVc <- THETA_Vc
+#'     TVKa <- THETA_Ka
 #'
-#'   TVCl = THETA_Cl;
-#'   TVVc = THETA_Vc;
-#'   TVKa = THETA_Ka;
+#'     Cl <- TVCl*exp(ETA_Cl)
+#'     Vc <- TVVc*exp(ETA_Vc)
+#'     Ka <- TVKa*exp(ETA_Ka)
 #'
-#'   Cl = TVCl*exp(ETA_Cl);
-#'   Vc = TVVc*exp(ETA_Vc);
-#'   Ka = TVKa*exp(ETA_Ka);
+#'     K20 <- Cl/Vc
+#'     Cc <- centr/Vc
 #'
-#'   K20 = Cl/Vc;
-#'   Cc = centr/Vc;
-#'
-#'   d/dt(depot) = -Ka*depot;
-#'   d/dt(centr) = Ka*depot - K20*centr;
-#'   d/dt(AUC) = Cc;
-#' }),
-#' error_model = function(f,sigma) {
-#'   dv <- cbind(f,1)
-#'   g <- diag(dv%*%sigma%*%t(dv))
-#'   return(sqrt(g))
-#' },
-#' theta = c(THETA_Cl=4.0, THETA_Vc=70.0, THETA_Ka=1.0),
-#' omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Ka ~
-#'     c(0.2,
-#'       0, 0.2,
-#'       0, 0, 0.2)}),
-#' sigma = lotri::lotri({prop + add ~ c(0.05,0.0,0.00)}))
+#'     d/dt(depot) = -Ka*depot
+#'     d/dt(centr) = Ka*depot - K20*centr
+#'     Cc ~ prop(prop.sd)
+#'   })
+#' }
 #' # df_patient01: event table for Patient01, following a 30 minutes intravenous
 #' # infusion
 #' df_patient01 <- data.frame(ID=1,

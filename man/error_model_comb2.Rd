@@ -22,3 +22,4 @@ Residual error model combined 2.
 Implements the following function:
 \code{g <- sqrt(sigma[1]^2 + sigma[2]^2*f^2)}
 }
+\keyword{internal}

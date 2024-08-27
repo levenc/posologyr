@@ -1,8 +1,8 @@
 ---
-title: "User defined models"
+title: "Classic posologyr models"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{User defined models}
+  %\VignetteIndexEntry{Classic posologyr models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,17 +14,18 @@ knitr::opts_chunk$set(
 )
 ```
 # Introduction
-This describes the structure of prior models usable by `posologyr` and illustrates how to define new models from published population pharmacokinetic (ppk) models.
+Originally, `posologyr` models were R lists; `posologyr` still uses this format internally, but it's often more useful to use the `rxode2` syntax, or even to import a NONMEM model using the `nonmem2rx` package.
+
+This article describes the structure of classical `posologyr` models. It illustrates how to define them from published population models.
 
 # Structure
-A `posologyr` prior ppk model is a named R list:
+A `posologyr` model is a named R list of the following items:
 
 ppk_model 
-: A rxode2 model implementing the structural population pharmacokinetics model with the individual model (i.e. the model of inter-individual variability) and the covariates
+: A `rxode2` model implementing the structural population model with the individual model (i.e. the model of inter-individual variability) and the covariates
 
 error_model 
-: A function of the residual error model, alternatively a named list of functions 
-for multiple endpoints model `vignette("multiple_endpoints")`
+: A function of the residual error model, alternatively a named list of functions for multiple endpoints model `vignette("multiple_endpoints")`
 
 theta
 : A named vector of the population estimates of the fixed effects parameters (called THETAs, following [NONMEM terminology](https://doi.org/10.1002/psp4.12404))
@@ -36,21 +37,26 @@ sigma
 : The estimates of the parameters of the residual error model
 
 pi_matrix
-: Optional. A named square variance-covariance matrix of the population parameters
-inter-occasion variability
+: Optional. A named square variance-covariance matrix of the population parameters inter-occasion variability
 
 covariates 
 : A character vector of the covariates of the model
 
 # Definition of a prior model through an example
-The model to implement is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
+The model in this example is a two-compartment ppk model of vancomycin derived from a retrospective study with a cohort of over 1,800 patients ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)).
 
 ## ppk_model
-A model defined in the `rxode2::rxode()` mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an individual model.
+A model defined in the `rxode2` mini-language. `posologyr` needs a structural model, defined with either differential or algebraic equations, and an individual model. Depending on model type, naming conventions are more or less strict:
 
-The concentration in the central compartment *must* be named Cc.
+**Single endpoint model** (e.g. most pharmacokinetic models)
 
-The differential function `d/dt(AUC) =  Cc;` is needed for the optimisation function `poso_dose_auc()`.
+ * The concentration in the central compartment *must* be named Cc.  
+
+**Multiple endpoints model** (eg. PK-PD, parent-metabolite, blood-urine…)
+
+ * The names of the endpoints are flexible, but they must be consistent with the names of the error models and their parameters.
+
+The differential function `d/dt(AUC) =  Cc;` is needed for the optimization function `poso_dose_auc()`.
 
 ```{r ppk_model}
 ppk_model   = rxode2::rxode({
@@ -77,24 +83,34 @@ ppk_model   = rxode2::rxode({
 A function of the residual error model, taking two arguments: the simulated concentrations, and a vector `sigma` of the estimates of the parameters for the residual error model.
 
 ```{r error_model}
-error_model <- function(f,sigma){     #additive model if sigma[2] == 0
-  g <- sigma[1] + sigma[2]*f          #proportional model if sigma[1] == 0
-  return(g)
+error_model <- function(f,sigma){           #additive model if sigma[2] == 0
+  g <- sigma[1]^2 + (sigma[2]^2)*(f^2)      #proportional model if sigma[1] == 0
+  return(sqrt(g))
 }
 ```
 
-Alternatively, the function can take the simulated concentrations, and a matrix `sigma` of the estimates of the parameters for the residual error model, as in the following example:
+For multiple endpoints models, `error_model` must be a named list with a function for each endpoint `vignette("multiple_endpoints")`.
 
-```{r error_model_nonmem}
-error_model <- function(f,sigma){
-  dv <- cbind(f,1)
-  g  <- diag(dv%*%sigma%*%t(dv))     #sigma is the square matrix of the residual
-  return(sqrt(g))                    #errors
-}
+```{r error_model_multiple_endpoints}
+error_model = list(
+    first_endpoint = function(f,sigma){
+      g <- sigma[1]^2 + (sigma[2]^2)*(f^2)
+      return(sqrt(g))
+    },
+    second_endpoint = function(f,sigma){
+      g <- sigma[1]^2 + (sigma[2]^2)*(f^2)
+      return(sqrt(g))
+    }
+  )
 ```
 
-For multiple endpoint models, `error_model` must be a named list with a function
-for each endpoint `vignette("multiple_endpoints")`.
+To obtain individual estimations for multiple endpoints, consistency in the naming convention must be maintained across the following:
+
+  *  The dataset (using the column DVID).
+  *  The residual error models (stored in a named list).
+  *  The standard deviation of the residual error models (stored in a named list, see **sigma**).
+
+As many residual error models as desired can be defined. Each model defined in the named list error_models must have its counterpart in the named list `sigma`, and the names must match those defined in the `DVID` column of the dataset.
 
 ## theta
 The estimations of the parameters for the fixed effects of the model (THETA), in a named vector. The names must match the names used in `ppk_model`.
@@ -109,16 +125,16 @@ The variance-covariance matrix of the random effects (ETA) for the individual mo
 The estimates of the variances of the random effects can be given under different parameterizations depending on the authors.
 
 * Standard deviation (SD): the square root of the variance, as returned by Monolix
-* Coefficient of variation (CV): calculated as `sqrt(exp(SD^2)-1)`, the standard deviation can be computed back with `sqrt(log((CV^2)+1))`
-* Full covariance matrix: the easiest to reuse, but rarely seen in articles
+* Coefficient of variation (CV): calculated as `sqrt(exp(SD^2)-1)`, the variance can be computed back with `log((CV^2)+1)`
+* Full covariance matrix: the easiest to reuse, but less common in the literature
 
 In the case of the [vancomycin model](https://doi.org/10.1097/FTD.0000000000000490), the estimates of between subject variability (BSV) are given as CV%. They must be converted to variances prior to their inclusion in `omega`.
 
-|Parameter |CV%  (from the article)|SD       |Variance = SD^2|
-|----------|:---------------------:|:-------:|:-------------:|
-|BSV on CL |39.8                   | 0.383   | 0.147         |
-|BSV on Vc |81.6                   | 0.714   | 0.510         |
-|BSV on Vp |57.1                   | 0.531   | 0.282         |
+|Parameter |CV%  (from the article)|Variance = SD^2|
+|----------|:---------------------:|:-------------:|
+|BSV on CL |39.8                   | 0.147         |
+|BSV on Vc |81.6                   | 0.510         |
+|BSV on Vp |57.1                   | 0.282         |
 
 ```{r omega}
 omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
@@ -129,12 +145,12 @@ omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
 
 ```
 
-The estimates of covariance (off diagonal) are sometimes given as coefficients of correlation between ETAs. The covariance between ETA_a and ETA_b can be computed with the following product: `standard_deviation(ETA_a) * standard_deviation(ETA_b) * correlation(ETA_a and ETA_b)`.
+The estimates of covariance (off-diagonal) are sometimes given as coefficients of correlation between ETAs. The covariance between ETA_a and ETA_b can be computed with the following product: `standard_deviation(ETA_a) * standard_deviation(ETA_b) * correlation(ETA_a and ETA_b)`.
 
 In this example, all covariances are equal to zero.
 
 ## sigma
-The estimates of the parameters for the residual error model, either in a vector:
+The estimates of the parameters for the residual error model on the standard deviation scale, either in a vector:
 
 ```{r sigma}
 sigma       = c(additive_a = 3.4, proportional_b = 0.227)
@@ -146,12 +162,12 @@ in a matrix:
 sigma       = lotri::lotri({prop + add ~ c(0.227,0.0,3.4)})
 ```
 
-or in a named list, see `vignette("multiple_endpoints")`:
+or in a named list (for multiple endpoints):
 
 ```{r named_list}
 sigma       = list(
-    cp=c(additive_a = 0.144, proportional_b = 0.15),
-    pca=c(additive_a = 3.91, proportional_b = 0.0)
+    first_endpoint=c(additive_a = 0.144, proportional_b = 0.15),
+    second_endpoint=c(additive_a = 3.91, proportional_b = 0.0)
     )
 ```
 
@@ -178,7 +194,7 @@ covariates  = c("CLCREAT","WT","DIAL")
 
 ## Full model
 The `posologyr` model is the list of all these objects. 
-Note: This model does not include inter-occasion variability, so the pi_matrix is omitted.
+Note: this model does not include inter-occasion variability, so the pi_matrix is omitted.
 
 ```{r vancomycin_pososlogyr_model_list}
 mod_vancomyin_Goti2018 <- list(

@@ -38,16 +38,24 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
-    <li><a class="dropdown-item" href="articles/a_priori_dosing.html">A priori dose selection</a></li>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-models-data" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-book"></span> Models &amp; Data</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-models-data">
+<li><h6 class="dropdown-header" data-toc-skip>Getting started</h6></li>
+    <li><a class="dropdown-item" href="articles/population_models.html">Population models</a></li>
+    <li><a class="dropdown-item" href="articles/patient_data.html">Patient data</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced models</h6></li>
+    <li><a class="dropdown-item" href="articles/multiple_endpoints.html">Multiple endpoints models</a></li>
+    <li><a class="dropdown-item" href="articles/classic_posologyr_models.html">Classic posologyr models</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-dose-selection" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-pills"></span> Dose selection</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-dose-selection">
+<li><a class="dropdown-item" href="articles/a_priori_dosing.html">A priori dose selection</a></li>
+    <li><a class="dropdown-item" href="articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
     <li><a class="dropdown-item" href="articles/auc_based_dosing.html">AUC-based dose selection</a></li>
-    <li><a class="dropdown-item" href="articles/multiple_endpoints.html">Multiple endpoints</a></li>
-    <li><a class="dropdown-item" href="articles/patient_data_input.html">Patient data input</a></li>
-    <li><a class="dropdown-item" href="articles/posologyr_user_defined_models.html">User defined models</a></li>
     <li><a class="dropdown-item" href="articles/route_of_administration.html">Route of administration</a></li>
   </ul>
 </li>
@@ -76,26 +84,26 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>Personalize drug regimens using individual pharmacokinetic and pharmacokinetic-pharmacodynamic profiles. Using combining therapeutic drug monitoring (TDM) data and a population model, <code>posologyr</code> provides accurate a posteriori estimates and allows you to compute the optimal individualized dosing regimen.</p>
-<p><code>posologyr</code> provides the following functions for dosage optimization:</p>
+<p>Personalize drug regimens using individual pharmacokinetic (PK) and pharmacokinetic-pharmacodynamic (PK-PD) profiles. By combining therapeutic drug monitoring (TDM) data with a population model, <code>posologyr</code> offers accurate posterior estimates and helps compute optimal individualized dosing regimens.</p>
+<p>Key dosage optimization functions in <code>posologyr</code> include:</p>
 <ul>
 <li>
-<code><a href="reference/poso_dose_conc.html">poso_dose_conc()</a></code> estimates the optimal dose to reach a target concentration at any given time</li>
+<code><a href="reference/poso_dose_conc.html">poso_dose_conc()</a></code> estimates the optimal dose to achieve a target concentration at any given time</li>
 <li>
-<code><a href="reference/poso_dose_auc.html">poso_dose_auc()</a></code> estimates the optimal dose to reach a target area under the concentration/time curve (AUC)</li>
+<code><a href="reference/poso_dose_auc.html">poso_dose_auc()</a></code> estimates the dose needed to reach a target area under the concentration-time curve (AUC)</li>
 <li>
-<code><a href="reference/poso_time_cmin.html">poso_time_cmin()</a></code> estimates the time needed to reach a target trough concentration (Cmin)</li>
+<code><a href="reference/poso_time_cmin.html">poso_time_cmin()</a></code> estimates the time required to reach a target trough concentration (Cmin)</li>
 <li>
-<code><a href="reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> estimates the optimal inter-dose interval to reliably achieve a target Cmin between each administration</li>
+<code><a href="reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> estimates the optimal dosing interval to consistently achieve a target Cmin</li>
 </ul>
-<p>Individual pharmacokinetic (PK) profiles can be estimated with or without data from therapeutic drug monitoring (TDM):</p>
+<p>Individual PK profiles can be estimated with or without TDM data:</p>
 <ul>
 <li>
-<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> computes the Maximum A Posteriori Bayesian Estimates (MAP-BE) of the individual PK parameters from the results of TDM</li>
+<code><a href="reference/poso_estim_map.html">poso_estim_map()</a></code> computes Maximum A Posteriori Bayesian Estimates (MAP-BE) of individual PK parameters using TDM results</li>
 <li>
-<code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> samples from the the a priori distributions of PK parameters</li>
+<code><a href="reference/poso_simu_pop.html">poso_simu_pop()</a></code> samples from the the prior distributions of PK parameters</li>
 </ul>
-<p><code>posologyr</code> takes advantage of the simulation framework provided by the <a href="https://github.com/nlmixr2/rxode2" class="external-link">rxode2</a> package.</p>
+<p><code>posologyr</code> leverages the simulation capabilities of the <a href="https://github.com/nlmixr2/rxode2" class="external-link">rxode2</a> package.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -175,7 +183,6 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://levenc.github.io/posologyr/">"posologyr"</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patient_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">patient_map</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-map_plot-1.png" alt="Plot of the individual profile" width="100%"></p>
 </div>
@@ -191,7 +198,6 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span><span class="va">patient_data</span>,<span class="va">mod_gentamicin_Xuan2003</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>               target_cmin <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span>
 <span><span class="co">#&gt; $time</span></span>
 <span><span class="co">#&gt; [1] 44.9</span></span>
 <span><span class="co">#&gt; </span></span>

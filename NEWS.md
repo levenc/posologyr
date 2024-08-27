@@ -6,6 +6,9 @@
 ## Documentation
 * The README illustrates a simple example of dose adaptation
 * `vignette("route_of_administration")` shows how to select a route of administration for optimal dosing
+* `vignette("population_models")` describes the structure of prior population models written as model functions which can be parsed by `rxode2` and used by `posologyr`
+* `vignette("posologyr_user_defined_models")` is renamed `vignette("classic_posologyr_models")`
+* Examples use `rxode2` model functions
 
 ## Bug fix
 * Fix a bug where `poso_estim_map()`, `poso_estim_sir()` and `poso_simu_pop()` failed for models featuring a single parameter with IIV.

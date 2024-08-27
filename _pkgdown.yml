@@ -2,7 +2,7 @@ url: https://levenc.github.io/posologyr/
 template:
   bootstrap: 5
 reference:
-- title: "Dose optimisation functions"
+- title: "Dose optimization functions"
 - contents:
   - poso_dose_auc
   - poso_dose_conc
@@ -15,7 +15,32 @@ reference:
   - poso_estim_mcmc
   - poso_estim_sir
   - poso_simu_pop
-- title: "Error models"
-  desc: "Functions for user-defined posologyr models"
-- contents:
-  - starts_with("error_model")
+navbar:
+  left:
+  - text: Models & Data
+    icon: fas fa-book
+    menu:
+        - text: "Getting started"
+        - text: "Population models"
+          href: articles/population_models.html
+        - text: "Patient data"
+          href: articles/patient_data.html
+        - text: "--------------------------"
+        - text: "Advanced models"
+        - text: "Multiple endpoints models"
+          href: articles/multiple_endpoints.html
+        - text: "Classic posologyr models"
+          href: articles/classic_posologyr_models.html
+  - text: Dose selection
+    icon: fas fa-pills
+    menu:
+        - text: "A priori dose selection"
+          href: articles/a_priori_dosing.html
+        - text: "A posteriori dose selection"
+          href: articles/a_posteriori_dosing.html
+        - text: "AUC-based dose selection"
+          href: articles/auc_based_dosing.html
+        - text: "Route of administration"
+          href: articles/route_of_administration.html
+  - text: Changelog
+    href: news/index.html

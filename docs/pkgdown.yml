@@ -5,11 +5,12 @@ articles:
   a_posteriori_dosing: a_posteriori_dosing.html
   a_priori_dosing: a_priori_dosing.html
   auc_based_dosing: auc_based_dosing.html
+  classic_posologyr_models: classic_posologyr_models.html
   multiple_endpoints: multiple_endpoints.html
-  patient_data_input: patient_data_input.html
-  posologyr_user_defined_models: posologyr_user_defined_models.html
+  patient_data: patient_data.html
+  population_models: population_models.html
   route_of_administration: route_of_administration.html
-last_built: 2024-07-28T21:27Z
+last_built: 2024-08-27T07:11Z
 urls:
   reference: https://levenc.github.io/posologyr/reference
   article: https://levenc.github.io/posologyr/articles

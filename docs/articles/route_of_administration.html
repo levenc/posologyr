@@ -35,16 +35,24 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-models-data" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-book"></span> Models &amp; Data</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-models-data">
+<li><h6 class="dropdown-header" data-toc-skip>Getting started</h6></li>
+    <li><a class="dropdown-item" href="../articles/population_models.html">Population models</a></li>
+    <li><a class="dropdown-item" href="../articles/patient_data.html">Patient data</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced models</h6></li>
+    <li><a class="dropdown-item" href="../articles/multiple_endpoints.html">Multiple endpoints models</a></li>
+    <li><a class="dropdown-item" href="../articles/classic_posologyr_models.html">Classic posologyr models</a></li>
+  </ul>
+</li>
 <li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
-    <li><a class="dropdown-item" href="../articles/a_priori_dosing.html">A priori dose selection</a></li>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-dose-selection" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-pills"></span> Dose selection</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-dose-selection">
+<li><a class="dropdown-item" href="../articles/a_priori_dosing.html">A priori dose selection</a></li>
+    <li><a class="dropdown-item" href="../articles/a_posteriori_dosing.html">A posteriori dose selection</a></li>
     <li><a class="dropdown-item" href="../articles/auc_based_dosing.html">AUC-based dose selection</a></li>
-    <li><a class="dropdown-item" href="../articles/multiple_endpoints.html">Multiple endpoints</a></li>
-    <li><a class="dropdown-item" href="../articles/patient_data_input.html">Patient data input</a></li>
-    <li><a class="dropdown-item" href="../articles/posologyr_user_defined_models.html">User defined models</a></li>
     <li><a class="dropdown-item" href="../articles/route_of_administration.html">Route of administration</a></li>
   </ul>
 </li>
@@ -85,7 +93,7 @@
 describing the pharmacokinetics of either injectable ganciclovir or oral
 valganciclovir.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mod_ganciclovir_Caldes_AAC2009</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="va">mod_ganciclovir_Caldes_2009</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
 <span>    <span class="va">THETA_cl</span>  <span class="op">&lt;-</span> <span class="fl">7.49</span></span>
 <span>    <span class="va">THETA_v1</span>  <span class="op">&lt;-</span> <span class="fl">31.90</span></span>
@@ -167,7 +175,7 @@ last observation of interest (i.e. H144).</p>
 </h3>
 <p>The individual PK profile can be estimated, and plotted.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">map_patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_AAC2009</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">map_patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_2009</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="route_of_administration_files/figure-html/plot_map-1.png" alt="Plot of the individual PK profile" width="700"></p>
@@ -187,7 +195,7 @@ but the syntax is more convenient.</p>
 a new injection of IV ganciclovir by setting
 <code>cmt_dose = "centr"</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_AAC2009</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_2009</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>              time_dose <span class="op">=</span> <span class="fl">145</span>,</span>
 <span>              duration <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>              time_auc <span class="op">=</span> <span class="fl">24</span>,</span>
@@ -215,7 +223,7 @@ a new injection of IV ganciclovir by setting
 an administration of oral valganciclovir by setting
 <code>cmt_dose = "depot"</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_AAC2009</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_2009</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>              time_dose <span class="op">=</span> <span class="fl">145</span>,</span>
 <span>              time_auc <span class="op">=</span> <span class="fl">24</span>,</span>
 <span>              target_auc <span class="op">=</span> <span class="fl">50</span>,</span>

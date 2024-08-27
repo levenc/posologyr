@@ -18,3 +18,4 @@ Numeric vector, residual error
 \description{
 Mixed residual error model, similar to NONMEM implementation.
 }
+\keyword{internal}

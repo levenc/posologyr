@@ -12,33 +12,31 @@ status](https://www.r-pkg.org/badges/version/posologyr)](https://CRAN.R-project.
 
 ## Overview
 
-Personalize drug regimens using individual pharmacokinetic and
-pharmacokinetic-pharmacodynamic profiles. Using combining therapeutic
-drug monitoring (TDM) data and a population model, `posologyr` provides
-accurate a posteriori estimates and allows you to compute the optimal
-individualized dosing regimen.
+Personalize drug regimens using individual pharmacokinetic (PK) and
+pharmacokinetic-pharmacodynamic (PK-PD) profiles. By combining
+therapeutic drug monitoring (TDM) data with a population model,
+`posologyr` offers accurate posterior estimates and helps compute
+optimal individualized dosing regimens.
 
-`posologyr` provides the following functions for dosage optimization:
+Key dosage optimization functions in `posologyr` include:
 
-- `poso_dose_conc()` estimates the optimal dose to reach a target
+- `poso_dose_conc()` estimates the optimal dose to achieve a target
   concentration at any given time
-- `poso_dose_auc()` estimates the optimal dose to reach a target area
-  under the concentration/time curve (AUC)
-- `poso_time_cmin()` estimates the time needed to reach a target trough
-  concentration (Cmin)
-- `poso_inter_cmin()` estimates the optimal inter-dose interval to
-  reliably achieve a target Cmin between each administration
+- `poso_dose_auc()` estimates the dose needed to reach a target area
+  under the concentration-time curve (AUC)
+- `poso_time_cmin()` estimates the time required to reach a target
+  trough concentration (Cmin)
+- `poso_inter_cmin()` estimates the optimal dosing interval to
+  consistently achieve a target Cmin
 
-Individual pharmacokinetic (PK) profiles can be estimated with or
-without data from therapeutic drug monitoring (TDM):
+Individual PK profiles can be estimated with or without TDM data:
 
-- `poso_estim_map()` computes the Maximum A Posteriori Bayesian
-  Estimates (MAP-BE) of the individual PK parameters from the results of
-  TDM
-- `poso_simu_pop()` samples from the the a priori distributions of PK
+- `poso_estim_map()` computes Maximum A Posteriori Bayesian Estimates
+  (MAP-BE) of individual PK parameters using TDM results
+- `poso_simu_pop()` samples from the the prior distributions of PK
   parameters
 
-`posologyr` takes advantage of the simulation framework provided by the
+`posologyr` leverages the simulation capabilities of the
 [rxode2](https://github.com/nlmixr2/rxode2) package.
 
 ## Installation
@@ -134,7 +132,6 @@ library("posologyr")
 
 ``` r
 patient_map <- poso_estim_map(patient_data,mod_gentamicin_Xuan2003)
-#> using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’
 plot(patient_map$model,Cc)
 ```
 
@@ -155,7 +152,6 @@ estimated as follows:
 ``` r
 poso_time_cmin(patient_data,mod_gentamicin_Xuan2003,tdm=TRUE,
                target_cmin = 0.5)
-#> using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’
 #> $time
 #> [1] 44.9
 #> 

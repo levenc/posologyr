@@ -25,3 +25,4 @@ coefficient is provided.
 Implements the following function:
 \code{g <- sigma[1] + sigma[2]*f}
 }
+\keyword{internal}
