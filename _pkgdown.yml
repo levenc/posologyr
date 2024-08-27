@@ -42,5 +42,7 @@ navbar:
           href: articles/auc_based_dosing.html
         - text: "Route of administration"
           href: articles/route_of_administration.html
+  - text: Functions
+    href: reference/index.html
   - text: Changelog
     href: news/index.html

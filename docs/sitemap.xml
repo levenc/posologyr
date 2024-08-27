@@ -10,6 +10,7 @@
 <url><loc>https://levenc.github.io/posologyr/articles/patient_data.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/articles/patient_data_input.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/articles/population_models.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/articles/posologyr_user_defined_models.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/articles/route_of_administration.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/authors.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/index.html</loc></url>
@@ -26,6 +27,10 @@
 <url><loc>https://levenc.github.io/posologyr/reference/poso_inter_cmin.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/reference/poso_simu_pop.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/reference/poso_time_cmin.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/posologyr_error_lines.default.html</loc></url>
 <url><loc>https://levenc.github.io/posologyr/reference/posologyr_error_lines.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/posologyr_error_lines.norm.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/posologyr_error_lines.rxUi.html</loc></url>
+<url><loc>https://levenc.github.io/posologyr/reference/posologyr_error_lines.t.html</loc></url>
 </urlset>
 
