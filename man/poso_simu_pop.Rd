@@ -27,7 +27,8 @@ ETAs if set to \code{TRUE}.}
 If \code{return_model} is set to \code{FALSE}, a list of one element: a
 dataframe \verb{$eta} of the individual values of ETA.
 If \code{return_model} is set to \code{TRUE}, a list of the dataframe of the
-individual values of ETA, and a rxode2 model using the simulated ETAs.
+individual values of ETA, \verb{$model} an rxode2 model using the estimated ETAs,
+\verb{$event} the \code{data.table} used to solve the returned rxode2 model.
 }
 \description{
 Estimates the prior distribution of population parameters by Monte Carlo
