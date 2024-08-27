@@ -2,7 +2,7 @@
 % Please edit documentation in R/dosing_optim.R
 \name{poso_time_cmin}
 \alias{poso_time_cmin}
-\title{Predict time to a selected trough concentration}
+\title{Estimate the time required to reach a target trough concentration (Cmin)}
 \usage{
 poso_time_cmin(
   dat = NULL,
@@ -117,8 +117,8 @@ estimates of ETA, and covariates}
 }
 }
 \description{
-Predicts the time needed to reach a selected trough concentration
-(Cmin) given a population pharmacokinetic model, a set of individual
+Estimates the time required to reach a target trough concentration (Cmin)
+given a population pharmacokinetic model, a set of individual
 parameters, a dose, and a target Cmin.
 }
 \examples{

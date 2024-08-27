@@ -2,8 +2,8 @@
 % Please edit documentation in R/dosing_optim.R
 \name{poso_dose_auc}
 \alias{poso_dose_auc}
-\title{Estimate the optimal dose for a selected target area under the
-time-concentration curve (AUC)}
+\title{Estimate the dose needed to reach a target area under the concentration-time
+curve (AUC)}
 \usage{
 poso_dose_auc(
   dat = NULL,
@@ -114,9 +114,9 @@ covariates}
 }
 }
 \description{
-Estimates the optimal dose for a selected target area under the
-time-concentration curve (AUC) given a population pharmacokinetic
-model, a set of individual parameters, and a target AUC.
+estimates the dose needed to reach a target area under the concentration-time
+curve (AUC) given a population pharmacokinetic model, a set of individual
+parameters, and a target AUC.
 }
 \examples{
 rxode2::setRxThreads(2L) # limit the number of threads

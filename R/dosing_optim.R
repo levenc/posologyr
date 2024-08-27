@@ -16,10 +16,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
-#' Predict time to a selected trough concentration
+#' Estimate the time required to reach a target trough concentration (Cmin)
 #'
-#' Predicts the time needed to reach a selected trough concentration
-#' (Cmin) given a population pharmacokinetic model, a set of individual
+#' Estimates the time required to reach a target trough concentration (Cmin)
+#' given a population pharmacokinetic model, a set of individual
 #' parameters, a dose, and a target Cmin.
 #'
 #' @param dat Dataframe. An individual subject dataset following the
@@ -314,12 +314,12 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
   return(time_cmin)
 }
 
-#' Estimate the optimal dose for a selected target area under the
-#' time-concentration curve (AUC)
+#' Estimate the dose needed to reach a target area under the concentration-time
+#' curve (AUC)
 #'
-#' Estimates the optimal dose for a selected target area under the
-#' time-concentration curve (AUC) given a population pharmacokinetic
-#' model, a set of individual parameters, and a target AUC.
+#' estimates the dose needed to reach a target area under the concentration-time
+#' curve (AUC) given a population pharmacokinetic model, a set of individual
+#' parameters, and a target AUC.
 #'
 #' @param dat Dataframe. An individual subject dataset following the
 #'    structure of NONMEM/rxode2 event records.
@@ -640,12 +640,11 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
   return(dose_auc)
 }
 
-#' Estimate the optimal dose for a selected target concentration
+#' Estimate the optimal dose to achieve a target concentration at any given time
 #'
-#' Estimates the optimal dose for a selected target concentration at a
-#' selected point in time given a population pharmacokinetic model, a set
-#' of individual parameters, a selected point in time, and a target
-#' concentration.
+#' Estimates the optimal dose to achieve a target concentration at any given
+#' time given a population pharmacokinetic model, a set of individual
+#' parameters, a selected point in time, and a target concentration.
 #'
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/rxode2 event records.
@@ -942,13 +941,12 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
   return(dose_conc)
 }
 
-#' Estimate the optimal inter-dose interval for a given dose and a
-#' selected target trough concentration
+#' Estimate the optimal dosing interval to consistently achieve a target trough
+#' concentration (Cmin)
 #'
-#' Estimates the optimal inter-dose interval for a selected target
-#' trough concentration (Cmin), given a dose, a population
-#' pharmacokinetic model, a set of individual parameters, and a
-#' target concentration.
+#' Estimates the optimal dosing interval to consistently achieve a target Cmin,
+#' given a dose, a population pharmacokinetic model, a set of individual
+#' parameters, and a target concentration.
 #'
 #' @param dat Dataframe. An individual subject dataset following the
 #'     structure of NONMEM/rxode2 event records.

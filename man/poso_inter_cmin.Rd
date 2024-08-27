@@ -2,8 +2,8 @@
 % Please edit documentation in R/dosing_optim.R
 \name{poso_inter_cmin}
 \alias{poso_inter_cmin}
-\title{Estimate the optimal inter-dose interval for a given dose and a
-selected target trough concentration}
+\title{Estimate the optimal dosing interval to consistently achieve a target trough
+concentration (Cmin)}
 \usage{
 poso_inter_cmin(
   dat = NULL,
@@ -86,10 +86,9 @@ covariates}
 }
 }
 \description{
-Estimates the optimal inter-dose interval for a selected target
-trough concentration (Cmin), given a dose, a population
-pharmacokinetic model, a set of individual parameters, and a
-target concentration.
+Estimates the optimal dosing interval to consistently achieve a target Cmin,
+given a dose, a population pharmacokinetic model, a set of individual
+parameters, and a target concentration.
 }
 \examples{
 rxode2::setRxThreads(2L) # limit the number of threads

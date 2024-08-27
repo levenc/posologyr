@@ -2,7 +2,7 @@
 % Please edit documentation in R/dosing_optim.R
 \name{poso_dose_conc}
 \alias{poso_dose_conc}
-\title{Estimate the optimal dose for a selected target concentration}
+\title{Estimate the optimal dose to achieve a target concentration at any given time}
 \usage{
 poso_dose_conc(
   dat = NULL,
@@ -109,10 +109,9 @@ covariates}
 }
 }
 \description{
-Estimates the optimal dose for a selected target concentration at a
-selected point in time given a population pharmacokinetic model, a set
-of individual parameters, a selected point in time, and a target
-concentration.
+Estimates the optimal dose to achieve a target concentration at any given
+time given a population pharmacokinetic model, a set of individual
+parameters, a selected point in time, and a target concentration.
 }
 \examples{
 rxode2::setRxThreads(2L) # limit the number of threads
