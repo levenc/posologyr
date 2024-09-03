@@ -17,8 +17,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Individual Dose Optimization using Population Pharmacokinetics">
-<meta name="description" content="Personalize drug regimens using individual pharmacokinetic and pharmacokinetic-pharmacodynamic profiles. Using combining therapeutic drug monitoring (TDM) data and a population model, posologyr provides accurate a posteriori estimates and allows you to compute the optimal individualized dosing regimen. The empirical Bayes estimates are computed as described in Kang et al. (2012) &lt;doi:10.4196/kjpp.2012.16.2.97&gt;.">
-<meta property="og:description" content="Personalize drug regimens using individual pharmacokinetic and pharmacokinetic-pharmacodynamic profiles. Using combining therapeutic drug monitoring (TDM) data and a population model, posologyr provides accurate a posteriori estimates and allows you to compute the optimal individualized dosing regimen. The empirical Bayes estimates are computed as described in Kang et al. (2012) &lt;doi:10.4196/kjpp.2012.16.2.97&gt;.">
+<meta name="description" content="Optimize drug regimens through model-informed precision dosing, using individual pharmacokinetic (PK) and pharmacokinetic-pharmacodynamic (PK-PD) profiles. By integrating therapeutic drug monitoring (TDM) data with population models, posologyr provides accurate posterior estimates and enables the calculation of personalized dosing regimens. The empirical Bayes estimates are computed following the method described by Kang et al. (2012) &lt;doi:10.4196/kjpp.2012.16.2.97&gt;.">
+<meta property="og:description" content="Optimize drug regimens through model-informed precision dosing, using individual pharmacokinetic (PK) and pharmacokinetic-pharmacodynamic (PK-PD) profiles. By integrating therapeutic drug monitoring (TDM) data with population models, posologyr provides accurate posterior estimates and enables the calculation of personalized dosing regimens. The empirical Bayes estimates are computed following the method described by Kang et al. (2012) &lt;doi:10.4196/kjpp.2012.16.2.97&gt;.">
 <meta property="og:image" content="https://levenc.github.io/posologyr/logo.png">
 </head>
 <body>
@@ -81,7 +81,6 @@
 </h1>
 </div>
 <!-- badges: start -->
-
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -121,9 +120,7 @@
 <h2 id="bayesian-dosing-example">Bayesian dosing example<a class="anchor" aria-label="anchor" href="#bayesian-dosing-example"></a>
 </h2>
 <p>To determine the optimal dose of gentamicin for a patient with <code>posologyr</code>, you will need:</p>
-<ol style="list-style-type: decimal">
-<li>A prior PK model, written in <code>rxode2</code> mini-language</li>
-</ol>
+<ol style="list-style-type: decimal"><li>A prior PK model, written in <code>rxode2</code> mini-language</li></ol>
 <p>In this example, a gentamicin PK from the literature <a href="doi:10.1016/j.ijantimicag.2003.07.010" class="uri">doi:10.1016/j.ijantimicag.2003.07.010</a></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_gentamicin_Xuan2003</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
@@ -159,9 +156,7 @@
 <span>    <span class="va">Cp</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">add_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">combined1</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<ol start="2" style="list-style-type: decimal">
-<li>A table of the patient’s TDM data, in a format similar to the data for NONMEM</li>
-</ol>
+<ol start="2" style="list-style-type: decimal"><li>A table of the patient’s TDM data, in a format similar to the data for NONMEM</li></ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patient_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,</span>
 <span>                           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">11.0</span><span class="op">)</span>,</span>

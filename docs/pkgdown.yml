@@ -1,16 +1,16 @@
-pandoc: 3.1.11.1
+pandoc: 2.9.2.1
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
-  a_posteriori_dosing: a_posteriori_dosing.html
-  a_priori_dosing: a_priori_dosing.html
-  auc_based_dosing: auc_based_dosing.html
-  classic_posologyr_models: classic_posologyr_models.html
-  multiple_endpoints: multiple_endpoints.html
-  patient_data: patient_data.html
-  population_models: population_models.html
-  route_of_administration: route_of_administration.html
-last_built: 2024-08-27T15:29Z
+  articles/a_posteriori_dosing: a_posteriori_dosing.html
+  articles/a_priori_dosing: a_priori_dosing.html
+  articles/auc_based_dosing: auc_based_dosing.html
+  articles/classic_posologyr_models: classic_posologyr_models.html
+  articles/multiple_endpoints: multiple_endpoints.html
+  articles/patient_data: patient_data.html
+  articles/population_models: population_models.html
+  articles/route_of_administration: route_of_administration.html
+last_built: 2024-09-03T20:02Z
 urls:
   reference: https://levenc.github.io/posologyr/reference
   article: https://levenc.github.io/posologyr/articles

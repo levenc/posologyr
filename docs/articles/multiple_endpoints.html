@@ -73,13 +73,12 @@
 
 
 
-
-<div class="row">
+<script src="multiple_endpoints_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Multiple endpoints</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/vignettes/multiple_endpoints.Rmd" class="external-link"><code>vignettes/multiple_endpoints.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/vignettes/articles/multiple_endpoints.Rmd" class="external-link"><code>vignettes/articles/multiple_endpoints.Rmd</code></a></small>
       <div class="d-none name"><code>multiple_endpoints.Rmd</code></div>
     </div>
 
@@ -90,11 +89,8 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>A different error model can be defined for multiple endpoints models
-(eg. PK-PD, parent-metabolite, blood-urine…).</p>
-<p>An example can be seen below, utilizing the warfarin data and model
-(provided by Tomoo Funaki and Nick Holford) from the nlmixr
-documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" class="external-link uri">https://nlmixr2.org/articles/multiple-endpoints.html</a>).</p>
+<p>A different error model can be defined for multiple endpoints models (eg. PK-PD, parent-metabolite, blood-urine…).</p>
+<p>An example can be seen below, utilizing the warfarin data and model (provided by Tomoo Funaki and Nick Holford) from the nlmixr documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" class="external-link uri">https://nlmixr2.org/articles/multiple-endpoints.html</a>).</p>
 <div class="section level3">
 <h3 id="warfarin-pkpd-model">warfarin PKPD model<a class="anchor" aria-label="anchor" href="#warfarin-pkpd-model"></a>
 </h3>
@@ -183,45 +179,44 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span><span class="co">#&gt; 11  1   72  0.8   cp    0   0</span></span>
 <span><span class="co">#&gt; 12  1   72 31.0  pca    0   0</span></span>
 <span><span class="co">#&gt; 13  1  144 71.0  pca    0   0</span></span></code></pre></div>
-<p>posologyr can compute the EBE for the combined PKPD model with
-<code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code></p>
+<p>posologyr can compute the EBE for the combined PKPD model with <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_warf_01</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">warf_01</span>,<span class="va">mod_warfarin_nlmixr</span><span class="op">)</span></span>
 <span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span>
 <span><span class="va">map_warf_01</span></span>
 <span><span class="co">#&gt; $eta</span></span>
-<span><span class="co">#&gt;     ETA_ktr      ETA_ka      ETA_cl       ETA_v    ETA_emax    ETA_ec50 </span></span>
-<span><span class="co">#&gt; -0.32052193 -0.54227235  0.79432182 -0.02986447  0.02383273 -0.28133882 </span></span>
-<span><span class="co">#&gt;    ETA_kout      ETA_e0 </span></span>
-<span><span class="co">#&gt; -0.30872226 -0.08386652 </span></span>
+<span><span class="co">#&gt;       ETA_ktr        ETA_ka        ETA_cl         ETA_v      ETA_emax </span></span>
+<span><span class="co">#&gt; -0.0004293951 -0.0004357456 -0.0003701722  0.0001061682 -0.0007027385 </span></span>
+<span><span class="co">#&gt;      ETA_ec50      ETA_kout        ETA_e0 </span></span>
+<span><span class="co">#&gt; -0.0000199625  0.9407374740 -0.8904010311 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $model</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Solved rxode2 object ──</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Parameters (</span><span style="color: #0000BB; font-weight: bold;">$params</span><span style="font-weight: bold;">): ──</span></span></span>
-<span><span class="co">#&gt;   THETA_ktr    THETA_ka    THETA_cl     THETA_v  THETA_emax  THETA_ec50 </span></span>
-<span><span class="co">#&gt;  0.10600000 -0.08700000 -2.03000000  2.07000000  3.40000000  0.00724000 </span></span>
-<span><span class="co">#&gt;  THETA_kout    THETA_e0       cp.sd  cp.prop.sd      pca.sd     ETA_ktr </span></span>
-<span><span class="co">#&gt; -2.90000000  4.57000000  0.14400000  0.15000000  3.91000000 -0.32052193 </span></span>
-<span><span class="co">#&gt;      ETA_ka      ETA_cl       ETA_v    ETA_emax    ETA_ec50    ETA_kout </span></span>
-<span><span class="co">#&gt; -0.54227235  0.79432182 -0.02986447  0.02383273 -0.28133882 -0.30872226 </span></span>
-<span><span class="co">#&gt;      ETA_e0 </span></span>
-<span><span class="co">#&gt; -0.08386652 </span></span>
+<span><span class="co">#&gt;     THETA_ktr      THETA_ka      THETA_cl       THETA_v    THETA_emax </span></span>
+<span><span class="co">#&gt;  0.1060000000 -0.0870000000 -2.0300000000  2.0700000000  3.4000000000 </span></span>
+<span><span class="co">#&gt;    THETA_ec50    THETA_kout      THETA_e0         cp.sd    cp.prop.sd </span></span>
+<span><span class="co">#&gt;  0.0072400000 -2.9000000000  4.5700000000  0.1440000000  0.1500000000 </span></span>
+<span><span class="co">#&gt;        pca.sd       ETA_ktr        ETA_ka        ETA_cl         ETA_v </span></span>
+<span><span class="co">#&gt;  3.9100000000 -0.0004293951 -0.0004357456 -0.0003701722  0.0001061682 </span></span>
+<span><span class="co">#&gt;      ETA_emax      ETA_ec50      ETA_kout        ETA_e0 </span></span>
+<span><span class="co">#&gt; -0.0007027385 -0.0000199625  0.9407374740 -0.8904010311 </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;  depot    gut center effect </span></span>
 <span><span class="co">#&gt;      0      0      0      0 </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── First part of data (object): ──</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,451 × 18</span></span></span>
-<span><span class="co">#&gt;    time   ktr    ka    cl     v  emax  ec50   kout    e0    DCP    PD   kin</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0   0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0      1      3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.1 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.026<span style="text-decoration: underline;">7</span> 0.967  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.2 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.102  0.885  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.3 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.219  0.783  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.373  0.681  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.557  0.590  3.59</span></span>
+<span><span class="co">#&gt;    time   ktr    ka    cl     v  emax  ec50  kout    e0   DCP    PD   kin    cp</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0    1.11 0.916 0.131  7.93 0.968  1.01 0.141  39.6     0     1  5.59     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.1  1.11 0.916 0.131  7.93 0.968  1.01 0.141  39.6     0     1  5.59     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.2  1.11 0.916 0.131  7.93 0.968  1.01 0.141  39.6     0     1  5.59     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.3  1.11 0.916 0.131  7.93 0.968  1.01 0.141  39.6     0     1  5.59     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4  1.11 0.916 0.131  7.93 0.968  1.01 0.141  39.6     0     1  5.59     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5  1.11 0.916 0.131  7.93 0.968  1.01 0.141  39.6     0     1  5.59     0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,445 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: cp &lt;dbl&gt;, pca &lt;dbl&gt;, depot &lt;dbl&gt;, gut &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   center &lt;dbl&gt;, effect &lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 5 more variables: pca &lt;dbl&gt;, depot &lt;dbl&gt;, gut &lt;dbl&gt;, center &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   effect &lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $event</span></span>
 <span><span class="co">#&gt;          id  time   amt  evid</span></span>
@@ -237,8 +232,7 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span><span class="co">#&gt; 1450:     1 144.8    NA     0</span></span>
 <span><span class="co">#&gt; 1451:     1 144.9    NA     0</span></span>
 <span><span class="co">#&gt; 1452:     1 145.0    NA     0</span></span></code></pre></div>
-<p>The observation/time curves for both endpoints can also be
-plotted</p>
+<p>The observation/time curves for both endpoints can also be plotted</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_warf_01</span><span class="op">$</span><span class="va">model</span>,<span class="st">"cp"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="multiple_endpoints_files/figure-html/unnamed-chunk-5-1.png" alt="Plot of the individual PK profile of warfarin" width="700"></p>
