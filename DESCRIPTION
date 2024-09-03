@@ -29,8 +29,7 @@ Imports:
     rxode2,
     stats,
     mvtnorm,
-    data.table,
-    lifecycle
+    data.table
 Suggests:
     lotri,
     knitr,
