@@ -12,12 +12,13 @@ Authors@R: c(
     person("Audrey","Lavenu",role = c("ctb")),
     person("Marc","Lavielle",role = c("ctb"))
     )
-Description: Personalize drug regimens using individual pharmacokinetic and
-    pharmacokinetic-pharmacodynamic profiles. Using combining therapeutic drug
-    monitoring (TDM) data and a population model, 'posologyr' provides accurate 
-    a posteriori estimates and allows you to compute the optimal individualized 
-    dosing regimen. The empirical Bayes estimates are computed as described in 
-    Kang et al. (2012) <doi:10.4196/kjpp.2012.16.2.97>.
+Description: Optimize drug regimens through model-informed precision dosing, 
+    using individual pharmacokinetic (PK) and pharmacokinetic-pharmacodynamic 
+    (PK-PD) profiles. By integrating therapeutic drug monitoring (TDM) data with
+    population models, 'posologyr' provides accurate posterior estimates and 
+    enables the calculation of personalized dosing regimens. The empirical Bayes
+    estimates are computed following the method described by Kang et al. (2012) 
+    <doi:10.4196/kjpp.2012.16.2.97>.
 License: AGPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -28,7 +29,8 @@ Imports:
     rxode2,
     stats,
     mvtnorm,
-    data.table
+    data.table,
+    lifecycle
 Suggests:
     lotri,
     knitr,
