@@ -210,6 +210,7 @@
 <p>Observations and a 30-minutes infusion of the optimal dose are added to the <code>rxode2</code> model by updating the <a href="https://nlmixr2.github.io/rxode2/articles/rxode2-event-table.html" class="external-link">rxode2 event table</a>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">20</span>,b<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: can not update object</span></span>
 <span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="fu">add.dosing</span><span class="op">(</span>dose<span class="op">=</span><span class="va">prior_dose</span><span class="op">$</span><span class="va">dose</span>,rate<span class="op">=</span><span class="va">prior_dose</span><span class="op">$</span><span class="va">dose</span><span class="op">/</span><span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p>Plotting the simulated scenario.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
