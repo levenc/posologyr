@@ -73,13 +73,12 @@
 
 
 
-
-<div class="row">
+<script src="route_of_administration_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Route of administration</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/vignettes/route_of_administration.Rmd" class="external-link"><code>vignettes/route_of_administration.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/vignettes/articles/route_of_administration.Rmd" class="external-link"><code>vignettes/articles/route_of_administration.Rmd</code></a></small>
       <div class="d-none name"><code>route_of_administration.Rmd</code></div>
     </div>
 
@@ -90,9 +89,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The Caldès 2009 ganciclovir model (<a href="https://doi.org/10.1128/aac.00085-09" class="external-link uri">https://doi.org/10.1128/aac.00085-09</a>) is capable of
-describing the pharmacokinetics of either injectable ganciclovir or oral
-valganciclovir.</p>
+<p>The Caldès 2009 ganciclovir model (<a href="https://doi.org/10.1128/aac.00085-09" class="external-link uri">https://doi.org/10.1128/aac.00085-09</a>) is capable of describing the pharmacokinetics of either injectable ganciclovir or oral valganciclovir.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_ganciclovir_Caldes_2009</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
@@ -147,12 +144,8 @@ valganciclovir.</p>
 <div class="section level3">
 <h3 id="patient-record-with-tdm-data">Patient record with TDM data<a class="anchor" aria-label="anchor" href="#patient-record-with-tdm-data"></a>
 </h3>
-<p>To describe intravenous administration, a CMT column has been added
-to the TDM data table to indicate administrations directly into the
-central compartment.</p>
-<p>Note: to compute the AUC between the last dose and the time of the
-last dose + 24 hours, a dummy dose of 0 mg is added to the time of the
-last observation of interest (i.e. H144).</p>
+<p>To describe intravenous administration, a CMT column has been added to the TDM data table to indicate administrations directly into the central compartment.</p>
+<p>Note: to compute the AUC between the last dose and the time of the last dose + 24 hours, a dummy dose of 0 mg is added to the time of the last observation of interest (i.e. H144).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">121</span>,<span class="fl">122</span>,<span class="fl">126</span>,<span class="fl">144</span><span class="op">)</span>,</span>
 <span>                      DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">10.8</span>,<span class="fl">5.8</span>,<span class="fl">3.3</span>,<span class="cn">NA</span><span class="op">)</span>,</span>
@@ -181,21 +174,17 @@ last observation of interest (i.e. H144).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="route_of_administration_files/figure-html/plot_map-1.png" alt="Plot of the individual PK profile" width="700"></p>
-<p>The difference between the cumulative AUC at H144 and that at H120
-gives the AUC 0-24 after the last dose. Using data.table is optional,
-but the syntax is more convenient.</p>
+<p>The difference between the cumulative AUC at H144 and that at H120 gives the AUC 0-24 after the last dose. Using data.table is optional, but the syntax is more convenient.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">144</span>,<span class="va">AUC</span><span class="op">]</span> <span class="op">-</span> </span>
 <span>  <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">120</span>,<span class="va">AUC</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 72.19085</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 72.19084</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="optimal-dose-for-an-intravenous-ganciclovir-injection">Optimal dose for an intravenous ganciclovir injection<a class="anchor" aria-label="anchor" href="#optimal-dose-for-an-intravenous-ganciclovir-injection"></a>
 </h3>
-<p>The optimal dose to achieve an AUC of 50 mg.h/L can be determined for
-a new injection of IV ganciclovir by setting
-<code>cmt_dose = "centr"</code>.</p>
+<p>The optimal dose to achieve an AUC of 50 mg.h/L can be determined for a new injection of IV ganciclovir by setting <code>cmt_dose = "centr"</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_2009</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>              time_dose <span class="op">=</span> <span class="fl">145</span>,</span>
@@ -205,7 +194,7 @@ a new injection of IV ganciclovir by setting
 <span>              cmt_dose <span class="op">=</span> <span class="st">"centr"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 156.5335</span></span>
+<span><span class="co">#&gt; [1] 156.533</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -216,15 +205,13 @@ a new injection of IV ganciclovir by setting
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_cl THETA_v1 THETA_cld THETA_v2 THETA_ka THETA_baf add.sd prop.sd</span></span>
 <span><span class="co">#&gt; 1     7.49     31.9      10.2       32    0.895     0.825  0.465   0.143</span></span>
-<span><span class="co">#&gt;       ETA_cl     ETA_v1        ETA_ka       ETA_baf covar</span></span>
-<span><span class="co">#&gt; 1 0.05256541 -0.4773341 -3.589527e-08 -1.272466e-07    25</span></span></code></pre></div>
+<span><span class="co">#&gt;       ETA_cl     ETA_v1        ETA_ka      ETA_baf covar</span></span>
+<span><span class="co">#&gt; 1 0.05256373 -0.4773317 -3.099019e-06 2.772041e-07    25</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="optimal-dose-for-an-oral-valganciclovir-administration">Optimal dose for an oral valganciclovir administration<a class="anchor" aria-label="anchor" href="#optimal-dose-for-an-oral-valganciclovir-administration"></a>
 </h3>
-<p>The optimal dose to achieve an AUC of 50 mg.h/L can be determined for
-an administration of oral valganciclovir by setting
-<code>cmt_dose = "depot"</code>.</p>
+<p>The optimal dose to achieve an AUC of 50 mg.h/L can be determined for an administration of oral valganciclovir by setting <code>cmt_dose = "depot"</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_2009</span>,tdm<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>              time_dose <span class="op">=</span> <span class="fl">145</span>,</span>
@@ -243,10 +230,9 @@ an administration of oral valganciclovir by setting
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_cl THETA_v1 THETA_cld THETA_v2 THETA_ka THETA_baf add.sd prop.sd</span></span>
 <span><span class="co">#&gt; 1     7.49     31.9      10.2       32    0.895     0.825  0.465   0.143</span></span>
-<span><span class="co">#&gt;      ETA_cl     ETA_v1        ETA_ka      ETA_baf covar</span></span>
-<span><span class="co">#&gt; 1 0.0525648 -0.4773328 -1.018546e-06 2.327066e-07    25</span></span></code></pre></div>
-<p>Keeping the default value of cmt_dose, which is the first compartment
-declared in the PK model, would also work here.</p>
+<span><span class="co">#&gt;       ETA_cl     ETA_v1        ETA_ka       ETA_baf covar</span></span>
+<span><span class="co">#&gt; 1 0.05256457 -0.4773339 -9.298227e-07 -1.072357e-07    25</span></span></code></pre></div>
+<p>Keeping the default value of cmt_dose, which is the first compartment declared in the PK model, would also work here.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

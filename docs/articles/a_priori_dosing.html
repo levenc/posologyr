@@ -73,13 +73,12 @@
 
 
 
-
-<div class="row">
+<script src="a_priori_dosing_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>A priori dose selection</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/vignettes/a_priori_dosing.Rmd" class="external-link"><code>vignettes/a_priori_dosing.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/levenc/posologyr/blob/HEAD/vignettes/articles/a_priori_dosing.Rmd" class="external-link"><code>vignettes/articles/a_priori_dosing.Rmd</code></a></small>
       <div class="d-none name"><code>a_priori_dosing.Rmd</code></div>
     </div>
 
@@ -90,9 +89,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>First dose selection for a critical care patient treated with
-amikacin for suspected ventilator-associated pneumonia. Population
-pharmacokinetic (ppk) model form Burdet et al. 2015.</p>
+<p>First dose selection for a critical care patient treated with amikacin for suspected ventilator-associated pneumonia. Population pharmacokinetic (ppk) model form Burdet et al. 2015.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_amikacin_Burdet2015</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
@@ -134,9 +131,7 @@ pharmacokinetic (ppk) model form Burdet et al. 2015.</p>
 <div class="section level3">
 <h3 id="patient-record">Patient record<a class="anchor" aria-label="anchor" href="#patient-record"></a>
 </h3>
-<p>Before the first administration, no concentration information is
-available. The patient record contains only the information required to
-fill in the covariates of the model:</p>
+<p>Before the first administration, no concentration information is available. The patient record contains only the information required to fill in the covariates of the model:</p>
 <ul>
 <li>CLCREAT4H: 4-h creatinine clearance in ml/min</li>
 <li>TBW: Total body weight in kg</li>
@@ -155,10 +150,7 @@ fill in the covariates of the model:</p>
 <div class="section level3">
 <h3 id="optimal-dose-selection">Optimal dose selection<a class="anchor" aria-label="anchor" href="#optimal-dose-selection"></a>
 </h3>
-<p>In the absence of measured concentrations, the optimal dose in mg to
-achieve a concentration of 80 mg/l one hour after the start of the
-30-minute infusion is determined from the typical profile of the ppk
-model.</p>
+<p>In the absence of measured concentrations, the optimal dose in mg to achieve a concentration of 80 mg/l one hour after the start of the 30-minute infusion is determined from the typical profile of the ppk model.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prior_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
 <span>                             prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span>,</span>
@@ -167,7 +159,7 @@ model.</p>
 <span>                             target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span>
 <span><span class="va">prior_dose</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 2087.669</span></span>
+<span><span class="co">#&gt; [1] 2087.668</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -176,16 +168,15 @@ model.</p>
 <span><span class="co">#&gt; [1] 80</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd       ETA_Cl       ETA_Vc</span></span>
-<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1    0.2     0.1 2.025724e-07 6.573817e-08</span></span>
-<span><span class="co">#&gt;         ETA_Vp         ETA_Q CLCREAT4H TBW PoverF</span></span>
-<span><span class="co">#&gt; 1 2.011353e-07 -1.163665e-07        50  62    169</span></span></code></pre></div>
+<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd        ETA_Cl        ETA_Vc</span></span>
+<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1    0.2     0.1 -3.114346e-06 -1.586456e-06</span></span>
+<span><span class="co">#&gt;          ETA_Vp        ETA_Q CLCREAT4H TBW PoverF</span></span>
+<span><span class="co">#&gt; 1 -2.287222e-06 2.906001e-06        50  62    169</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="time-required-to-reach-the-target-cmin">Time required to reach the target Cmin<a class="anchor" aria-label="anchor" href="#time-required-to-reach-the-target-cmin"></a>
 </h3>
-<p>Following this dose, the time in hours required to reach a target
-Cmin concentration of 2.5 mg/l can be estimated.</p>
+<p>Following this dose, the time in hours required to reach a target Cmin concentration of 2.5 mg/l can be estimated.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
 <span>               prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span>,</span>
@@ -199,30 +190,24 @@ Cmin concentration of 2.5 mg/l can be estimated.</p>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $cmin_estimate</span></span>
-<span><span class="co">#&gt; [1] 2.49637</span></span>
+<span><span class="co">#&gt; [1] 2.496363</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd        ETA_Cl       ETA_Vc</span></span>
-<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1    0.2     0.1 -9.803026e-07 3.556777e-07</span></span>
-<span><span class="co">#&gt;          ETA_Vp        ETA_Q CLCREAT4H TBW PoverF</span></span>
-<span><span class="co">#&gt; 1 -3.567767e-07 9.847164e-07        50  62    169</span></span></code></pre></div>
+<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd       ETA_Cl       ETA_Vc</span></span>
+<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1    0.2     0.1 4.924255e-14 4.418555e-14</span></span>
+<span><span class="co">#&gt;         ETA_Vp         ETA_Q CLCREAT4H TBW PoverF</span></span>
+<span><span class="co">#&gt; 1 9.396548e-14 -3.822045e-14        50  62    169</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plotting-the-selected-dosage">Plotting the selected dosage<a class="anchor" aria-label="anchor" href="#plotting-the-selected-dosage"></a>
 </h3>
-<p>The selected dose can be simulated and plotted. By setting
-<code>n_simul = 0</code>, the <code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code> function
-produces a compiled <code>rxode2</code> model without inter-individual
-variability, using typical population parameter values and individual
-covariates from the patient record.</p>
+<p>The selected dose can be simulated and plotted. By setting <code>n_simul = 0</code>, the <code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code> function produces a compiled <code>rxode2</code> model without inter-individual variability, using typical population parameter values and individual covariates from the patient record.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># generate a model using the individual covariates </span></span>
 <span><span class="va">simu_patA</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_simu_pop.html">poso_simu_pop</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
 <span>                                prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span>,</span>
 <span>                                n_simul <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
-<p>Observations and a 30-minutes infusion of the optimal dose are added
-to the <code>rxode2</code> model by updating the <a href="https://nlmixr2.github.io/rxode2/articles/rxode2-event-table.html" class="external-link">rxode2
-event table</a>.</p>
+<p>Observations and a 30-minutes infusion of the optimal dose are added to the <code>rxode2</code> model by updating the <a href="https://nlmixr2.github.io/rxode2/articles/rxode2-event-table.html" class="external-link">rxode2 event table</a>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">20</span>,b<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: can not update object</span></span>
@@ -231,10 +216,7 @@ event table</a>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a_priori_dosing_files/figure-html/unnamed-chunk-3-1.png" alt="Plot of the concentration over time following the selected dosing" width="700"></p>
-<p>The resulting plot can be further augmented with
-<code>ggplot2</code>. For example, by adding an horizontal ribbon
-showing the 60-80 mg/l target interval of 1 h peak concentration, and a
-vertical dashed line marking 1 hour.</p>
+<p>The resulting plot can be further augmented with <code>ggplot2</code>. For example, by adding an horizontal ribbon showing the 60-80 mg/l target interval of 1 h peak concentration, and a vertical dashed line marking 1 hour.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Central concentration"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -242,8 +224,7 @@ vertical dashed line marking 1 hour.</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin<span class="op">=</span><span class="fl">60</span>, ymax<span class="op">=</span><span class="fl">80</span><span class="op">)</span>,</span>
 <span>                       fill<span class="op">=</span><span class="st">"seagreen"</span>,show.legend <span class="op">=</span> <span class="cn">FALSE</span>, alpha<span class="op">=</span><span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a_priori_dosing_files/figure-html/prior_plot-1.png" alt="Plot of the concentration over time following the selected dosing with an horizontal ribbon showing the 60-80 mg/l target interval of 1 h peak concentration, and a vertical dashed line marking 1 hour." width="700"></p>
-<p>For a typical patient (i.e. with a PK profile typical of the model
-population), the selected dose meets the peak concentration target.</p>
+<p>For a typical patient (i.e. with a PK profile typical of the model population), the selected dose meets the peak concentration target.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
