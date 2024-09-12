@@ -46,8 +46,7 @@
 #' @return If `return_model` is set to `FALSE`, a list of one element: a
 #' dataframe `$eta` of the individual values of ETA.
 #' If `return_model` is set to `TRUE`, a list of the dataframe of the
-#' individual values of ETA, `$model` an rxode2 model using the estimated ETAs,
-#' `$event` the `data.table` used to solve the returned rxode2 model.
+#' individual values of ETA, and a rxode2 model using the simulated ETAs.
 #'
 #' @examples
 #' # model
@@ -100,7 +99,6 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
   ind_eta    <- which(diag(omega)>0)          # only parameters with IIV
   omega_eta  <- omega[ind_eta,ind_eta,drop=FALSE]
   eta_mat    <- matrix(0,nrow=1,ncol=ncol(omega))
-  first_cov  <- data.frame(object$tdm_data[1,object$covariates])
 
   if (n_simul > 0) {
     eta_mat <- matrix(0,nrow=n_simul,ncol=ncol(omega))
@@ -116,35 +114,26 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 
   # outputs
   if(return_model){
-    et_poso <- rxode2::as.et(object$tdm_data)
-    et_poso$clearSampling()
-    et_poso$add.sampling(seq(dat$TIME[1],
-                             dat$TIME[length(dat$TIME)]+1,
-                             by=.1))
+    model_pop         <- object$solved_ppk_model
+    theta             <- rbind(object$theta)
 
-    if(!no_covariates){
-      covar_mat <- sapply(object$covariates,FUN=extrapol_cov,dat=dat,
-                          covar=object$covariates,
-                          interpol_approx="constant",
-                          f=ifelse(object$interpolation == "nocb",1,0),
-                          event_table=et_poso)
-
-      et_poso <- cbind(et_poso,covar_mat)
+    if(no_covariates){
+      params <- cbind(theta,eta_df,row.names=NULL)
+    } else {
+      covar             <- as.data.frame(object$tdm_data[1,object$covariates])
+      names(covar)      <- object$covariates
+      params <- cbind(theta,eta_df,covar,row.names=NULL)
     }
 
     if (!is.null(object$pi_matrix)){
       kappa_mat         <- matrix(0,nrow=1,ncol=ncol(omega))
       kappa_df          <- data.frame(kappa_mat)
       names(kappa_df)   <- attr(object$pi_matrix,"dimnames")[[1]]
-      et_poso           <- cbind(et_poso,kappa_df)
+      params            <- cbind(params,kappa_df)
     }
 
-    eta_pop$model <- rxode2::rxSolve(object$ppk_model,et_poso,
-                                       cbind(rbind(object$theta),
-                                             eta_pop$eta,
-                                             first_cov,
-                                             row.names=NULL))
-    eta_pop$event <- et_poso
+    model_pop$params  <- params
+    eta_pop$model     <- model_pop
   }
 
   return(eta_pop)
