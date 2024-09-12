@@ -61,8 +61,8 @@ for and interpolating any covariates or inter-occasion variability.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">poso_replace_et</span><span class="op">(</span></span>
 <span>  target_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prior_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  interpolation <span class="op">=</span> <span class="st">"locf"</span>,</span>
-<span>  event_table <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  event_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  interpolation <span class="op">=</span> <span class="st">"locf"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -79,15 +79,15 @@ posologyr's estimation functions.</p></dd>
 <dd><p>A <code>posologyr</code> prior population model.</p></dd>
 
 
+<dt id="arg-event-table">event_table<a class="anchor" aria-label="anchor" href="#arg-event-table"></a></dt>
+<dd><p>An rxode2 event table.</p></dd>
+
+
 <dt id="arg-interpolation">interpolation<a class="anchor" aria-label="anchor" href="#arg-interpolation"></a></dt>
 <dd><p>Character string. Specifies the interpolation method to
 be used for covariates. Choices are "locf" for last observation carried
 forward, "nocb" for next observation carried backward, "midpoint", or
 "linear".</p></dd>
-
-
-<dt id="arg-event-table">event_table<a class="anchor" aria-label="anchor" href="#arg-event-table"></a></dt>
-<dd><p>An rxode2 event table.</p></dd>
 
 </dl></div>
     <div class="section level2">

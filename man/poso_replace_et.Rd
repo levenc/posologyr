@@ -7,8 +7,8 @@
 poso_replace_et(
   target_model = NULL,
   prior_model = NULL,
-  interpolation = "locf",
-  event_table = NULL
+  event_table = NULL,
+  interpolation = "locf"
 )
 }
 \arguments{
@@ -17,12 +17,12 @@ posologyr's estimation functions.}
 
 \item{prior_model}{A \code{posologyr} prior population model.}
 
+\item{event_table}{An rxode2 event table.}
+
 \item{interpolation}{Character string. Specifies the interpolation method to
 be used for covariates. Choices are "locf" for last observation carried
 forward, "nocb" for next observation carried backward, "midpoint", or
 "linear".}
-
-\item{event_table}{An rxode2 event table.}
 }
 \value{
 A solved rxode2 object, updated with the event table provided.
