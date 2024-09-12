@@ -1,6 +1,6 @@
 Package: posologyr
 Title: Individual Dose Optimization using Population Pharmacokinetics
-Version: 1.2.6
+Version: 1.2.7
 Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
            email = "cyril.leven@chu-brest.fr",
@@ -32,8 +32,8 @@ Imports:
     data.table
 Suggests:
     lotri,
-    knitr,
     rmarkdown,
+    knitr,
     testthat (>= 3.0.0),
     ggplot2,
     magrittr,

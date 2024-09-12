@@ -205,23 +205,23 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
 extrapol_cov <- function(x=NULL,dat=NULL,covar=NULL,interpol_approx=NULL,
                          f=NULL,event_table=NULL){
   x <- which(covar == x) #input char, return position in the covar vector
-  approx_cov <- stats::approxfun(x = dat$TIME,
+  approx_cov <- stats::approxfun(x = dat[,match("time",tolower(names(dat)))],
                           y = dat[[covar[x]]],
-                          yleft = dat[[covar[x]]][x],
+                          yleft = dat[[covar[x]]][1],
                           yright = dat[[covar[x]]][length(dat[[covar[x]]])],
                           method = interpol_approx,
-                          f = f)
+                          f = f,ties = "ordered")
   approx_cov(event_table$time)
 }
 
 #extrapolate kappas to allow more sampling times in rxode2 solved models
 extrapol_iov <- function(x=NULL,dat=NULL,iov_kappa=NULL,event_table=NULL){
   x <- which(iov_kappa == x) #input char, return position in the kappa vector
-  approx_iov <- stats::approxfun(x = dat$TIME,
+  approx_iov <- stats::approxfun(x = dat[,match("time",tolower(names(dat)))],
                       y = dat[[iov_kappa[x]]],
-                      yleft = dat[[iov_kappa[x]]][x],
+                      yleft = dat[[iov_kappa[x]]][1],
                       yright = dat[[iov_kappa[x]]][length(dat[[iov_kappa[x]]])],
-                      method = "constant")
+                      method = "constant",ties = "ordered")
   approx_iov(event_table$time)
 }
 
