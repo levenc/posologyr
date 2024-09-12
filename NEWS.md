@@ -1,8 +1,8 @@
 # posologyr v1.2.7
 
 * All vignettes are moved to articles
-* The updates to `poso_simu_pop()` in v1.2.5 introduced several issues and have been reverted.
-* The new function `poso_replace_et()` enables updating a model with events from a new rxode2 event table, while accounting for and interpolating any covariates or inter-occasion variability.
+* The updates to `poso_simu_pop()` in v1.2.5 introduced several issues and have been reverted
+* The new function `poso_replace_et()` enables updating a model with events from a new rxode2 event table, while accounting for and interpolating any covariates or inter-occasion variability
 
 # posologyr v1.2.6
 

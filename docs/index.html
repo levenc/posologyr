@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,6 +81,7 @@
 </h1>
 </div>
 <!-- badges: start -->
+
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -120,7 +121,9 @@
 <h2 id="bayesian-dosing-example">Bayesian dosing example<a class="anchor" aria-label="anchor" href="#bayesian-dosing-example"></a>
 </h2>
 <p>To determine the optimal dose of gentamicin for a patient with <code>posologyr</code>, you will need:</p>
-<ol style="list-style-type: decimal"><li>A prior PK model, written in <code>rxode2</code> mini-language</li></ol>
+<ol style="list-style-type: decimal">
+<li>A prior PK model, written in <code>rxode2</code> mini-language</li>
+</ol>
 <p>In this example, a gentamicin PK from the literature <a href="doi:10.1016/j.ijantimicag.2003.07.010" class="uri">doi:10.1016/j.ijantimicag.2003.07.010</a></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_gentamicin_Xuan2003</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
@@ -156,7 +159,9 @@
 <span>    <span class="va">Cp</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">add_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">combined1</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<ol start="2" style="list-style-type: decimal"><li>A table of the patient’s TDM data, in a format similar to the data for NONMEM</li></ol>
+<ol start="2" style="list-style-type: decimal">
+<li>A table of the patient’s TDM data, in a format similar to the data for NONMEM</li>
+</ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patient_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,</span>
 <span>                           TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">11.0</span><span class="op">)</span>,</span>

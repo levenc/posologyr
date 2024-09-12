@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,8 @@
 
 
 
-<script src="a_posteriori_dosing_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>A posteriori dose selection</h1>
             
@@ -89,7 +90,10 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Dosage individualization for a critical care patient treated with amikacin for suspected ventilator-associated pneumonia, using the population pharmacokinetic (ppk) model of Burdet et al. 2015, using the data from therapeutic drug monitoring (TDM).</p>
+<p>Dosage individualization for a critical care patient treated with
+amikacin for suspected ventilator-associated pneumonia, using the
+population pharmacokinetic (ppk) model of Burdet et al. 2015, using the
+data from therapeutic drug monitoring (TDM).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_amikacin_Burdet2015</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
@@ -131,7 +135,10 @@
 <div class="section level3">
 <h3 id="patient-record-with-tdm-data">Patient record with TDM data<a class="anchor" aria-label="anchor" href="#patient-record-with-tdm-data"></a>
 </h3>
-<p>After the first administration, the dosage selection can be refined using the results of TDM. See <code>vignette("patient_data_input")</code> for more details regarding the patient record.</p>
+<p>After the first administration, the dosage selection can be refined
+using the results of TDM. See
+<code>vignette("patient_data_input")</code> for more details regarding
+the patient record.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_patientA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span>,</span>
 <span>                              DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">58</span>,<span class="fl">14</span><span class="op">)</span>,</span>
@@ -144,12 +151,14 @@
 <span><span class="co">#&gt; 1  1    0 NA    1 2000 0.5        50  62    169</span></span>
 <span><span class="co">#&gt; 2  1    1 58    0    0  NA        50  62    169</span></span>
 <span><span class="co">#&gt; 3  1    6 14    0    0  NA        50  62    169</span></span></code></pre></div>
-<p>The concentration measured 30 min after a 30 min infusion do not meet the target for a peak concentration; it is &lt; 60 mg/L.</p>
+<p>The concentration measured 30 min after a 30 min infusion do not meet
+the target for a peak concentration; it is &lt; 60 mg/L.</p>
 </div>
 <div class="section level3">
 <h3 id="estimate-the-map-individual-parameters">Estimate the MAP individual parameters<a class="anchor" aria-label="anchor" href="#estimate-the-map-individual-parameters"></a>
 </h3>
-<p>The maximum a posteriori (MAP) individual parameters are estimated.</p>
+<p>The maximum a posteriori (MAP) individual parameters are
+estimated.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patA_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
 <span>                           prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span><span class="op">)</span></span>
@@ -158,15 +167,19 @@
 <div class="section level3">
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
 </h3>
-<p>The individual pharmacokinetic profile can be plotted using the <code>rxode2</code> model provided by the <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> function.</p>
+<p>The individual pharmacokinetic profile can be plotted using the
+<code>rxode2</code> model provided by the <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code>
+function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">patA_map</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a_posteriori_dosing_files/figure-html/map_plot_tdm-1.png" alt="Plot of the individual PK profile" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="time-required-to-reach-the-target-cmin-following-the-first-administration">Time required to reach the target Cmin following the first administration<a class="anchor" aria-label="anchor" href="#time-required-to-reach-the-target-cmin-following-the-first-administration"></a>
+<h3 id="time-required-to-reach-the-target-cmin-following-the-first-administration">Time required to reach the target Cmin following the first
+administration<a class="anchor" aria-label="anchor" href="#time-required-to-reach-the-target-cmin-following-the-first-administration"></a>
 </h3>
-<p>With the MAP estimates of the individual parameters, the prediction of the time needed before reaching the target Cmin can be updated.</p>
+<p>With the MAP estimates of the individual parameters, the prediction
+of the time needed before reaching the target Cmin can be updated.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_time_cmin.html">poso_time_cmin</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
 <span>               prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span>,</span>
@@ -180,19 +193,21 @@
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $cmin_estimate</span></span>
-<span><span class="co">#&gt; [1] 2.487844</span></span>
+<span><span class="co">#&gt; [1] 2.487865</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd    ETA_Cl    ETA_Vc</span></span>
-<span><span class="co">#&gt; 3      4.3     15.9     21.4    12.1    0.2     0.1 0.4499508 0.2730587</span></span>
-<span><span class="co">#&gt;      ETA_Vp      ETA_Q CLCREAT4H TBW PoverF</span></span>
-<span><span class="co">#&gt; 3 0.7061613 -0.1388429        50  62    169</span></span></code></pre></div>
-<p>The next dose (if needed) can be administered 33.9 hours following the first infusion.</p>
+<span><span class="co">#&gt; 3      4.3     15.9     21.4    12.1    0.2     0.1 0.4499479 0.2730561</span></span>
+<span><span class="co">#&gt;      ETA_Vp    ETA_Q CLCREAT4H TBW PoverF</span></span>
+<span><span class="co">#&gt; 3 0.7061648 -0.13884        50  62    169</span></span></code></pre></div>
+<p>The next dose (if needed) can be administered 33.9 hours following
+the first infusion.</p>
 </div>
 <div class="section level3">
 <h3 id="optimal-dose-selection-a-posteriori">Optimal dose selection a posteriori<a class="anchor" aria-label="anchor" href="#optimal-dose-selection-a-posteriori"></a>
 </h3>
-<p>The optimal dose to achieve a peak concentration of 80 mg/l can be determined using the MAP estimates.</p>
+<p>The optimal dose to achieve a peak concentration of 80 mg/l can be
+determined using the MAP estimates.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_dose_conc.html">poso_dose_conc</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
 <span>                           prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span>,</span>
@@ -213,15 +228,16 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd    ETA_Cl    ETA_Vc</span></span>
-<span><span class="co">#&gt; 3      4.3     15.9     21.4    12.1    0.2     0.1 0.4499511 0.2730605</span></span>
+<span><span class="co">#&gt; 3      4.3     15.9     21.4    12.1    0.2     0.1 0.4499608 0.2730596</span></span>
 <span><span class="co">#&gt;      ETA_Vp      ETA_Q CLCREAT4H TBW PoverF</span></span>
-<span><span class="co">#&gt; 3 0.7061573 -0.1388445        50  62    169</span></span></code></pre></div>
+<span><span class="co">#&gt; 3 0.7061496 -0.1388505        50  62    169</span></span></code></pre></div>
 <p>The next dose should be 2450 mg.</p>
 </div>
 <div class="section level3">
 <h3 id="interdose-interval-selection-a-posteriori">Interdose interval selection a posteriori<a class="anchor" aria-label="anchor" href="#interdose-interval-selection-a-posteriori"></a>
 </h3>
-<p>The optimal inter-dose interval to reach a Cmin of 2.5 mg/L before each dosing can be determined using the MAP estimates.</p>
+<p>The optimal inter-dose interval to reach a Cmin of 2.5 mg/L before
+each dosing can be determined using the MAP estimates.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_interval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_inter_cmin.html">poso_inter_cmin</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
 <span>                                prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span>,</span>
@@ -230,7 +246,7 @@
 <span>                                target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span>
 <span><span class="va">map_interval</span></span>
 <span><span class="co">#&gt; $interval</span></span>
-<span><span class="co">#&gt; [1] 38.57783</span></span>
+<span><span class="co">#&gt; [1] 38.57781</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -239,11 +255,12 @@
 <span><span class="co">#&gt; [1] 2.500173</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd    ETA_Cl    ETA_Vc</span></span>
-<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1    0.2     0.1 0.4499517 0.2730584</span></span>
+<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add_sd prop_sd   ETA_Cl    ETA_Vc</span></span>
+<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1    0.2     0.1 0.449952 0.2730587</span></span>
 <span><span class="co">#&gt;      ETA_Vp      ETA_Q CLCREAT4H TBW PoverF</span></span>
-<span><span class="co">#&gt; 1 0.7061594 -0.1388427        50  62    169</span></span></code></pre></div>
-<p>The interval between doses should not be less than 38.6 hours to allow adequate elimination of amikacin between each infusion.</p>
+<span><span class="co">#&gt; 1 0.7061588 -0.1388432        50  62    169</span></span></code></pre></div>
+<p>The interval between doses should not be less than 38.6 hours to
+allow adequate elimination of amikacin between each infusion.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

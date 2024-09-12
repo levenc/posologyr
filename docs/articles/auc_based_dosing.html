@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,8 @@
 
 
 
-<script src="auc_based_dosing_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>AUC-based dose selection</h1>
             
@@ -89,7 +90,10 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>AUC-based dosage adjustment for a patient treated with vancomycin for methicillin-resistant Staphylococcus aureus blood stream infection, using the population pharmacokinetic (ppk) model of Goti et al. 2018, using the data from therapeutic drug monitoring (TDM).</p>
+<p>AUC-based dosage adjustment for a patient treated with vancomycin for
+methicillin-resistant Staphylococcus aureus blood stream infection,
+using the population pharmacokinetic (ppk) model of Goti et al. 2018,
+using the data from therapeutic drug monitoring (TDM).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_vancomycin_Goti2018</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
@@ -129,7 +133,9 @@
 <div class="section level3">
 <h3 id="patient-record-with-tdm-data">Patient record with TDM data<a class="anchor" aria-label="anchor" href="#patient-record-with-tdm-data"></a>
 </h3>
-<p>The dosage selection can be informed using the results of TDM. See <code>vignette("patient_data_input")</code> for more details regarding the patient records.</p>
+<p>The dosage selection can be informed using the results of TDM. See
+<code>vignette("patient_data_input")</code> for more details regarding
+the patient records.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_patientB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">13.0</span>,<span class="fl">24.2</span>,<span class="fl">48</span><span class="op">)</span>,</span>
 <span>                          DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">12</span>,<span class="cn">NA</span>,<span class="fl">9.5</span><span class="op">)</span>,</span>
@@ -155,11 +161,14 @@
 <div class="section level3">
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
 </h3>
-<p>The individual pharmacokinetic profile can be plotted using the <code>rxode2</code> model provided by the <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> function.</p>
+<p>The individual pharmacokinetic profile can be plotted using the
+<code>rxode2</code> model provided by the <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code>
+function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="auc_based_dosing_files/figure-html/unnamed-chunk-2-1.png" alt="Plot of the invidual PK profile" width="700"></p>
-<p>Using <code>ggplot2</code> the observed data points can be added to the plot</p>
+<p>Using <code>ggplot2</code> the observed data points can be added to
+the plot</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Get the observations from the patient record</span></span>
 <span><span class="va">indiv_obs</span>             <span class="op">&lt;-</span> <span class="va">df_patientB</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DV"</span>,<span class="st">"TIME"</span><span class="op">)</span><span class="op">]</span></span>
@@ -175,23 +184,26 @@
 <div class="section level3">
 <h3 id="get-the-auc24-from-the-map-model">Get the AUC24 from the MAP model<a class="anchor" aria-label="anchor" href="#get-the-auc24-from-the-map-model"></a>
 </h3>
-<p>Considering a MIC of 1 mg/L, the target AUC over 24 hours (AUC24) is 400 mg.h/L. The AUC can be retrieved from the <code>rxode2</code> model using the usual R <code>data.frame</code> syntax.</p>
+<p>Considering a MIC of 1 mg/L, the target AUC over 24 hours (AUC24) is
+400 mg.h/L. The AUC can be retrieved from the <code>rxode2</code> model
+using the usual R <code>data.frame</code> syntax.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#AUC 0_24</span></span>
 <span><span class="va">AUC_map_first_dose</span> <span class="op">&lt;-</span> <span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">AUC_map_first_dose</span></span>
-<span><span class="co">#&gt; [1] 337.8963</span></span>
+<span><span class="co">#&gt; [1] 337.8965</span></span>
 <span></span>
 <span><span class="co">#AUC 24_48</span></span>
 <span><span class="va">AUC_map_second_dose</span> <span class="op">&lt;-</span> <span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span> <span class="va">AUC_map_first_dose</span></span>
 <span><span class="va">AUC_map_second_dose</span></span>
-<span><span class="co">#&gt; [1] 325.3071</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 325.3072</span></span></code></pre></div>
 <p>The current dosage does not meet the target AUC.</p>
 </div>
 <div class="section level3">
 <h3 id="optimal-dose-selection-a-posteriori">Optimal dose selection a posteriori<a class="anchor" aria-label="anchor" href="#optimal-dose-selection-a-posteriori"></a>
 </h3>
-<p>The next dose needed to achieve an AUC24 of 400 mg.h/L can be estimated using TDM data.</p>
+<p>The next dose needed to achieve an AUC24 of 400 mg.h/L can be
+estimated using TDM data.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientB</span>,</span>
 <span>              prior_model<span class="op">=</span><span class="va">mod_vancomycin_Goti2018</span>,</span>
@@ -212,15 +224,18 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add.sd prop.sd     ETA_Cl     ETA_Vc</span></span>
-<span><span class="co">#&gt; 4      4.5     58.4     38.4     6.5    3.4   0.227 0.08208197 0.06122329</span></span>
+<span><span class="co">#&gt; 4      4.5     58.4     38.4     6.5    3.4   0.227 0.08208203 0.06122374</span></span>
 <span><span class="co">#&gt;       ETA_Vp CLCREAT DIAL WT</span></span>
-<span><span class="co">#&gt; 4 0.06285911      65    0 70</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.06285943      65    0 70</span></span></code></pre></div>
 <p>The optimal dose estimated for the next infusion is 1411 mg.</p>
 </div>
 <div class="section level3">
 <h3 id="optimal-maintenance-dose-selection-a-posteriori">Optimal maintenance dose selection a posteriori<a class="anchor" aria-label="anchor" href="#optimal-maintenance-dose-selection-a-posteriori"></a>
 </h3>
-<p>The maintenance dose needed to reliably achieve an AUC24 of 400 mg.h/L can be estimated by simulating a multiple dose regimen over enough administrations (e.g. 11 consecutive administrations, with <code>add_dose=10</code>) to approximate the steady-state.</p>
+<p>The maintenance dose needed to reliably achieve an AUC24 of 400
+mg.h/L can be estimated by simulating a multiple dose regimen over
+enough administrations (e.g. 11 consecutive administrations, with
+<code>add_dose=10</code>) to approximate the steady-state.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientB</span>,</span>
 <span>              prior_model<span class="op">=</span><span class="va">mod_vancomycin_Goti2018</span>,</span>
@@ -231,7 +246,7 @@
 <span>              duration<span class="op">=</span><span class="fl">2</span>,</span>
 <span>              target_auc<span class="op">=</span><span class="fl">400</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 1198.269</span></span>
+<span><span class="co">#&gt; [1] 1198.266</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -241,16 +256,18 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add.sd prop.sd     ETA_Cl     ETA_Vc</span></span>
-<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208435 0.06121699</span></span>
-<span><span class="co">#&gt;       ETA_Vp CLCREAT DIAL WT</span></span>
-<span><span class="co">#&gt; 1 0.06286203      65    0 70</span></span></code></pre></div>
+<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208199 0.06122337</span></span>
+<span><span class="co">#&gt;      ETA_Vp CLCREAT DIAL WT</span></span>
+<span><span class="co">#&gt; 1 0.0628591      65    0 70</span></span></code></pre></div>
 <p>The optimal maintenance dose is 1200 mg.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="continuous-intravenous-infusion">Continuous intravenous infusion<a class="anchor" aria-label="anchor" href="#continuous-intravenous-infusion"></a>
 </h2>
-<p>The maintenance dose for a continuous intravenous infusion can be easily determined by setting the <code>duration</code> of the infusion equal to the <code>interdose_interval</code>.</p>
+<p>The maintenance dose for a continuous intravenous infusion can be
+easily determined by setting the <code>duration</code> of the infusion
+equal to the <code>interdose_interval</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/poso_dose_auc.html">poso_dose_auc</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientB</span>,</span>
 <span>              prior_model<span class="op">=</span><span class="va">mod_vancomycin_Goti2018</span>,</span>
@@ -271,10 +288,11 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add.sd prop.sd     ETA_Cl     ETA_Vc</span></span>
-<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208197 0.06122336</span></span>
+<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208202 0.06122453</span></span>
 <span><span class="co">#&gt;       ETA_Vp CLCREAT DIAL WT</span></span>
-<span><span class="co">#&gt; 1 0.06285918      65    0 70</span></span></code></pre></div>
-<p>The optimal maintenance dose is also 1200 mg / 24 h for a continuous intravenous infusion.</p>
+<span><span class="co">#&gt; 1 0.06285936      65    0 70</span></span></code></pre></div>
+<p>The optimal maintenance dose is also 1200 mg / 24 h for a continuous
+intravenous infusion.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

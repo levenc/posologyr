@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,8 @@
 
 
 
-<script src="population_models_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Population models</h1>
             
@@ -87,19 +88,23 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This describes the structure of prior population models compatible with <code>posologyr</code> and illustrates how to define new models from published population models.</p>
+<p>This describes the structure of prior population models compatible
+with <code>posologyr</code> and illustrates how to define new models
+from published population models.</p>
 </div>
 <div class="section level2">
 <h2 id="general-structure">General structure<a class="anchor" aria-label="anchor" href="#general-structure"></a>
 </h2>
-<p>Most models can be written as a model function which can be parsed by <code>rxode2</code>. The models are written in two block statements:</p>
+<p>Most models can be written as a model function which can be parsed by
+<code>rxode2</code>. The models are written in two block statements:</p>
 <ul>
 <li>
 <code>ini({})</code> defining parameter values</li>
 <li>
 <code>model({})</code> for the ODE-based model specification.</li>
 </ul>
-<p>For example, the gentamicin model of Xuan et al. 2003 (<a href="doi:10.1016/j.ijantimicag.2003.07.010" class="uri">doi:10.1016/j.ijantimicag.2003.07.010</a>) can be written as:</p>
+<p>For example, the gentamicin model of Xuan et al. 2003 (<a href="doi:10.1016/j.ijantimicag.2003.07.010" class="uri">doi:10.1016/j.ijantimicag.2003.07.010</a>) can be written
+as:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_gentamicin_Xuan2003</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
@@ -141,12 +146,14 @@
 <span>    <span class="va">Cp</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">add_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">combined1</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>The rxode2 mini-language syntax is detailed in the <a href="https://nlmixr2.github.io/rxode2/articles/rxode2-syntax.html#syntax" class="external-link">rxode2 documentation</a>.</p>
+<p>The rxode2 mini-language syntax is detailed in the <a href="https://nlmixr2.github.io/rxode2/articles/rxode2-syntax.html#syntax" class="external-link">rxode2
+documentation</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="individual-model-random-effects">Individual model, random effects<a class="anchor" aria-label="anchor" href="#individual-model-random-effects"></a>
 </h2>
-<p>Inter-individual variability can also be defined as a symmetric matrix to integrate the covariance between random effects.</p>
+<p>Inter-individual variability can also be defined as a symmetric
+matrix to integrate the covariance between random effects.</p>
 <p>For example, the amikacin model of Burdet et al. 2015 (<a href="doi:10.1007/s00228-014-1766-y" class="uri">doi:10.1007/s00228-014-1766-y</a>) can be written as:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_amikacin_Burdet2015</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
@@ -192,19 +199,30 @@
 <span>      <span class="va">Cp</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">add_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop_sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">combined1</span><span class="op">(</span><span class="op">)</span></span>
 <span>    <span class="op">}</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span></code></pre></div>
-<p>The estimates of the variances of the random effects can be given under different parameterizations depending on the authors.</p>
+<p>The estimates of the variances of the random effects can be given
+under different parameterizations depending on the authors.</p>
 <ul>
-<li>Standard deviation (SD): the square root of the variance, as returned by Monolix</li>
-<li>Coefficient of variation (CV): calculated as <code>sqrt(exp(SD^2)-1)</code>, the variance can be computed back with <code>log((CV^2)+1)</code>
+<li>Standard deviation (SD): the square root of the variance, as
+returned by Monolix</li>
+<li>Coefficient of variation (CV): calculated as
+<code>sqrt(exp(SD^2)-1)</code>, the variance can be computed back with
+<code>log((CV^2)+1)</code>
 </li>
-<li>Full covariance matrix: the easiest to reuse, but less common in the literature</li>
+<li>Full covariance matrix: the easiest to reuse, but less common in the
+literature</li>
 </ul>
-<p>The estimates of covariance (off diagonal) are sometimes given as coefficients of correlation between ETAs. The covariance between ETA_a and ETA_b can be computed with the following product: <code>standard_deviation(ETA_a) * standard_deviation(ETA_b) * correlation(ETA_a and ETA_b)</code>.</p>
+<p>The estimates of covariance (off diagonal) are sometimes given as
+coefficients of correlation between ETAs. The covariance between ETA_a
+and ETA_b can be computed with the following product:
+<code>standard_deviation(ETA_a) * standard_deviation(ETA_b) * correlation(ETA_a and ETA_b)</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="bioavailability-lag-time">Bioavailability, lag-time<a class="anchor" aria-label="anchor" href="#bioavailability-lag-time"></a>
 </h2>
-<p>Special model event changes including bioavailability <code>(f(depot)=1)</code>, and lag time <code>(alag(depot)=0)</code> can be used in the <code>model({})</code> block. For example, the ganciclovir model of Caldès et al. 2009 (<a href="doi:10.1128/aac.00085-09" class="uri">doi:10.1128/aac.00085-09</a>) can be written as:</p>
+<p>Special model event changes including bioavailability
+<code>(f(depot)=1)</code>, and lag time <code>(alag(depot)=0)</code> can
+be used in the <code>model({})</code> block. For example, the
+ganciclovir model of Caldès et al. 2009 (<a href="doi:10.1128/aac.00085-09" class="uri">doi:10.1128/aac.00085-09</a>) can be written as:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_ganciclovir_Caldes2009</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
@@ -264,10 +282,16 @@
 <div class="section level2">
 <h2 id="classic-posologyr-models">Classic posologyr models<a class="anchor" aria-label="anchor" href="#classic-posologyr-models"></a>
 </h2>
-<p>Some models cannot be described by an <code>rxode2</code> model function alone. It is then possible to define a classic <code>posologyr</code> model, see <code>vignette ("classic_posologyr_models")</code>. Models falling in this category are :</p>
+<p>Some models cannot be described by an <code>rxode2</code> model
+function alone. It is then possible to define a classic
+<code>posologyr</code> model, see
+<code>vignette ("classic_posologyr_models")</code>. Models falling in
+this category are :</p>
 <ul>
-<li>models with inter-occasion variability (IOV), sometimes called intra-individual variability</li>
-<li>models with an unexplained residual error model other than additive, proportional, or combined models</li>
+<li>models with inter-occasion variability (IOV), sometimes called
+intra-individual variability</li>
+<li>models with an unexplained residual error model other than additive,
+proportional, or combined models</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

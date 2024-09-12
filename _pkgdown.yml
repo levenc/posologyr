@@ -15,6 +15,9 @@ reference:
   - poso_estim_mcmc
   - poso_estim_sir
   - poso_simu_pop
+- title: "Post-processing"
+- contents:
+  - poso_replace_et
 navbar:
   left:
   - text: Models & Data

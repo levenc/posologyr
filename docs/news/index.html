@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,12 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.7" id="posologyr-v127">posologyr v1.2.7<a class="anchor" aria-label="anchor" href="#posologyr-v127"></a></h2>
+<ul><li>All vignettes are moved to articles</li>
+<li>The updates to <code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code> in v1.2.5 introduced several issues and have been reverted</li>
+<li>The new function <code><a href="../reference/poso_replace_et.html">poso_replace_et()</a></code> enables updating a model with events from a new rxode2 event table, while accounting for and interpolating any covariates or inter-occasion variability</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.6" id="posologyr-v126">posologyr v1.2.6<a class="anchor" aria-label="anchor" href="#posologyr-v126"></a></h2><p class="text-muted">CRAN release: 2024-08-27</p>
 <ul><li>Use undirected quotes when quoting in the DESCRIPTION (as requested by CRAN)</li>
 <li>CRAN test times have been reduced by using an environment variable to identify the development machine, which now determines whether less critical tests are executed (as requested by CRAN)</li>
@@ -76,16 +82,19 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fix-1-2-5">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-1-2-5"></a></h3>
-<ul><li>Fix a bug where <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code>, <code><a href="../reference/poso_estim_sir.html">poso_estim_sir()</a></code> and <code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code> failed for models featuring a single parameter with IIV.</li></ul></div>
+<ul><li>Fix a bug where <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code>, <code><a href="../reference/poso_estim_sir.html">poso_estim_sir()</a></code> and <code><a href="../reference/poso_simu_pop.html">poso_simu_pop()</a></code> failed for models featuring a single parameter with IIV.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.4" id="posologyr-v124">posologyr v1.2.4<a class="anchor" aria-label="anchor" href="#posologyr-v124"></a></h2><p class="text-muted">CRAN release: 2024-02-09</p>
-<ul><li>Add ability to use rxode2 ui models for the <code>poso_*</code> functions. Once the model has been parsed by <code>rxode2()</code> with this package the <code>model$posologyr</code> gives the list needed for <code>poso_*</code> functions</li></ul></div>
+<ul><li>Add ability to use rxode2 ui models for the <code>poso_*</code> functions. Once the model has been parsed by <code>rxode2()</code> with this package the <code>model$posologyr</code> gives the list needed for <code>poso_*</code> functions</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.3" id="posologyr-v123">posologyr v1.2.3<a class="anchor" aria-label="anchor" href="#posologyr-v123"></a></h2>
 <div class="section level3">
 <h3 id="bug-fix-1-2-3">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-1-2-3"></a></h3>
-<ul><li>Fix a bug in <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> and <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> where the returned estimate of the target value to be optimized against was always equal to zero.</li></ul></div>
+<ul><li>Fix a bug in <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> and <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> where the returned estimate of the target value to be optimized against was always equal to zero.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="documentation-1-2-3">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-3"></a></h3>
 <ul><li>The documentation for <code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, and <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code> now explicitly states the consequences of setting <code>tdm</code> to <code>TRUE</code>: which parameters are required, which parameters are ignored, and which parameters behave differently.</li>
@@ -96,7 +105,8 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.2" id="posologyr-v122">posologyr v1.2.2<a class="anchor" aria-label="anchor" href="#posologyr-v122"></a></h2><p class="text-muted">CRAN release: 2023-06-12</p>
-<ul><li>Relax the requirements of the NONMEM comparison test for time-varying covariates to account for computational differences observed with the alternative BLAS ATLAS on CRAN.</li></ul></div>
+<ul><li>Relax the requirements of the NONMEM comparison test for time-varying covariates to account for computational differences observed with the alternative BLAS ATLAS on CRAN.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.1" id="posologyr-v121">posologyr v1.2.1<a class="anchor" aria-label="anchor" href="#posologyr-v121"></a></h2><p class="text-muted">CRAN release: 2023-06-05</p>
 <ul><li>Add a reference to Kang et al. (2012) <a href="doi:10.4196/kjpp.2012.16.2.97" class="uri">doi:10.4196/kjpp.2012.16.2.97</a> in the DESCRIPTION (as requested by CRAN)</li>
@@ -125,7 +135,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="internal-changes-1-2-0">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-1-2-0"></a></h3>
-<ul><li>The description of the package is updated</li></ul></div>
+<ul><li>The description of the package is updated</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="posologyr-v110">posologyr v1.1.0<a class="anchor" aria-label="anchor" href="#posologyr-v110"></a></h2>
@@ -150,7 +161,8 @@
 <div class="section level3">
 <h3 id="additional-features-1-0-0">Additional features<a class="anchor" aria-label="anchor" href="#additional-features-1-0-0"></a></h3>
 <ul><li>
-<code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> provides an rxode2 model using MAP-EBE and the input dataset, with interpolation of covariates, to make plotting easier</li></ul></div>
+<code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code> provides an rxode2 model using MAP-EBE and the input dataset, with interpolation of covariates, to make plotting easier</li>
+</ul></div>
 <div class="section level3">
 <h3 id="internal-changes-1-0-0">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-1-0-0"></a></h3>
 <ul><li>RxODE import is updated to rxode2</li>
@@ -159,7 +171,8 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-0-0"></a></h3>
 <ul><li>
-<code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>, <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, and <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> no longer fail for models with IOV</li></ul></div>
+<code><a href="../reference/poso_time_cmin.html">poso_time_cmin()</a></code>, <code><a href="../reference/poso_dose_auc.html">poso_dose_auc()</a></code>, <code><a href="../reference/poso_dose_conc.html">poso_dose_conc()</a></code>, and <code><a href="../reference/poso_inter_cmin.html">poso_inter_cmin()</a></code> no longer fail for models with IOV</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="posologyr-v020">posologyr v0.2.0<a class="anchor" aria-label="anchor" href="#posologyr-v020"></a></h2>
