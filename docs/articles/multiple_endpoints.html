@@ -101,7 +101,7 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_warfarin_nlmixr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">ini</span><span class="op">(</span><span class="op">{</span></span>
-<span>      <span class="co">#Fixed effects: population estimates </span></span>
+<span>      <span class="co">#Fixed effects: population estimates</span></span>
 <span>      <span class="va">THETA_ktr</span><span class="op">=</span><span class="fl">0.106</span></span>
 <span>      <span class="va">THETA_ka</span><span class="op">=</span><span class="op">-</span><span class="fl">0.087</span></span>
 <span>      <span class="va">THETA_cl</span><span class="op">=</span><span class="op">-</span><span class="fl">2.03</span></span>
@@ -110,7 +110,7 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span>      <span class="va">THETA_ec50</span><span class="op">=</span><span class="fl">0.00724</span></span>
 <span>      <span class="va">THETA_kout</span><span class="op">=</span><span class="op">-</span><span class="fl">2.9</span></span>
 <span>      <span class="va">THETA_e0</span><span class="op">=</span><span class="fl">4.57</span></span>
-<span>      </span>
+<span></span>
 <span>      <span class="co">#Random effects: inter-individual variability</span></span>
 <span>      <span class="va">ETA_ktr</span> <span class="op">~</span> <span class="fl">1.024695</span></span>
 <span>      <span class="va">ETA_ka</span> <span class="op">~</span> <span class="fl">0.9518403</span></span>
@@ -120,7 +120,7 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span>      <span class="va">ETA_ec50</span> <span class="op">~</span> <span class="fl">0.7204165</span></span>
 <span>      <span class="va">ETA_kout</span> <span class="op">~</span> <span class="fl">0.3563706</span></span>
 <span>      <span class="va">ETA_e0</span> <span class="op">~</span> <span class="fl">0.2660827</span></span>
-<span>      </span>
+<span></span>
 <span>      <span class="co">#Unexplained residual variability</span></span>
 <span>      <span class="va">cp.sd</span> <span class="op">&lt;-</span> <span class="fl">0.144</span></span>
 <span>      <span class="va">cp.prop.sd</span> <span class="op">&lt;-</span> <span class="fl">0.15</span></span>
@@ -136,27 +136,29 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span>      <span class="va">ec50</span> <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">THETA_ec50</span> <span class="op">+</span> <span class="va">ETA_ec50</span><span class="op">)</span></span>
 <span>      <span class="va">kout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">THETA_kout</span> <span class="op">+</span> <span class="va">ETA_kout</span><span class="op">)</span></span>
 <span>      <span class="va">e0</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">THETA_e0</span> <span class="op">+</span> <span class="va">ETA_e0</span><span class="op">)</span></span>
-<span>      </span>
+<span></span>
 <span>      <span class="co">#Structural model defined using ordinary differential equations (ODE)</span></span>
 <span>      <span class="va">DCP</span> <span class="op">=</span> <span class="va">center</span><span class="op">/</span><span class="va">v</span></span>
 <span>      <span class="va">PD</span><span class="op">=</span><span class="fl">1</span><span class="op">-</span><span class="va">emax</span><span class="op">*</span><span class="va">DCP</span><span class="op">/</span><span class="op">(</span><span class="va">ec50</span><span class="op">+</span><span class="va">DCP</span><span class="op">)</span></span>
-<span>      </span>
+<span></span>
 <span>      <span class="fu">effect</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">=</span> <span class="va">e0</span></span>
 <span>      <span class="va">kin</span> <span class="op">=</span> <span class="va">e0</span><span class="op">*</span><span class="va">kout</span></span>
-<span>      </span>
+<span></span>
 <span>      <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">depot</span><span class="op">)</span> <span class="op">=</span> <span class="op">-</span><span class="va">ktr</span> <span class="op">*</span> <span class="va">depot</span></span>
 <span>      <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">gut</span><span class="op">)</span> <span class="op">=</span>  <span class="va">ktr</span> <span class="op">*</span> <span class="va">depot</span> <span class="op">-</span><span class="va">ka</span> <span class="op">*</span> <span class="va">gut</span></span>
 <span>      <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">center</span><span class="op">)</span> <span class="op">=</span>  <span class="va">ka</span> <span class="op">*</span> <span class="va">gut</span> <span class="op">-</span> <span class="va">cl</span> <span class="op">/</span> <span class="va">v</span> <span class="op">*</span> <span class="va">center</span></span>
 <span>      <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">effect</span><span class="op">)</span> <span class="op">=</span> <span class="va">kin</span><span class="op">*</span><span class="va">PD</span> <span class="op">-</span><span class="va">kout</span><span class="op">*</span><span class="va">effect</span></span>
-<span>      </span>
+<span></span>
 <span>      <span class="va">cp</span> <span class="op">=</span> <span class="va">center</span> <span class="op">/</span> <span class="va">v</span></span>
 <span>      <span class="va">pca</span> <span class="op">=</span> <span class="va">effect</span></span>
-<span>      </span>
+<span></span>
 <span>      <span class="co">#Model for unexplained residual variability</span></span>
 <span>      <span class="va">cp</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">cp.sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">cp.prop.sd</span><span class="op">)</span></span>
 <span>      <span class="va">pca</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">pca.sd</span><span class="op">)</span></span>
 <span>    <span class="op">}</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span></code></pre></div>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">mod_warfarin_nlmixr</span> <span class="op">&lt;-</span> <span class="fu">mod_warfarin_nlmixr</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-first-subject-from-the-warfarin-dataset">data: first subject from the warfarin dataset<a class="anchor" aria-label="anchor" href="#data-first-subject-from-the-warfarin-dataset"></a>
@@ -187,13 +189,12 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <code><a href="../reference/poso_estim_map.html">poso_estim_map()</a></code></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_warf_01</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">warf_01</span>,<span class="va">mod_warfarin_nlmixr</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span>
 <span><span class="va">map_warf_01</span></span>
 <span><span class="co">#&gt; $eta</span></span>
 <span><span class="co">#&gt;     ETA_ktr      ETA_ka      ETA_cl       ETA_v    ETA_emax    ETA_ec50 </span></span>
-<span><span class="co">#&gt; -0.32052193 -0.54227235  0.79432182 -0.02986447  0.02383273 -0.28133882 </span></span>
+<span><span class="co">#&gt; -0.32297013 -0.54003647  0.79433822 -0.02976759  0.02346678 -0.28140889 </span></span>
 <span><span class="co">#&gt;    ETA_kout      ETA_e0 </span></span>
-<span><span class="co">#&gt; -0.30872226 -0.08386652 </span></span>
+<span><span class="co">#&gt; -0.30867037 -0.08384263 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $model</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Solved rxode2 object ──</span></span></span>
@@ -201,11 +202,11 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span><span class="co">#&gt;   THETA_ktr    THETA_ka    THETA_cl     THETA_v  THETA_emax  THETA_ec50 </span></span>
 <span><span class="co">#&gt;  0.10600000 -0.08700000 -2.03000000  2.07000000  3.40000000  0.00724000 </span></span>
 <span><span class="co">#&gt;  THETA_kout    THETA_e0       cp.sd  cp.prop.sd      pca.sd     ETA_ktr </span></span>
-<span><span class="co">#&gt; -2.90000000  4.57000000  0.14400000  0.15000000  3.91000000 -0.32052193 </span></span>
+<span><span class="co">#&gt; -2.90000000  4.57000000  0.14400000  0.15000000  3.91000000 -0.32297013 </span></span>
 <span><span class="co">#&gt;      ETA_ka      ETA_cl       ETA_v    ETA_emax    ETA_ec50    ETA_kout </span></span>
-<span><span class="co">#&gt; -0.54227235  0.79432182 -0.02986447  0.02383273 -0.28133882 -0.30872226 </span></span>
+<span><span class="co">#&gt; -0.54003647  0.79433822 -0.02976759  0.02346678 -0.28140889 -0.30867037 </span></span>
 <span><span class="co">#&gt;      ETA_e0 </span></span>
-<span><span class="co">#&gt; -0.08386652 </span></span>
+<span><span class="co">#&gt; -0.08384263 </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Initial Conditions (</span><span style="color: #0000BB; font-weight: bold;">$inits</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt;  depot    gut center effect </span></span>
 <span><span class="co">#&gt;      0      0      0      0 </span></span>
@@ -213,12 +214,12 @@ documentation (<a href="https://nlmixr2.org/articles/multiple-endpoints.html" cl
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,451 × 18</span></span></span>
 <span><span class="co">#&gt;    time   ktr    ka    cl     v  emax  ec50   kout    e0    DCP    PD   kin</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0   0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0      1      3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.1 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.026<span style="text-decoration: underline;">7</span> 0.967  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.2 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.102  0.885  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.3 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.219  0.783  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.373  0.681  3.59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5 0.807 0.533 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.557  0.590  3.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   0   0.805 0.534 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0      1      3.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   0.1 0.805 0.534 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.026<span style="text-decoration: underline;">7</span> 0.967  3.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   0.2 0.805 0.534 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.102  0.885  3.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   0.3 0.805 0.534 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.219  0.783  3.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   0.4 0.805 0.534 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.373  0.681  3.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   0.5 0.805 0.534 0.291  7.69 0.968 0.760 0.040<span style="text-decoration: underline;">4</span>  88.8 0.557  0.590  3.59</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,445 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: cp &lt;dbl&gt;, pca &lt;dbl&gt;, depot &lt;dbl&gt;, gut &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   center &lt;dbl&gt;, effect &lt;dbl&gt;</span></span></span>
@@ -258,7 +259,7 @@ plotted</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
