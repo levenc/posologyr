@@ -22,7 +22,7 @@ library(posologyr)
 ```
 
 # Introduction
-A different error model can be defined for multiple endpoints models (eg. 
+A different error model can be defined for multiple endpoints models (eg.
 PK-PD, parent-metabolite, blood-urine...).
 
 An example can be seen below, utilizing the warfarin data and model (provided by Tomoo Funaki and Nick Holford) from the nlmixr documentation (https://nlmixr2.org/articles/multiple-endpoints.html).
@@ -32,7 +32,7 @@ An example can be seen below, utilizing the warfarin data and model (provided by
 ```{r}
 mod_warfarin_nlmixr <- function() {
     ini({
-      #Fixed effects: population estimates 
+      #Fixed effects: population estimates
       THETA_ktr=0.106
       THETA_ka=-0.087
       THETA_cl=-2.03
@@ -41,7 +41,7 @@ mod_warfarin_nlmixr <- function() {
       THETA_ec50=0.00724
       THETA_kout=-2.9
       THETA_e0=4.57
-      
+
       #Random effects: inter-individual variability
       ETA_ktr ~ 1.024695
       ETA_ka ~ 0.9518403
@@ -51,7 +51,7 @@ mod_warfarin_nlmixr <- function() {
       ETA_ec50 ~ 0.7204165
       ETA_kout ~ 0.3563706
       ETA_e0 ~ 0.2660827
-      
+
       #Unexplained residual variability
       cp.sd <- 0.144
       cp.prop.sd <- 0.15
@@ -67,27 +67,29 @@ mod_warfarin_nlmixr <- function() {
       ec50 =  exp(THETA_ec50 + ETA_ec50)
       kout = exp(THETA_kout + ETA_kout)
       e0 = exp(THETA_e0 + ETA_e0)
-      
+
       #Structural model defined using ordinary differential equations (ODE)
       DCP = center/v
       PD=1-emax*DCP/(ec50+DCP)
-      
+
       effect(0) = e0
       kin = e0*kout
-      
+
       d/dt(depot) = -ktr * depot
       d/dt(gut) =  ktr * depot -ka * gut
       d/dt(center) =  ka * gut - cl / v * center
       d/dt(effect) = kin*PD -kout*effect
-      
+
       cp = center / v
       pca = effect
-      
+
       #Model for unexplained residual variability
       cp ~ add(cp.sd) + prop(cp.prop.sd)
       pca ~ add(pca.sd)
     })
-  }
+}
+
+mod_warfarin_nlmixr <- mod_warfarin_nlmixr()
 ```
 
 ## data: first subject from the warfarin dataset
