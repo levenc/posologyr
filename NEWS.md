@@ -1,3 +1,6 @@
+# posologyr v1.2.8
+* Relax the requirements of a dose optimization test using TDM data to account for computational differences observed with the alternative BLAS ATLAS on CRAN.
+
 # posologyr v1.2.7
 
 * All vignettes are moved to articles
@@ -52,7 +55,7 @@ with interpolation of covariates, to make plotting easier
 
 ## Additional features
 * `poso_estim_map()`, `poso_estim_sir()` and `poso_estim_mcmc()` can now estimate individual PK profiles for multiple endpoints models (eg. PK-PD, parent-metabolite, blood-CSF...), using a different residual error model for each endpoint.
-* `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` now allow you to select the end point of interest for which you want to optimise, provided it is defined in the model.
+* `poso_time_cmin()`, `poso_dose_conc()`, `poso_dose_auc()` and `poso_inter_cmin()` now allow you to select the end point of interest for which you want to optimize, provided it is defined in the model.
 
 ## Documentation
 * `vignette("a_priori_dosing")` illustrates a priori dose selection

@@ -56,6 +56,8 @@ mod_vancomycin_Goti2018 <- function() {
       Cc ~ add(add.sd) + prop(prop.sd) + combined1()
     })
   }
+
+mod_vancomycin_Goti2018 <- mod_vancomycin_Goti2018()
 ```
 
 # Discontinuous intravenous infusion

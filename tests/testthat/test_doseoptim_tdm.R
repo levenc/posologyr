@@ -85,7 +85,7 @@ test_that("Optimization results do not deviate from known values
                                         tdm=TRUE,time_c = 105,time_dose = 104,
                                         target_conc = 60,duration = 1)$dose,
                          322.9,
-                         tolerance=1e-3)
+                         tolerance=1)
             expect_equal(poso_dose_auc(df_patient_dap_int,
                                        mod_daptomycin_Dvorchik_AAC2004,
                                        tdm=TRUE,time_auc = 24,time_dose = 104,

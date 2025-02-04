@@ -71,6 +71,8 @@ mod_ganciclovir_Caldes_2009 <- function() {
     Cc ~ add(add.sd) + prop(prop.sd) + combined1()
   })
 }
+
+mod_ganciclovir_Caldes_2009 <- mod_ganciclovir_Caldes_2009()
 ```
 
 # Intravenous ganciclovir

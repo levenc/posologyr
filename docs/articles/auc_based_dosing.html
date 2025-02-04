@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="AUC-based dose selection">
 </head>
 <body>
@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,7 +125,9 @@ using the data from therapeutic drug monitoring (TDM).</p>
 <span>      <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">Cc</span></span>
 <span>      <span class="va">Cc</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">add.sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop.sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">combined1</span><span class="op">(</span><span class="op">)</span></span>
 <span>    <span class="op">}</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span></code></pre></div>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span><span class="va">mod_vancomycin_Goti2018</span> <span class="op">&lt;-</span> <span class="fu">mod_vancomycin_Goti2018</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="discontinuous-intravenous-infusion">Discontinuous intravenous infusion<a class="anchor" aria-label="anchor" href="#discontinuous-intravenous-infusion"></a>
@@ -155,8 +157,7 @@ the patient records.</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patB_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientB</span>,</span>
-<span>                           prior_model<span class="op">=</span><span class="va">mod_vancomycin_Goti2018</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span></code></pre></div>
+<span>                           prior_model<span class="op">=</span><span class="va">mod_vancomycin_Goti2018</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
@@ -191,12 +192,12 @@ using the usual R <code>data.frame</code> syntax.</p>
 <code class="sourceCode R"><span><span class="co">#AUC 0_24</span></span>
 <span><span class="va">AUC_map_first_dose</span> <span class="op">&lt;-</span> <span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">24</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">AUC_map_first_dose</span></span>
-<span><span class="co">#&gt; [1] 337.8965</span></span>
+<span><span class="co">#&gt; [1] 337.8963</span></span>
 <span></span>
 <span><span class="co">#AUC 24_48</span></span>
 <span><span class="va">AUC_map_second_dose</span> <span class="op">&lt;-</span> <span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">AUC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">patB_map</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">48</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span> <span class="va">AUC_map_first_dose</span></span>
 <span><span class="va">AUC_map_second_dose</span></span>
-<span><span class="co">#&gt; [1] 325.3072</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 325.3071</span></span></code></pre></div>
 <p>The current dosage does not meet the target AUC.</p>
 </div>
 <div class="section level3">
@@ -212,7 +213,6 @@ estimated using TDM data.</p>
 <span>              time_dose <span class="op">=</span> <span class="fl">48</span>,         <span class="co">#48 h: immediately following the last observation</span></span>
 <span>              duration<span class="op">=</span><span class="fl">2</span>,             <span class="co">#infused over 2 h</span></span>
 <span>              target_auc<span class="op">=</span><span class="fl">400</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span>
 <span><span class="co">#&gt; $dose</span></span>
 <span><span class="co">#&gt; [1] 1411.593</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -224,9 +224,9 @@ estimated using TDM data.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add.sd prop.sd     ETA_Cl     ETA_Vc</span></span>
-<span><span class="co">#&gt; 4      4.5     58.4     38.4     6.5    3.4   0.227 0.08208203 0.06122374</span></span>
+<span><span class="co">#&gt; 4      4.5     58.4     38.4     6.5    3.4   0.227 0.08208197 0.06122329</span></span>
 <span><span class="co">#&gt;       ETA_Vp CLCREAT DIAL WT</span></span>
-<span><span class="co">#&gt; 4 0.06285943      65    0 70</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.06285911      65    0 70</span></span></code></pre></div>
 <p>The optimal dose estimated for the next infusion is 1411 mg.</p>
 </div>
 <div class="section level3">
@@ -246,7 +246,7 @@ enough administrations (e.g. 11 consecutive administrations, with
 <span>              duration<span class="op">=</span><span class="fl">2</span>,</span>
 <span>              target_auc<span class="op">=</span><span class="fl">400</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 1198.266</span></span>
+<span><span class="co">#&gt; [1] 1198.269</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -256,9 +256,9 @@ enough administrations (e.g. 11 consecutive administrations, with
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add.sd prop.sd     ETA_Cl     ETA_Vc</span></span>
-<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208199 0.06122337</span></span>
-<span><span class="co">#&gt;      ETA_Vp CLCREAT DIAL WT</span></span>
-<span><span class="co">#&gt; 1 0.0628591      65    0 70</span></span></code></pre></div>
+<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208435 0.06121699</span></span>
+<span><span class="co">#&gt;       ETA_Vp CLCREAT DIAL WT</span></span>
+<span><span class="co">#&gt; 1 0.06286203      65    0 70</span></span></code></pre></div>
 <p>The optimal maintenance dose is 1200 mg.</p>
 </div>
 </div>
@@ -288,9 +288,9 @@ equal to the <code>interdose_interval</code>.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q add.sd prop.sd     ETA_Cl     ETA_Vc</span></span>
-<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208202 0.06122453</span></span>
+<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5    3.4   0.227 0.08208197 0.06122336</span></span>
 <span><span class="co">#&gt;       ETA_Vp CLCREAT DIAL WT</span></span>
-<span><span class="co">#&gt; 1 0.06285936      65    0 70</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 0.06285918      65    0 70</span></span></code></pre></div>
 <p>The optimal maintenance dose is also 1200 mg / 24 h for a continuous
 intravenous infusion.</p>
 </div>
@@ -305,7 +305,7 @@ intravenous infusion.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

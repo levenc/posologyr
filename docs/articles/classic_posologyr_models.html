@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Classic posologyr models">
 </head>
 <body>
@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -184,8 +184,7 @@ the optimization function <code><a href="../reference/poso_dose_auc.html">poso_d
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;</span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;</span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span>    <span class="op">=</span>   <span class="va">Cc</span>;</span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span></code></pre></div>
+<span>  <span class="op">}</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="error_model">error_model<a class="anchor" aria-label="anchor" href="#error_model"></a>
@@ -240,7 +239,7 @@ the <code>DVID</code> column of the dataset.</p>
 <p>The variance-covariance matrix of the random effects (ETA) for the
 individual model. A symmetric matrix. The names must match the names
 used in <code>ppk_model</code>. An easy way to define it is using
-<code><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri::lotri()</a></code>.</p>
+<code><a href="https://nlmixr2.github.io/lotri/reference/lotri.html" class="external-link">lotri::lotri()</a></code>.</p>
 <p>The estimates of the variances of the random effects can be given
 under different parameterizations depending on the authors.</p>
 <ul>
@@ -282,7 +281,7 @@ as CV%. They must be converted to variances prior to their inclusion in
 </tbody>
 </table>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">omega</span> <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Vp</span> <span class="op">+</span> <span class="va">ETA_Q</span> <span class="op">~</span></span>
+<code class="sourceCode R"><span><span class="va">omega</span> <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/lotri/reference/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Vp</span> <span class="op">+</span> <span class="va">ETA_Q</span> <span class="op">~</span></span>
 <span>                          <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.147</span>,</span>
 <span>                            <span class="fl">0</span>    ,  <span class="fl">0.510</span> ,</span>
 <span>                            <span class="fl">0</span>    ,  <span class="fl">0</span>     ,   <span class="fl">0.282</span>,</span>
@@ -302,7 +301,7 @@ standard deviation scale, either in a vector:</p>
 <code class="sourceCode R"><span><span class="va">sigma</span>       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span></span></code></pre></div>
 <p>in a matrix:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sigma</span>       <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">prop</span> <span class="op">+</span> <span class="va">add</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.227</span>,<span class="fl">0.0</span>,<span class="fl">3.4</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sigma</span>       <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/lotri/reference/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">prop</span> <span class="op">+</span> <span class="va">add</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.227</span>,<span class="fl">0.0</span>,<span class="fl">3.4</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>or in a named list (for multiple endpoints):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sigma</span>       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -318,9 +317,9 @@ standard deviation scale, either in a vector:</p>
 (IOV). The variance-covariance matrix of the random effects (KAPPA) for
 the IOV. As for the <code>omega</code> matrix, the names must match the
 names used in <code>ppk_model</code>. An easy way to define it is using
-<code><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri::lotri()</a></code>.</p>
+<code><a href="https://nlmixr2.github.io/lotri/reference/lotri.html" class="external-link">lotri::lotri()</a></code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pi_matrix</span> <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">KAPPA_Cl</span> <span class="op">+</span> <span class="va">KAPPA_Vc</span> <span class="op">~</span></span>
+<code class="sourceCode R"><span><span class="va">pi_matrix</span> <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/lotri/reference/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">KAPPA_Cl</span> <span class="op">+</span> <span class="va">KAPPA_Vc</span> <span class="op">~</span></span>
 <span>      <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1934626</span>,</span>
 <span>        <span class="fl">0.00</span>     ,  <span class="fl">0.05783106</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -363,30 +362,26 @@ pi_matrix is omitted.</p>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
 <span>  theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>THETA_Cl<span class="op">=</span><span class="fl">4.5</span>, THETA_Vc<span class="op">=</span><span class="fl">58.4</span>, THETA_Vp<span class="op">=</span><span class="fl">38.4</span>,THETA_Q<span class="op">=</span><span class="fl">6.5</span><span class="op">)</span>,</span>
-<span>  omega <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lotri/man/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Vp</span> <span class="op">+</span> <span class="va">ETA_Q</span> <span class="op">~</span></span>
+<span>  omega <span class="op">=</span> <span class="fu">lotri</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/lotri/reference/lotri.html" class="external-link">lotri</a></span><span class="op">(</span><span class="op">{</span><span class="va">ETA_Cl</span> <span class="op">+</span> <span class="va">ETA_Vc</span> <span class="op">+</span> <span class="va">ETA_Vp</span> <span class="op">+</span> <span class="va">ETA_Q</span> <span class="op">~</span></span>
 <span>                          <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.147</span>,</span>
 <span>                            <span class="fl">0</span>    ,  <span class="fl">0.510</span> ,</span>
 <span>                            <span class="fl">0</span>    ,  <span class="fl">0</span>     ,   <span class="fl">0.282</span>,</span>
 <span>                            <span class="fl">0</span>    ,  <span class="fl">0</span>     ,   <span class="fl">0</span>    ,    <span class="fl">0</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,</span>
 <span>  sigma       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span>,</span>
-<span>  covariates  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLCREAT"</span>,<span class="st">"WT"</span>,<span class="st">"DIAL"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’</span></span></code></pre></div>
+<span>  covariates  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLCREAT"</span>,<span class="st">"WT"</span>,<span class="st">"DIAL"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="resulting-r-object">Resulting R object<a class="anchor" aria-label="anchor" href="#resulting-r-object"></a>
 </h4>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_vancomyin_Goti2018</span></span>
 <span><span class="co">#&gt; $ppk_model</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">rxode2 </span>NA model named <span style="color: #BBBB00; font-weight: bold;">rx_bce7176cfa18100af62e71ae38d3cd48</span> model (<span style="color: #00BB00;">✔</span> <span style="color: #00BB00; font-weight: bold;">ready</span>). </span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">rxode2 </span>NA model named <span style="color: #BBBB00; font-weight: bold;">rx_aee9fd7b157fc418379fd45e41a32a37</span> model (<span style="color: #00BB00;">✔</span> <span style="color: #00BB00; font-weight: bold;">ready</span>). </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">$state</span>: centr, periph, AUC</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">$params</span>: THETA_Cl, CLCREAT, DIAL, THETA_Vc, WT, THETA_Vp, THETA_Q, ETA_Cl, ETA_Vc, ETA_Vp</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">$lhs</span>: TVCl, TVVc, TVVp, TVQ, Cl, Vc, Vp, Q, ke, k12, k21, Cc</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $error_model</span></span>
-<span><span class="co">#&gt; function(f,sigma){</span></span>
-<span><span class="co">#&gt;     g &lt;- sigma[1] + sigma[2]*f</span></span>
-<span><span class="co">#&gt;     return(g)</span></span>
-<span><span class="co">#&gt;   }</span></span>
+<span><span class="co">#&gt; &lt;srcref: file "" chars 20:17 to 23:3&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $theta</span></span>
 <span><span class="co">#&gt; THETA_Cl THETA_Vc THETA_Vp  THETA_Q </span></span>
@@ -419,7 +414,7 @@ pi_matrix is omitted.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

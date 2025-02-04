@@ -58,6 +58,8 @@ mod_amikacin_Burdet2015 <- function() {
       Cp ~ add(add_sd) + prop(prop_sd) + combined1()
     })
   }
+
+mod_amikacin_Burdet2015 <- mod_amikacin_Burdet2015()
 ```
 
 # A priori dose selection
