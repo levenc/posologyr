@@ -143,3 +143,8 @@ poso_dose_auc(patient,mod_ganciclovir_Caldes_2009,tdm=TRUE,
               cmt_dose = "depot")
 ```
 Keeping the default value of cmt_dose, which is the first compartment declared in the PK model, would also work here.
+
+> **Note** in this case the estimated dose should be corrected by a factor of 1/0.72 as the Caldès 2009 paper states: 
+>
+>
+>*"As NONMEM estimated the pharmacokinetic parameters of ganciclovir, valganciclovir doses were converted to their equivalent ganciclovir content by multiplying the valganciclovir dose by 0.720 (corresponding to the ratio between the molecular weights of ganciclovir and valganciclovir)."*

@@ -163,7 +163,8 @@ the target for a peak concentration; it is &lt; 60 mg/L.</p>
 estimated.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patA_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patientA</span>,</span>
-<span>                           prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span><span class="op">)</span></span></code></pre></div>
+<span>                           prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span><span class="op">)</span></span>
+<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-the-individual-pharmacokinetic-profile">Plot the individual pharmacokinetic profile<a class="anchor" aria-label="anchor" href="#plot-the-individual-pharmacokinetic-profile"></a>
@@ -186,6 +187,7 @@ of the time needed before reaching the target Cmin can be updated.</p>
 <span>               prior_model<span class="op">=</span><span class="va">mod_amikacin_Burdet2015</span>,</span>
 <span>               tdm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>               target_cmin <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’</span></span>
 <span><span class="co">#&gt; $time</span></span>
 <span><span class="co">#&gt; [1] 33.9</span></span>
 <span><span class="co">#&gt; </span></span>

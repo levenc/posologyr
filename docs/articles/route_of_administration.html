@@ -188,8 +188,8 @@ gives the AUC 0-24 after the last dose. Using data.table is optional,
 but the syntax is more convenient.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">144</span>,<span class="va">AUC</span><span class="op">]</span> <span class="op">-</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">120</span>,<span class="va">AUC</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">144</span>,<span class="va">AUC</span><span class="op">]</span> <span class="op">-</span> </span>
+<span>  <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">120</span>,<span class="va">AUC</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 72.19084</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -249,6 +249,15 @@ an administration of oral valganciclovir by setting
 <span><span class="co">#&gt; 1 0.05256457 -0.4773339 -9.298227e-07 -1.072357e-07    25</span></span></code></pre></div>
 <p>Keeping the default value of cmt_dose, which is the first compartment
 declared in the PK model, would also work here.</p>
+<blockquote>
+<p><strong>Note</strong> in this case the estimated dose should be
+corrected by a factor of 1/0.72 as the Caldès 2009 paper states:</p>
+<p><em>“As NONMEM estimated the pharmacokinetic parameters of
+ganciclovir, valganciclovir doses were converted to their equivalent
+ganciclovir content by multiplying the valganciclovir dose by 0.720
+(corresponding to the ratio between the molecular weights of ganciclovir
+and valganciclovir).”</em></p>
+</blockquote>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
