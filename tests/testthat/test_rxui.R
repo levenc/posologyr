@@ -338,7 +338,7 @@ test_that("+var() tests", {
     })
   }
 
-  mod_warfarin_nlmixr <- try(mod_warfarin_nlmixr())
+  mod_warfarin_nlmixr <- try(mod_warfarin_nlmixr(), silent=TRUE)
 
   if (inherits(mod_warfarin_nlmixr, "rxUi")) {
 
