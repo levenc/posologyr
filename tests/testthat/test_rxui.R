@@ -284,4 +284,122 @@ test_that("warfarin example", {
                map_warf_01$eta, tolerance =1e-4)
 
 })
+test_that("+var() tests", {
+
+  library(rxode2)
+
+  mod_warfarin_nlmixr <- function() {
+    ini({
+      THETA_ktr=0.106
+      THETA_ka=-0.087
+      THETA_cl=-2.03
+      THETA_v=2.07
+      THETA_emax=3.4
+      THETA_ec50=0.00724
+      THETA_kout=-2.9
+      THETA_e0=4.57
+      ETA_ktr ~ 1.024695
+      ETA_ka ~ 0.9518403
+      ETA_cl ~ 0.5300943
+      ETA_v ~ 0.4785394
+      ETA_emax ~ 0.7134424
+      ETA_ec50 ~ 0.7204165
+      ETA_kout ~ 0.3563706
+      ETA_e0 ~ 0.2660827
+      cp.sd <- 0.144^2
+      cp.prop.sd <- 0.15^2
+      pca.sd <- 3.91
+    })
+    model({
+      ktr <- exp(THETA_ktr + ETA_ktr)
+      ka <- exp(THETA_ka + ETA_ka)
+      cl <- exp(THETA_cl + ETA_cl)
+      v <- exp(THETA_v + ETA_v)
+      emax = expit(THETA_emax + ETA_emax)
+      ec50 =  exp(THETA_ec50 + ETA_ec50)
+      kout = exp(THETA_kout + ETA_kout)
+      e0 = exp(THETA_e0 + ETA_e0)
+      ##
+      DCP = center/v
+      PD=1-emax*DCP/(ec50+DCP)
+      ##
+      effect(0) = e0
+      kin = e0*kout
+      ##
+      d/dt(depot) = -ktr * depot
+      d/dt(gut) =  ktr * depot -ka * gut
+      d/dt(center) =  ka * gut - cl / v * center
+      d/dt(effect) = kin*PD -kout*effect
+      ##
+      cp = center / v
+      pca = effect
+      cp ~ add(cp.sd) + prop(cp.prop.sd) + var()
+      pca ~ add(pca.sd)
+    })
+  }
+
+  mod_warfarin_nlmixr <- try(mod_warfarin_nlmixr())
+
+  if (inherits(mod_warfarin_nlmixr, "rxUi")) {
+
+    expect_equal(mod_warfarin_nlmixr$posologyr_sigma,
+                 list(cp = c(cp.sd = 0.144, cp.prop.sd = 0.15), pca = c(pca.sd = 3.91)))
+
+    mod_warfarin_nlmixr <- function() {
+      ini({
+        THETA_ktr=0.106
+        THETA_ka=-0.087
+        THETA_cl=-2.03
+        THETA_v=2.07
+        THETA_emax=3.4
+        THETA_ec50=0.00724
+        THETA_kout=-2.9
+        THETA_e0=4.57
+        ETA_ktr ~ 1.024695
+        ETA_ka ~ 0.9518403
+        ETA_cl ~ 0.5300943
+        ETA_v ~ 0.4785394
+        ETA_emax ~ 0.7134424
+        ETA_ec50 ~ 0.7204165
+        ETA_kout ~ 0.3563706
+        ETA_e0 ~ 0.2660827
+        cp.prop.sd <- 0.15^2
+        pca.sd <- 3.91^2
+      })
+      model({
+        ktr <- exp(THETA_ktr + ETA_ktr)
+        ka <- exp(THETA_ka + ETA_ka)
+        cl <- exp(THETA_cl + ETA_cl)
+        v <- exp(THETA_v + ETA_v)
+        emax = expit(THETA_emax + ETA_emax)
+        ec50 =  exp(THETA_ec50 + ETA_ec50)
+        kout = exp(THETA_kout + ETA_kout)
+        e0 = exp(THETA_e0 + ETA_e0)
+        ##
+        DCP = center/v
+        PD=1-emax*DCP/(ec50+DCP)
+        ##
+        effect(0) = e0
+        kin = e0*kout
+        ##
+        d/dt(depot) = -ktr * depot
+        d/dt(gut) =  ktr * depot -ka * gut
+        d/dt(center) =  ka * gut - cl / v * center
+        d/dt(effect) = kin*PD -kout*effect
+        ##
+        cp = center / v
+        pca = effect
+        cp ~  prop(cp.prop.sd)  + var()
+        pca ~ add(pca.sd) + var()
+      })
+    }
+
+    mod_warfarin_nlmixr <- mod_warfarin_nlmixr()
+
+    expect_equal(mod_warfarin_nlmixr$posologyr_sigma,
+                 list(cp = c(cp.prop.sd = 0.15), pca = c(pca.sd = 3.91)))
+
+  }
+
+})
 }
