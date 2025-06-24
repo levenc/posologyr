@@ -284,8 +284,10 @@ test_that("warfarin example", {
                map_warf_01$eta, tolerance =1e-4)
 
 })
-test_that("+var() tests", {
+}
 
+test_that("+var() tests", {
+  skip_on_cran()
   library(rxode2)
 
   mod_warfarin_nlmixr <- function() {
@@ -339,7 +341,7 @@ test_that("+var() tests", {
   }
 
   mod_warfarin_nlmixr <- try(mod_warfarin_nlmixr(), silent=TRUE)
-
+  skip_if(inherits(mod_warfarin_nlmixr, "try-error"))
   if (inherits(mod_warfarin_nlmixr, "rxUi")) {
 
     expect_equal(mod_warfarin_nlmixr$posologyr_sigma,
@@ -402,4 +404,3 @@ test_that("+var() tests", {
   }
 
 })
-}
