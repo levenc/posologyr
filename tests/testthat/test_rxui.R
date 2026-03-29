@@ -277,7 +277,7 @@ test_that("warfarin example", {
                                "cp","pca","cp","pca","cp","pca","pca","pca","pca"),
                         EVID=c(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
                         AMT=c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-
+set.seed(-1)
   map_warf_01  <- poso_estim_map(warf_01,mod_warfarin_nlmixr)
 
   expect_equal(c(ETA_ktr = -0.434704890568383, ETA_ka = -0.694024512420889, ETA_cl = 0.823372753994899, ETA_v = -0.0230522657927063, ETA_emax = 0.0684548537529647, ETA_ec50 = 0.141904594137433, ETA_kout = -0.198702717691606, ETA_e0 = -0.123821088809355),

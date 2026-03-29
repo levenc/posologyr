@@ -1,3 +1,7 @@
+# posologyr v1.2.8.999
+## Bug fix
+* Fix a bug where `poso_estim_map()`, and any other function using the internal `objective_function()` would fail when some observations were 'NA', that is when EVID was 0 and DV was 'NA' on the same row. It still fails, but now the error message is nicer, and more explicit: the bug was the lack of a proper error message. 
+
 # posologyr v1.2.8
 * Relax the requirements of a dose optimization test using TDM data to account for computational differences observed with the alternative BLAS ATLAS on CRAN.
 
