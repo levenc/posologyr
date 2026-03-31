@@ -24,7 +24,7 @@ library(posologyr)
 # Introduction
 The Caldès 2009 ganciclovir model (https://doi.org/10.1128/aac.00085-09) is capable of describing the pharmacokinetics of either injectable ganciclovir or oral valganciclovir.
 
-```{r model}
+```{r model, eval=FALSE}
 mod_ganciclovir_Caldes_2009 <- function() {
   ini({
     THETA_cl  <- 7.49
@@ -72,7 +72,51 @@ mod_ganciclovir_Caldes_2009 <- function() {
   })
 }
 
-mod_ganciclovir_Caldes_2009 <- mod_ganciclovir_Caldes_2009()
+```
+
+```{r classic-model, include=FALSE}
+mod_ganciclovir_Caldes_2009 <- list(
+ ppk_model   = rxode2::rxode({
+    TVcl  = THETA_cl*(ClCr/57);
+    TVv1  = THETA_v1;
+    TVcld = THETA_cld;
+    TVv2  = THETA_v2;
+    TVka  = THETA_ka;
+    TVbaf = THETA_baf;
+
+    cl  = TVcl*exp(ETA_cl);
+    v1  = TVv1*exp(ETA_v1);
+    cld = TVcld;
+    v2  = TVv2;
+    ka  = TVka*exp(ETA_ka);
+    baf = TVbaf*exp(ETA_baf);
+
+    k10 = cl/v1;
+    k12 = cld / v1;
+    k21 = cld / v2;
+    Cc = centr/v1;
+
+    d/dt(depot)  = -ka*depot
+    d/dt(centr)  =  ka*depot - k10*centr - k12*centr + k21*periph;
+    d/dt(periph) =                         k12*centr - k21*periph;
+    d/dt(AUC)    = Cc;
+
+    f(depot)=baf;
+    alag(depot)=0.382;
+ }),
+ error_model = function(f,sigma){
+   g <- sigma[1] + sigma[2]*f
+   return(g)
+ },
+ theta = c(THETA_cl=7.49, THETA_v1=31.90, THETA_cld=10.20,THETA_v2=32.0,
+           THETA_ka=0.895, THETA_baf=0.825),
+ omega = lotri::lotri({ETA_cl + ETA_v1 + ETA_ka + ETA_baf ~
+     c(0.107,
+       0     ,   0.227,
+       0     ,       0,   0.464,
+       0     ,       0,       0,    0.049)}),
+ covariates  = c("ClCr"),
+ sigma       = c(additive_a = 0.465, proportional_b = 0.143))
 ```
 
 # Intravenous ganciclovir

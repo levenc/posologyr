@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Classic posologyr models • posologyr</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8.999</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -184,8 +183,7 @@ the optimization function <code><a href="../reference/poso_dose_auc.html">poso_d
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">centr</span><span class="op">)</span>  <span class="op">=</span> <span class="op">-</span> <span class="va">ke</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">+</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;</span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">periph</span><span class="op">)</span> <span class="op">=</span>            <span class="op">+</span> <span class="va">k12</span><span class="op">*</span><span class="va">centr</span> <span class="op">-</span> <span class="va">k21</span><span class="op">*</span><span class="va">periph</span>;</span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span>    <span class="op">=</span>   <span class="va">Cc</span>;</span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’</span></span></code></pre></div>
+<span>  <span class="op">}</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="error_model">error_model<a class="anchor" aria-label="anchor" href="#error_model"></a>
@@ -369,15 +367,14 @@ pi_matrix is omitted.</p>
 <span>                            <span class="fl">0</span>    ,  <span class="fl">0</span>     ,   <span class="fl">0.282</span>,</span>
 <span>                            <span class="fl">0</span>    ,  <span class="fl">0</span>     ,   <span class="fl">0</span>    ,    <span class="fl">0</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>,</span>
 <span>  sigma       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>additive_a <span class="op">=</span> <span class="fl">3.4</span>, proportional_b <span class="op">=</span> <span class="fl">0.227</span><span class="op">)</span>,</span>
-<span>  covariates  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLCREAT"</span>,<span class="st">"WT"</span>,<span class="st">"DIAL"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’</span></span></code></pre></div>
+<span>  covariates  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLCREAT"</span>,<span class="st">"WT"</span>,<span class="st">"DIAL"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="resulting-r-object">Resulting R object<a class="anchor" aria-label="anchor" href="#resulting-r-object"></a>
 </h4>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_vancomyin_Goti2018</span></span>
 <span><span class="co">#&gt; $ppk_model</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">rxode2 </span>NA model named <span style="color: #BBBB00; font-weight: bold;">rx_f2346e92d1a39a5726b6e1f3c6a7e44a</span> model (<span style="color: #00BB00;">✔</span> <span style="color: #00BB00; font-weight: bold;">ready</span>). </span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">rxode2 </span>5.0.2 model named <span style="color: #BBBB00; font-weight: bold;">rx_a241be1361ac507b55074aafa5664597</span> model (<span style="color: #00BB00;">✔</span> <span style="color: #00BB00; font-weight: bold;">ready</span>). </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">$state</span>: centr, periph, AUC</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">$params</span>: THETA_Cl, CLCREAT, DIAL, THETA_Vc, WT, THETA_Vp, THETA_Q, ETA_Cl, ETA_Vc, ETA_Vp</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">$lhs</span>: TVCl, TVVc, TVVp, TVQ, Cl, Vc, Vp, Q, ke, k12, k21, Cc</span></span>
@@ -416,7 +413,7 @@ pi_matrix is omitted.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

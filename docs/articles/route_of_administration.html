@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Route of administration • posologyr</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">posologyr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8.999</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -139,9 +138,7 @@ valganciclovir.</p>
 <span></span>
 <span>    <span class="va">Cc</span> <span class="op">~</span> <span class="fu">add</span><span class="op">(</span><span class="va">add.sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop.sd</span><span class="op">)</span> <span class="op">+</span> <span class="fu">combined1</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">mod_ganciclovir_Caldes_2009</span> <span class="op">&lt;-</span> <span class="fu">mod_ganciclovir_Caldes_2009</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="intravenous-ganciclovir">Intravenous ganciclovir<a class="anchor" aria-label="anchor" href="#intravenous-ganciclovir"></a>
@@ -178,18 +175,17 @@ last observation of interest (i.e. H144).</p>
 </h3>
 <p>The individual PK profile can be estimated, and plotted.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">map_patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_2009</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">map_patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poso_estim_map.html">poso_estim_map</a></span><span class="op">(</span><span class="va">patient</span>,<span class="va">mod_ganciclovir_Caldes_2009</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
-<p><img src="route_of_administration_files/figure-html/plot_map-1.png" alt="Plot of the individual PK profile" width="700"></p>
+<p><img src="route_of_administration_files/figure-html/plot_map-1.png" class="r-plt" alt="Plot of the individual PK profile" width="700"></p>
 <p>The difference between the cumulative AUC at H144 and that at H120
 gives the AUC 0-24 after the last dose. Using data.table is optional,
 but the syntax is more convenient.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">144</span>,<span class="va">AUC</span><span class="op">]</span> <span class="op">-</span> </span>
-<span>  <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">120</span>,<span class="va">AUC</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">144</span>,<span class="va">AUC</span><span class="op">]</span> <span class="op">-</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">map_patient</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">[</span><span class="va">time</span><span class="op">==</span><span class="fl">120</span>,<span class="va">AUC</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 72.19084</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -205,7 +201,6 @@ a new injection of IV ganciclovir by setting
 <span>              time_auc <span class="op">=</span> <span class="fl">24</span>,</span>
 <span>              target_auc <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>              cmt_dose <span class="op">=</span> <span class="st">"centr"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’</span></span>
 <span><span class="co">#&gt; $dose</span></span>
 <span><span class="co">#&gt; [1] 156.533</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -216,10 +211,10 @@ a new injection of IV ganciclovir by setting
 <span><span class="co">#&gt; [1] 50</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_cl THETA_v1 THETA_cld THETA_v2 THETA_ka THETA_baf add.sd prop.sd</span></span>
-<span><span class="co">#&gt; 1     7.49     31.9      10.2       32    0.895     0.825  0.465   0.143</span></span>
-<span><span class="co">#&gt;       ETA_cl     ETA_v1        ETA_ka      ETA_baf covar</span></span>
-<span><span class="co">#&gt; 1 0.05256373 -0.4773317 -3.099019e-06 2.772041e-07    25</span></span></code></pre></div>
+<span><span class="co">#&gt;   THETA_cl THETA_v1 THETA_cld THETA_v2 THETA_ka THETA_baf     ETA_cl     ETA_v1</span></span>
+<span><span class="co">#&gt; 1     7.49     31.9      10.2       32    0.895     0.825 0.05256373 -0.4773317</span></span>
+<span><span class="co">#&gt;          ETA_ka      ETA_baf covar</span></span>
+<span><span class="co">#&gt; 1 -3.099019e-06 2.772041e-07    25</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="optimal-dose-for-an-oral-valganciclovir-administration">Optimal dose for an oral valganciclovir administration<a class="anchor" aria-label="anchor" href="#optimal-dose-for-an-oral-valganciclovir-administration"></a>
@@ -243,10 +238,10 @@ an administration of oral valganciclovir by setting
 <span><span class="co">#&gt; [1] 50</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_cl THETA_v1 THETA_cld THETA_v2 THETA_ka THETA_baf add.sd prop.sd</span></span>
-<span><span class="co">#&gt; 1     7.49     31.9      10.2       32    0.895     0.825  0.465   0.143</span></span>
-<span><span class="co">#&gt;       ETA_cl     ETA_v1        ETA_ka       ETA_baf covar</span></span>
-<span><span class="co">#&gt; 1 0.05256457 -0.4773339 -9.298227e-07 -1.072357e-07    25</span></span></code></pre></div>
+<span><span class="co">#&gt;   THETA_cl THETA_v1 THETA_cld THETA_v2 THETA_ka THETA_baf     ETA_cl     ETA_v1</span></span>
+<span><span class="co">#&gt; 1     7.49     31.9      10.2       32    0.895     0.825 0.05256457 -0.4773339</span></span>
+<span><span class="co">#&gt;          ETA_ka       ETA_baf covar</span></span>
+<span><span class="co">#&gt; 1 -9.298227e-07 -1.072357e-07    25</span></span></code></pre></div>
 <p>Keeping the default value of cmt_dose, which is the first compartment
 declared in the PK model, would also work here.</p>
 <blockquote>
@@ -271,7 +266,7 @@ and valganciclovir).”</em></p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

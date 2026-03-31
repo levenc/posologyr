@@ -49,3 +49,4 @@ navbar:
     href: reference/index.html
   - text: Changelog
     href: news/index.html
+llm-docs: false
