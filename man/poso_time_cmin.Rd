@@ -125,45 +125,5 @@ parameters, a dose, and a target Cmin.
 rxode2::setRxThreads(2L) # limit the number of threads
 
 # model
-mod_run001 <- function() {
-  ini({
-    THETA_Cl <- 4.0
-    THETA_Vc <- 70.0
-    THETA_Ka <- 1.0
-    ETA_Cl ~ 0.2
-    ETA_Vc ~ 0.2
-    ETA_Ka ~ 0.2
-    prop.sd <- sqrt(0.05)
-  })
-  model({
-    TVCl <- THETA_Cl
-    TVVc <- THETA_Vc
-    TVKa <- THETA_Ka
-
-    Cl <- TVCl*exp(ETA_Cl)
-    Vc <- TVVc*exp(ETA_Vc)
-    Ka <- TVKa*exp(ETA_Ka)
-
-    K20 <- Cl/Vc
-    Cc <- centr/Vc
-
-    d/dt(depot) = -Ka*depot
-    d/dt(centr) = Ka*depot - K20*centr
-    Cc ~ prop(prop.sd)
-  })
-}
-# df_patient01: event table for Patient01, following a 30 minutes intravenous
-# infusion
-df_patient01 <- data.frame(ID=1,
-                        TIME=c(0.0,1.0,14.0),
-                        DV=c(NA,25.0,5.5),
-                        AMT=c(2000,0,0),
-                        EVID=c(1,0,0),
-                        DUR=c(0.5,NA,NA))
-# predict the time needed to reach a concentration of 2.5 mg/l
-# after the administration of a 2500 mg dose over a 30 minutes
-# infusion
-poso_time_cmin(dat=df_patient01,prior_model=mod_run001,
-dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
 
 }

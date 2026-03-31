@@ -63,7 +63,7 @@ mod_run001 <- function() {
     ETA_Cl ~ 0.2
     ETA_Vc ~ 0.2
     ETA_Ka ~ 0.2
-    prop.sd <- sqrt(0.05)
+    prop.sd <- 0.05
   })
   model({
     TVCl <- THETA_Cl
@@ -82,14 +82,12 @@ mod_run001 <- function() {
     Cc ~ prop(prop.sd)
   })
 }
-# df_patient01: event table for Patient01, following a 30 minutes intravenous
-# infusion
+# df_patient01: event table for Patient01
 df_patient01 <- data.frame(ID=1,
                         TIME=c(0.0,1.0,14.0),
                         DV=c(NA,25.0,5.5),
                         AMT=c(2000,0,0),
-                        EVID=c(1,0,0),
-                        DUR=c(0.5,NA,NA))
+                        EVID=c(1,0,0))
 # estimate the posterior distribution of population parameters
 \donttest{poso_estim_mcmc(dat=df_patient01,prior_model=mod_run001,
 n_iter=50,n_chains=2)}

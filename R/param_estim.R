@@ -58,7 +58,7 @@
 #'     ETA_Cl ~ 0.2
 #'     ETA_Vc ~ 0.2
 #'     ETA_Ka ~ 0.2
-#'     prop.sd <- sqrt(0.05)
+#'     prop.sd <- 0.05
 #'   })
 #'   model({
 #'     TVCl <- THETA_Cl
@@ -77,14 +77,12 @@
 #'     Cc ~ prop(prop.sd)
 #'   })
 #' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
+#' # df_patient01: event table for Patient01,
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
+#'                         EVID=c(1,0,0))
 #' # estimate the prior distribution of population parameters
 #' poso_simu_pop(dat=df_patient01,prior_model=mod_run001,n_simul=100)
 #'
@@ -198,14 +196,12 @@ poso_simu_pop <- function(dat=NULL,prior_model=NULL,n_simul=1000,
 #'     Cc ~ prop(prop.sd)
 #'   })
 #' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
+#' # df_patient01: event table for Patient01
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
+#'                         EVID=c(1,0,0))
 #' # estimate the Maximum A Posteriori individual parameters
 #' poso_estim_map(dat=df_patient01,prior_model=mod_run001)
 #'
@@ -500,7 +496,7 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #'     ETA_Cl ~ 0.2
 #'     ETA_Vc ~ 0.2
 #'     ETA_Ka ~ 0.2
-#'     prop.sd <- sqrt(0.05)
+#'     prop.sd <- 0.05
 #'   })
 #'   model({
 #'     TVCl <- THETA_Cl
@@ -519,14 +515,12 @@ poso_estim_map <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #'     Cc ~ prop(prop.sd)
 #'   })
 #' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
+#' # df_patient01: event table for Patient01
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
+#'                         EVID=c(1,0,0))
 #' # estimate the posterior distribution of population parameters
 #' \donttest{poso_estim_mcmc(dat=df_patient01,prior_model=mod_run001,
 #' n_iter=50,n_chains=2)}
@@ -789,7 +783,7 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #'     ETA_Cl ~ 0.2
 #'     ETA_Vc ~ 0.2
 #'     ETA_Ka ~ 0.2
-#'     prop.sd <- sqrt(0.05)
+#'     prop.sd <- 0.05
 #'   })
 #'   model({
 #'     TVCl <- THETA_Cl
@@ -808,14 +802,12 @@ poso_estim_mcmc <- function(dat=NULL,prior_model=NULL,return_model=TRUE,
 #'     Cc ~ prop(prop.sd)
 #'   })
 #' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
+#' # df_patient01: event table for Patient01
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
+#'                         EVID=c(1,0,0))
 #' # estimate the posterior distribution of population parameters
 #' poso_estim_sir(dat=df_patient01,prior_model=mod_run001,
 #' n_sample=1e3,n_resample=1e2)

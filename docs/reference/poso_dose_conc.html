@@ -222,7 +222,7 @@ covariates</p></dd>
 <span class="r-in"><span>    <span class="va">ETA_Cl</span> <span class="op">~</span> <span class="fl">0.2</span></span></span>
 <span class="r-in"><span>    <span class="va">ETA_Vc</span> <span class="op">~</span> <span class="fl">0.2</span></span></span>
 <span class="r-in"><span>    <span class="va">ETA_Ka</span> <span class="op">~</span> <span class="fl">0.2</span></span></span>
-<span class="r-in"><span>    <span class="va">prop.sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">prop.sd</span> <span class="op">&lt;-</span> <span class="fl">0.05</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">model</span><span class="op">(</span><span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="va">TVCl</span> <span class="op">&lt;-</span> <span class="va">THETA_Cl</span></span></span>
@@ -241,18 +241,16 @@ covariates</p></dd>
 <span class="r-in"><span>    <span class="va">Cc</span> <span class="op">~</span> <span class="fu">prop</span><span class="op">(</span><span class="va">prop.sd</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span><span class="co"># df_patient01: event table for Patient01, following a 30 minutes intravenous</span></span></span>
-<span class="r-in"><span><span class="co"># infusion</span></span></span>
+<span class="r-in"><span><span class="co"># df_patient01: event table for Patient01</span></span></span>
 <span class="r-in"><span><span class="va">df_patient01</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                        TIME<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">14.0</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        DV<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">25.0</span>,<span class="fl">5.5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        AMT<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2000</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        DUR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># estimate the optimal dose to reach a concentration of 80 mg/l</span></span></span>
-<span class="r-in"><span><span class="co"># one hour after starting the 30-minutes infusion</span></span></span>
+<span class="r-in"><span>                        EVID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># estimate the optimal dose to reach a concentration of 40 mg/l</span></span></span>
+<span class="r-in"><span><span class="co"># one hour dosing</span></span></span>
 <span class="r-in"><span><span class="fu">poso_dose_conc</span><span class="op">(</span>dat<span class="op">=</span><span class="va">df_patient01</span>,prior_model<span class="op">=</span><span class="va">mod_run001</span>,</span></span>
-<span class="r-in"><span>time_c<span class="op">=</span><span class="fl">1</span>,duration<span class="op">=</span><span class="fl">0.5</span>,target_conc<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
+<span class="r-in"><span>time_c<span class="op">=</span><span class="fl">1</span>,target_conc<span class="op">=</span><span class="fl">40</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : cannot convert to rxUi object</span>

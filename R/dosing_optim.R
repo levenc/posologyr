@@ -100,46 +100,43 @@
 #' rxode2::setRxThreads(2L) # limit the number of threads
 #'
 #' # model
-#' mod_run001 <- function() {
-#'   ini({
-#'     THETA_Cl <- 4.0
-#'     THETA_Vc <- 70.0
-#'     THETA_Ka <- 1.0
-#'     ETA_Cl ~ 0.2
-#'     ETA_Vc ~ 0.2
-#'     ETA_Ka ~ 0.2
-#'     prop.sd <- sqrt(0.05)
-#'   })
-#'   model({
-#'     TVCl <- THETA_Cl
-#'     TVVc <- THETA_Vc
-#'     TVKa <- THETA_Ka
-#'
-#'     Cl <- TVCl*exp(ETA_Cl)
-#'     Vc <- TVVc*exp(ETA_Vc)
-#'     Ka <- TVKa*exp(ETA_Ka)
-#'
-#'     K20 <- Cl/Vc
-#'     Cc <- centr/Vc
-#'
-#'     d/dt(depot) = -Ka*depot
-#'     d/dt(centr) = Ka*depot - K20*centr
-#'     Cc ~ prop(prop.sd)
-#'   })
-#' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
-#' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,1.0,14.0),
-#'                         DV=c(NA,25.0,5.5),
-#'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
-#' # predict the time needed to reach a concentration of 2.5 mg/l
-#' # after the administration of a 2500 mg dose over a 30 minutes
-#' # infusion
-#' poso_time_cmin(dat=df_patient01,prior_model=mod_run001,
-#' dose=2500,duration=0.5,from=0.5,target_cmin=2.5)
+# mod_run001 <- function() {
+#   ini({
+#     THETA_Cl <- 4.0
+#     THETA_Vc <- 70.0
+#     THETA_Ka <- 1.0
+#     ETA_Cl ~ 0.2
+#     ETA_Vc ~ 0.2
+#     ETA_Ka ~ 0.2
+#     prop.sd <- 0.05
+#   })
+#   model({
+#     TVCl <- THETA_Cl
+#     TVVc <- THETA_Vc
+#     TVKa <- THETA_Ka
+#
+#     Cl <- TVCl*exp(ETA_Cl)
+#     Vc <- TVVc*exp(ETA_Vc)
+#     Ka <- TVKa*exp(ETA_Ka)
+#
+#     K20 <- Cl/Vc
+#     Cc <- centr/Vc
+#
+#     d/dt(depot) = -Ka*depot
+#     d/dt(centr) = Ka*depot - K20*centr
+#     Cc ~ prop(prop.sd)
+#   })
+# }
+# # df_patient01: event table for Patient01
+# df_patient01 <- data.frame(ID=1,
+#                         TIME=c(0.0,1.0,14.0),
+#                         DV=c(NA,25.0,5.5),
+#                         AMT=c(2000,0,0),
+#                         EVID=c(1,0,0))
+# # predict the time needed to reach a concentration of 2.5 mg/l
+# # after the administration of a 2500 mg dose
+# poso_time_cmin(dat=df_patient01,prior_model=mod_run001,
+# dose=2500,from=0.5,target_cmin=2.5)
 #'
 #' @export
 poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
@@ -395,44 +392,42 @@ poso_time_cmin <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' rxode2::setRxThreads(2L) # limit the number of threads
 #'
 #' # model
-#' mod_run001 <- function() {
-#'   ini({
-#'     THETA_Cl <- 4.0
-#'     THETA_Vc <- 70.0
-#'     THETA_Ka <- 1.0
-#'     ETA_Cl ~ 0.2
-#'     ETA_Vc ~ 0.2
-#'     ETA_Ka ~ 0.2
-#'     prop.sd <- sqrt(0.05)
-#'   })
-#'   model({
-#'     TVCl <- THETA_Cl
-#'     TVVc <- THETA_Vc
-#'     TVKa <- THETA_Ka
-#'
-#'     Cl <- TVCl*exp(ETA_Cl)
-#'     Vc <- TVVc*exp(ETA_Vc)
-#'     Ka <- TVKa*exp(ETA_Ka)
-#'
-#'     K20 <- Cl/Vc
-#'     Cc <- centr/Vc
-#'
-#'     d/dt(depot) = -Ka*depot
-#'     d/dt(centr) = Ka*depot - K20*centr
-#'     Cc ~ prop(prop.sd)
-#'   })
-#' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
-#' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,1.0,14.0),
-#'                         DV=c(NA,25.0,5.5),
-#'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
-#' # estimate the optimal dose to reach an AUC(0-12h) of 45 h.mg/l
-#' poso_dose_auc(dat=df_patient01,prior_model=mod_run001,
-#' time_auc=12,target_auc=45)
+# mod_run001 <- function() {
+#   ini({
+#     THETA_Cl <- 4.0
+#     THETA_Vc <- 70.0
+#     THETA_Ka <- 1.0
+#     ETA_Cl ~ 0.2
+#     ETA_Vc ~ 0.2
+#     ETA_Ka ~ 0.2
+#     prop.sd <- 0.05
+#   })
+#   model({
+#     TVCl <- THETA_Cl
+#     TVVc <- THETA_Vc
+#     TVKa <- THETA_Ka
+#
+#     Cl <- TVCl*exp(ETA_Cl)
+#     Vc <- TVVc*exp(ETA_Vc)
+#     Ka <- TVKa*exp(ETA_Ka)
+#
+#     K20 <- Cl/Vc
+#     Cc <- centr/Vc
+#
+#     d/dt(depot) = -Ka*depot
+#     d/dt(centr) = Ka*depot - K20*centr
+#     Cc ~ prop(prop.sd)
+#   })
+# }
+# # df_patient01: event table for Patient01
+# df_patient01 <- data.frame(ID=1,
+#                         TIME=c(0.0,1.0,14.0),
+#                         DV=c(NA,25.0,5.5),
+#                         AMT=c(2000,0,0),
+#                         EVID=c(1,0,0))
+# # estimate the optimal dose to reach an AUC(0-12h) of 200 h.mg/l
+# poso_dose_auc(dat=df_patient01,prior_model=mod_run001,
+# time_auc=12,target_auc=200)
 #'
 #' @export
 poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
@@ -724,7 +719,7 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'     ETA_Cl ~ 0.2
 #'     ETA_Vc ~ 0.2
 #'     ETA_Ka ~ 0.2
-#'     prop.sd <- sqrt(0.05)
+#'     prop.sd <- 0.05
 #'   })
 #'   model({
 #'     TVCl <- THETA_Cl
@@ -743,18 +738,16 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'     Cc ~ prop(prop.sd)
 #'   })
 #' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
+#' # df_patient01: event table for Patient01
 #' df_patient01 <- data.frame(ID=1,
 #'                         TIME=c(0.0,1.0,14.0),
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
-#' # estimate the optimal dose to reach a concentration of 80 mg/l
-#' # one hour after starting the 30-minutes infusion
+#'                         EVID=c(1,0,0))
+#' # estimate the optimal dose to reach a concentration of 40 mg/l
+#' # one hour dosing
 #' poso_dose_conc(dat=df_patient01,prior_model=mod_run001,
-#' time_c=1,duration=0.5,target_conc=80)
+#' time_c=1,target_conc=40)
 #'
 #' @export
 poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
@@ -1000,46 +993,44 @@ poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #' @examples
 #' rxode2::setRxThreads(2L) # limit the number of threads
 #'
-#' # model
-#' mod_run001 <- function() {
-#'   ini({
-#'     THETA_Cl <- 4.0
-#'     THETA_Vc <- 70.0
-#'     THETA_Ka <- 1.0
-#'     ETA_Cl ~ 0.2
-#'     ETA_Vc ~ 0.2
-#'     ETA_Ka ~ 0.2
-#'     prop.sd <- sqrt(0.05)
-#'   })
-#'   model({
-#'     TVCl <- THETA_Cl
-#'     TVVc <- THETA_Vc
-#'     TVKa <- THETA_Ka
-#'
-#'     Cl <- TVCl*exp(ETA_Cl)
-#'     Vc <- TVVc*exp(ETA_Vc)
-#'     Ka <- TVKa*exp(ETA_Ka)
-#'
-#'     K20 <- Cl/Vc
-#'     Cc <- centr/Vc
-#'
-#'     d/dt(depot) = -Ka*depot
-#'     d/dt(centr) = Ka*depot - K20*centr
-#'     Cc ~ prop(prop.sd)
-#'   })
-#' }
-#' # df_patient01: event table for Patient01, following a 30 minutes intravenous
-#' # infusion
-#' df_patient01 <- data.frame(ID=1,
-#'                         TIME=c(0.0,1.0,14.0),
-#'                         DV=c(NA,25.0,5.5),
-#'                         AMT=c(2000,0,0),
-#'                         EVID=c(1,0,0),
-#'                         DUR=c(0.5,NA,NA))
-#' # estimate the optimal interval to reach a cmin of of 2.5 mg/l
-#' # before each administration
-#' poso_inter_cmin(dat=df_patient01,prior_model=mod_run001,
-#' dose=1500,duration=0.5,target_cmin=2.5)
+# # model
+# mod_run001 <- function() {
+#   ini({
+#     THETA_Cl <- 4.0
+#     THETA_Vc <- 70.0
+#     THETA_Ka <- 1.0
+#     ETA_Cl ~ 0.2
+#     ETA_Vc ~ 0.2
+#     ETA_Ka ~ 0.2
+#     prop.sd <- 0.05
+#   })
+#   model({
+#     TVCl <- THETA_Cl
+#     TVVc <- THETA_Vc
+#     TVKa <- THETA_Ka
+#
+#     Cl <- TVCl*exp(ETA_Cl)
+#     Vc <- TVVc*exp(ETA_Vc)
+#     Ka <- TVKa*exp(ETA_Ka)
+#
+#     K20 <- Cl/Vc
+#     Cc <- centr/Vc
+#
+#     d/dt(depot) = -Ka*depot
+#     d/dt(centr) = Ka*depot - K20*centr
+#     Cc ~ prop(prop.sd)
+#   })
+# }
+# # df_patient01: event table for Patient01
+# df_patient01 <- data.frame(ID=1,
+#                         TIME=c(0.0,1.0,14.0),
+#                         DV=c(NA,25.0,5.5),
+#                         AMT=c(2000,0,0),
+#                         EVID=c(1,0,0))
+# # estimate the optimal interval to reach a cmin of of 2.5 mg/l
+# # before each administration
+# poso_inter_cmin(dat=df_patient01,prior_model=mod_run001,
+# dose=1500,target_cmin=2.5)
 #'
 #' @export
 poso_inter_cmin <- function(dat=NULL,prior_model=NULL,dose,target_cmin,
