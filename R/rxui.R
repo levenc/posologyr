@@ -1,3 +1,18 @@
+#' This calculates if the current endpoint is a variance endpoint
+#'
+#' @param pred1 the prediction row
+#' @return boolean indicating if this is a variance-based endpoint
+#' @noRd
+#' @author Matthew L. Fidler
+posologyr_endpoint_is_var <- function(pred1) {
+  has_variance <- any(names(pred1) == "variance")
+  is_var <- FALSE
+  if (has_variance) {
+    is_var <- pred1$variance
+  }
+  is_var
+}
+
 #' This creates the posologyr error lines from a rxui model
 #'
 #' @param line line to parse
@@ -123,8 +138,13 @@ posologyr_get_error_model_add <- function(ui, pred1, fun=TRUE) {
            ifelse(length(ui$predDf$condition) == 1L, "", "; this parameter could be estimated by another endpoint, to fix move outside of error expression."), call.=FALSE)
     }
   }
+
   if (!fun) {
-    return(.p1)
+    if (posologyr_endpoint_is_var(pred1)) {
+      return(sqrt(.p1)) # convert to sd
+    } else {
+      return(.p1)
+    }
   }
   # on standard deviation scale
   f <- function(f, sigma) {
@@ -160,7 +180,11 @@ posologyr_get_error_model_prop <- function(ui, pred1, fun=TRUE) {
     }
   }
   if (!fun) {
-    return(.p1)
+    if (posologyr_endpoint_is_var(pred1)) {
+      return(sqrt(.p1)) # convert to sd
+    } else {
+      return(.p1)
+    }
   }
   f <- function(f, sigma) {
     sigma[1] * f
@@ -218,7 +242,13 @@ posologyr_get_error_model_add_prop <- function(ui, pred1, fun=TRUE) {
   } else {
     .addProp <- pred1$addProp
   }
-  if (!fun) return(c(.p1, .p2))
+  if (!fun) {
+    if (posologyr_endpoint_is_var(pred1)) {
+      return(sqrt(c(.p1, .p2))) # convert to sd
+    } else {
+      return(c(.p1, .p2))
+    }
+  }
   if (.addProp == "combined2") {
     f <- function(f, sigma) {
       sqrt(sigma[1]^2 + f^2 * sigma[2]^2)
