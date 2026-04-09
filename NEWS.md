@@ -1,7 +1,10 @@
 # posologyr v1.2.8.999
-* Fix a bug where any function using the internal `objective_function()` would fail with a generic error when some observations in the dataset were 'NA' (i.e. EVID was 0 and DV was 'NA' on the same row). It still fails, but now the error message is more useful. 
+
+* Fix a bug where any function using the internal `objective_function()` would fail with a generic error when some observations in the dataset were 'NA' (i.e. EVID was 0 and DV was 'NA' on the same row). It still fails, but now the error message is more useful.
+* Fix a bug where `init_eta()` threw "subscript out of bounds" when the proposed initial values resulted in equal log-likelihood values.
 
 # posologyr v1.2.8
+
 * Relax the requirements of a dose optimization test using TDM data to account for computational differences observed with the alternative BLAS ATLAS on CRAN.
 
 # posologyr v1.2.7
