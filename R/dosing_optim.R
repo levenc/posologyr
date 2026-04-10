@@ -744,10 +744,10 @@ poso_dose_auc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
 #'                         DV=c(NA,25.0,5.5),
 #'                         AMT=c(2000,0,0),
 #'                         EVID=c(1,0,0))
-#' # estimate the optimal dose to reach a concentration of 40 mg/l
-#' # one hour dosing
+#' # estimate the optimal dose to reach a concentration of 20 mg/l
+#' # one hour after dosing
 #' poso_dose_conc(dat=df_patient01,prior_model=mod_run001,
-#' time_c=1,target_conc=40)
+#' time_c=1,target_conc=20)
 #'
 #' @export
 poso_dose_conc <- function(dat=NULL,prior_model=NULL,tdm=FALSE,
