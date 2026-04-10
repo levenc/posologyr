@@ -31,11 +31,13 @@ objective_function <- function(y_obs=NULL,f=NULL,g=NULL,
 
   if (TRUE %in% is.na(y_obs)){
     # if any observation used to compute the OFV is NA, the result will be NA
-    stop("At least one observation (DV) is NA, the OFV can not be computed. Removing
+    stop("Could not compute the OFV. At least one observation (DV) is NA. Removing
   any row where the value in column DV is NA and the value in column EVID is 0
   may resolve this issue.")
   }
-
+  if (TRUE %in% is.na(g)){
+    stop("Could not compute the OFV. The error model output is NA.")
+  }
   # 1) When the prediction f is zero, g can be zero (depending on the residual
   # error model).
   # 2) log(0) is NaN, the limit of log(x) when x approaches zero is -Inf,

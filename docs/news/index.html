@@ -50,7 +50,7 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.8.999" id="posologyr-v128999">posologyr v1.2.8.999<a class="anchor" aria-label="anchor" href="#posologyr-v128999"></a></h2>
-<ul><li>Fix a bug where any function using the internal <code>objective_function()</code> would fail with a generic error when some observations in the dataset were ‘NA’ (i.e. EVID was 0 and DV was ‘NA’ on the same row). It still fails, but now the error message is more useful.</li>
+<ul><li>Check for NA in the inputs of <code>objective_function()</code>, and stop with an error message if needed.</li>
 <li>Fix a bug where <code>init_eta()</code> threw “subscript out of bounds” when the proposed initial values resulted in equal log-likelihood values.</li>
 </ul></div>
     <div class="section level2">
