@@ -16,6 +16,21 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------
 
+# Model to pass to rxode2::rxSolve() when re-solving a solved model.
+# rxode2 5.1.1 to 5.1.8 re-translate the model text every time an rxSolve
+# object is re-solved, which made MAP estimation with IOV about 10 times
+# slower (#70). Solving the rxode2 model that produced the solved object gives
+# the same results without the re-translation, on every rxode2 version.
+# rxode2 releases after 5.1.8 do this themselves (nlmixr2/rxode2#1722), so
+# this helper can be dropped once posologyr requires such a version.
+model_of <- function(solved_model){
+  model <- solved_model$env$.args.object
+  if (!inherits(model, "rxode2")) {
+    model <- rxode2::rxModelVars(solved_model)
+  }
+  model
+}
+
 # solve a large data set group by group, workaround for
 # https://github.com/nlmixrdevelopment/RxODE/issues/459
 solve_by_groups <- function(index,pkmodel,params,dat,interpolation){
@@ -32,7 +47,7 @@ solve_by_groups <- function(index,pkmodel,params,dat,interpolation){
   start_dat          <- group_size*number_of_observ*(group_number-1)+1
   stop_dat           <- start_dat+(group_size)*number_of_observ-1
 
-  group_model <- rxode2::rxSolve(pkmodel,params[start_eta:stop_eta,],
+  group_model <- rxode2::rxSolve(model_of(pkmodel),params[start_eta:stop_eta,],
                                 dat[start_dat:stop_dat,],
                                 covsInterpolation=interpolation,
                                 returnType="data.table")
@@ -143,14 +158,14 @@ init_eta <- function(object,estim_with_iov,omega_iov=NULL,endpoints=NULL){
     param_cols <- c("ID",attr(omega,"dimnames")[[1]])
     params     <- cbind(eta_dt[,param_cols,with=F],theta)
 
-    f_all_endpoints <- rxode2::rxSolve(solved_model,
+    f_all_endpoints <- rxode2::rxSolve(model_of(solved_model),
                                        cbind(theta,eta_dt,row.names=NULL),
                                        data_iov,covsInterpolation=interpolation,
                                        returnType="data.table")
 
     data.table::setnames(f_all_endpoints,"id","sim.id")
   } else {
-    f_all_endpoints <- rxode2::rxSolve(solved_model,
+    f_all_endpoints <- rxode2::rxSolve(model_of(solved_model),
                                        cbind(theta,eta_dt,row.names=NULL),
                                        dat,covsInterpolation=interpolation,
                                        returnType="data.table")

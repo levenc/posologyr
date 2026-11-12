@@ -87,8 +87,9 @@ errpred <- function(eta_estim=NULL,
                                        omega_dim=omega_dim,
                                        eta_estim=eta_estim)
     dat <- data.frame(dat,iov_col)
-    solved_model <- rxode2::rxSolve(solved_model,c(theta,eta),dat,
-                                   covsInterpolation=interpolation)
+    solved_model <- rxode2::rxSolve(model_of(solved_model),
+                                    c(theta,eta),dat,
+                                    covsInterpolation=interpolation)
   } else {
     eta[ind_eta] <- eta_estim
   }
