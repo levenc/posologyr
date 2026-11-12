@@ -944,7 +944,7 @@ poso_estim_sir <- function(dat=NULL,prior_model=NULL,n_sample=1e4,
 
     data.table::setnames(f_all_endpoints,"id","sim.id")
   } else {
-    f_all_endpoints <- rxode2::rxSolve(solved_model,
+    f_all_endpoints <- rxode2::rxSolve(model_of(solved_model),
                                        cbind(theta,eta_dt,row.names=NULL),
                                        dat,covsInterpolation=interpolation,
                                        returnType="data.table")

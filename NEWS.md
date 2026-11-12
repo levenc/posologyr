@@ -1,5 +1,6 @@
 # posologyr v1.2.8.999
 
+* Restore the speed of MAP estimation with inter-occasion variability under rxode2 5.1.1 to 5.1.8, which re-translated the model at every evaluation of the objective function and made `poso_estim_map()` about 10 times slower (#70). The fix is also in rxode2 releases after 5.1.8 (nlmixr2/rxode2#1722).
 * Check for NA in the inputs of `objective_function()`, and stop with an error message if needed.
 * Fix a bug where `init_eta()` threw "subscript out of bounds" when the proposed initial values resulted in equal log-likelihood values.
 
