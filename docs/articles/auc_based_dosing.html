@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="AUC-based dose selection">
 </head>
@@ -221,7 +221,7 @@ estimated using TDM data.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q     ETA_Cl     ETA_Vc     ETA_Vp CLCREAT</span></span>
-<span><span class="co">#&gt; 4      4.5     58.4     38.4     6.5 0.08208197 0.06122329 0.06285911      65</span></span>
+<span><span class="co">#&gt; 4      4.5     58.4     38.4     6.5 0.08208177 0.06122321 0.06285893      65</span></span>
 <span><span class="co">#&gt;   WT DIAL</span></span>
 <span><span class="co">#&gt; 4 70    0</span></span></code></pre></div>
 <p>The optimal dose estimated for the next infusion is 1411 mg.</p>
@@ -243,7 +243,7 @@ enough administrations (e.g. 11 consecutive administrations, with
 <span>              duration<span class="op">=</span><span class="fl">2</span>,</span>
 <span>              target_auc<span class="op">=</span><span class="fl">400</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 1198.269</span></span>
+<span><span class="co">#&gt; [1] 1198.266</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -253,7 +253,7 @@ enough administrations (e.g. 11 consecutive administrations, with
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
 <span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q     ETA_Cl     ETA_Vc     ETA_Vp CLCREAT</span></span>
-<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5 0.08208435 0.06121699 0.06286203      65</span></span>
+<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5 0.08208197 0.06122337 0.06285913      65</span></span>
 <span><span class="co">#&gt;   WT DIAL</span></span>
 <span><span class="co">#&gt; 1 70    0</span></span></code></pre></div>
 <p>The optimal maintenance dose is 1200 mg.</p>
@@ -275,7 +275,7 @@ equal to the <code>interdose_interval</code>.</p>
 <span>              duration<span class="op">=</span><span class="fl">24</span>,</span>
 <span>              target_auc<span class="op">=</span><span class="fl">400</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 1198.923</span></span>
+<span><span class="co">#&gt; [1] 1198.924</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -284,10 +284,10 @@ equal to the <code>interdose_interval</code>.</p>
 <span><span class="co">#&gt; [1] 400</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q     ETA_Cl     ETA_Vc     ETA_Vp CLCREAT</span></span>
-<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5 0.08208197 0.06122336 0.06285918      65</span></span>
-<span><span class="co">#&gt;   WT DIAL</span></span>
-<span><span class="co">#&gt; 1 70    0</span></span></code></pre></div>
+<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q     ETA_Cl     ETA_Vc    ETA_Vp CLCREAT WT</span></span>
+<span><span class="co">#&gt; 1      4.5     58.4     38.4     6.5 0.08208237 0.06122524 0.0628578      65 70</span></span>
+<span><span class="co">#&gt;   DIAL</span></span>
+<span><span class="co">#&gt; 1    0</span></span></code></pre></div>
 <p>The optimal maintenance dose is also 1200 mg / 24 h for a continuous
 intravenous infusion.</p>
 </div>
@@ -302,7 +302,7 @@ intravenous infusion.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

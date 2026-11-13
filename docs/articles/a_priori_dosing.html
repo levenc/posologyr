@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="A priori dose selection">
 </head>
@@ -166,7 +166,7 @@ model.</p>
 <span>                             target_conc <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span>
 <span><span class="va">prior_dose</span></span>
 <span><span class="co">#&gt; $dose</span></span>
-<span><span class="co">#&gt; [1] 2087.668</span></span>
+<span><span class="co">#&gt; [1] 2087.667</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $type_of_estimate</span></span>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
@@ -175,10 +175,10 @@ model.</p>
 <span><span class="co">#&gt; [1] 80</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q        ETA_Cl        ETA_Vc        ETA_Vp</span></span>
-<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1 -3.114346e-06 -1.586456e-06 -2.287222e-06</span></span>
+<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q        ETA_Cl        ETA_Vc       ETA_Vp</span></span>
+<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1 -2.072343e-06 -6.327973e-06 3.792974e-06</span></span>
 <span><span class="co">#&gt;          ETA_Q CLCREAT4H TBW PoverF</span></span>
-<span><span class="co">#&gt; 1 2.906001e-06        50  62    169</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 3.933077e-06        50  62    169</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="time-required-to-reach-the-target-cmin">Time required to reach the target Cmin<a class="anchor" aria-label="anchor" href="#time-required-to-reach-the-target-cmin"></a>
@@ -198,13 +198,13 @@ Cmin concentration of 2.5 mg/l can be estimated.</p>
 <span><span class="co">#&gt; [1] "point estimate"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $cmin_estimate</span></span>
-<span><span class="co">#&gt; [1] 2.496363</span></span>
+<span><span class="co">#&gt; [1] 2.496365</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $indiv_param</span></span>
-<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q       ETA_Cl       ETA_Vc       ETA_Vp</span></span>
-<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1 3.700685e-14 4.231545e-14 8.450123e-14</span></span>
-<span><span class="co">#&gt;           ETA_Q CLCREAT4H TBW PoverF</span></span>
-<span><span class="co">#&gt; 1 -3.025386e-14        50  62    169</span></span></code></pre></div>
+<span><span class="co">#&gt;   THETA_Cl THETA_Vc THETA_Vp THETA_Q        ETA_Cl       ETA_Vc      ETA_Vp</span></span>
+<span><span class="co">#&gt; 1      4.3     15.9     21.4    12.1 -1.666742e-07 9.821395e-08 4.30814e-07</span></span>
+<span><span class="co">#&gt;          ETA_Q CLCREAT4H TBW PoverF</span></span>
+<span><span class="co">#&gt; 1 1.110082e-07        50  62    169</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plotting-the-selected-dosage">Plotting the selected dosage<a class="anchor" aria-label="anchor" href="#plotting-the-selected-dosage"></a>
@@ -225,7 +225,10 @@ event table</a>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">20</span>,b<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: can not update object</span></span>
-<span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="fu">add.dosing</span><span class="op">(</span>dose<span class="op">=</span><span class="va">prior_dose</span><span class="op">$</span><span class="va">dose</span>,rate<span class="op">=</span><span class="va">prior_dose</span><span class="op">$</span><span class="va">dose</span><span class="op">/</span><span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="fu">add.dosing</span><span class="op">(</span>dose<span class="op">=</span><span class="va">prior_dose</span><span class="op">$</span><span class="va">dose</span>,rate<span class="op">=</span><span class="va">prior_dose</span><span class="op">$</span><span class="va">dose</span><span class="op">/</span><span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: column 'CLCREAT4H' has only 'NA' values for id '1'</span></span>
+<span><span class="co">#&gt; Warning: column 'TBW' has only 'NA' values for id '1'</span></span>
+<span><span class="co">#&gt; Warning: column 'PoverF' has only 'NA' values for id '1'</span></span></code></pre></div>
 <p>Plotting the simulated scenario.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">simu_patA</span><span class="op">$</span><span class="va">model</span>,<span class="va">Cc</span><span class="op">)</span></span></code></pre></div>
@@ -256,7 +259,7 @@ population), the selected dose meets the peak concentration target.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
