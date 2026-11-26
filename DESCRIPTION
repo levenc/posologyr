@@ -1,5 +1,5 @@
 Package: posologyr
-Title: Individual Dose Optimization using Population Pharmacokinetics
+Title: Model-Informed Precision Dosing with R
 Version: 1.2.8.999
 Authors@R: c(
     person("Cyril","Leven",role = c("aut", "cre","cph"),
