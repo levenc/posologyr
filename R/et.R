@@ -93,8 +93,10 @@ poso_replace_et <- function(target_model=NULL,prior_model=NULL,
 
   # translate the interpolation method for approxfun
   if(interpolation == "nocb" | interpolation == "locf" | interpolation == "midpoint"){
-    interpolation <- "constant"
-  } else if (interpolation != "linear") {
+    interpol_approx <- "constant"
+  } else if (interpolation == "linear") {
+    interpol_approx <- "linear"
+  } else {
     stop(paste(interpolation,"is not a valid value for 'interpolation'. Choices
                are 'locf', 'nocb', 'midpoint' or 'linear'."))
   }
@@ -119,12 +121,13 @@ poso_replace_et <- function(target_model=NULL,prior_model=NULL,
   if(yes_covariates){
     covar_mat <- sapply(prior_model$covariates,FUN=extrapol_cov,dat=target_model,
                         covar=prior_model$covariates,
-                        interpol_approx=interpolation,
+                        interpol_approx=interpol_approx,
                         f=left_right_step,
                         event_table=event_table)
 
     event_table <- cbind(event_table,covar_mat)
   }
-  updated_model <- rxode2::rxSolve(target_model,event_table,target_model$params)
+  updated_model <- rxode2::rxSolve(target_model,event_table,target_model$params,
+                                   covsInterpolation=interpolation)
   return(updated_model)
 }
