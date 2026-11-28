@@ -8,6 +8,7 @@ Authors@R: c(
     person("Matthew","Fidler",role = c("ctb"),
            email="matthew.fidler@gmail.com",
            comment = c(ORCID = "0000-0001-8538-6691")),
+    person("Chen-Yang","Su",role=c("ctb")),
     person("Emmanuelle","Comets",role = c("ctb")),
     person("Audrey","Lavenu",role = c("ctb")),
     person("Marc","Lavielle",role = c("ctb"))
